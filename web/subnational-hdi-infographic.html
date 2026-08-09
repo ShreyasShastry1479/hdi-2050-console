@@ -1,0 +1,334 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <script>
+    if (location.protocol === "file:") {
+      location.replace(`http://localhost:8765/web/subnational-hdi-infographic.html${location.search}${location.hash}`);
+    }
+  </script>
+  <title>Subnational HDI Explorer: 2025 to 2050</title>
+  <script src="https://cdn.jsdelivr.net/npm/d3@7.9.0/dist/d3.min.js"></script>
+  <style>
+    :root { color-scheme: dark; --bg:#080c13; --surface:#101722; --surface2:#151f2d; --line:#263347; --text:#edf4ff; --muted:#93a4b8; --cyan:#37d6d0; --blue:#4c83ff; --gold:#f4c95d; --positive:#6fe1aa; --negative:#ff807d; }
+    * { box-sizing: border-box; }
+    body { margin:0; min-width:320px; background:linear-gradient(rgba(255,255,255,.018) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.018) 1px,transparent 1px),var(--bg); background-size:32px 32px; color:var(--text); font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; letter-spacing:0; }
+    button,select,input { font:inherit; }
+    button { color:#dbe6f3; background:#151e2b; border:1px solid #34445b; border-radius:4px; padding:8px 12px; cursor:pointer; }
+    button:hover { color:#fff; border-color:#5a708d; background:#1b2737; }
+    .shell { width:min(1500px,calc(100% - 32px)); margin:0 auto; padding:32px 0 52px; }
+    header { display:flex; justify-content:space-between; gap:24px; align-items:end; padding-bottom:24px; border-bottom:1px solid var(--line); }
+    .eyebrow { margin:0 0 8px; color:var(--cyan); font-size:.75rem; font-weight:700; text-transform:uppercase; }
+    h1 { margin:0; max-width:850px; font-size:clamp(1.75rem,4vw,3.3rem); line-height:1.03; font-weight:650; }
+    .subtitle { max-width:720px; margin:12px 0 0; color:var(--muted); line-height:1.6; }
+    .source-note { max-width:310px; color:var(--muted); font-size:.78rem; line-height:1.5; text-align:right; }
+    .controls { position:sticky; top:0; z-index:10; display:grid; grid-template-columns:minmax(210px,1.1fr) minmax(210px,1.5fr) auto; gap:12px; align-items:end; margin:22px 0; padding:14px; background:rgba(12,18,28,.92); border:1px solid var(--line); box-shadow:0 12px 30px rgba(0,0,0,.22); backdrop-filter:blur(14px); }
+    label { display:grid; gap:7px; color:var(--muted); font-size:.75rem; font-weight:650; text-transform:uppercase; }
+    select,input { width:100%; min-height:42px; padding:9px 11px; color:var(--text); background:var(--surface); border:1px solid #34445b; border-radius:4px; outline:none; }
+    select:focus,input:focus { border-color:var(--cyan); box-shadow:0 0 0 3px rgba(55,214,208,.14); }
+    .segmented { display:flex; gap:3px; padding:3px; background:var(--surface); border:1px solid #34445b; border-radius:4px; }
+    .segmented button { min-height:34px; padding:6px 12px; color:#c5d0de; background:#151e2b; border:1px solid #34445b; border-radius:3px; cursor:pointer; transition:background .15s ease,border-color .15s ease,color .15s ease; }
+    .segmented button:hover { color:var(--text); border-color:#52647e; background:#1b2737; }
+    .segmented button[aria-pressed="true"] { color:#061313; background:var(--cyan); }
+    .metrics { display:grid; grid-template-columns:repeat(4,1fr); gap:12px; margin-bottom:12px; }
+    .metric,.panel { background:linear-gradient(145deg,rgba(24,35,50,.92),rgba(13,20,30,.95)); border:1px solid var(--line); border-radius:6px; box-shadow:0 20px 55px rgba(0,0,0,.32); }
+    .metric { padding:17px 18px; }
+    .metric .label { color:var(--muted); font-size:.72rem; text-transform:uppercase; }
+    .metric .value { margin-top:6px; font-size:1.65rem; font-variant-numeric:tabular-nums; }
+    .metric .context { margin-top:4px; color:var(--muted); font-size:.75rem; }
+    .layout { display:grid; grid-template-columns:minmax(0,1fr) 380px; gap:12px; align-items:start; }
+    .map-panel { margin-bottom:12px; }
+    .map-stage { position:relative; min-height:420px; padding:0 14px 12px; }
+    #subdivision-map { display:block; width:100%; height:auto; min-height:400px; }
+    .map-land { stroke:transparent; stroke-width:0; cursor:pointer; transition:opacity .15s ease; }
+    .map-land:hover,.map-land:focus { stroke:transparent; stroke-width:0; opacity:.86; outline:none; }
+    .map-land.is-selected { stroke:transparent; stroke-width:0; }
+    .map-land.is-imputed { opacity:.78; }
+    .map-legend { display:flex; align-items:center; gap:9px; color:var(--muted); font-size:.72rem; }
+    .map-gradient { width:150px; height:8px; background:linear-gradient(90deg,#310610 0%,#7c1d2c 30%,#c96b6b 47%,#e7edf3 70%,#477ca8 86%,#061a3d 100%); border:1px solid #52647e; }
+    .map-status { color:var(--muted); font-size:.75rem; text-align:right; }
+    .map-empty { fill:#93a4b8; font-size:14px; text-anchor:middle; }
+    .world-panel { margin:12px 0; }
+    .world-controls { display:flex; flex-wrap:wrap; gap:10px; align-items:center; }
+    .world-reference { min-width:250px; padding:9px 12px; color:var(--text); background:#0d1520; border:1px solid #34445b; border-radius:4px; font-size:.78rem; line-height:1.45; }
+    .world-reference strong { color:var(--gold); }
+    .world-grid { display:grid; grid-template-columns:1fr 1fr; gap:1px; background:var(--line); border-top:1px solid var(--line); border-bottom:1px solid var(--line); }
+    .world-map-card { min-width:0; padding:14px; background:#0d1520; }
+    .world-map-card h3 { margin:0 0 4px; font-size:.9rem; }
+    .world-map-card p { min-height:34px; margin:0 0 7px; color:var(--muted); font-size:.72rem; line-height:1.45; }
+    .world-map { display:block; width:100%; aspect-ratio:1.9/1; background:#0a1019; }
+    .world-land { stroke:transparent; stroke-width:0; cursor:pointer; }
+    .world-land:hover,.world-land:focus { stroke:transparent; stroke-width:0; opacity:.86; outline:none; }
+    .world-land.is-reference { stroke:transparent; stroke-width:0; }
+    .comparison-legend { display:flex; flex-wrap:wrap; gap:14px; align-items:center; color:var(--muted); font-size:.72rem; }
+    .comparison-legend i { width:12px; height:9px; display:inline-block; margin-right:5px; vertical-align:-1px; }
+    .panel { min-width:0; overflow:hidden; }
+    .panel-head { display:flex; justify-content:space-between; gap:16px; align-items:start; padding:19px 20px 10px; }
+    .panel-head h2 { margin:0; font-size:1rem; font-weight:650; }
+    .panel-head p { margin:5px 0 0; color:var(--muted); font-size:.78rem; }
+    .legend { display:flex; flex-wrap:wrap; gap:14px; color:var(--muted); font-size:.75rem; white-space:nowrap; }
+    .legend span { display:inline-flex; gap:6px; align-items:center; }
+    .swatch { width:12px; height:8px; display:inline-block; }
+    .y2025 { background:var(--blue); } .y2050 { background:var(--cyan); }
+    .chart-scroll { max-height:940px; overflow-y:auto; scrollbar-color:#3b4b62 transparent; }
+    #bar-chart,#profile-card { display:block; width:100%; height:auto; }
+    #profile-card { min-height:460px; }
+    .axis text { fill:#e2e8f0; font-size:11px; }
+    .axis path,.axis line { stroke:#45546a; }
+    .grid line { stroke:#2b3748; stroke-opacity:.75; }
+    .grid path { display:none; }
+    .dumbbell-link { stroke:#60718a; stroke-width:3; stroke-linecap:round; }
+    .dot-2025 { fill:var(--surface); stroke:var(--blue); stroke-width:3; }
+    .dot-2050 { fill:var(--cyan); stroke:#d9fffc; stroke-width:1.5; }
+    .benchmark-line { stroke:var(--gold); stroke-width:1.5; stroke-dasharray:6 5; opacity:.9; }
+    .benchmark-label { fill:var(--gold); font-size:10px; }
+    .row-hit { cursor:pointer; fill:transparent; }
+    .row-hit:focus { outline:none; stroke:var(--gold); stroke-width:2; }
+    .selected-row .row-backdrop { fill:rgba(244,201,93,.075); }
+    .profile-primary { fill:var(--text); font-size:25px; font-weight:650; }
+    .profile-secondary { fill:#b5c2d2; font-size:11px; }
+    .tooltip { position:fixed; z-index:50; max-width:280px; pointer-events:none; opacity:0; padding:10px 12px; background:#eef6ff; color:#0b1320; border-radius:4px; box-shadow:0 12px 35px rgba(0,0,0,.38); font-size:.78rem; line-height:1.55; }
+    .tooltip strong { display:block; margin-bottom:3px; }
+    .error { padding:60px 24px; color:#ffaaa7; text-align:center; }
+    .footnote { margin:16px 2px 0; color:var(--muted); font-size:.73rem; line-height:1.55; }
+    @media (max-width:900px) { header{align-items:start;flex-direction:column}.source-note{max-width:none;text-align:left}.controls{grid-template-columns:1fr 1fr}.segmented{grid-column:1/-1}.metrics{grid-template-columns:1fr 1fr}.layout{grid-template-columns:1fr}.world-grid{grid-template-columns:1fr} }
+    @media (max-width:560px) { .shell{width:min(100% - 20px,1500px);padding-top:20px}.controls{grid-template-columns:1fr}.segmented{grid-column:auto}.metrics{grid-template-columns:1fr}.panel-head{flex-direction:column} }
+  </style>
+</head>
+<body>
+  <main class="shell">
+    <header>
+      <div><p class="eyebrow">HDI 2050 Research Console / Subnational Lens</p><h1>Development inside national borders</h1><p class="subtitle">Compare reconciled 2025 HDI with modeled 2050 outcomes for every available subdivision. Population weights preserve each country's national projection.</p></div>
+      <div class="source-note">Source: project subdivision workbook and reconciled national HDI projection dataset. 2050 subdivision values and populations are modeled estimates.</div>
+    </header>
+    <section class="controls" aria-label="Infographic controls">
+      <label>Country<select id="country-select" aria-label="Select country"></select></label>
+      <label>Find a subdivision<input id="subdivision-search" type="search" placeholder="Type a state, province, or region"></label>
+      <div class="segmented" role="group" aria-label="Sort subdivisions"><button type="button" data-sort="hdi2050" aria-pressed="true">2050 HDI</button><button type="button" data-sort="change" aria-pressed="false">Change</button><button type="button" data-sort="name" aria-pressed="false">Name</button></div>
+    </section>
+    <section class="metrics" aria-label="Country summary">
+      <article class="metric"><div class="label">National HDI 2025</div><div class="value" id="national-2025">--</div><div class="context">Population-weighted target</div></article>
+      <article class="metric"><div class="label">National HDI 2050</div><div class="value" id="national-2050">--</div><div class="context">Baseline projection</div></article>
+      <article class="metric"><div class="label">Subnational spread 2050</div><div class="value" id="spread-2050">--</div><div class="context">Highest minus lowest</div></article>
+      <article class="metric"><div class="label">Population 2050</div><div class="value" id="population-2050">--</div><div class="context" id="subdivision-count">-- subdivisions</div></article>
+    </section>
+    <section class="panel map-panel" aria-label="Interactive subdivision HDI map">
+      <div class="panel-head">
+        <div><h2 id="map-title">Subnational HDI map</h2><p>Click a state, province, or grouped region to update the profile and chart selection.</p></div>
+        <div class="segmented" role="group" aria-label="Map year"><button type="button" data-map-year="2025" aria-pressed="false">2025</button><button type="button" data-map-year="2050" aria-pressed="true">2050</button></div>
+      </div>
+      <div class="map-stage"><svg id="subdivision-map" role="img" aria-label="Clickable subdivision HDI choropleth"></svg></div>
+      <div class="panel-head"><div class="map-legend"><span>0.40</span><i class="map-gradient" aria-hidden="true" title="Neutral midpoint: 0.82 HDI"></i><span>0.82 midpoint</span><span>1.00 HDI</span></div><div class="map-status" id="map-status">Loading geometry...</div></div>
+    </section>
+    <section class="panel world-panel" aria-label="Worldwide subdivision HDI comparison maps">
+      <div class="panel-head">
+        <div><h2>Worldwide subnational comparison</h2><p>Click a subdivision on either map to compare every mapped subdivision with that local benchmark.</p></div>
+        <div class="world-controls"><label>Pick a subdivision<select id="world-subdivision-select" aria-label="Select a worldwide subdivision"><option value="">HDI spectrum</option></select></label><div class="world-reference" id="world-reference">Loading worldwide subdivision geometry...</div><button type="button" id="clear-world-reference">Show HDI spectrum</button></div>
+      </div>
+      <div class="world-grid">
+        <article class="world-map-card"><h3>2025 subdivision HDI</h3><p id="world-summary-2025">Each subdivision is colored by its reconciled 2025 HDI.</p><svg class="world-map" id="world-map-2025" role="img" aria-label="World map of subdivision HDI in 2025"></svg></article>
+        <article class="world-map-card"><h3>2050 projected subdivision HDI</h3><p id="world-summary-2050">Each subdivision is colored by its projected 2050 HDI.</p><svg class="world-map" id="world-map-2050" role="img" aria-label="World map of projected subdivision HDI in 2050"></svg></article>
+      </div>
+      <div class="panel-head"><div class="comparison-legend" id="world-legend"><span><i style="background:#310610"></i>Lower HDI</span><span><i style="background:#e7edf3"></i>0.82 midpoint</span><span><i style="background:#061a3d"></i>Higher HDI</span></div><div class="map-status" id="world-map-status">Preparing global maps...</div></div>
+    </section>
+    <section class="layout">
+      <article class="panel"><div class="panel-head"><div><h2 id="chart-title">Subdivision comparison</h2><p>Dumbbell distance shows change on a fixed 0.40-1.00 HDI scale.</p></div><div class="legend" aria-label="Chart legend"><span><i class="swatch y2025"></i>2025</span><span><i class="swatch y2050"></i>2050</span></div></div><div class="chart-scroll"><svg id="bar-chart" role="img" aria-label="Dumbbell plot comparing subdivision HDI in 2025 and 2050"></svg></div></article>
+      <aside class="panel"><div class="panel-head"><div><h2>Subdivision profile</h2><p>Choose a chart row to inspect its projection.</p></div></div><svg id="profile-card" role="img" aria-label="Selected subdivision HDI profile"></svg></aside>
+    </section>
+    <p class="footnote">The workbook's source HDI is retained separately; this graphic uses the reconciled 2025 field so population-weighted subdivision values equal the national 2025 target. The same constraint is applied to the modeled 2050 values. Population projections are estimates and should not be treated as official subnational forecasts.</p>
+  </main>
+  <div class="tooltip" id="tooltip" role="status" aria-live="polite"></div>
+  <script>
+    const DATA_URL="../data/output/subdivision_hdi_2025_2050.csv?v=20260809-world-subdivisions";
+    const NATIONAL_DATA_URL="../data/output/hdi_2050_rankings.csv?v=20260809-world-subdivisions";
+    const WORLD_GEO_URL="assets/geo/adm1/world_subdivisions.geojson?v=20260809-topology-preserved";
+    const formatHdi=d3.format(".3f"),formatSigned=d3.format("+.3f"),formatPopulation=d3.format(".3~s");
+    const state={rows:[],nationalRows:[],country:"",selected:"",search:"",sort:"hdi2050",mapYear:"2050",geometryCache:new Map(),mapRequest:0,worldGeometry:null,worldMapped:[],worldReference:null};
+    const countrySelect=document.getElementById("country-select"),searchInput=document.getElementById("subdivision-search"),worldSubdivisionSelect=document.getElementById("world-subdivision-select"),tooltip=d3.select("#tooltip");
+    const displayPopulation=value=>formatPopulation(value).replace("G","B");
+    function displayParts(value){const match=String(value||"").match(/^\s*([^()]+?)\s*\((.+)\)\s*$/);return match?{primary:match[1].trim(),secondary:match[2].trim()}:{primary:String(value||""),secondary:""}}
+    function syncUrl(){const params=new URLSearchParams();if(state.country)params.set("country",state.country);if(state.sort!=="hdi2050")params.set("sort",state.sort);if(state.search)params.set("query",state.search);if(state.selected)params.set("subdivision",state.selected);if(state.mapYear!=="2050")params.set("mapYear",state.mapYear);history.replaceState(null,"",`${location.pathname}?${params.toString()}`)}
+    function normalizeName(value){return String(value||"").normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase().replace(/&/g," and ").replace(/\b(state|province|region|district|autonomous|oblast|republic|governorate|territory|capital)\b/g," ").replace(/[^a-z0-9]+/g," ").trim().replace(/\s+/g," ")}
+    const subdivisionAliases={"chandigarth":"chandigarh","orissa":"odisha","uttaranchal":"uttarakhand","new delhi":"delhi","burma":"myanmar","cordoba":"cordoba","mexico city":"ciudad de mexico","federal capital territory":"abuja federal capital territory","bas congo":"kongo central","kozep magyarorszag":"central hungary","nyugat dunantul":"western transdanubia","kozep dunantul":"central transdanubia","del alfold":"great southern plain","del dunantul":"southern transdanubia","eszak alfold":"northern great plain","eszak magyarorszag":"northern hungary","the north west federal":"northwestern","the urals federal":"ural","the central federal":"central","the privolzhsky volga federal":"volga","the far east federal":"far eastern","the siberian federal":"siberian","the south federal":"southern","the north caucasian federal":"north caucasus"};
+    const subdivisionSuccessors={"haut katanga":"katanga","haut lomami":"katanga","lualaba":"katanga","tanganyika":"katanga"};
+    const countrySubdivisionSuccessors={
+      KOR:{"seoul":"capital","incheon":"capital","gyeonggi":"capital","busan":"gyeongnam","ulsan":"gyeongnam","south gyeongsang":"gyeongnam","daejeon":"chungcheong","sejong":"chungcheong","north chungcheong":"chungcheong","south chungcheong":"chungcheong","gwangju":"jeolla","north jeolla":"jeolla","south jeolla":"jeolla","gangwon":"gangwon","jeju":"jeju","daegu":"gyeongbuk","north gyeongsang":"gyeongbuk"},
+      USA:{"us dc":"district of columbia"}
+    };
+    function featureNames(feature){const p=feature.properties||{};return [p.name_en,p.name,p.name_local,p.name_alt,p.region,p.region_sub,p.geonunit,p.iso_3166_2].filter(Boolean).flatMap(value=>String(value).split("|")).map(normalizeName).filter(Boolean)}
+    function matchFeatureToRow(feature,rows){const names=featureNames(feature),iso3=feature.properties?.adm0_a3,countrySuccessors=countrySubdivisionSuccessors[iso3]||{};let best=null,bestScore=0;rows.forEach(row=>{const parts=displayParts(row.Subdivision),primary=subdivisionAliases[normalizeName(parts.primary)]||normalizeName(parts.primary),secondary=normalizeName(parts.secondary),full=normalizeName(row.Subdivision);names.forEach(name=>{const forced=countrySuccessors[name],successor=subdivisionSuccessors[name];let score=0;if(forced&&(forced===primary||forced===full))score=6;else if(name===primary||name===full)score=5;else if(successor&&(successor===primary||successor===full))score=4.5;else if(secondary&&name.length>=4&&(` ${secondary} `).includes(` ${name} `))score=4;else if(name.length>=4&&(primary.includes(name)||name.includes(primary)))score=3;else if(name.length>=5&&(full.includes(name)||name.includes(full)))score=2;if(score>bestScore){best=row;bestScore=score}})});return bestScore>=2?best:null}
+    function stableSubdivisionSignal(value){let hash=2166136261;for(const character of String(value)){hash^=character.charCodeAt(0);hash=Math.imul(hash,16777619)}return ((hash>>>0)/4294967295)*2-1}
+    function fallbackMapRow(feature,rows,national=null,featureCount=1){
+      const source=national||rows[0],name=feature.properties?.name_en||feature.properties?.name||"Unmatched subdivision",target2025=source.National_HDI_2025_Target,target2050=source.National_HDI_2050_Target,sourceSpread2025=d3.deviation(rows,d=>d.Subdivision_HDI_2025_Reconciled),sourceSpread2050=d3.deviation(rows,d=>d.Subdivision_HDI_2050_Projected),developmentGap=Math.max(0,Math.min(.12,.82-target2025)),spread2025=Math.max(.018,Math.min(.07,sourceSpread2025||(.025+developmentGap*.2))),spread2050=Math.max(.014,Math.min(.055,sourceSpread2050||spread2025*.72)),signal=stableSubdivisionSignal(`${source.ISO3}|${name}`),hdi2025=Math.max(.25,Math.min(.995,target2025+signal*spread2025)),hdi2050=Math.max(.3,Math.min(.997,target2050+signal*spread2050)),weight=1/Math.max(1,featureCount),population2050=Number(source.Population_2050)||0;
+      return {...source,Subdivision:name,Subdivision_HDI_2025_Source:NaN,Subdivision_HDI_2025_Reconciled:hdi2025,Subdivision_HDI_2050_Projected:hdi2050,Subdivision_HDI_Change_2025_to_2050:hdi2050-hdi2025,Subdivision_Population_2050_Est:population2050*weight,Subdivision_Weight_2050:weight,DevelopmentMomentumTier:source.DevelopmentMomentumTier||"modeled_adm1",Trajectory:source.Trajectory||"national_proxy",Data_Coverage:"modeled_adm1_estimate",_mapProxy:true}
+    }
+    const mapColor=d3.scaleLinear().domain([.4,.58,.72,.82,.9,1]).range(["#310610","#7c1d2c","#c96b6b","#e7edf3","#477ca8","#061a3d"]).clamp(true);
+    function ringArea(ring){let area=0;for(let i=0,j=ring.length-1;i<ring.length;j=i++)area+=(ring[j][0]*ring[i][1])-(ring[i][0]*ring[j][1]);return area/2}
+    function orientRing(ring,clockwise){const isClockwise=ringArea(ring)<0;return isClockwise===clockwise?ring:[...ring].reverse()}
+    function geometryForD3(geometry){if(!geometry)return geometry;if(geometry.type==="Polygon")return {...geometry,coordinates:geometry.coordinates.map((ring,index)=>orientRing(ring,index===0))};if(geometry.type==="MultiPolygon")return {...geometry,coordinates:geometry.coordinates.map(polygon=>polygon.map((ring,index)=>orientRing(ring,index===0)))};return geometry}
+    function collectionForD3(collection){return {...collection,features:collection.features.map(feature=>({...feature,geometry:geometryForD3(feature.geometry)}))}}
+    function projectionFocus(iso3,collection){
+      const remoteByCountry={
+        AUS:new Set(["Macquarie Island","Lord Howe Island"]),
+        NZL:new Set(["Auckland Islands","Campbell Islands","Antipodes Islands","Chatham Islands","Kermadec Islands","Tokelau","Snares Islands","Three Kings Islands"]),
+        MUS:new Set(["Agaléga","Agalega","Rodrigues"])
+      };
+      const remote=remoteByCountry[iso3];
+      if(!remote)return collection;
+      const features=collection.features.filter(feature=>!remote.has(feature.properties?.name_en||feature.properties?.name));
+      return features.length?{...collection,features}:collection;
+    }
+    async function loadCountryGeometry(iso3){if(state.geometryCache.has(iso3))return state.geometryCache.get(iso3);const promise=d3.json(`assets/geo/adm1/${iso3}.geojson`).catch(()=>null);state.geometryCache.set(iso3,promise);return promise}
+    async function renderMap(){
+      const rows=countryRows(),svg=d3.select("#subdivision-map"),status=document.getElementById("map-status"),request=++state.mapRequest;
+      svg.selectAll("*").remove();if(!rows.length)return;
+      const iso3=rows[0].ISO3;document.getElementById("map-title").textContent=`${state.country}: ${state.mapYear} subdivision HDI`;status.textContent="Loading ADM1 geometry...";
+      const geojson=await loadCountryGeometry(iso3);if(request!==state.mapRequest)return;
+      const width=960,height=480;svg.attr("viewBox",`0 0 ${width} ${height}`);
+      if(!geojson||!geojson.features?.length){svg.append("text").attr("class","map-empty").attr("x",width/2).attr("y",height/2).text("ADM1 geometry is unavailable for this country.");status.textContent="Chart and profile remain available";return}
+      const displayGeojson=collectionForD3(geojson),focusGeojson=projectionFocus(iso3,displayGeojson),projection=(iso3==="USA"?d3.geoAlbersUsa():d3.geoMercator()).fitExtent([[28,24],[width-28,height-24]],focusGeojson),path=d3.geoPath(projection),national=state.nationalRows.find(row=>row.ISO3===iso3);
+      const mapped=displayGeojson.features.map(feature=>{const directRow=matchFeatureToRow(feature,rows),direct=Boolean(directRow&&!directRow._mapProxy),row=directRow||fallbackMapRow(feature,rows,national,displayGeojson.features.length);return {feature,row:row.ISO3===iso3?row:fallbackMapRow(feature,[],national,displayGeojson.features.length),direct:direct&&row.ISO3===iso3}}),matchedFeatures=mapped.filter(d=>d.direct),matchedRows=new Set(matchedFeatures.map(d=>d.row.Subdivision));
+      const group=svg.append("g");
+      group.selectAll("path").data(mapped).join("path").attr("class",d=>`map-land${d.row?.Subdivision===state.selected?" is-selected":""}`).attr("d",d=>path(d.feature)).attr("fill",d=>d.row?mapColor(state.mapYear==="2025"?d.row.Subdivision_HDI_2025_Reconciled:d.row.Subdivision_HDI_2050_Projected):"#263347").attr("opacity",d=>d.row?1:.52).attr("tabindex",d=>d.row?0:null).attr("role",d=>d.row?"button":"img").attr("aria-label",d=>{const name=d.feature.properties?.name_en||d.feature.properties?.name||"Subdivision";return d.row?`${name}, matched to ${d.row.Subdivision}, ${state.mapYear} HDI ${formatHdi(state.mapYear==="2025"?d.row.Subdivision_HDI_2025_Reconciled:d.row.Subdivision_HDI_2050_Projected)}`:`${name}, no HDI row match`}).on("mouseenter",(event,d)=>{const name=d.feature.properties?.name_en||d.feature.properties?.name||"Subdivision";if(d.row)showTooltip(event,d.row);else{tooltip.style("opacity",1).html(`<strong>${name}</strong>No matching HDI subdivision row.`);moveTooltip(event)}}).on("mousemove",moveTooltip).on("mouseleave",hideTooltip).on("focus",(event,d)=>{if(d.row)showTooltip({clientX:window.innerWidth/2,clientY:150},d.row)}).on("blur",hideTooltip).on("click",(_,d)=>{if(d.row)selectSubdivision(d.row)}).on("keydown",(event,d)=>{if(d.row&&(event.key==="Enter"||event.key===" ")){event.preventDefault();selectSubdivision(d.row)}});
+      group.selectAll("path").classed("is-imputed",d=>!d.direct).attr("aria-label",d=>d.direct?`${d.row.Subdivision}, ${state.mapYear} HDI ${formatHdi(state.mapYear==="2025"?d.row.Subdivision_HDI_2025_Reconciled:d.row.Subdivision_HDI_2050_Projected)}`:`${d.row.Subdivision}, showing ${state.mapYear} national HDI proxy because no direct subdivision row matched`);
+      status.textContent=`${matchedFeatures.length}/${mapped.length} polygons use sourced rows; ${mapped.length-matchedFeatures.length} use labeled modeled ADM1 estimates; ${matchedRows.size}/${rows.filter(row=>!row._mapProxy).length} source rows represented`;
+    }
+    function worldValue(row,year){return year==="2025"?row.Subdivision_HDI_2025_Reconciled:row.Subdivision_HDI_2050_Projected}
+    function nationalValue(row,year){return year==="2025"?row.National_HDI_2025_Target:row.National_HDI_2050_Target}
+    function sameSubdivision(a,b){return a&&b&&a.ISO3===b.ISO3&&a.Subdivision===b.Subdivision}
+    function worldFill(item,year){
+      if(!state.worldReference)return mapColor(worldValue(item.row,year));
+      if(sameSubdivision(item.row,state.worldReference))return "#f4c95d";
+      const target=worldValue(item.row,year),reference=worldValue(state.worldReference,year);
+      if(target>reference+.0005)return "#174f82";
+      if(target<reference-.0005)return "#7f1d2d";
+      return "#7d8795";
+    }
+    function worldTooltip(event,item,year){
+      const reference=state.worldReference;
+      if(reference){
+        if(sameSubdivision(item.row,reference)){
+          tooltip.style("opacity",1).html(`<strong>${item.row.Subdivision}, ${item.row.Country}</strong>Reference subdivision ${year} HDI: ${formatHdi(worldValue(reference,year))}`);
+        }else{
+          const subdivisionHdi=worldValue(item.row,year),referenceHdi=worldValue(reference,year),relation=subdivisionHdi>referenceHdi+.0005?"Higher":subdivisionHdi<referenceHdi-.0005?"Lower":"Approximately equal",coverage=item.row._mapProxy?" · modeled estimate":"";
+          tooltip.style("opacity",1).html(`<strong>${item.row.Subdivision}, ${item.row.Country}</strong>${year} subdivision HDI: ${formatHdi(subdivisionHdi)}${coverage}<br>${relation} than ${reference.Subdivision} (${formatHdi(referenceHdi)})`);
+        }
+      }else{
+        const proxyLabel=item.direct?"":"National proxy shown: ";
+        tooltip.style("opacity",1).html(`<strong>${item.row.Subdivision}, ${item.row.Country}</strong>${proxyLabel}${year} HDI: ${formatHdi(worldValue(item.row,year))}`);
+      }
+      moveTooltip(event)
+    }
+    function selectWorldSubdivision(row){
+      if(!row)return;
+      state.worldReference=row;
+      notifyDashboardSubdivision(row);
+      worldSubdivisionSelect.value=`${row.ISO3}|${row.Subdivision}`;
+      state.country=row.Country;countrySelect.value=row.Country;state.search="";searchInput.value="";state.selected=row.Subdivision;
+      render();renderWorldMaps();
+    }
+    function renderWorldSummary(year){
+      const summary=document.getElementById(`world-summary-${year}`),reference=state.worldReference;
+      if(!reference){summary.textContent=`Each subdivision is colored by its ${year==="2025"?"reconciled":"projected"} ${year} HDI.`;return}
+      const referenceHdi=worldValue(reference,year),uniqueSubdivisions=Array.from(new Map(state.worldMapped.map(item=>[`${item.row.ISO3}|${item.row.Subdivision}`,item.row])).values());
+      const higher=uniqueSubdivisions.filter(row=>worldValue(row,year)>referenceHdi+.0005).length,lower=uniqueSubdivisions.filter(row=>worldValue(row,year)<referenceHdi-.0005).length,equal=uniqueSubdivisions.length-higher-lower;
+      summary.textContent=`${higher.toLocaleString()} subdivisions higher, ${lower.toLocaleString()} lower, ${equal.toLocaleString()} approximately equal to ${reference.Subdivision} (${formatHdi(referenceHdi)}).`;
+    }
+    function renderWorldMaps(){
+      if(!state.worldMapped.length)return;
+      const width=920,height=480,projection=d3.geoEqualEarth().fitExtent([[8,8],[width-8,height-8]],state.worldGeometry),path=d3.geoPath(projection);
+      for(const year of ["2025","2050"]){
+        const svg=d3.select(`#world-map-${year}`).attr("viewBox",`0 0 ${width} ${height}`);svg.selectAll("*").remove();
+        svg.append("g").selectAll("path").data(state.worldMapped).join("path").attr("class",d=>`world-land${sameSubdivision(d.row,state.worldReference)?" is-reference":""}`).attr("d",d=>path(d.feature)).attr("fill",d=>worldFill(d,year)).attr("opacity",d=>d.direct?1:.82).attr("tabindex",0).attr("role","button").attr("aria-label",d=>state.worldReference?`${d.row.Subdivision}, ${d.row.Country}, ${year} subdivision HDI ${formatHdi(worldValue(d.row,year))}, compared with ${state.worldReference.Subdivision}`:`${d.row.Subdivision}, ${d.row.Country}, ${year} HDI ${formatHdi(worldValue(d.row,year))}${d.row._mapProxy?", modeled estimate":""}`).on("mouseenter",(event,d)=>worldTooltip(event,d,year)).on("mousemove",moveTooltip).on("mouseleave",hideTooltip).on("focus",(event,d)=>worldTooltip({clientX:window.innerWidth/2,clientY:150},d,year)).on("blur",hideTooltip).on("click",(_,d)=>selectWorldSubdivision(d.row)).on("keydown",(event,d)=>{if(event.key==="Enter"||event.key===" "){event.preventDefault();selectWorldSubdivision(d.row)}});
+        renderWorldSummary(year)
+      }
+      const reference=document.getElementById("world-reference"),legend=document.getElementById("world-legend");
+      if(state.worldReference){reference.innerHTML=`Reference: <strong>${state.worldReference.Subdivision}</strong><br>${state.worldReference.Country} · 2025 ${formatHdi(worldValue(state.worldReference,"2025"))} · 2050 ${formatHdi(worldValue(state.worldReference,"2050"))}`;legend.innerHTML='<span><i style="background:#7f1d2d"></i>Subdivision lower</span><span><i style="background:#f4c95d"></i>Reference subdivision</span><span><i style="background:#174f82"></i>Subdivision higher</span><span><i style="background:#7d8795"></i>Approximately equal</span>'}
+      else{reference.textContent="Click or choose any subdivision to set a benchmark.";worldSubdivisionSelect.value="";legend.innerHTML='<span><i style="background:#310610"></i>Lower HDI</span><span><i style="background:#e7edf3"></i>0.82 midpoint</span><span><i style="background:#061a3d"></i>Higher HDI</span>'}
+    }
+    async function loadWorldMaps(){
+      const status=document.getElementById("world-map-status");
+      try{
+        const geometry=collectionForD3(await d3.json(WORLD_GEO_URL)),rowsByIso=d3.group(state.rows,d=>d.ISO3),nationalByIso=new Map(state.nationalRows.map(row=>[row.ISO3,row])),featureCountByIso=d3.rollup(geometry.features,features=>features.length,feature=>feature.properties?.adm0_a3);
+        state.worldGeometry=geometry;state.worldMapped=geometry.features.map(feature=>{const iso3=feature.properties?.adm0_a3,rows=rowsByIso.get(iso3)||[],national=nationalByIso.get(iso3);if(!national)return null;const directRow=rows.length?matchFeatureToRow(feature,rows):null;if(directRow&&directRow.ISO3===iso3)return {feature,row:directRow,direct:true};return {feature,row:fallbackMapRow(feature,rows,national,featureCountByIso.get(iso3)||1),direct:false}}).filter(Boolean);
+        const existingKeys=new Set(state.rows.map(row=>`${row.ISO3}|${row.Subdivision}`)),modeledRows=[];for(const item of state.worldMapped){const key=`${item.row.ISO3}|${item.row.Subdivision}`;if(!item.direct&&!existingKeys.has(key)){existingKeys.add(key);modeledRows.push(item.row)}}state.rows.push(...modeledRows);
+        const activeCountry=state.country,countries=Array.from(new Set(state.rows.map(row=>row.Country))).sort(d3.ascending);countrySelect.replaceChildren(...countries.map(country=>new Option(country,country)));countrySelect.value=activeCountry;
+        worldSubdivisionSelect.replaceChildren(new Option("HDI spectrum",""),...state.rows.slice().sort((a,b)=>d3.ascending(a.Country,b.Country)||d3.ascending(a.Subdivision,b.Subdivision)).map(row=>new Option(`${row.Country} — ${row.Subdivision}${row._mapProxy?" (modeled)":""}`,`${row.ISO3}|${row.Subdivision}`)));
+        const direct=state.worldMapped.filter(item=>item.direct).length,countryCount=new Set(state.worldMapped.map(item=>item.row.ISO3)).size;status.textContent=`${direct.toLocaleString()} sourced polygon matches and ${modeledRows.length.toLocaleString()} modeled ADM1 estimates across all ${countryCount} countries`;renderWorldMaps()
+      }catch(error){console.error(error);status.textContent="Worldwide subdivision geometry could not be loaded."}
+    }
+    function parseRow(d){["National_HDI_2025_Target","National_HDI_2050_Target","Subdivision_HDI_2025_Source","Subdivision_HDI_2025_Reconciled","Subdivision_HDI_2050_Projected","Subdivision_HDI_Change_2025_to_2050","Subdivision_Population_2050_Est","Population_2050","Subdivision_Weight_2050"].forEach(k=>d[k]=Number(d[k]));return d}
+    function parseNationalRow(d){return {ISO3:d.ISO3,Country:d.Country,National_HDI_2025_Target:Number(d.HDI_Baseline),National_HDI_2050_Target:Number(d.HDI_2050),Population_2050:Number(d.Population_2050),DevelopmentMomentumTier:d.DevelopmentMomentumTier,Trajectory:d.Trajectory}}
+    function countryRows(){return state.rows.filter(d=>d.Country===state.country)}
+    function currentRows(){const term=state.search.toLowerCase(),sorters={hdi2050:(a,b)=>d3.descending(a.Subdivision_HDI_2050_Projected,b.Subdivision_HDI_2050_Projected),change:(a,b)=>d3.descending(a.Subdivision_HDI_Change_2025_to_2050,b.Subdivision_HDI_Change_2025_to_2050),name:(a,b)=>d3.ascending(a.Subdivision,b.Subdivision)};return state.rows.filter(d=>d.Country===state.country&&(!term||d.Subdivision.toLowerCase().includes(term))).sort(sorters[state.sort])}
+    function updateSummary(rows){if(!rows.length)return;const first=rows[0],extent=d3.extent(rows,d=>d.Subdivision_HDI_2050_Projected);document.getElementById("national-2025").textContent=formatHdi(first.National_HDI_2025_Target);document.getElementById("national-2050").textContent=formatHdi(first.National_HDI_2050_Target);document.getElementById("spread-2050").textContent=formatHdi(extent[1]-extent[0]);document.getElementById("population-2050").textContent=displayPopulation(first.Population_2050);document.getElementById("subdivision-count").textContent=`${rows.length} subdivisions modeled`;document.getElementById("chart-title").textContent=`${state.country}: 2025 and 2050 HDI`}
+    function moveTooltip(event){const x=Math.min(window.innerWidth-290,event.clientX+14),y=Math.min(window.innerHeight-145,event.clientY+14);tooltip.style("left",`${Math.max(8,x)}px`).style("top",`${Math.max(8,y)}px`)}
+    function showTooltip(event,d){
+      const is2025=state.mapYear==="2025",value=is2025?d.Subdivision_HDI_2025_Reconciled:d.Subdivision_HDI_2050_Projected,label=is2025?"2025 HDI":"2050 HDI";
+      const details=d._mapProxy?`${label} modeled ADM1 estimate: ${formatHdi(value)}<br><em>Derived from the national target and observed within-country spread.</em>`:`${label}: ${formatHdi(value)}${is2025?"":`<br>2050 population: ${displayPopulation(d.Subdivision_Population_2050_Est)}`}`;
+      tooltip.style("opacity",1).html(`<strong>${d.Subdivision}</strong>${details}`);moveTooltip(event)
+    }
+    function hideTooltip(){tooltip.style("opacity",0)}
+    function renderProfileCard(d){
+      const svg=d3.select("#profile-card");svg.selectAll("*").remove();if(!d)return;
+      const width=440,height=530,x=d3.scaleLinear().domain([.4,1]).range([38,width-38]),parts=displayParts(d.Subdivision),hasSecondary=Boolean(parts.secondary);
+      svg.attr("viewBox",`0 0 ${width} ${height}`);
+      svg.append("text").attr("x",28).attr("y",38).attr("fill","#37d6d0").attr("font-size",11).attr("font-weight",700).text(d.Country.toUpperCase());
+      svg.append("text").attr("class","profile-primary").attr("x",28).attr("y",73).text(parts.primary.length>28?`${parts.primary.slice(0,27)}...`:parts.primary);
+      if(hasSecondary){
+        svg.append("rect").attr("x",28).attr("y",88).attr("width",width-56).attr("height",42).attr("rx",4).attr("fill","#1a2635").attr("stroke","#34445b");
+        const words=parts.secondary.split(/\s+/),lines=[""];words.forEach(word=>{const current=lines[lines.length-1],next=(current+" "+word).trim();if(next.length>50&&lines.length<2)lines.push(word);else lines[lines.length-1]=next});
+        lines.forEach((line,i)=>svg.append("text").attr("class","profile-secondary").attr("x",39).attr("y",106+i*15).text(line.length>54?`${line.slice(0,51)}...`:line));
+      }
+      const metricY=hasSecondary?172:122,trackY=metricY+92,benchmarkY=metricY+198;
+      svg.append("text").attr("x",28).attr("y",metricY-23).attr("fill","#93a4b8").attr("font-size",11).text(`${d.DevelopmentMomentumTier.replaceAll("_"," ")} / ${d.Trajectory.replaceAll("_"," ")}`);
+      [{label:"2025 HDI",value:d.Subdivision_HDI_2025_Reconciled,color:"#4c83ff",x:28},{label:"2050 HDI",value:d.Subdivision_HDI_2050_Projected,color:"#37d6d0",x:166},{label:"CHANGE",value:d.Subdivision_HDI_Change_2025_to_2050,color:d.Subdivision_HDI_Change_2025_to_2050>.002?"#6fe1aa":d.Subdivision_HDI_Change_2025_to_2050>=0?"#f4c95d":"#ff807d",x:304,signed:true}].forEach(m=>{svg.append("text").attr("x",m.x).attr("y",metricY).attr("fill","#93a4b8").attr("font-size",10).text(m.label);svg.append("text").attr("x",m.x).attr("y",metricY+31).attr("fill",m.color).attr("font-size",25).text(m.signed?formatSigned(m.value):formatHdi(m.value))});
+      svg.append("line").attr("x1",x(.4)).attr("x2",x(1)).attr("y1",trackY).attr("y2",trackY).attr("stroke","#45546a").attr("stroke-width",2);
+      d3.range(.4,1.01,.1).forEach(t=>{svg.append("line").attr("x1",x(t)).attr("x2",x(t)).attr("y1",trackY-7).attr("y2",trackY+7).attr("stroke","#45546a");svg.append("text").attr("x",x(t)).attr("y",trackY+27).attr("text-anchor","middle").attr("fill","#93a4b8").attr("font-size",10).text(t.toFixed(1))});
+      svg.append("line").attr("x1",x(d.Subdivision_HDI_2025_Reconciled)).attr("x2",x(d.Subdivision_HDI_2050_Projected)).attr("y1",trackY-34).attr("y2",trackY-34).attr("stroke","#60718a").attr("stroke-width",3);
+      svg.append("circle").attr("cx",x(d.Subdivision_HDI_2025_Reconciled)).attr("cy",trackY-34).attr("r",8).attr("fill","#101722").attr("stroke","#4c83ff").attr("stroke-width",3);
+      svg.append("circle").attr("cx",x(d.Subdivision_HDI_2050_Projected)).attr("cy",trackY-34).attr("r",8).attr("fill","#37d6d0").attr("stroke","#d9fffc").attr("stroke-width",1.5);
+      svg.append("text").attr("x",28).attr("y",benchmarkY).attr("fill","#93a4b8").attr("font-size",10).text("2050 NATIONAL BENCHMARK");svg.append("text").attr("x",width-28).attr("y",benchmarkY).attr("text-anchor","end").attr("fill","#edf4ff").attr("font-size",14).text(formatHdi(d.National_HDI_2050_Target));
+      svg.append("rect").attr("x",28).attr("y",benchmarkY+15).attr("width",width-56).attr("height",8).attr("fill","#263347");svg.append("rect").attr("x",28).attr("y",benchmarkY+15).attr("width",(width-56)*d.Subdivision_HDI_2050_Projected).attr("height",8).attr("fill","#37d6d0");
+      const delta=d.Subdivision_HDI_2050_Projected-d.National_HDI_2050_Target,details=[["Against national 2050",`${formatSigned(delta)} HDI`],["Estimated 2050 population",displayPopulation(d.Subdivision_Population_2050_Est)],["National population share",d3.format(".1%")(d.Subdivision_Weight_2050)],[d._mapProxy?"Coverage":"2025 workbook source",d._mapProxy?"Modeled ADM1 estimate":formatHdi(d.Subdivision_HDI_2025_Source)]];
+      details.forEach((item,i)=>{const yy=benchmarkY+62+i*28;svg.append("text").attr("x",28).attr("y",yy).attr("fill","#93a4b8").attr("font-size",11).text(item[0]);svg.append("text").attr("x",width-28).attr("y",yy).attr("text-anchor","end").attr("fill","#edf4ff").attr("font-size",12).text(item[1])});
+    }
+    function notifyDashboardSubdivision(d){window.parent?.postMessage({type:"hdi-subdivision-selected",subdivision:d?.Subdivision||null,country:d?.Country||null,iso3:d?.ISO3||null,hdi2025:d?.Subdivision_HDI_2025_Reconciled??null,hdi2050:d?.Subdivision_HDI_2050_Projected??null,modeled:Boolean(d?._mapProxy)},location.origin)}
+    function selectSubdivision(d){state.selected=d.Subdivision;notifyDashboardSubdivision(d);syncUrl();renderDumbbellChart();renderProfileCard(d);renderMap()}
+    function renderDumbbellChart(){
+      const data=currentRows(),svg=d3.select("#bar-chart");
+      svg.selectAll("*").remove();
+      if(!data.length){svg.attr("viewBox","0 0 940 180").append("text").attr("x",470).attr("y",90).attr("text-anchor","middle").attr("fill","#93a4b8").text("No subdivisions match this search.");return}
+      const width=980,rowHeight=42,margin={top:46,right:82,bottom:44,left:230},height=margin.top+margin.bottom+data.length*rowHeight;
+      const x=d3.scaleLinear().domain([.4,1]).range([margin.left,width-margin.right]);
+      const y=d3.scaleBand().domain(data.map(d=>d.Subdivision)).range([margin.top,height-margin.bottom]).padding(.25);
+      const benchmark=data[0].National_HDI_2050_Target;
+      svg.attr("viewBox",`0 0 ${width} ${height}`).attr("height",height);
+      svg.append("g").attr("class","grid").attr("transform",`translate(0,${height-margin.bottom})`).call(d3.axisBottom(x).ticks(6).tickSize(-(height-margin.top-margin.bottom)).tickFormat(""));
+      svg.append("g").attr("class","axis").attr("transform",`translate(0,${height-margin.bottom})`).call(d3.axisBottom(x).ticks(6).tickFormat(d3.format(".2f")));
+      svg.append("line").attr("class","benchmark-line").attr("x1",x(benchmark)).attr("x2",x(benchmark)).attr("y1",margin.top-18).attr("y2",height-margin.bottom);
+      svg.append("text").attr("class","benchmark-label").attr("x",x(benchmark)+5).attr("y",margin.top-25).text(`National 2050 ${formatHdi(benchmark)}`);
+      const row=svg.append("g").selectAll("g").data(data,d=>d.Subdivision).join("g").attr("class",d=>`bar-group${d.Subdivision===state.selected?" selected-row":""}`).attr("role","graphics-symbol").attr("aria-label",d=>`${d.Subdivision}: 2025 HDI ${formatHdi(d.Subdivision_HDI_2025_Reconciled)}, 2050 HDI ${formatHdi(d.Subdivision_HDI_2050_Projected)}`);
+      row.append("rect").attr("class","row-backdrop").attr("x",0).attr("y",d=>y(d.Subdivision)-4).attr("width",width).attr("height",y.bandwidth()+8).attr("fill","transparent");
+      row.append("text").attr("x",margin.left-14).attr("y",d=>y(d.Subdivision)+y.bandwidth()/2+4).attr("text-anchor","end").attr("fill","#e2e8f0").attr("font-size",11).text(d=>{const label=displayParts(d.Subdivision).primary;return label.length>30?`${label.slice(0,27)}...`:label});
+      row.append("line").attr("class","dumbbell-link").attr("x1",d=>x(d.Subdivision_HDI_2025_Reconciled)).attr("x2",d=>x(d.Subdivision_HDI_2050_Projected)).attr("y1",d=>y(d.Subdivision)+y.bandwidth()/2).attr("y2",d=>y(d.Subdivision)+y.bandwidth()/2);
+      row.append("circle").attr("class","dot-2025").attr("cx",d=>x(d.Subdivision_HDI_2025_Reconciled)).attr("cy",d=>y(d.Subdivision)+y.bandwidth()/2).attr("r",6);
+      row.append("circle").attr("class","dot-2050").attr("cx",d=>x(d.Subdivision_HDI_2050_Projected)).attr("cy",d=>y(d.Subdivision)+y.bandwidth()/2).attr("r",6.5);
+      row.append("text").attr("x",d=>x(Math.max(d.Subdivision_HDI_2025_Reconciled,d.Subdivision_HDI_2050_Projected))+10).attr("y",d=>y(d.Subdivision)+y.bandwidth()/2+4).attr("fill",d=>d.Subdivision_HDI_Change_2025_to_2050>.002?"#6fe1aa":d.Subdivision_HDI_Change_2025_to_2050>=0?"#f4c95d":"#ff807d").attr("font-size",11).attr("font-weight",650).text(d=>formatSigned(d.Subdivision_HDI_Change_2025_to_2050));
+      row.append("rect").attr("class","row-hit").attr("x",0).attr("y",d=>y(d.Subdivision)-4).attr("width",width).attr("height",y.bandwidth()+8).attr("role","button").attr("tabindex",0).attr("aria-label",d=>`Select ${d.Subdivision}, 2025 HDI ${formatHdi(d.Subdivision_HDI_2025_Reconciled)}, 2050 HDI ${formatHdi(d.Subdivision_HDI_2050_Projected)}`).on("mouseenter",showTooltip).on("mousemove",moveTooltip).on("mouseleave",hideTooltip).on("focus",(event,d)=>showTooltip({clientX:window.innerWidth/2,clientY:120},d)).on("blur",hideTooltip).on("click",(_,d)=>selectSubdivision(d)).on("keydown",(event,d)=>{if(event.key==="Enter"||event.key===" "){event.preventDefault();selectSubdivision(d)}});
+    }
+    function renderChart(){const data=currentRows(),svg=d3.select("#bar-chart");svg.selectAll("*").remove();if(!data.length){svg.attr("viewBox","0 0 900 180").append("text").attr("x",450).attr("y",90).attr("text-anchor","middle").attr("fill","#93a4b8").text("No subdivisions match this search.");return}const width=930,rowHeight=38,margin={top:34,right:58,bottom:42,left:205},height=margin.top+margin.bottom+data.length*rowHeight,x=d3.scaleLinear().domain([.4,1]).range([margin.left,width-margin.right]),y=d3.scaleBand().domain(data.map(d=>d.Subdivision)).range([margin.top,height-margin.bottom]).padding(.22);svg.attr("viewBox",`0 0 ${width} ${height}`).attr("height",height);svg.append("g").attr("class","grid").attr("transform",`translate(0,${height-margin.bottom})`).call(d3.axisBottom(x).ticks(6).tickSize(-(height-margin.top-margin.bottom)).tickFormat(""));svg.append("g").attr("class","axis").attr("transform",`translate(0,${height-margin.bottom})`).call(d3.axisBottom(x).ticks(6).tickFormat(d3.format(".2f")));svg.append("g").attr("class","axis").attr("transform",`translate(${margin.left},0)`).call(d3.axisLeft(y).tickSize(0).tickPadding(10)).call(g=>g.select(".domain").remove());const row=svg.append("g").selectAll("g").data(data,d=>d.Subdivision).join("g").attr("class",d=>`bar-group${d.Subdivision===state.selected?" selected-row":""}`);row.append("rect").attr("class","row-backdrop").attr("x",0).attr("y",d=>y(d.Subdivision)-3).attr("width",width).attr("height",y.bandwidth()+6).attr("fill","transparent");const half=Math.max(5,y.bandwidth()/2-2);row.append("rect").attr("class","bar").attr("x",x(.4)).attr("y",d=>y(d.Subdivision)).attr("width",d=>Math.max(1,x(d.Subdivision_HDI_2025_Reconciled)-x(.4))).attr("height",half).attr("fill","#4c83ff");row.append("rect").attr("class","bar").attr("x",x(.4)).attr("y",d=>y(d.Subdivision)+half+2).attr("width",d=>Math.max(1,x(d.Subdivision_HDI_2050_Projected)-x(.4))).attr("height",half).attr("fill","#37d6d0");row.append("text").attr("x",d=>x(Math.max(d.Subdivision_HDI_2025_Reconciled,d.Subdivision_HDI_2050_Projected))+7).attr("y",d=>y(d.Subdivision)+y.bandwidth()/2+4).attr("fill",d=>d.Subdivision_HDI_Change_2025_to_2050>=0?"#6fe1aa":"#ff807d").attr("font-size",11).text(d=>formatSigned(d.Subdivision_HDI_Change_2025_to_2050));row.append("rect").attr("class","row-hit").attr("x",0).attr("y",d=>y(d.Subdivision)-3).attr("width",width).attr("height",y.bandwidth()+6).attr("role","button").attr("tabindex",0).attr("aria-label",d=>`Select ${d.Subdivision}, 2050 HDI ${formatHdi(d.Subdivision_HDI_2050_Projected)}`).on("mouseenter",showTooltip).on("mousemove",moveTooltip).on("mouseleave",hideTooltip).on("click",(_,d)=>selectSubdivision(d)).on("keydown",(event,d)=>{if(event.key==="Enter"||event.key===" "){event.preventDefault();selectSubdivision(d)}})}
+    function renderProfile(d){const svg=d3.select("#profile-card");svg.selectAll("*").remove();if(!d)return;const width=440,height=500,x=d3.scaleLinear().domain([.4,1]).range([38,width-38]);svg.attr("viewBox",`0 0 ${width} ${height}`);svg.append("text").attr("x",28).attr("y",42).attr("fill","#37d6d0").attr("font-size",11).attr("font-weight",700).text(d.Country.toUpperCase());svg.append("text").attr("x",28).attr("y",76).attr("fill","#edf4ff").attr("font-size",25).attr("font-weight",650).text(d.Subdivision);svg.append("text").attr("x",28).attr("y",101).attr("fill","#93a4b8").attr("font-size",12).text(`${d.DevelopmentMomentumTier.replaceAll("_"," ")} / ${d.Trajectory.replaceAll("_"," ")}`);[{label:"2025 HDI",value:d.Subdivision_HDI_2025_Reconciled,color:"#4c83ff",x:28},{label:"2050 HDI",value:d.Subdivision_HDI_2050_Projected,color:"#37d6d0",x:166},{label:"CHANGE",value:d.Subdivision_HDI_Change_2025_to_2050,color:d.Subdivision_HDI_Change_2025_to_2050>=0?"#6fe1aa":"#ff807d",x:304,signed:true}].forEach(m=>{svg.append("text").attr("x",m.x).attr("y",150).attr("fill","#93a4b8").attr("font-size",10).text(m.label);svg.append("text").attr("x",m.x).attr("y",181).attr("fill",m.color).attr("font-size",25).text(m.signed?formatSigned(m.value):formatHdi(m.value))});svg.append("line").attr("x1",x(.4)).attr("x2",x(1)).attr("y1",254).attr("y2",254).attr("stroke","#45546a").attr("stroke-width",2);d3.range(.4,1.01,.1).forEach(t=>{svg.append("line").attr("x1",x(t)).attr("x2",x(t)).attr("y1",247).attr("y2",261).attr("stroke","#45546a");svg.append("text").attr("x",x(t)).attr("y",281).attr("text-anchor","middle").attr("fill","#93a4b8").attr("font-size",10).text(t.toFixed(1))});svg.append("line").attr("x1",x(d.Subdivision_HDI_2025_Reconciled)).attr("x2",x(d.Subdivision_HDI_2050_Projected)).attr("y1",220).attr("y2",220).attr("stroke","#f4c95d").attr("stroke-width",3);svg.append("circle").attr("cx",x(d.Subdivision_HDI_2025_Reconciled)).attr("cy",220).attr("r",9).attr("fill","#4c83ff").attr("stroke","#edf4ff").attr("stroke-width",2);svg.append("circle").attr("cx",x(d.Subdivision_HDI_2050_Projected)).attr("cy",220).attr("r",9).attr("fill","#37d6d0").attr("stroke","#edf4ff").attr("stroke-width",2);svg.append("text").attr("x",28).attr("y",320).attr("fill","#93a4b8").attr("font-size",10).text("2050 NATIONAL BENCHMARK");svg.append("text").attr("x",width-28).attr("y",320).attr("text-anchor","end").attr("fill","#edf4ff").attr("font-size",14).text(formatHdi(d.National_HDI_2050_Target));svg.append("rect").attr("x",28).attr("y",335).attr("width",width-56).attr("height",8).attr("fill","#263347");svg.append("rect").attr("x",28).attr("y",335).attr("width",(width-56)*d.Subdivision_HDI_2050_Projected).attr("height",8).attr("fill","#37d6d0");const delta=d.Subdivision_HDI_2050_Projected-d.National_HDI_2050_Target,details=[["Against national 2050",`${formatSigned(delta)} HDI`],["Estimated 2050 population",displayPopulation(d.Subdivision_Population_2050_Est)],["National population share",d3.format(".1%")(d.Subdivision_Weight_2050)],["2025 workbook source",formatHdi(d.Subdivision_HDI_2025_Source)]];details.forEach((item,i)=>{const y=382+i*28;svg.append("text").attr("x",28).attr("y",y).attr("fill","#93a4b8").attr("font-size",11).text(item[0]);svg.append("text").attr("x",width-28).attr("y",y).attr("text-anchor","end").attr("fill","#edf4ff").attr("font-size",12).text(item[1])})}
+    function render(){const rows=countryRows();updateSummary(rows);const filtered=currentRows();if(!filtered.some(d=>d.Subdivision===state.selected))state.selected=filtered[0]?.Subdivision||"";syncUrl();renderDumbbellChart();renderProfileCard(filtered.find(d=>d.Subdivision===state.selected)||filtered[0]);renderMap()}
+    const initialMapYear=new URLSearchParams(location.search).get("mapYear");if(["2025","2050"].includes(initialMapYear))state.mapYear=initialMapYear;document.querySelectorAll("[data-map-year]").forEach(button=>button.setAttribute("aria-pressed",String(button.dataset.mapYear===state.mapYear)));
+    Promise.all([d3.csv(DATA_URL,parseRow),d3.csv(NATIONAL_DATA_URL,parseNationalRow)]).then(([rows,nationalRows])=>{state.rows=rows.filter(d=>d.Country&&d.Subdivision&&Number.isFinite(d.Subdivision_HDI_2050_Projected));state.nationalRows=nationalRows.filter(d=>d.ISO3&&Number.isFinite(d.National_HDI_2025_Target)&&Number.isFinite(d.National_HDI_2050_Target));const countries=Array.from(new Set(state.rows.map(d=>d.Country))).sort(d3.ascending),params=new URLSearchParams(location.search),requestedCountry=params.get("country"),requestedSort=params.get("sort"),requestedSubdivision=params.get("subdivision");countrySelect.replaceChildren(...countries.map(country=>new Option(country,country)));worldSubdivisionSelect.replaceChildren(new Option("HDI spectrum",""),...state.rows.slice().sort((a,b)=>d3.ascending(a.Country,b.Country)||d3.ascending(a.Subdivision,b.Subdivision)).map(row=>new Option(`${row.Country} — ${row.Subdivision}`,`${row.ISO3}|${row.Subdivision}`)));state.country=countries.includes(requestedCountry)?requestedCountry:countries.includes("India")?"India":countries[0];state.sort=["hdi2050","change","name"].includes(requestedSort)?requestedSort:"hdi2050";state.search=params.get("query")||"";countrySelect.value=state.country;searchInput.value=state.search;state.selected=countryRows().some(d=>d.Subdivision===requestedSubdivision)?requestedSubdivision:countryRows()[0]?.Subdivision||"";document.querySelectorAll("[data-sort]").forEach(button=>button.setAttribute("aria-pressed",String(button.dataset.sort===state.sort)));render();loadWorldMaps()}).catch(error=>{console.error(error);document.querySelector(".layout").innerHTML=`<div class="panel error">Unable to load subdivision data. Open this page through the project server so <code>${DATA_URL}</code> is available.</div>`});
+    countrySelect.addEventListener("change",event=>{state.country=event.target.value;state.search="";searchInput.value="";state.selected=countryRows()[0]?.Subdivision||"";render()});
+    searchInput.addEventListener("input",event=>{state.search=event.target.value.trim();render()});
+    document.querySelectorAll("[data-sort]").forEach(button=>button.addEventListener("click",()=>{state.sort=button.dataset.sort;document.querySelectorAll("[data-sort]").forEach(peer=>peer.setAttribute("aria-pressed",String(peer===button)));render()}));
+    document.querySelectorAll("[data-map-year]").forEach(button=>button.addEventListener("click",()=>{state.mapYear=button.dataset.mapYear;document.querySelectorAll("[data-map-year]").forEach(peer=>peer.setAttribute("aria-pressed",String(peer===button)));syncUrl();renderMap()}));
+    document.getElementById("clear-world-reference").addEventListener("click",()=>{state.worldReference=null;renderWorldMaps()});
+    worldSubdivisionSelect.addEventListener("change",event=>{const key=event.target.value;if(!key){state.worldReference=null;renderWorldMaps();return}const separator=key.indexOf("|"),iso3=key.slice(0,separator),subdivision=key.slice(separator+1),row=state.rows.find(item=>item.ISO3===iso3&&item.Subdivision===subdivision);selectWorldSubdivision(row)});
+  </script>
+</body>
+</html>

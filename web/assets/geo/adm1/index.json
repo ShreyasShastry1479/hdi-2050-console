@@ -1,0 +1,791 @@
+{
+  "source": "Natural Earth ne_10m_admin_1_states_provinces",
+  "source_url": "https://github.com/nvkelso/natural-earth-vector",
+  "license": "Public domain",
+  "simplify_tolerance_degrees": 0.0,
+  "coordinate_precision": 4,
+  "source_feature_count": 4596,
+  "countries": {
+    "AFG": {
+      "features": 34,
+      "file": "AFG.geojson"
+    },
+    "AGO": {
+      "features": 18,
+      "file": "AGO.geojson"
+    },
+    "ALB": {
+      "features": 12,
+      "file": "ALB.geojson"
+    },
+    "AND": {
+      "features": 7,
+      "file": "AND.geojson"
+    },
+    "ARE": {
+      "features": 9,
+      "file": "ARE.geojson"
+    },
+    "ARG": {
+      "features": 24,
+      "file": "ARG.geojson"
+    },
+    "ARM": {
+      "features": 11,
+      "file": "ARM.geojson"
+    },
+    "ATG": {
+      "features": 8,
+      "file": "ATG.geojson"
+    },
+    "AUS": {
+      "features": 11,
+      "file": "AUS.geojson"
+    },
+    "AUT": {
+      "features": 9,
+      "file": "AUT.geojson"
+    },
+    "AZE": {
+      "features": 78,
+      "file": "AZE.geojson"
+    },
+    "BDI": {
+      "features": 17,
+      "file": "BDI.geojson"
+    },
+    "BEL": {
+      "features": 11,
+      "file": "BEL.geojson"
+    },
+    "BEN": {
+      "features": 12,
+      "file": "BEN.geojson"
+    },
+    "BFA": {
+      "features": 45,
+      "file": "BFA.geojson"
+    },
+    "BGD": {
+      "features": 7,
+      "file": "BGD.geojson"
+    },
+    "BGR": {
+      "features": 28,
+      "file": "BGR.geojson"
+    },
+    "BHR": {
+      "features": 5,
+      "file": "BHR.geojson"
+    },
+    "BHS": {
+      "features": 30,
+      "file": "BHS.geojson"
+    },
+    "BIH": {
+      "features": 18,
+      "file": "BIH.geojson"
+    },
+    "BLR": {
+      "features": 7,
+      "file": "BLR.geojson"
+    },
+    "BLZ": {
+      "features": 6,
+      "file": "BLZ.geojson"
+    },
+    "BOL": {
+      "features": 9,
+      "file": "BOL.geojson"
+    },
+    "BRA": {
+      "features": 27,
+      "file": "BRA.geojson"
+    },
+    "BRB": {
+      "features": 11,
+      "file": "BRB.geojson"
+    },
+    "BRN": {
+      "features": 4,
+      "file": "BRN.geojson"
+    },
+    "BTN": {
+      "features": 20,
+      "file": "BTN.geojson"
+    },
+    "BWA": {
+      "features": 15,
+      "file": "BWA.geojson"
+    },
+    "CAF": {
+      "features": 17,
+      "file": "CAF.geojson"
+    },
+    "CAN": {
+      "features": 13,
+      "file": "CAN.geojson"
+    },
+    "CHE": {
+      "features": 26,
+      "file": "CHE.geojson"
+    },
+    "CHL": {
+      "features": 16,
+      "file": "CHL.geojson"
+    },
+    "CHN": {
+      "features": 32,
+      "file": "CHN.geojson"
+    },
+    "CIV": {
+      "features": 19,
+      "file": "CIV.geojson"
+    },
+    "CMR": {
+      "features": 10,
+      "file": "CMR.geojson"
+    },
+    "COD": {
+      "features": 11,
+      "file": "COD.geojson"
+    },
+    "COG": {
+      "features": 12,
+      "file": "COG.geojson"
+    },
+    "COL": {
+      "features": 34,
+      "file": "COL.geojson"
+    },
+    "COM": {
+      "features": 3,
+      "file": "COM.geojson"
+    },
+    "CPV": {
+      "features": 22,
+      "file": "CPV.geojson"
+    },
+    "CRI": {
+      "features": 7,
+      "file": "CRI.geojson"
+    },
+    "CUB": {
+      "features": 16,
+      "file": "CUB.geojson"
+    },
+    "CYP": {
+      "features": 5,
+      "file": "CYP.geojson"
+    },
+    "CZE": {
+      "features": 14,
+      "file": "CZE.geojson"
+    },
+    "DEU": {
+      "features": 16,
+      "file": "DEU.geojson"
+    },
+    "DJI": {
+      "features": 6,
+      "file": "DJI.geojson"
+    },
+    "DMA": {
+      "features": 10,
+      "file": "DMA.geojson"
+    },
+    "DNK": {
+      "features": 5,
+      "file": "DNK.geojson"
+    },
+    "DOM": {
+      "features": 32,
+      "file": "DOM.geojson"
+    },
+    "DZA": {
+      "features": 48,
+      "file": "DZA.geojson"
+    },
+    "ECU": {
+      "features": 24,
+      "file": "ECU.geojson"
+    },
+    "EGY": {
+      "features": 27,
+      "file": "EGY.geojson"
+    },
+    "ERI": {
+      "features": 6,
+      "file": "ERI.geojson"
+    },
+    "ESP": {
+      "features": 52,
+      "file": "ESP.geojson"
+    },
+    "EST": {
+      "features": 15,
+      "file": "EST.geojson"
+    },
+    "ETH": {
+      "features": 11,
+      "file": "ETH.geojson"
+    },
+    "FIN": {
+      "features": 18,
+      "file": "FIN.geojson"
+    },
+    "FJI": {
+      "features": 5,
+      "file": "FJI.geojson"
+    },
+    "FRA": {
+      "features": 101,
+      "file": "FRA.geojson"
+    },
+    "FSM": {
+      "features": 4,
+      "file": "FSM.geojson"
+    },
+    "GAB": {
+      "features": 9,
+      "file": "GAB.geojson"
+    },
+    "GBR": {
+      "features": 232,
+      "file": "GBR.geojson"
+    },
+    "GEO": {
+      "features": 12,
+      "file": "GEO.geojson"
+    },
+    "GHA": {
+      "features": 10,
+      "file": "GHA.geojson"
+    },
+    "GIN": {
+      "features": 34,
+      "file": "GIN.geojson"
+    },
+    "GMB": {
+      "features": 6,
+      "file": "GMB.geojson"
+    },
+    "GNB": {
+      "features": 9,
+      "file": "GNB.geojson"
+    },
+    "GNQ": {
+      "features": 7,
+      "file": "GNQ.geojson"
+    },
+    "GRC": {
+      "features": 14,
+      "file": "GRC.geojson"
+    },
+    "GRD": {
+      "features": 7,
+      "file": "GRD.geojson"
+    },
+    "GTM": {
+      "features": 22,
+      "file": "GTM.geojson"
+    },
+    "GUY": {
+      "features": 10,
+      "file": "GUY.geojson"
+    },
+    "HKG": {
+      "features": 18,
+      "file": "HKG.geojson"
+    },
+    "HND": {
+      "features": 18,
+      "file": "HND.geojson"
+    },
+    "HRV": {
+      "features": 21,
+      "file": "HRV.geojson"
+    },
+    "HTI": {
+      "features": 10,
+      "file": "HTI.geojson"
+    },
+    "HUN": {
+      "features": 43,
+      "file": "HUN.geojson"
+    },
+    "IDN": {
+      "features": 33,
+      "file": "IDN.geojson"
+    },
+    "IND": {
+      "features": 36,
+      "file": "IND.geojson"
+    },
+    "IRL": {
+      "features": 34,
+      "file": "IRL.geojson"
+    },
+    "IRN": {
+      "features": 31,
+      "file": "IRN.geojson"
+    },
+    "IRQ": {
+      "features": 18,
+      "file": "IRQ.geojson"
+    },
+    "ISL": {
+      "features": 9,
+      "file": "ISL.geojson"
+    },
+    "ISR": {
+      "features": 6,
+      "file": "ISR.geojson"
+    },
+    "ITA": {
+      "features": 110,
+      "file": "ITA.geojson"
+    },
+    "JAM": {
+      "features": 14,
+      "file": "JAM.geojson"
+    },
+    "JOR": {
+      "features": 12,
+      "file": "JOR.geojson"
+    },
+    "JPN": {
+      "features": 47,
+      "file": "JPN.geojson"
+    },
+    "KAZ": {
+      "features": 16,
+      "file": "KAZ.geojson"
+    },
+    "KEN": {
+      "features": 8,
+      "file": "KEN.geojson"
+    },
+    "KGZ": {
+      "features": 8,
+      "file": "KGZ.geojson"
+    },
+    "KHM": {
+      "features": 24,
+      "file": "KHM.geojson"
+    },
+    "KIR": {
+      "features": 2,
+      "file": "KIR.geojson"
+    },
+    "KNA": {
+      "features": 14,
+      "file": "KNA.geojson"
+    },
+    "KOR": {
+      "features": 17,
+      "file": "KOR.geojson"
+    },
+    "KWT": {
+      "features": 6,
+      "file": "KWT.geojson"
+    },
+    "LAO": {
+      "features": 17,
+      "file": "LAO.geojson"
+    },
+    "LBN": {
+      "features": 6,
+      "file": "LBN.geojson"
+    },
+    "LBR": {
+      "features": 15,
+      "file": "LBR.geojson"
+    },
+    "LBY": {
+      "features": 22,
+      "file": "LBY.geojson"
+    },
+    "LCA": {
+      "features": 11,
+      "file": "LCA.geojson"
+    },
+    "LIE": {
+      "features": 11,
+      "file": "LIE.geojson"
+    },
+    "LKA": {
+      "features": 25,
+      "file": "LKA.geojson"
+    },
+    "LSO": {
+      "features": 10,
+      "file": "LSO.geojson"
+    },
+    "LTU": {
+      "features": 10,
+      "file": "LTU.geojson"
+    },
+    "LUX": {
+      "features": 3,
+      "file": "LUX.geojson"
+    },
+    "LVA": {
+      "features": 119,
+      "file": "LVA.geojson"
+    },
+    "MAR": {
+      "features": 16,
+      "file": "MAR.geojson"
+    },
+    "MDA": {
+      "features": 40,
+      "file": "MDA.geojson"
+    },
+    "MDG": {
+      "features": 22,
+      "file": "MDG.geojson"
+    },
+    "MDV": {
+      "features": 21,
+      "file": "MDV.geojson"
+    },
+    "MEX": {
+      "features": 33,
+      "file": "MEX.geojson"
+    },
+    "MHL": {
+      "features": 2,
+      "file": "MHL.geojson"
+    },
+    "MKD": {
+      "features": 84,
+      "file": "MKD.geojson"
+    },
+    "MLI": {
+      "features": 9,
+      "file": "MLI.geojson"
+    },
+    "MLT": {
+      "features": 68,
+      "file": "MLT.geojson"
+    },
+    "MMR": {
+      "features": 14,
+      "file": "MMR.geojson"
+    },
+    "MNE": {
+      "features": 21,
+      "file": "MNE.geojson"
+    },
+    "MNG": {
+      "features": 22,
+      "file": "MNG.geojson"
+    },
+    "MOZ": {
+      "features": 11,
+      "file": "MOZ.geojson"
+    },
+    "MRT": {
+      "features": 13,
+      "file": "MRT.geojson"
+    },
+    "MUS": {
+      "features": 16,
+      "file": "MUS.geojson"
+    },
+    "MWI": {
+      "features": 28,
+      "file": "MWI.geojson"
+    },
+    "MYS": {
+      "features": 16,
+      "file": "MYS.geojson"
+    },
+    "NAM": {
+      "features": 13,
+      "file": "NAM.geojson"
+    },
+    "NER": {
+      "features": 8,
+      "file": "NER.geojson"
+    },
+    "NGA": {
+      "features": 37,
+      "file": "NGA.geojson"
+    },
+    "NIC": {
+      "features": 17,
+      "file": "NIC.geojson"
+    },
+    "NLD": {
+      "features": 15,
+      "file": "NLD.geojson"
+    },
+    "NOR": {
+      "features": 21,
+      "file": "NOR.geojson"
+    },
+    "NPL": {
+      "features": 14,
+      "file": "NPL.geojson"
+    },
+    "NRU": {
+      "features": 14,
+      "file": "NRU.geojson"
+    },
+    "NZL": {
+      "features": 24,
+      "file": "NZL.geojson"
+    },
+    "OMN": {
+      "features": 11,
+      "file": "OMN.geojson"
+    },
+    "PAK": {
+      "features": 8,
+      "file": "PAK.geojson"
+    },
+    "PAN": {
+      "features": 12,
+      "file": "PAN.geojson"
+    },
+    "PER": {
+      "features": 26,
+      "file": "PER.geojson"
+    },
+    "PHL": {
+      "features": 118,
+      "file": "PHL.geojson"
+    },
+    "PLW": {
+      "features": 16,
+      "file": "PLW.geojson"
+    },
+    "PNG": {
+      "features": 20,
+      "file": "PNG.geojson"
+    },
+    "POL": {
+      "features": 16,
+      "file": "POL.geojson"
+    },
+    "PRT": {
+      "features": 20,
+      "file": "PRT.geojson"
+    },
+    "PRY": {
+      "features": 18,
+      "file": "PRY.geojson"
+    },
+    "QAT": {
+      "features": 7,
+      "file": "QAT.geojson"
+    },
+    "ROU": {
+      "features": 42,
+      "file": "ROU.geojson"
+    },
+    "RUS": {
+      "features": 86,
+      "file": "RUS.geojson"
+    },
+    "RWA": {
+      "features": 5,
+      "file": "RWA.geojson"
+    },
+    "SAU": {
+      "features": 13,
+      "file": "SAU.geojson"
+    },
+    "SDN": {
+      "features": 17,
+      "file": "SDN.geojson"
+    },
+    "SEN": {
+      "features": 14,
+      "file": "SEN.geojson"
+    },
+    "SGP": {
+      "features": 5,
+      "file": "SGP.geojson"
+    },
+    "SLB": {
+      "features": 10,
+      "file": "SLB.geojson"
+    },
+    "SLE": {
+      "features": 4,
+      "file": "SLE.geojson"
+    },
+    "SLV": {
+      "features": 14,
+      "file": "SLV.geojson"
+    },
+    "SMR": {
+      "features": 9,
+      "file": "SMR.geojson"
+    },
+    "SOM": {
+      "features": 13,
+      "file": "SOM.geojson"
+    },
+    "SRB": {
+      "features": 25,
+      "file": "SRB.geojson"
+    },
+    "STP": {
+      "features": 2,
+      "file": "STP.geojson"
+    },
+    "SUR": {
+      "features": 10,
+      "file": "SUR.geojson"
+    },
+    "SVK": {
+      "features": 8,
+      "file": "SVK.geojson"
+    },
+    "SVN": {
+      "features": 193,
+      "file": "SVN.geojson"
+    },
+    "SWE": {
+      "features": 21,
+      "file": "SWE.geojson"
+    },
+    "SWZ": {
+      "features": 4,
+      "file": "SWZ.geojson"
+    },
+    "SYC": {
+      "features": 26,
+      "file": "SYC.geojson"
+    },
+    "SYR": {
+      "features": 15,
+      "file": "SYR.geojson"
+    },
+    "TCD": {
+      "features": 22,
+      "file": "TCD.geojson"
+    },
+    "TGO": {
+      "features": 5,
+      "file": "TGO.geojson"
+    },
+    "THA": {
+      "features": 77,
+      "file": "THA.geojson"
+    },
+    "TJK": {
+      "features": 5,
+      "file": "TJK.geojson"
+    },
+    "TKM": {
+      "features": 5,
+      "file": "TKM.geojson"
+    },
+    "TLS": {
+      "features": 13,
+      "file": "TLS.geojson"
+    },
+    "TON": {
+      "features": 5,
+      "file": "TON.geojson"
+    },
+    "TTO": {
+      "features": 16,
+      "file": "TTO.geojson"
+    },
+    "TUN": {
+      "features": 23,
+      "file": "TUN.geojson"
+    },
+    "TUR": {
+      "features": 81,
+      "file": "TUR.geojson"
+    },
+    "TUV": {
+      "features": 1,
+      "file": "TUV.geojson"
+    },
+    "TZA": {
+      "features": 30,
+      "file": "TZA.geojson"
+    },
+    "UGA": {
+      "features": 112,
+      "file": "UGA.geojson"
+    },
+    "UKR": {
+      "features": 25,
+      "file": "UKR.geojson"
+    },
+    "URY": {
+      "features": 19,
+      "file": "URY.geojson"
+    },
+    "USA": {
+      "features": 51,
+      "file": "USA.geojson"
+    },
+    "UZB": {
+      "features": 14,
+      "file": "UZB.geojson"
+    },
+    "VCT": {
+      "features": 6,
+      "file": "VCT.geojson"
+    },
+    "VEN": {
+      "features": 26,
+      "file": "VEN.geojson"
+    },
+    "VNM": {
+      "features": 63,
+      "file": "VNM.geojson"
+    },
+    "VUT": {
+      "features": 6,
+      "file": "VUT.geojson"
+    },
+    "WSM": {
+      "features": 11,
+      "file": "WSM.geojson"
+    },
+    "YEM": {
+      "features": 21,
+      "file": "YEM.geojson"
+    },
+    "ZAF": {
+      "features": 9,
+      "file": "ZAF.geojson"
+    },
+    "ZMB": {
+      "features": 10,
+      "file": "ZMB.geojson"
+    },
+    "ZWE": {
+      "features": 10,
+      "file": "ZWE.geojson"
+    },
+    "PSE": {
+      "features": 16,
+      "file": "PSE.geojson",
+      "source": "geoBoundaries gbOpen ADM2 (governorates)",
+      "license": "Creative Commons Attribution 4.0 (CC BY 4.0)",
+      "source_url": "https://www.geoboundaries.org/api/current/gbOpen/PSE/ADM2/"
+    },
+    "SSD": {
+      "features": 10,
+      "file": "SSD.geojson",
+      "source": "geoBoundaries gbOpen ADM1",
+      "license": "Creative Commons Attribution 3.0 IGO (CC BY 3.0 IGO)",
+      "source_url": "https://www.geoboundaries.org/api/current/gbOpen/SSD/ADM1/"
+    }
+  },
+  "dataset_country_count": 193,
+  "geometry_country_count": 193,
+  "missing_dataset_iso3": []
+}
