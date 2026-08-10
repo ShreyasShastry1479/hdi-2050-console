@@ -14,6 +14,11 @@
       "permanent": false
     },
     {
+      "source": "/demographic-context",
+      "destination": "/data/output/ethnic_demographics_2050.html",
+      "permanent": false
+    },
+    {
       "source": "/ethnic-mosaic",
       "destination": "/data/output/ethnic_demographics_2050.html",
       "permanent": false

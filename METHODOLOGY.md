@@ -103,7 +103,7 @@ The baseline CSV is immutable in the browser. Scenario controls apply transparen
 - **Aggressive AI adoption:** raises the return to future readiness, digital infrastructure, and human-capital absorption.
 - **Climate/resource mitigation:** reduces climate and resource drags.
 - **Stagnation stress test:** suppresses gains and increases exposure to structural drag.
-- **Brazilification:** explores stronger inclusion, intermarriage, assimilation, and pluralism assumptions in the demographic context layer.
+- **Inclusive mobility and cohesion:** explores stronger public-service access, language access, identity recognition, and intergenerational mobility. Identity composition itself has no direct HDI coefficient.
 - **Custom tuning:** applies user-selected AI, cloud, resource-relief, human-capital, and inclusion changes.
 
 Scenario outputs are comparative stress tests, not separately trained forecasts.
@@ -147,11 +147,19 @@ The included historical backtest contains 2,170 held-out country-year observatio
 
 This is a short-horizon panel backtest using lagged/current historical covariates. It demonstrates numerical fit for one-step historical prediction; it does **not** validate 25-year geopolitical, technological, demographic, or climate assumptions. Long-horizon credibility therefore depends on scenario sensitivity, transparent priors, and repeated model updates as new observations arrive.
 
-## 9. Ethnic and Religious Context
+## 9. Population, Identity, and Religious Context
 
-Ethnic and religious composition layers are used as contextual demographic research, not as direct deterministic penalties on HDI. Fractionalization alone is not treated as harmful. Any structural drag must be mediated through observable horizontal inequality, exclusion, conflict risk, service-delivery gaps, or weak inclusive governance.
+Population-identity and religious-composition layers are used as contextual demographic research, not as direct deterministic inputs to HDI. Composition diversity and concentration are descriptive statistics only. They are excluded from the HDI adjustment equation and from the service-delivery-gap calculation.
 
-This distinction is ethically and analytically necessary: group identity is not a causal deficit. The research question is whether institutions distribute health, education, infrastructure, and economic opportunity equitably across groups.
+This distinction is ethically and analytically necessary: identity is not a causal deficit or an inherent capability. The research question is whether institutions distribute health, education, infrastructure, and economic opportunity equitably. Effects may enter the scenario model only through measurable and policy-relevant conditions such as horizontal inequality, unequal service access, exclusion, institutional capacity, language access, or conflict exposure.
+
+The following responsible-use constraints apply:
+
+- Census and self-identification categories are socially defined, fluid, and not comparable without qualification across countries or years.
+- The model does not rank identity or religious groups, infer individual characteristics, or prescribe a preferred population composition.
+- Identity-category transition represents changes in reporting or classification, not a desired movement toward a majority group.
+- Outputs must not be used for profiling, exclusion, surveillance, immigration eligibility, or claims about group capability.
+- Group-level scenarios require local source review, affected-community input, and uncertainty disclosure before publication or policy use.
 
 ## 10. Policy Screening
 

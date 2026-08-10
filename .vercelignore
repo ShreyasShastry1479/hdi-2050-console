@@ -3,6 +3,9 @@
 __pycache__/
 catboost_info/
 data/raw/
+data/output/ethnic_composition_2050_ai.csv
+data/output/ethnic_composition_2050_ai_model.csv
+data/output/ethnic_composition_2050_ai_wide.csv
 *.log
 /*.py
 /requirements.txt

@@ -1753,7 +1753,7 @@
         <a href="#tuning" data-nav-link="tuning">Tuning & Charts</a>
         <a href="#research" data-nav-link="research">Research</a>
         <a href="#subdivisions" data-nav-link="subdivisions">Subdivisions</a>
-        <a href="#ethnic-mosaic" data-nav-link="ethnic-mosaic">Ethnic Mosaic</a>
+        <a href="#ethnic-mosaic" data-nav-link="ethnic-mosaic">Demographic Context</a>
         <a href="#hdi-gpt" data-nav-link="hdi-gpt">HDI-GPT</a>
         <a href="#validation" data-nav-link="validation">Validation</a>
         <a href="#explorer" data-nav-link="explorer">Explorer</a>
@@ -1768,7 +1768,7 @@
           <option value="baseline">Baseline scenario</option>
           <option value="ai">Aggressive AI adoption</option>
           <option value="climate">Climate/resource drag mitigation</option>
-          <option value="brazilification">Brazilification / plural mobility</option>
+          <option value="inclusive">Inclusive mobility &amp; cohesion</option>
           <option value="stagnation">Stagnation stress test</option>
         </select>
         <select id="tier-filter" aria-label="Momentum tier filter">
@@ -1988,12 +1988,12 @@
           <input id="tune-inclusion" type="range" min="-1" max="1" step="0.05" value="0">
         </div>
         <div class="slider-field">
-          <label for="tune-intermarriage">Intermarriage fluidity <span id="tune-intermarriage-value">0.00</span></label>
-          <input id="tune-intermarriage" type="range" min="-1" max="1" step="0.05" value="0">
+          <label for="tune-identityRecognition">Mixed-identity recognition <span id="tune-identityRecognition-value">0.00</span></label>
+          <input id="tune-identityRecognition" type="range" min="-1" max="1" step="0.05" value="0">
         </div>
         <div class="slider-field">
-          <label for="tune-assimilation">Assimilation / mixed identity <span id="tune-assimilation-value">0.00</span></label>
-          <input id="tune-assimilation" type="range" min="-1" max="1" step="0.05" value="0">
+          <label for="tune-identityTransition">Identity-category fluidity (context only) <span id="tune-identityTransition-value">0.00</span></label>
+          <input id="tune-identityTransition" type="range" min="-1" max="1" step="0.05" value="0">
         </div>
         <div class="slider-field">
           <label for="tune-climateMigration">Climate displacement stress <span id="tune-climateMigration-value">0.00</span></label>
@@ -2220,18 +2220,18 @@
     </section>
     </section>
 
-    <section class="page-view" id="ethnic-mosaic" data-page-title="Ethnic Mosaic">
-    <section class="mosaic-shell" aria-label="Ethnic mosaic 2050 dashboard integration">
+    <section class="page-view" id="ethnic-mosaic" data-page-title="Demographic Context">
+    <section class="mosaic-shell" aria-label="Population and identity context for 2050">
       <div class="panel mosaic-brief">
         <div class="mosaic-copy">
           <div class="section-kicker">Demographic composition model</div>
-          <h2>The World's Ethnic Mosaic in 2050</h2>
-          <p>This page integrates the ethnicity and demographic-composition projection into the HDI research console. The mosaic uses the project's country-level population assumptions, group shares, fertility convergence, migration intensity, and policy openness fields to explore how national populations may be composed by 2050.</p>
+          <h2>Population &amp; Identity Context in 2050</h2>
+          <p>This page adds demographic-composition scenarios to the HDI research console. It uses country-level population assumptions, self-reported or census-defined group shares, fertility convergence, migration intensity, and policy-access fields to explore how recorded population categories may change by 2050.</p>
           <p>Use it as qualitative demographic context beside the HDI model: HDI growth depends not only on income, health, and schooling, but also on age structure, migration, labor-force depth, urbanization pressure, and human-capital absorption. The embedded visualization is scenario-style analysis, not an official demographic forecast.</p>
           <p>The HDI projection table and the mosaic table are intentionally cross-readable: the HDI table gives the development outcome, while the mosaic table explains demographic pressure, migration capacity, fertility convergence, and composition shifts that can support or stress those outcomes.</p>
           <div class="mosaic-actions">
-            <a href="/ethnic-mosaic" target="_blank" rel="noopener">Open Full Mosaic</a>
-            <a href="../data/output/ethnic_composition_2050_ai_model.csv" target="_blank" rel="noopener">Open Source CSV</a>
+            <a href="/demographic-context" target="_blank" rel="noopener">Open Full Demographic Context</a>
+            <a href="../data/output/demographic_context_2050.csv" target="_blank" rel="noopener">Open Public Research CSV</a>
           </div>
         </div>
         <div class="mosaic-insight-grid" aria-label="Ethnic mosaic summary metrics">
@@ -2257,17 +2257,21 @@
           </div>
           <div class="mosaic-stat">
             <div class="value" id="mosaic-ef-avg">--</div>
-            <div class="label">Avg ethnic fractionalization</div>
+            <div class="label">Avg composition diversity</div>
           </div>
           <div class="mosaic-stat">
             <div class="value" id="mosaic-rq-avg">--</div>
-            <div class="label">Avg polarization RQ</div>
+            <div class="label">Avg composition concentration</div>
           </div>
           <div class="mosaic-stat">
             <div class="value" id="mosaic-religion-fractionalization">--</div>
             <div class="label">Avg religious pluralism</div>
           </div>
         </div>
+      </div>
+
+      <div class="panel note-box" role="note" aria-label="Responsible interpretation">
+        <strong>Responsible interpretation:</strong> identity categories are socially defined, fluid, and inconsistent across censuses. These estimates describe possible changes in recorded composition; they do not rank groups, measure inherent traits, or imply that diversity itself improves or reduces HDI. In the scenario engine, identity shares have no direct HDI coefficient. Development effects operate only through observable and policy-relevant conditions such as education, health access, labor-market mobility, public-service delivery, institutional inclusion, and language access. Results should not be used for profiling, exclusion, or claims about any group's capabilities.
       </div>
 
       <div class="panel">
@@ -2290,13 +2294,13 @@
           </div>
           <div class="mosaic-driver-card">
             <span class="metric" id="mosaic-selected-ef">--</span>
-            <h3>Ethnic fractionalization</h3>
-            <p>EF is the probability that two randomly selected people belong to different groups. High EF can support plural dynamism or raise governance-delivery complexity depending on institutions.</p>
+            <h3>Composition diversity index</h3>
+            <p>A descriptive measure of how varied the recorded group categories are. It is not a quality, risk, or development score and has no direct effect on projected HDI.</p>
           </div>
           <div class="mosaic-driver-card">
             <span class="metric" id="mosaic-selected-rq">--</span>
-            <h3>Polarization RQ</h3>
-            <p>RQ highlights large competing blocs more than broad small-group diversity. It is useful as a shock-risk and policy-consensus screening variable.</p>
+            <h3>Composition concentration index</h3>
+            <p>A descriptive measure of whether recorded shares are concentrated in a few large categories. It is shown for context and is not treated as a causal risk factor.</p>
           </div>
           <div class="mosaic-driver-card">
             <span class="metric" id="mosaic-selected-skilled-source">--</span>
@@ -2320,18 +2324,18 @@
           </div>
           <div class="mosaic-driver-card">
             <span class="metric" id="mosaic-selected-language">--</span>
-            <h3>Language integration</h3>
-            <p>Combines assimilation, intermarriage, education, digital infrastructure, and policy openness against linguistic-cultural friction.</p>
+            <h3>Language access</h3>
+            <p>Combines education, digital access, public-service availability, and policy openness. It measures institutional access, not the desirability of any language or identity.</p>
           </div>
           <div class="mosaic-driver-card">
-            <span class="metric" id="mosaic-selected-brazilification">--</span>
-            <h3>Brazilification shift</h3>
-            <p>Shows the scenario's average group-share change versus baseline after stronger mixed-identity formation and fluidity assumptions.</p>
+            <span class="metric" id="mosaic-selected-inclusive-mobility">--</span>
+            <h3>Inclusive-mobility shift</h3>
+            <p>Shows the average group-share change under a scenario with broader identity recognition, equitable service access, and stronger intergenerational mobility.</p>
           </div>
           <div class="mosaic-driver-card">
-            <span class="metric" id="mosaic-selected-drag">--</span>
-            <h3>Structural inequality drag</h3>
-            <p id="mosaic-selected-drag-note">Estimated horizontal-inequality penalty from diversity, polarization, policy openness, urban absorption pressure, and human-capital absorption.</p>
+            <span class="metric" id="mosaic-selected-service-gap">--</span>
+            <h3>Inclusive service-delivery gap</h3>
+            <p id="mosaic-selected-service-gap-note">Estimated access gap from policy openness, urban-service pressure, dependency needs, climate exposure, and human-capital absorption. Identity composition is not an input.</p>
           </div>
         </div>
       </div>
@@ -2403,8 +2407,8 @@
           </div>
           <div class="mosaic-driver-card">
             <span class="metric" id="mosaic-language-friction-avg">--</span>
-            <h3>Language-cultural friction</h3>
-            <p>Higher values indicate communication or integration barriers that can slow workforce productivity, digital literacy, and AI diffusion.</p>
+            <h3>Language access gap</h3>
+            <p>Higher values indicate gaps in multilingual public services, education access, or digital availability that can slow workforce and technology participation.</p>
           </div>
           <div class="mosaic-driver-card">
             <span class="metric" id="mosaic-fertility-shift">--</span>
@@ -2422,14 +2426,14 @@
             <p>High demographic pressure is useful context for stress-test scenarios. Countries with rapid population growth need stronger education, health, urban infrastructure, and labor-market absorption to convert population momentum into HDI gains.</p>
           </div>
           <div class="mosaic-driver-card">
-            <span class="metric" id="mosaic-intermarriage-avg">--</span>
-            <h3>Intermarriage and ethnic blurring</h3>
-            <p>The model now exposes an intermarriage coefficient that captures mixed-identity formation in multicultural societies, especially North America, Oceania, and parts of Europe.</p>
+            <span class="metric" id="mosaic-identity-recognition-avg">--</span>
+            <h3>Mixed-identity recognition</h3>
+            <p>Models how census and self-identification systems may increasingly recognize people with multiple backgrounds. This is descriptive and not a development target.</p>
           </div>
           <div class="mosaic-driver-card">
-            <span class="metric" id="mosaic-assimilation-avg">--</span>
-            <h3>Assimilation coefficient</h3>
-            <p>Assimilation is an annual identity-shift rate toward anchor groups. It acts as a stabilizer where minority identities are more likely to blend into national or majority categories over decades.</p>
+            <span class="metric" id="mosaic-identity-transition-avg">--</span>
+            <h3>Identity-category transition</h3>
+            <p>Represents possible changes in self-identification or statistical classification over time. It does not assume that convergence toward a majority identity is desirable.</p>
           </div>
           <div class="mosaic-driver-card">
             <span class="metric" id="mosaic-urban-layer">--</span>
@@ -2439,7 +2443,7 @@
           <div class="mosaic-driver-card">
             <span class="metric" id="mosaic-diversity-change">--</span>
             <h3>Diversity index movement</h3>
-            <p>Country-level diversity is measured with a Simpson-style index. Rising diversity can signal migration, intermarriage, or minority growth; its HDI effect depends on institutions and integration capacity.</p>
+            <p>Country-level composition variety is measured with a Simpson-style index. Changes may reflect migration, mixed identities, classification changes, or group-share shifts; the index does not affect HDI directly.</p>
           </div>
         </div>
       </div>
@@ -2482,7 +2486,7 @@
             <div class="panel-note">Bivariate bridge between Mosaic structure and projected HDI gain</div>
           </div>
         </div>
-        <svg id="mosaic-hdi-overlay-chart" class="chart-svg" viewBox="0 0 680 300" aria-label="Scatter chart of ethnic fractionalization against projected HDI growth"></svg>
+        <svg id="mosaic-hdi-overlay-chart" class="chart-svg" viewBox="0 0 680 300" aria-label="Scatter chart of composition diversity against projected HDI growth"></svg>
         <div class="chart-caption">Blue points are countries. The selected country is highlighted in gold. Outliers in the upper-right are diverse countries still achieving strong projected HDI growth.</div>
       </div>
 
@@ -2552,7 +2556,7 @@
           <div class="mosaic-data-link">
             <strong>Ethnic composition table</strong><br>
             <code>data/output/ethnic_composition_2050_ai_model.csv</code><br>
-            Contains group shares, population counts, fertility convergence, migration intensity, policy openness, policy feedback, intermarriage, assimilation, diversity indices, urbanization layer, and HDI cross-links.
+            Contains group shares, population counts, fertility convergence, migration intensity, policy access, mixed-identity recognition, identity-category transitions, composition indices, urbanization, and HDI cross-links.
           </div>
           <div class="mosaic-data-link">
             <strong>Religious composition table</strong><br>
@@ -2623,7 +2627,7 @@
             </div>
           </div>
           <div class="assistant-action-list">
-            <div class="assistant-action"><strong>set_scenario</strong>Try: switch to aggressive AI, climate mitigation, Brazilification, stagnation, or baseline.</div>
+            <div class="assistant-action"><strong>set_scenario</strong>Try: switch to aggressive AI, climate mitigation, inclusive mobility, stagnation, or baseline.</div>
             <div class="assistant-action"><strong>filter_country</strong>Try: show India, summarize Brazil, select Nigeria, audit China.</div>
             <div class="assistant-action"><strong>open_comparison_lab</strong>Try: compare South Korea, Japan, and United Kingdom.</div>
             <div class="assistant-action"><strong>highlight_variable_explorer</strong>Try: plot digital infrastructure vs HDI gain.</div>
@@ -2696,7 +2700,7 @@
         <button type="button" class="active" data-scenario-map="baseline">Baseline</button>
         <button type="button" class="secondary" data-scenario-map="ai">Aggressive AI</button>
         <button type="button" class="secondary" data-scenario-map="climate">Climate/resource mitigation</button>
-        <button type="button" class="secondary" data-scenario-map="brazilification">Brazilification</button>
+        <button type="button" class="secondary" data-scenario-map="inclusive">Inclusive mobility</button>
         <button type="button" class="secondary" data-scenario-map="stagnation">Stagnation stress test</button>
       </div>
       <div class="maps" id="maps-grid">
@@ -3009,7 +3013,7 @@
     const tooltip = document.getElementById("tooltip");
     const csvPath = "../data/output/hdi_2050_rankings.csv";
     const subdivisionCsvPath = "../data/output/subdivision_hdi_2025_2050.csv?v=20260809-hdi-gpt";
-    const ethnicCsvPath = "../data/output/ethnic_composition_2050_ai_model.csv?v=20260809-hindu-2025-baseline";
+    const ethnicCsvPath = "../data/output/demographic_context_2050.csv?v=20260810-ethics-review";
     const religionCsvPath = "../data/output/religious_composition_2050_model.csv?v=20260809-hindu-2025-baseline";
     const officialWorldHdi2025 = 0.756;
     const officialWorldHdi2050 = 0.794;
@@ -3035,14 +3039,14 @@
       baseline: {label: "Baseline scenario", note: "Core scenario values from the generated CSV."},
       ai: {label: "Aggressive AI adoption", note: "Illustrative upside branch that rewards digital infrastructure, AI adoption, cloud adoption, and future readiness."},
       climate: {label: "Climate/resource drag mitigation", note: "Illustrative branch that reduces resource and climate drag while rewarding renewable and green-transition strength."},
-      brazilification: {label: "Brazilification / plural mobility", note: "Illustrative branch linking intermarriage, mixed identity, mobility convergence, and integration capacity to HDI outcomes."},
+      inclusive: {label: "Inclusive mobility & cohesion", note: "Illustrative branch testing stronger service access, language access, identity recognition, and intergenerational mobility. Identity composition has no direct HDI effect."},
       stagnation: {label: "Stagnation stress test", note: "Illustrative downside branch that compresses gains where governance, volatility, ageing, or resource drag create risk."}
     };
     const scenarioNarratives = {
       baseline: "<strong>Baseline scenario:</strong> Uses the core 2050 projection table and keeps scenario adjustments neutral. This is the best starting point for interpreting the model before testing alternative assumptions.",
       ai: "<strong>Aggressive AI adoption:</strong> Raises projected outcomes where countries already show digital infrastructure, cloud capacity, AI readiness, and future-readiness strength. The gains are strongest where technology can be absorbed by education, industry, and institutions.",
       climate: "<strong>Climate/resource mitigation:</strong> Tests a world where climate and resource drags are reduced. Countries with renewable investment, green-transition capacity, or commodity-risk relief see comparatively stronger human-development translation.",
-      brazilification: "<strong>Brazilification / plural mobility:</strong> Tests a high-fluidity demographic future where intermarriage, mixed identity, language integration, and intergenerational mobility make diversity more economically absorptive. Gains are dampened where structural inequality or language-cultural friction remains high.",
+      inclusive: "<strong>Inclusive mobility & cohesion:</strong> Tests stronger access to education, public services, language support, and intergenerational mobility. Identity composition is descriptive only; projected gains come from improved institutional inclusion and measurable access conditions.",
       stagnation: "<strong>Stagnation stress test:</strong> Compresses gains where volatility, weak governance, ageing pressure, dependency burdens, or resource exposure make development less likely to translate into broad HDI improvement."
     };
     const driverColumns = [
@@ -3173,7 +3177,7 @@
     let thresholdCustomValue = null;
     let thresholdIndicator = "all";
     let thresholdYearMode = "both";
-    const tuning = {ai: 0, cloud: 0, resource: 0, human: 0, inclusion: 0, intermarriage: 0, assimilation: 0, climateMigration: 0};
+    const tuning = {ai: 0, cloud: 0, resource: 0, human: 0, inclusion: 0, identityRecognition: 0, identityTransition: 0, climateMigration: 0};
     let mosaicCountryFeatures = new Map();
     let religionCountryFeatures = new Map();
     const comparedIso = new Set();
@@ -3196,18 +3200,18 @@
       ["Education 2050", "EducationIndex_2050"],
       ["Income 2050", "IncomeIndex_2050"],
       ["Health 2050", "HealthIndex_2050"],
-      ["Ethnic fractionalization", "Mosaic_EF"],
-      ["Polarization RQ", "Mosaic_RQ"],
-      ["Structural inequality drag", "Mosaic_StructuralDrag"],
+      ["Composition diversity", "Mosaic_EF"],
+      ["Composition concentration", "Mosaic_RQ"],
+      ["Inclusive service-delivery gap", "Mosaic_StructuralDrag"],
       ["Skilled source pressure", "Mosaic_SkilledSource"],
       ["Skilled program intensity", "Mosaic_SkilledProgram"],
       ["Mobility convergence", "Mosaic_Mobility"],
       ["Regional concentration", "Mosaic_RegionalConcentration"],
       ["Climate migration stress", "Mosaic_ClimateStress"],
-      ["Language integration", "Mosaic_LanguageIntegration"],
-      ["Language friction", "Mosaic_LanguageFriction"],
-      ["Brazilification diversity", "Mosaic_BrazilificationDiversity"],
-      ["Brazilification shift", "Mosaic_BrazilificationShift"]
+      ["Language access capacity", "Mosaic_LanguageIntegration"],
+      ["Language access gap", "Mosaic_LanguageFriction"],
+      ["Inclusive-mobility composition", "Mosaic_InclusiveDiversity"],
+      ["Inclusive-mobility shift", "Mosaic_InclusiveShift"]
     ];
 
     function fmt(value, digits = 4) {
@@ -3244,19 +3248,19 @@
         const green = (Number(row.green_energy_investment) || 0) * 0.006;
         return applyTuning(row, Math.min(0.98, base + Math.min(headroom, resourceRelief + climateRelief + green)));
       }
-      if (activeScenario === "brazilification") {
+      if (activeScenario === "inclusive") {
         const mosaic = mosaicCountryFeatures.get(row.ISO3);
         const mobility = mosaic?.Intergenerational_Mobility_Convergence_2050 || 0;
-        const languageIntegration = mosaic?.Language_Cultural_Integration_2050 || 0;
-        const languageFriction = mosaic?.Language_Cultural_Friction_2050 || 0;
-        const inequalityDrag = mosaic?.StructuralInequalityDrag || 0;
-        const diversityDelta = Math.max(0, (mosaic?.Brazilification_Diversity_Index_2050 || 0) - (mosaic?.Diversity_Index_2050 || 0));
+        const languageAccess = mosaic?.Language_Access_Capacity_2050 || 0;
+        const languageAccessGap = mosaic?.Language_Access_Gap_2050 || 0;
+        const serviceGap = mosaic?.InclusiveServiceDeliveryGap || 0;
+        const policyAccess = mosaic?.Policy_Openness || 0;
         const lift = Math.max(0,
           0.010 * mobility +
-          0.006 * languageIntegration +
-          0.006 * diversityDelta -
-          0.006 * languageFriction -
-          0.010 * inequalityDrag
+          0.006 * languageAccess +
+          0.005 * policyAccess -
+          0.006 * languageAccessGap -
+          0.010 * serviceGap
         );
         return applyTuning(row, Math.min(0.98, base + Math.min(headroom, lift)));
       }
@@ -3273,40 +3277,37 @@
 
     function applyTuning(row, value) {
       const mosaic = mosaicCountryFeatures.get(row.ISO3);
-      const diversity = mosaic?.EthnicFractionalization || 0;
-      const polarization = mosaic?.EthnolinguisticPolarizationRQ || 0;
       const skilledSource = mosaic?.Skilled_Migration_SourcePressure_2050 || 0;
       const skilledProgram = mosaic?.Skilled_Migration_ProgramIntensity_2050 || 0;
       const climateStress = mosaic?.Climate_Migration_Stress_2050 || 0;
       const regionalPressure = mosaic?.Subnational_Regional_Concentration_2050 || 0;
       const mobility = mosaic?.Intergenerational_Mobility_Convergence_2050 || 0;
-      const languageIntegration = mosaic?.Language_Cultural_Integration_2050 || 0;
-      const languageFriction = mosaic?.Language_Cultural_Friction_2050 || 0;
-      const brazilIntermarriage = Math.max(0, (mosaic?.Brazilification_IntermarriageMultiplier || 1) - 1);
-      const brazilMixed = Math.max(0, (mosaic?.Brazilification_MixedIdentityMultiplier || 1) - 1);
+      const languageAccess = mosaic?.Language_Access_Capacity_2050 || 0;
+      const languageAccessGap = mosaic?.Language_Access_Gap_2050 || 0;
+      const serviceGap = mosaic?.InclusiveServiceDeliveryGap || 0;
+      const policyAccess = mosaic?.Policy_Openness || 0;
       const humanAbsorption = Number(row.HumanCapitalAbsorption) || 0.5;
       const agingPressure = Math.max(0, Number(row.AgingPressure) || 0);
       const skilledMigrationLift =
         skilledSource * (0.002 + 0.004 * humanAbsorption) +
         skilledProgram * (0.002 + 0.004 * agingPressure);
       const inclusionLift = Math.max(0, tuning.inclusion) *
-        (0.007 * diversity + 0.006 * polarization) *
+        (0.008 * mobility + 0.006 * policyAccess + 0.004 * languageAccess) *
         humanAbsorption;
       const exclusionDrag = Math.max(0, -tuning.inclusion) *
-        (0.009 * diversity + 0.008 * polarization) *
+        (0.009 * serviceGap + 0.007 * languageAccessGap + 0.004 * (1 - policyAccess)) *
         (1 + Math.max(0, Number(row.DependencyPressure) || 0));
       const climateMigrationDrag = tuning.climateMigration *
         climateStress * (0.010 + 0.006 * regionalPressure);
-      const fluidityLift =
-        tuning.intermarriage * brazilIntermarriage * (0.003 + 0.004 * mobility) +
-        tuning.assimilation * brazilMixed * (0.002 + 0.004 * languageIntegration - 0.003 * languageFriction);
+      const identityAccessLift =
+        tuning.identityRecognition * (0.003 * policyAccess + 0.002 * languageAccess - 0.002 * serviceGap);
       const tuningLift =
         tuning.ai * (0.012 * (Number(row.ai_adoption_index) || 0) + 0.006 * (Number(row.DigitalInfraDevelopment) || 0)) +
         tuning.cloud * (0.01 * (Number(row.cloud_adoption) || 0)) +
         tuning.resource * (Math.max(0, -(Number(row.ResourceDrag) || 0)) * 0.7 + Math.max(0, -(Number(row.Contrib_Climate) || 0)) * 0.35) +
         tuning.human * (0.012 * (Number(row.HumanCapitalAbsorption) || 0) + 0.006 * Math.max(0, (Number(row.WorkingAgePct_2050) || 0) - 58) / 20) +
         skilledMigrationLift +
-        fluidityLift +
+        identityAccessLift +
         inclusionLift;
       return Math.max(0.35, Math.min(0.98, value + tuningLift - exclusionDrag - climateMigrationDrag));
     }
@@ -3455,18 +3456,20 @@
       for (const key of [
         "TFR_2024", "TFR_2050", "Nat_TFR_2024", "Nat_TFR_2050",
         "Share_2024_pct", "Share_2050_pct", "Change_pp",
-        "Brazilification_Share_2050_pct", "Brazilification_Change_pp",
-        "Brazilification_Delta_vs_Baseline_pp", "Brazilification_IntermarriageMultiplier",
-        "Brazilification_MixedIdentityMultiplier", "Brazilification_AssimilationRate",
-        "Brazilification_Diversity_Index_2050",
+        "Inclusive_Mobility_Share_2050_pct", "Inclusive_Mobility_Change_pp",
+        "Inclusive_Mobility_Delta_vs_Baseline_pp", "Inclusive_Mobility_IdentityFormationMultiplier",
+        "Inclusive_Mobility_MixedIdentityMultiplier", "Inclusive_Mobility_IdentityTransitionRate",
+        "Inclusive_Mobility_CompositionDiversity_2050",
         "Pop_2024", "Pop_2050", "Demographic_Pressure",
         "Migration_Intensity_2050", "Policy_Openness", "Policy_Feedback_2050",
         "Skilled_Migration_SourcePressure_2050", "Skilled_Migration_ProgramIntensity_2050",
-        "Intermarriage_Coefficient", "Assimilation_Coefficient",
+        "Mixed_Identity_Recognition_Rate", "Identity_Category_Transition_Rate",
+        "Composition_Diversity_Index_2050", "Composition_Concentration_Index_2050",
+        "Inclusive_Service_Delivery_Gap_2050",
         "Diversity_Index_2024", "Diversity_Index_2050", "Diversity_Index_Change",
         "Intergenerational_Mobility_Convergence_2050", "Subnational_Regional_Concentration_2050",
-        "Climate_Migration_Stress_2050", "Language_Cultural_Integration_2050",
-        "Language_Cultural_Friction_2050",
+        "Climate_Migration_Stress_2050", "Language_Access_Capacity_2050",
+        "Language_Access_Gap_2050",
         "Effective_Groups_2050", "Urbanization_2024", "Urban_Absorption_Pressure",
         "HDI_2050_Gain_Link", "HDI_HumanCapitalAbsorption_Link",
         "HDI_DependencyPressure_Link", "HDI_AgingPressure_Link",
@@ -3521,38 +3524,32 @@
           .sort((a, b) => (Number(b.Share_2050_pct) || 0) - (Number(a.Share_2050_pct) || 0))
           .slice(0, 3)
           .map(d => ({group: d.Group, share: Number(d.Share_2050_pct) || 0}));
-        const structuralInequalityDrag = Math.max(0,
-          0.018 * ef +
-          0.014 * rq +
-          0.010 * weighted("Urban_Absorption_Pressure") +
-          0.008 * Math.max(0, 1 - weighted("Policy_Openness")) -
-          0.012 * (Number(hdi.HumanCapitalAbsorption) || weighted("HDI_HumanCapitalAbsorption_Link") || 0)
-        );
+        const inclusiveServiceDeliveryGap = weighted("Inclusive_Service_Delivery_Gap_2050");
         return {
           ISO3: iso,
           Country: first.Country,
-          EthnicFractionalization: ef,
-          EthnolinguisticPolarizationRQ: rq,
-          StructuralInequalityDrag: structuralInequalityDrag,
+          CompositionDiversityIndex: ef,
+          CompositionConcentrationIndex: rq,
+          InclusiveServiceDeliveryGap: inclusiveServiceDeliveryGap,
           TopGroups: topGroups,
           Migration_Intensity_2050: weighted("Migration_Intensity_2050"),
           Skilled_Migration_SourcePressure_2050: weighted("Skilled_Migration_SourcePressure_2050"),
           Skilled_Migration_ProgramIntensity_2050: weighted("Skilled_Migration_ProgramIntensity_2050"),
-          Brazilification_Delta_vs_Baseline_pp: weighted("Brazilification_Delta_vs_Baseline_pp"),
-          Brazilification_MeanAbsDelta_pp: weightedAbs("Brazilification_Delta_vs_Baseline_pp"),
-          Brazilification_IntermarriageMultiplier: weighted("Brazilification_IntermarriageMultiplier"),
-          Brazilification_MixedIdentityMultiplier: weighted("Brazilification_MixedIdentityMultiplier"),
-          Brazilification_AssimilationRate: weighted("Brazilification_AssimilationRate"),
-          Brazilification_Diversity_Index_2050: weighted("Brazilification_Diversity_Index_2050"),
+          Inclusive_Mobility_Delta_vs_Baseline_pp: weighted("Inclusive_Mobility_Delta_vs_Baseline_pp"),
+          Inclusive_Mobility_MeanAbsDelta_pp: weightedAbs("Inclusive_Mobility_Delta_vs_Baseline_pp"),
+          Inclusive_Mobility_IdentityFormationMultiplier: weighted("Inclusive_Mobility_IdentityFormationMultiplier"),
+          Inclusive_Mobility_MixedIdentityMultiplier: weighted("Inclusive_Mobility_MixedIdentityMultiplier"),
+          Inclusive_Mobility_IdentityTransitionRate: weighted("Inclusive_Mobility_IdentityTransitionRate"),
+          Inclusive_Mobility_CompositionDiversity_2050: weighted("Inclusive_Mobility_CompositionDiversity_2050"),
           Intergenerational_Mobility_Convergence_2050: weighted("Intergenerational_Mobility_Convergence_2050"),
           Subnational_Regional_Concentration_2050: weighted("Subnational_Regional_Concentration_2050"),
           Climate_Migration_Stress_2050: weighted("Climate_Migration_Stress_2050"),
-          Language_Cultural_Integration_2050: weighted("Language_Cultural_Integration_2050"),
-          Language_Cultural_Friction_2050: weighted("Language_Cultural_Friction_2050"),
+          Language_Access_Capacity_2050: weighted("Language_Access_Capacity_2050"),
+          Language_Access_Gap_2050: weighted("Language_Access_Gap_2050"),
           Policy_Feedback_2050: weighted("Policy_Feedback_2050"),
           Policy_Openness: weighted("Policy_Openness"),
-          Intermarriage_Coefficient: weighted("Intermarriage_Coefficient"),
-          Assimilation_Coefficient: weighted("Assimilation_Coefficient"),
+          Mixed_Identity_Recognition_Rate: weighted("Mixed_Identity_Recognition_Rate"),
+          Identity_Category_Transition_Rate: weighted("Identity_Category_Transition_Rate"),
           Diversity_Index_2050: weighted("Diversity_Index_2050"),
           Diversity_Index_Change: weighted("Diversity_Index_Change"),
           Effective_Groups_2050: weighted("Effective_Groups_2050"),
@@ -3602,23 +3599,14 @@
         ["Mobility convergence", "Intergenerational_Mobility_Convergence_2050"],
         ["Regional concentration", "Subnational_Regional_Concentration_2050"],
         ["Climate migration stress", "Climate_Migration_Stress_2050"],
-        ["Language integration", "Language_Cultural_Integration_2050"],
-        ["Language friction", "Language_Cultural_Friction_2050"],
-        ["Brazilification diversity", "Brazilification_Diversity_Index_2050"],
-        ["Brazilification shift", "Brazilification_MeanAbsDelta_pp"],
+        ["Language access capacity", "Language_Access_Capacity_2050"],
+        ["Language access gap", "Language_Access_Gap_2050"],
+        ["Inclusive service-delivery gap", "InclusiveServiceDeliveryGap"],
         ["Policy feedback", "Policy_Feedback_2050"],
         ["Policy openness", "Policy_Openness"],
-        ["Intermarriage", "Intermarriage_Coefficient"],
-        ["Assimilation", "Assimilation_Coefficient"],
-        ["Diversity 2050", "Diversity_Index_2050"],
-        ["Diversity change", "Diversity_Index_Change"],
-        ["Effective groups", "Effective_Groups_2050"],
         ["Urbanization", "Urbanization_2024"],
         ["Urban absorption pressure", "Urban_Absorption_Pressure"],
         ["Demographic pressure", "Demographic_Pressure"],
-        ["Ethnic fractionalization", "EthnicFractionalization"],
-        ["Polarization RQ", "EthnolinguisticPolarizationRQ"],
-        ["Structural inequality drag", "StructuralInequalityDrag"],
       ];
       return features.map(([label, key]) => {
         const r = pearsonR(rows, key, yKey);
@@ -3647,12 +3635,12 @@
       const weightedMobility = d3.sum(ethnicRows, d => (Number.isFinite(d.Intergenerational_Mobility_Convergence_2050) && Number.isFinite(d.Pop_2050)) ? d.Intergenerational_Mobility_Convergence_2050 * d.Pop_2050 : 0) / Math.max(1, listedPopulation);
       const weightedRegionalConcentration = d3.sum(ethnicRows, d => (Number.isFinite(d.Subnational_Regional_Concentration_2050) && Number.isFinite(d.Pop_2050)) ? d.Subnational_Regional_Concentration_2050 * d.Pop_2050 : 0) / Math.max(1, listedPopulation);
       const weightedClimateMigrationStress = d3.sum(ethnicRows, d => (Number.isFinite(d.Climate_Migration_Stress_2050) && Number.isFinite(d.Pop_2050)) ? d.Climate_Migration_Stress_2050 * d.Pop_2050 : 0) / Math.max(1, listedPopulation);
-      const weightedLanguageFriction = d3.sum(ethnicRows, d => (Number.isFinite(d.Language_Cultural_Friction_2050) && Number.isFinite(d.Pop_2050)) ? d.Language_Cultural_Friction_2050 * d.Pop_2050 : 0) / Math.max(1, listedPopulation);
+      const weightedLanguageFriction = d3.sum(ethnicRows, d => (Number.isFinite(d.Language_Access_Gap_2050) && Number.isFinite(d.Pop_2050)) ? d.Language_Access_Gap_2050 * d.Pop_2050 : 0) / Math.max(1, listedPopulation);
       const weightedPolicy = d3.sum(ethnicRows, d => (Number.isFinite(d.Policy_Openness) && Number.isFinite(d.Pop_2050)) ? d.Policy_Openness * d.Pop_2050 : 0) / Math.max(1, listedPopulation);
       const weightedPolicyFeedback = d3.sum(ethnicRows, d => (Number.isFinite(d.Policy_Feedback_2050) && Number.isFinite(d.Pop_2050)) ? d.Policy_Feedback_2050 * d.Pop_2050 : 0) / Math.max(1, listedPopulation);
       const weightedLaborShortage = d3.sum(ethnicRows, d => (Number.isFinite(d.Demographic_Pressure) && Number.isFinite(d.Migration_Intensity_2050) && Number.isFinite(d.Pop_2050)) ? d.Demographic_Pressure * d.Migration_Intensity_2050 * d.Pop_2050 : 0) / Math.max(1, listedPopulation);
-      const weightedIntermarriage = d3.sum(ethnicRows, d => (Number.isFinite(d.Intermarriage_Coefficient) && Number.isFinite(d.Pop_2050)) ? d.Intermarriage_Coefficient * d.Pop_2050 : 0) / Math.max(1, listedPopulation);
-      const weightedAssimilation = d3.sum(ethnicRows, d => (Number.isFinite(d.Assimilation_Coefficient) && Number.isFinite(d.Pop_2050)) ? d.Assimilation_Coefficient * d.Pop_2050 : 0) / Math.max(1, listedPopulation);
+      const weightedIdentityRecognition = d3.sum(ethnicRows, d => (Number.isFinite(d.Mixed_Identity_Recognition_Rate) && Number.isFinite(d.Pop_2050)) ? d.Mixed_Identity_Recognition_Rate * d.Pop_2050 : 0) / Math.max(1, listedPopulation);
+      const weightedIdentityTransition = d3.sum(ethnicRows, d => (Number.isFinite(d.Identity_Category_Transition_Rate) && Number.isFinite(d.Pop_2050)) ? d.Identity_Category_Transition_Rate * d.Pop_2050 : 0) / Math.max(1, listedPopulation);
       const weightedDiversityChange = d3.sum(ethnicRows, d => (Number.isFinite(d.Diversity_Index_Change) && Number.isFinite(d.Pop_2050)) ? d.Diversity_Index_Change * d.Pop_2050 : 0) / Math.max(1, listedPopulation);
       const weightedUrbanAbsorption = d3.sum(ethnicRows, d => (Number.isFinite(d.Urban_Absorption_Pressure) && Number.isFinite(d.Pop_2050)) ? d.Urban_Absorption_Pressure * d.Pop_2050 : 0) / Math.max(1, listedPopulation);
       const fertilityNumerator = d3.sum(ethnicRows, d => (Number.isFinite(d.Nat_TFR_2050) && Number.isFinite(d.Nat_TFR_2024) && Number.isFinite(d.Pop_2050)) ? (d.Nat_TFR_2050 - d.Nat_TFR_2024) * d.Pop_2050 : 0);
@@ -3696,8 +3684,8 @@
       if (religionRowCountEl) religionRowCountEl.textContent = religionRows.length.toLocaleString();
       document.getElementById("mosaic-population-2050").textContent = `${fmt(listedPopulation / 1e9, 1)} bn`;
       document.getElementById("mosaic-median-change").textContent = `${fmt(medianChange, 2)} pp`;
-      document.getElementById("mosaic-ef-avg").textContent = fmt(meanFeature("EthnicFractionalization"), 3);
-      document.getElementById("mosaic-rq-avg").textContent = fmt(meanFeature("EthnolinguisticPolarizationRQ"), 3);
+      document.getElementById("mosaic-ef-avg").textContent = fmt(meanFeature("CompositionDiversityIndex"), 3);
+      document.getElementById("mosaic-rq-avg").textContent = fmt(meanFeature("CompositionConcentrationIndex"), 3);
       const religiousPluralismEl = document.getElementById("mosaic-religion-fractionalization");
       if (religiousPluralismEl) religiousPluralismEl.textContent = fmt(meanReligionFeature("ReligiousFractionalization"), 3);
       document.getElementById("mosaic-migration-avg").textContent = fmt(weightedMigration, 2);
@@ -3710,8 +3698,8 @@
       document.getElementById("mosaic-policy-avg").textContent = fmt(weightedPolicy, 2);
       document.getElementById("mosaic-fertility-shift").textContent = `${weightedFertilityShift >= 0 ? "+" : ""}${fmt(weightedFertilityShift, 2)} TFR`;
       document.getElementById("mosaic-top-pressure").textContent = topPressure ? `${topPressure.country}` : "--";
-      document.getElementById("mosaic-intermarriage-avg").textContent = fmt(weightedIntermarriage, 3);
-      document.getElementById("mosaic-assimilation-avg").textContent = fmt(weightedAssimilation, 4);
+      document.getElementById("mosaic-identity-recognition-avg").textContent = fmt(weightedIdentityRecognition, 3);
+      document.getElementById("mosaic-identity-transition-avg").textContent = fmt(weightedIdentityTransition, 4);
       document.getElementById("mosaic-urban-layer").textContent = dominantUrbanLayer.replaceAll("-", " ");
       document.getElementById("mosaic-diversity-change").textContent = `${weightedDiversityChange >= 0 ? "+" : ""}${fmt(weightedDiversityChange, 3)}`;
       document.getElementById("tuning-policy-feedback").textContent = fmt(weightedPolicyFeedback, 2);
@@ -3757,10 +3745,10 @@
       const mobilityEl = document.getElementById("mosaic-selected-mobility");
       const climateStressEl = document.getElementById("mosaic-selected-climate-stress");
       const languageEl = document.getElementById("mosaic-selected-language");
-      const brazilificationEl = document.getElementById("mosaic-selected-brazilification");
-      const dragEl = document.getElementById("mosaic-selected-drag");
-      const dragNote = document.getElementById("mosaic-selected-drag-note");
-      if (!countryEl || !summaryEl || !efEl || !rqEl || !skilledSourceEl || !skilledProgramEl || !mobilityEl || !climateStressEl || !languageEl || !brazilificationEl || !dragEl || !dragNote) return;
+      const inclusiveMobilityEl = document.getElementById("mosaic-selected-inclusive-mobility");
+      const serviceGapEl = document.getElementById("mosaic-selected-service-gap");
+      const serviceGapNote = document.getElementById("mosaic-selected-service-gap-note");
+      if (!countryEl || !summaryEl || !efEl || !rqEl || !skilledSourceEl || !skilledProgramEl || !mobilityEl || !climateStressEl || !languageEl || !inclusiveMobilityEl || !serviceGapEl || !serviceGapNote) return;
       if (!feature) {
         countryEl.textContent = "World";
         summaryEl.textContent = "Select a country on any map, chart, or table to see its top groups and diversity context.";
@@ -3773,9 +3761,9 @@
         mobilityEl.textContent = "--";
         climateStressEl.textContent = "--";
         languageEl.textContent = "--";
-        brazilificationEl.textContent = "--";
-        dragEl.textContent = "--";
-        dragNote.textContent = "Estimated horizontal-inequality penalty from diversity, polarization, policy openness, urban absorption pressure, and human-capital absorption.";
+        inclusiveMobilityEl.textContent = "--";
+        serviceGapEl.textContent = "--";
+        serviceGapNote.textContent = "Estimated access gap from policy openness, urban-service pressure, dependency needs, climate exposure, and human-capital absorption. Identity composition is not an input.";
         return;
       }
       countryEl.textContent = feature.Country;
@@ -3786,16 +3774,16 @@
           ? religionFeature.TopReligions.map(g => `${g.group} ${fmt(g.share, 1)}%`).join(" | ")
           : "Religion composition unavailable for this country.";
       }
-      efEl.textContent = fmt(feature.EthnicFractionalization, 3);
-      rqEl.textContent = fmt(feature.EthnolinguisticPolarizationRQ, 3);
+      efEl.textContent = fmt(feature.CompositionDiversityIndex, 3);
+      rqEl.textContent = fmt(feature.CompositionConcentrationIndex, 3);
       skilledSourceEl.textContent = fmt(feature.Skilled_Migration_SourcePressure_2050, 2);
       skilledProgramEl.textContent = fmt(feature.Skilled_Migration_ProgramIntensity_2050, 2);
       mobilityEl.textContent = fmt(feature.Intergenerational_Mobility_Convergence_2050, 2);
       climateStressEl.textContent = fmt(feature.Climate_Migration_Stress_2050, 2);
-      languageEl.textContent = `${fmt(feature.Language_Cultural_Integration_2050, 2)} / ${fmt(feature.Language_Cultural_Friction_2050, 2)}`;
-      brazilificationEl.textContent = `${fmt(feature.Brazilification_MeanAbsDelta_pp, 2)} pp`;
-      dragEl.textContent = fmt(feature.StructuralInequalityDrag, 3);
-      dragNote.textContent = `${feature.Country}'s structural drag is a scenario-screening estimate. Inclusive governance tuning can reduce this drag where human capital absorption and policy openness are strong.`;
+      languageEl.textContent = `${fmt(feature.Language_Access_Capacity_2050, 2)} / ${fmt(feature.Language_Access_Gap_2050, 2)}`;
+      inclusiveMobilityEl.textContent = `${fmt(feature.Inclusive_Mobility_MeanAbsDelta_pp, 2)} pp`;
+      serviceGapEl.textContent = fmt(feature.InclusiveServiceDeliveryGap, 3);
+      serviceGapNote.textContent = `${feature.Country}'s gap is a scenario-screening estimate based on public-service and access conditions. It does not use identity composition as a penalty.`;
     }
 
     function styleAxis(selection) {
@@ -3808,27 +3796,27 @@
       if (svg.empty()) return;
       const width = 680, height = 300;
       svg.selectAll("*").remove();
-      const data = rows.filter(d => Number.isFinite(d.EthnicFractionalization) && Number.isFinite(d.HDI_2050_Gain));
+      const data = rows.filter(d => Number.isFinite(d.CompositionDiversityIndex) && Number.isFinite(d.HDI_2050_Gain));
       if (!data.length) {
         renderEmptyChart(svg, width, height, "Mosaic-HDI overlay data unavailable");
         return;
       }
       const margin = {top: 18, right: 22, bottom: 46, left: 54};
       const x = d3.scaleLinear()
-        .domain(d3.extent(data, d => d.EthnicFractionalization)).nice()
+        .domain(d3.extent(data, d => d.CompositionDiversityIndex)).nice()
         .range([margin.left, width - margin.right]);
       const y = d3.scaleLinear()
         .domain(d3.extent(data, d => d.HDI_2050_Gain)).nice()
         .range([height - margin.bottom, margin.top]);
       svg.append("g").attr("transform", `translate(0,${height - margin.bottom})`).call(d3.axisBottom(x).ticks(6)).call(styleAxis);
       svg.append("g").attr("transform", `translate(${margin.left},0)`).call(d3.axisLeft(y).ticks(5)).call(styleAxis);
-      svg.append("text").attr("x", width / 2).attr("y", height - 12).attr("fill", "var(--muted)").attr("font-size", 12).attr("text-anchor", "middle").text("Ethnic fractionalization, 2050");
+      svg.append("text").attr("x", width / 2).attr("y", height - 12).attr("fill", "var(--muted)").attr("font-size", 12).attr("text-anchor", "middle").text("Composition diversity, 2050");
       svg.append("text").attr("transform", "rotate(-90)").attr("x", -height / 2).attr("y", 16).attr("fill", "var(--muted)").attr("font-size", 12).attr("text-anchor", "middle").text("HDI gain, 2025-2050");
       const tip = tooltip;
       svg.selectAll("circle")
         .data(data)
         .join("circle")
-        .attr("cx", d => x(d.EthnicFractionalization))
+        .attr("cx", d => x(d.CompositionDiversityIndex))
         .attr("cy", d => y(d.HDI_2050_Gain))
         .attr("r", d => d.ISO3 === activeCountry?.ISO3 ? 6 : 4)
         .attr("fill", d => d.ISO3 === activeCountry?.ISO3 ? "var(--gold)" : "rgba(94,231,255,0.68)")
@@ -3836,7 +3824,7 @@
         .attr("stroke-width", d => d.ISO3 === activeCountry?.ISO3 ? 2 : 0.7)
         .on("mousemove", (event, d) => {
           tip.style.opacity = 1;
-          tip.innerHTML = `<strong>${d.Country}</strong><br>EF: ${fmt(d.EthnicFractionalization, 3)}<br>RQ: ${fmt(d.EthnolinguisticPolarizationRQ, 3)}<br>HDI gain: ${fmt(d.HDI_2050_Gain, 3)}<br>Structural drag: ${fmt(d.StructuralInequalityDrag, 3)}`;
+          tip.innerHTML = `<strong>${d.Country}</strong><br>Composition diversity: ${fmt(d.CompositionDiversityIndex, 3)}<br>Composition concentration: ${fmt(d.CompositionConcentrationIndex, 3)}<br>HDI gain: ${fmt(d.HDI_2050_Gain, 3)}<br>Service-delivery gap: ${fmt(d.InclusiveServiceDeliveryGap, 3)}`;
           tip.style.left = `${event.clientX + 14}px`;
           tip.style.top = `${event.clientY + 14}px`;
         })
@@ -4725,7 +4713,7 @@
       const scenarioBefore = activeScenario;
       if (/\b(aggressive ai|ai adoption|ai scenario|ai upside)\b/.test(lower)) setScenario("ai");
       if (/\b(climate|resource mitigation|drag mitigation|green transition)\b/.test(lower)) setScenario("climate");
-      if (/\b(brazilification|plural mobility|mixed identity|high fluidity)\b/.test(lower)) setScenario("brazilification");
+      if (/\b(inclusive mobility|social cohesion|equitable access|identity recognition)\b/.test(lower)) setScenario("inclusive");
       if (/\b(stagnation|stress test|downside)\b/.test(lower)) setScenario("stagnation");
       if (/\bbaseline\b/.test(lower)) setScenario("baseline");
       const scenarioNote = scenarioBefore !== activeScenario ? `<p>I switched the dashboard to <strong>${scenarios[activeScenario].label}</strong>.</p>` : "";
@@ -4772,7 +4760,7 @@
     }
 
     const hdiGptTools = [
-      {name: "set_scenario", description: "Switch the dashboard scenario.", parameters: {scenario: "baseline | ai | climate | brazilification | stagnation"}},
+      {name: "set_scenario", description: "Switch the dashboard scenario.", parameters: {scenario: "baseline | ai | climate | inclusive | stagnation"}},
       {name: "filter_country", description: "Select a country in the projection dataset.", parameters: {country_name: "Country name or ISO3"}},
       {name: "open_comparison_lab", description: "Compare multiple countries side-by-side.", parameters: {countries: "Array of country names or ISO3 codes"}},
       {name: "highlight_variable_explorer", description: "Open the variable explorer with selected x/y variables.", parameters: {x: "Metric key", y: "Metric key"}},
@@ -4788,7 +4776,7 @@
       const schemas = {
         set_scenario: {
           type: "object",
-          properties: {scenario: {type: "string", enum: ["baseline", "ai", "climate", "brazilification", "stagnation"]}},
+          properties: {scenario: {type: "string", enum: ["baseline", "ai", "climate", "inclusive", "stagnation"]}},
           required: ["scenario"]
         },
         filter_country: {
@@ -4873,7 +4861,7 @@
       const lower = String(text).toLowerCase();
       if (/\b(aggressive ai|ai adoption|ai scenario|ai upside)\b/.test(lower)) return "ai";
       if (/\b(climate|resource mitigation|drag mitigation|green transition)\b/.test(lower)) return "climate";
-      if (/\b(brazilification|plural mobility|mixed identity|high fluidity)\b/.test(lower)) return "brazilification";
+      if (/\b(inclusive mobility|social cohesion|equitable access|identity recognition)\b/.test(lower)) return "inclusive";
       if (/\b(stagnation|stress test|downside)\b/.test(lower)) return "stagnation";
       if (/\bbaseline\b/.test(lower)) return "baseline";
       return null;
@@ -5438,18 +5426,18 @@
       if (key === "Delta_Education") return pctDelta(row.EducationIndex_2025, row.EducationIndex_2050);
       if (key === "Delta_Income") return pctDelta(row.IncomeIndex_2025, row.IncomeIndex_2050);
       if (key === "Delta_HDI") return pctDelta(row.HDI_Baseline, scenarioHdi(row));
-      if (key === "Mosaic_EF") return mosaicCountryFeatures.get(row.ISO3)?.EthnicFractionalization;
-      if (key === "Mosaic_RQ") return mosaicCountryFeatures.get(row.ISO3)?.EthnolinguisticPolarizationRQ;
-      if (key === "Mosaic_StructuralDrag") return mosaicCountryFeatures.get(row.ISO3)?.StructuralInequalityDrag;
+      if (key === "Mosaic_EF") return mosaicCountryFeatures.get(row.ISO3)?.CompositionDiversityIndex;
+      if (key === "Mosaic_RQ") return mosaicCountryFeatures.get(row.ISO3)?.CompositionConcentrationIndex;
+      if (key === "Mosaic_StructuralDrag") return mosaicCountryFeatures.get(row.ISO3)?.InclusiveServiceDeliveryGap;
       if (key === "Mosaic_SkilledSource") return mosaicCountryFeatures.get(row.ISO3)?.Skilled_Migration_SourcePressure_2050;
       if (key === "Mosaic_SkilledProgram") return mosaicCountryFeatures.get(row.ISO3)?.Skilled_Migration_ProgramIntensity_2050;
       if (key === "Mosaic_Mobility") return mosaicCountryFeatures.get(row.ISO3)?.Intergenerational_Mobility_Convergence_2050;
       if (key === "Mosaic_RegionalConcentration") return mosaicCountryFeatures.get(row.ISO3)?.Subnational_Regional_Concentration_2050;
       if (key === "Mosaic_ClimateStress") return mosaicCountryFeatures.get(row.ISO3)?.Climate_Migration_Stress_2050;
-      if (key === "Mosaic_LanguageIntegration") return mosaicCountryFeatures.get(row.ISO3)?.Language_Cultural_Integration_2050;
-      if (key === "Mosaic_LanguageFriction") return mosaicCountryFeatures.get(row.ISO3)?.Language_Cultural_Friction_2050;
-      if (key === "Mosaic_BrazilificationDiversity") return mosaicCountryFeatures.get(row.ISO3)?.Brazilification_Diversity_Index_2050;
-      if (key === "Mosaic_BrazilificationShift") return mosaicCountryFeatures.get(row.ISO3)?.Brazilification_MeanAbsDelta_pp;
+      if (key === "Mosaic_LanguageIntegration") return mosaicCountryFeatures.get(row.ISO3)?.Language_Access_Capacity_2050;
+      if (key === "Mosaic_LanguageFriction") return mosaicCountryFeatures.get(row.ISO3)?.Language_Access_Gap_2050;
+      if (key === "Mosaic_InclusiveDiversity") return mosaicCountryFeatures.get(row.ISO3)?.Inclusive_Mobility_CompositionDiversity_2050;
+      if (key === "Mosaic_InclusiveShift") return mosaicCountryFeatures.get(row.ISO3)?.Inclusive_Mobility_MeanAbsDelta_pp;
       return Number(row[key]);
     }
 

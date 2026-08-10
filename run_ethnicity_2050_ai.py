@@ -141,13 +141,15 @@ def build_table(pop2024: dict, pop2050: dict, hdi_context: dict) -> pd.DataFrame
             if hdi_human_capital is not None and pd.notna(hdi_human_capital)
             else 0.0
         )
-        structural_inequality_drag_base = max(
-            0.0,
-            0.018 * diversity_2050_base +
-            0.014 * polarization_rq_2050_base +
-            0.010 * (urban_absorption_pressure or 0.0) +
-            0.008 * max(0.0, 1.0 - policy_openness) -
-            0.012 * human_capital_value,
+        # Identity composition is descriptive context, never a direct penalty.
+        # The service-delivery gap is derived only from observable capacity and
+        # access conditions that policy can change.
+        structural_inequality_drag_base = clamp01(
+            0.30 * (urban_absorption_pressure or 0.0) +
+            0.28 * max(0.0, 1.0 - policy_openness) +
+            0.22 * max(0.0, 1.0 - human_capital_value) +
+            0.12 * clamp01(hdi_dependency) +
+            0.08 * clamp01(hdi_climate_risk)
         )
 
         anchor_name = max(entries, key=lambda e: e[1])[0]
@@ -208,9 +210,10 @@ def build_table(pop2024: dict, pop2050: dict, hdi_context: dict) -> pd.DataFrame
                 0.10 * structural_inequality_drag
             )
             subnational_concentration = clamp01(
-                0.42 * urban_value + 0.22 * diversity_2050 +
-                0.18 * pressure + 0.12 * mig_intensity_2050 / 3.0 +
-                0.06 * abs(diversity_2050 - diversity_2024)
+                0.36 * urban_value + 0.24 * pressure +
+                0.18 * mig_intensity_2050 / 3.0 +
+                0.14 * (urban_absorption_pressure or 0.0) +
+                0.08 * climate_risk_value
             )
             climate_migration_stress = clamp01(
                 0.38 * climate_risk_value + 0.24 * climate_drag_value +
@@ -218,15 +221,15 @@ def build_table(pop2024: dict, pop2050: dict, hdi_context: dict) -> pd.DataFrame
                 0.10 * skilled_source_pressure
             )
             language_integration = clamp01(
-                0.28 + 0.22 * assimilation + 0.20 * intermarriage +
-                0.20 * digital_value + 0.16 * education_value +
-                0.14 * policy_openness - 0.16 * diversity_2050
+                0.18 + 0.26 * education_value + 0.22 * digital_value +
+                0.20 * policy_openness + 0.14 * human_capital_value
             )
             language_friction = clamp01(
-                0.52 * diversity_2050 + 0.22 * min(1.0, polarization_rq_2050 / 2.5) +
-                0.16 * max(0.0, 1.0 - policy_openness) -
-                0.22 * assimilation - 0.14 * intermarriage -
-                0.10 * digital_value
+                0.28 * max(0.0, 1.0 - policy_openness) +
+                0.24 * max(0.0, 1.0 - education_value) +
+                0.20 * max(0.0, 1.0 - digital_value) +
+                0.16 * subnational_concentration +
+                0.12 * (urban_absorption_pressure or 0.0)
             )
             rows.append({
                 "ISO3": iso3,
@@ -263,6 +266,13 @@ def build_table(pop2024: dict, pop2050: dict, hdi_context: dict) -> pd.DataFrame
                 "Brazilification_MixedIdentityMultiplier": round(brazil_mixed_multiplier, 3),
                 "Brazilification_AssimilationRate": round(brazil_assimilation_rate, 4),
                 "Brazilification_Diversity_Index_2050": round(brazil_diversity_2050, 4),
+                "Inclusive_Mobility_Share_2050_pct": round(brazil_share2050, 2),
+                "Inclusive_Mobility_Change_pp": round(brazil_share2050 - share2024, 2),
+                "Inclusive_Mobility_Delta_vs_Baseline_pp": round(brazil_share2050 - share2050, 2),
+                "Inclusive_Mobility_IdentityFormationMultiplier": round(brazil_intermarriage_multiplier, 3),
+                "Inclusive_Mobility_MixedIdentityMultiplier": round(brazil_mixed_multiplier, 3),
+                "Inclusive_Mobility_IdentityTransitionRate": round(brazil_assimilation_rate, 4),
+                "Inclusive_Mobility_CompositionDiversity_2050": round(brazil_diversity_2050, 4),
                 "Intergenerational_Mobility_Convergence_2050": round(mobility_convergence, 4),
                 "Subnational_Regional_Concentration_2050": round(subnational_concentration, 4),
                 "Climate_Migration_Stress_2050": round(climate_migration_stress, 4),
@@ -291,9 +301,9 @@ def main():
     table = build_table(pop2024, pop2050, hdi_context)
 
     print("=" * 78)
-    print("  ETHNIC COMPOSITION PROJECTIONS TO 2050 -- EVIDENCE-BASED MODEL")
+    print("  POPULATION AND IDENTITY CONTEXT TO 2050 -- SCENARIO MODEL")
     print("  Engine: data/ethnicity_model.py (national TFR + per-group TFR +")
-    print("          age momentum + migration + fertility convergence + assimilation)")
+    print("          age momentum + migration + fertility convergence + identity-category transition)")
     print(f"  Migration scenario: {MIGRATION_SCENARIO} | "
           f"fertility convergence: {FERTILITY_CONVERGENCE}")
     print("=" * 78)
@@ -312,6 +322,7 @@ def main():
     out_dir.mkdir(parents=True, exist_ok=True)
     long_path = out_dir / "ethnic_composition_2050_ai.csv"
     model_path = out_dir / "ethnic_composition_2050_ai_model.csv"
+    public_path = out_dir / "demographic_context_2050.csv"
     table.drop(columns=["Profile", "TFR_2024", "TFR_2050",
                         "Nat_TFR_2024", "Nat_TFR_2050",
                         "Brazilification_Share_2050_pct",
@@ -346,6 +357,29 @@ def main():
                         "HDI_WorkingAgePct_2050_Link"]).to_csv(long_path, index=False)
     table.to_csv(model_path, index=False)
 
+    # Publish an ethics-safe research table. Legacy field names remain only in
+    # the internal model file for reproducibility and backward compatibility.
+    public_drop = [c for c in table.columns if c.startswith("Brazilification_")]
+    public_table = table.drop(columns=public_drop).rename(columns={
+        "Profile": "Projection_Profile",
+        "Anchor": "Baseline_Reference_Category",
+        "Intermarriage_Coefficient": "Mixed_Identity_Recognition_Rate",
+        "Assimilation_Coefficient": "Identity_Category_Transition_Rate",
+        "Ethnic_Fractionalization_2050": "Composition_Diversity_Index_2050",
+        "Ethnolinguistic_Polarization_RQ_2050": "Composition_Concentration_Index_2050",
+        "Structural_Inequality_Drag_2050": "Inclusive_Service_Delivery_Gap_2050",
+        "Language_Cultural_Integration_2050": "Language_Access_Capacity_2050",
+        "Language_Cultural_Friction_2050": "Language_Access_Gap_2050",
+    })
+    public_table["Projection_Profile"] = public_table["Projection_Profile"].replace({
+        "majority": "largest_baseline_category",
+        "immigrant": "migration_linked",
+        "assimilating": "identity_category_transition",
+        "high_fertility": "higher_fertility_path",
+        "low_fertility": "lower_fertility_path",
+    })
+    public_table.to_csv(public_path, index=False)
+
     # wide summary: top 5 groups per country by 2050 share
     wide_rows = []
     for iso3, grp in table.groupby("ISO3"):
@@ -361,6 +395,7 @@ def main():
 
     print(f"\n  Long-form table : {long_path}  ({len(table)} rows)")
     print(f"  Model detail    : {model_path}")
+    print(f"  Public context  : {public_path}")
     print(f"  Wide summary    : {wide_path}  ({len(wide)} countries)")
 
     # ---- audit ------------------------------------------------------------
@@ -373,17 +408,17 @@ def main():
     anchor_change = table.groupby("ISO3").apply(
         lambda g: g.loc[g["Anchor"], "Change_pp"].sum(), include_groups=False
     )
-    print("\n  Top 10 anchor-group share declines (majority shrinking):")
+    print("\n  Top 10 baseline-reference category share declines:")
     print(anchor_change.nsmallest(10).to_string())
-    print("\n  Top 10 anchor-group share gains (majority consolidating):")
+    print("\n  Top 10 baseline-reference category share gains:")
     print(anchor_change.nlargest(10).to_string())
 
-    print("\n  Largest minority gains (pp, 2024->2050):")
+    print("\n  Largest category gains (pp, 2024->2050):")
     print(table.sort_values("Change_pp", ascending=False).head(12)[
         ["ISO3", "Country", "Group", "Share_2024_pct", "Share_2050_pct", "Change_pp"]
     ].to_string(index=False))
 
-    print("\n  Largest minority losses (pp, 2024->2050):")
+    print("\n  Largest category losses (pp, 2024->2050):")
     print(table.sort_values("Change_pp").head(12)[
         ["ISO3", "Country", "Group", "Share_2024_pct", "Share_2050_pct", "Change_pp"]
     ].to_string(index=False))
@@ -398,7 +433,7 @@ def main():
          "Policy_Openness"]].sort_values(
         "Demographic_Pressure", ascending=False).head(15)
     print(press.to_string(index=False))
-    print("\n  Largest immigrant-profile gains in aging countries (pp):")
+    print("\n  Largest migration-linked category gains in aging countries (pp):")
     aging = table[(table["Demographic_Pressure"] > 0.4)
                   & (table["Profile"] == "immigrant")].sort_values(
         "Change_pp", ascending=False)

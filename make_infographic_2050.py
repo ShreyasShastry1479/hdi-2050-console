@@ -1,16 +1,16 @@
-"""Build an interactive HTML infographic of 2050 ethnic demographics.
+"""Build an interactive HTML infographic of 2050 population and identity context.
 
-Reads ``data/output/ethnic_composition_2050_ai_model.csv`` (the full
-transparency table: per-group shares, TFR, migration intensity, policy
+Reads ``data/output/demographic_context_2050.csv`` (the public research
+table: per-group shares, TFR, migration intensity, policy
 openness) and produces a clean, self-contained Plotly dashboard:
 
-1. **World treemap** -- every ethnic group on Earth sized by 2050 population,
-   nested World > Region > Country > Ethnic group. Area = people. Three
+1. **World treemap** -- every recorded population-identity group sized by 2050 population,
+   nested World > Region > Country > Identity group. Area = people. Three
    colour modes: dominance (largest-group share), change direction
-   (growing/declining), and driver (immigration / fertility / intermarriage /
-   assimilation / ageing). Click any tile to open a country drawer with its
+   (growing/declining), and driver (immigration / fertility / mixed-identity
+   recognition / identity-category transition / ageing). Click any tile to open a country drawer with its
    full 2024 vs 2050 breakdown and metadata (TFR, migration intensity).
-   Search by country *or* by ethnic group (e.g. "Pashtun") to highlight every
+   Search by country *or* by recorded identity group (e.g. "Pashtun") to highlight every
    country where that group lives.
 
 2. **What-if scenarios** -- migration level (Zero/Low/Medium/High) and
@@ -18,8 +18,8 @@ openness) and produces a clean, self-contained Plotly dashboard:
    sliders that re-project the whole mosaic on the fly. Variants are
    precomputed by the evidence-based model, so no browser-side re-modelling.
 
-3. **Biggest shifts** -- ranked horizontal bars: largest majority declines
-   and largest minority gains, 2024 vs 2050.
+3. **Biggest shifts** -- ranked horizontal bars: largest baseline-category
+   declines and non-reference-category gains, 2024 vs 2050.
 
 4. **Data stories** -- narrative cards with real figures (aging West,
    Sub-Saharan Africa's boom, East Asia, Gulf expatriate economies).
@@ -44,7 +44,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 
 from data.undp_hdi import UNDP_HDI_COUNTRIES_193  # noqa: E402
 
-OUT_CSV = Path("data/output/ethnic_composition_2050_ai_model.csv")
+OUT_CSV = Path("data/output/demographic_context_2050.csv")
 OUT_RELIGION_CSV = Path("data/output/religious_composition_2050_model.csv")
 OUT_HTML = Path("data/output/ethnic_demographics_2050.html")
 POP_WEIGHTS = Path("data/population_weights_2024_2050.csv")
@@ -174,8 +174,8 @@ _DOMINANCE_STOPS = [
 _DRIVER_COLORS = {
     "Immigration": "#e76f51",
     "Fertility": "#2a9d8f",
-    "Intermarriage": "#e9c46a",
-    "Assimilation": "#a3b18a",
+    "Mixed identity": "#e9c46a",
+    "Identity transition": "#a3b18a",
     "Ageing": "#457b9d",
     "Religious composition": "#7c3aed",
     "Stable": "#c0c9d5",
@@ -199,13 +199,13 @@ def _driver(profile, name) -> str:
     if str(profile).lower() == "religion":
         return "Religious composition"
     if re.search(r"mixed|multiracial|multiple origins", str(name), re.I):
-        return "Intermarriage"
+        return "Mixed identity"
     return {
-        "immigrant": "Immigration",
-        "high_fertility": "Fertility",
-        "low_fertility": "Ageing",
-        "assimilating": "Assimilation",
-        "majority": "Stable",
+        "migration_linked": "Immigration",
+        "higher_fertility_path": "Fertility",
+        "lower_fertility_path": "Ageing",
+        "identity_category_transition": "Identity transition",
+        "largest_baseline_category": "Stable",
     }.get(profile, "Stable")
 
 
@@ -242,6 +242,7 @@ def build_treemap_data(df: pd.DataFrame) -> dict:
     """Build the treemap node arrays plus per-group detail arrays."""
     ids, parents, labels, values = [], [], [], []
     colors, driver = [], []
+    profile_col = "Projection_Profile" if "Projection_Profile" in df.columns else "Profile"
     regions, levels, isos = [], [], []
     gpos, share24g, pop24g, cpopg, share50g = [], [], [], [], []
     dom_share, dom_change, dom_driver = [], [], []
@@ -280,14 +281,14 @@ def build_treemap_data(df: pd.DataFrame) -> dict:
             cpopg.append(None); share50g.append(None)
             dom_share.append(float(dom["Share_2050_pct"]))
             dom_change.append(float(dom["Change_pp"]))
-            dom_driver.append(_driver(dom["Profile"], dom["Group"]))
+            dom_driver.append(_driver(dom[profile_col], dom["Group"]))
 
             for _, r in cdf.iterrows():
                 gid = f"g::{iso}::{r['Group']}"
                 ids.append(gid); parents.append(f"c::{iso}")
                 labels.append(r["Group"]); values.append(r["Pop_2050"])
                 colors.append(dominance_color(r["Share_2050_pct"]))
-                driver.append(_driver(r["Profile"], r["Group"]))
+                driver.append(_driver(r[profile_col], r["Group"]))
                 regions.append(region); levels.append(3); isos.append(iso)
                 gpos.append(len(share50g))
                 share24g.append(float(r["Share_2024_pct"]))
@@ -352,21 +353,22 @@ def country_meta(df: pd.DataFrame) -> dict:
             "openness": float(r.get("Policy_Openness", 1.0)),
             "policyFeedback": float(r.get("Policy_Feedback_2050", 1.0)),
             "pressure": float(r.get("Demographic_Pressure", 0.0)),
-            "intermarriage": float(r.get("Intermarriage_Coefficient", 0.0)),
-            "assimilation": float(r.get("Assimilation_Coefficient", 0.0)),
+            "identityRecognition": float(r.get("Mixed_Identity_Recognition_Rate", 0.0)),
+            "identityTransition": float(r.get("Identity_Category_Transition_Rate", 0.0)),
             "diversity50": float(r.get("Diversity_Index_2050", 0.0)),
             "diversityChange": float(r.get("Diversity_Index_Change", 0.0)),
             "mobilityConvergence": float(r.get("Intergenerational_Mobility_Convergence_2050", 0.0)),
             "regionalConcentration": float(r.get("Subnational_Regional_Concentration_2050", 0.0)),
             "climateMigrationStress": float(r.get("Climate_Migration_Stress_2050", 0.0)),
-            "languageIntegration": float(r.get("Language_Cultural_Integration_2050", 0.0)),
-            "languageFriction": float(r.get("Language_Cultural_Friction_2050", 0.0)),
-            "brazilificationDiversity": float(r.get("Brazilification_Diversity_Index_2050", 0.0)),
-            "brazilificationIntermarriage": float(r.get("Brazilification_IntermarriageMultiplier", 1.0)),
-            "brazilificationMixedIdentity": float(r.get("Brazilification_MixedIdentityMultiplier", 1.0)),
-            "brazilificationAssimilation": float(r.get("Brazilification_AssimilationRate", 0.0)),
-            "brazilificationShift": float(g["Brazilification_Delta_vs_Baseline_pp"].abs().mean()
-                                           if "Brazilification_Delta_vs_Baseline_pp" in g else 0.0),
+            "languageAccess": float(r.get("Language_Access_Capacity_2050", 0.0)),
+            "languageAccessGap": float(r.get("Language_Access_Gap_2050", 0.0)),
+            "serviceDeliveryGap": float(r.get("Inclusive_Service_Delivery_Gap_2050", 0.0)),
+            "inclusiveComposition": float(r.get("Inclusive_Mobility_CompositionDiversity_2050", 0.0)),
+            "inclusiveIdentityRecognition": float(r.get("Inclusive_Mobility_IdentityFormationMultiplier", 1.0)),
+            "inclusiveMixedIdentity": float(r.get("Inclusive_Mobility_MixedIdentityMultiplier", 1.0)),
+            "inclusiveIdentityTransition": float(r.get("Inclusive_Mobility_IdentityTransitionRate", 0.0)),
+            "inclusiveShift": float(g["Inclusive_Mobility_Delta_vs_Baseline_pp"].abs().mean()
+                                      if "Inclusive_Mobility_Delta_vs_Baseline_pp" in g else 0.0),
             "urbanLayer": str(r.get("Urbanization_Layer", "unknown")),
             "urbanAbsorption": float(r.get("Urban_Absorption_Pressure", 0.0)),
         }
@@ -383,14 +385,14 @@ def top_shifts_figure(df: pd.DataFrame, kind: str) -> go.Figure:
     kind = "majority_declines" | "minority_gains"
     """
     if kind == "majority_declines":
-        anchor = df[df["Anchor"]].sort_values("Change_pp").head(10)
-        title = "Largest majority-group declines, 2024 \u2192 2050"
+        anchor = df[df["Baseline_Reference_Category"]].sort_values("Change_pp").head(10)
+        title = "Largest baseline-category declines, 2024 \u2192 2050"
         color = "#e76f51"
         text = [f"{r['Change_pp']:+.1f} pp" for _, r in anchor.iterrows()]
     else:
-        non_anchor = df[~df["Anchor"]].sort_values("Change_pp", ascending=False)
+        non_anchor = df[~df["Baseline_Reference_Category"]].sort_values("Change_pp", ascending=False)
         non_anchor = non_anchor.head(10)
-        title = "Largest minority-group gains, 2024 \u2192 2050"
+        title = "Largest non-reference-category gains, 2024 \u2192 2050"
         color = "#2a9d8f"
         text = [f"{r['Change_pp']:+.1f} pp" for _, r in non_anchor.iterrows()]
     d = anchor if kind == "majority_declines" else non_anchor
@@ -438,18 +440,18 @@ def story_cards(df: pd.DataFrame) -> str:
     # 1) Aging West & migration
     west = df[df["ISO3"].isin(["USA", "CAN", "DEU", "FRA", "GBR"])]
     if not west.empty:
-        maj = west[west["Anchor"]]
-        imm = west[west["Profile"] == "immigrant"]
+        maj = west[west["Baseline_Reference_Category"]]
+        imm = west[west["Projection_Profile"] == "migration_linked"]
         avg_maj_chg = maj["Change_pp"].mean() if not maj.empty else 0.0
         avg_imm_share = (imm.groupby("ISO3")["Share_2050_pct"].sum().mean()
                          if not imm.empty else 0.0)
         cards.append(
             '<div class="story"><h3>The aging West is importing its future</h3>'
             f'<div class="big">{avg_maj_chg:.1f} pp</div>'
-            '<p>Average decline of the majority group across the US, Canada, '
+            '<p>Average decline of the largest baseline category across the US, Canada, '
             'France, Germany and the UK by 2050, as fertility runs below '
-            f'replacement and inward migration fills the labour gap. Immigrant-'
-            f'origin groups reach ~{avg_imm_share:.0f}% of these populations.</p>'
+            f'replacement and inward migration fills the labour gap. Migration-'
+            f'linked categories reach ~{avg_imm_share:.0f}% of these populations.</p>'
             '</div>')
 
     # 2) Sub-Saharan Africa's boom
@@ -463,35 +465,35 @@ def story_cards(df: pd.DataFrame) -> str:
             f'<p>Projected 2050 population of the region \u2014 dominated by '
             f'{top["Country"]} ({top["Pop_2050"]/1e6:.0f} m). Rapid natural '
             'increase keeps the mosaic young, with growth concentrated in '
-            'high-fertility majority groups rather than migration.</p></div>')
+            'higher-fertility population categories rather than migration.</p></div>')
 
     # 3) East Asia's changing face
     east = df[df["ISO3"].isin(["JPN", "KOR", "CHN", "HKG", "TWN", "SGP"])]
     if not east.empty:
-        maj = east[east["Anchor"]]
-        imm = east[east["Profile"] == "immigrant"]
+        maj = east[east["Baseline_Reference_Category"]]
+        imm = east[east["Projection_Profile"] == "migration_linked"]
         avg_maj_chg = maj["Change_pp"].mean() if not maj.empty else 0.0
         avg_imm_share = (imm.groupby("ISO3")["Share_2050_pct"].sum().mean()
                          if not imm.empty else 0.0)
         cards.append(
             '<div class="story"><h3>East Asia\u2019s changing face</h3>'
             f'<div class="big">{avg_maj_chg:.1f} pp</div>'
-            '<p>Average 2024\u21922050 decline of the majority group in '
+            '<p>Average 2024\u21922050 decline of the largest baseline category in '
             'Japan, South Korea, China, Hong Kong, Taiwan and Singapore, '
             'where the world\u2019s lowest fertility collides with rising '
-            f'labour migration (immigrant groups to ~{avg_imm_share:.0f}% of '
+            f'labour migration (migration-linked groups to ~{avg_imm_share:.0f}% of '
             'the population).</p></div>')
 
     # 4) Gulf expatriate economies
     gulf = df[df["ISO3"].isin(["ARE", "QAT", "KWT", "BHR", "OMN"])]
     if not gulf.empty:
-        foreign = gulf[gulf["Profile"] == "immigrant"]
+        foreign = gulf[gulf["Projection_Profile"] == "migration_linked"]
         share = (foreign.groupby("ISO3")["Share_2050_pct"].sum().mean()
                  if not foreign.empty else 0.0)
         cards.append(
             '<div class="story"><h3>The Gulf\u2019s expatriate economies</h3>'
             f'<div class="big">{share:.0f}%</div>'
-            '<p>Average 2050 share of immigrant-origin groups across the UAE, '
+            '<p>Average 2050 share of migration-linked groups across the UAE, '
             'Qatar, Kuwait, Bahrain and Oman \u2014 among the highest in the '
             'world, driven by sustained labour recruitment rather than natural '
             'increase.</p></div>')
@@ -529,20 +531,20 @@ def story_cards(df: pd.DataFrame) -> str:
             'where demographic change is more or less likely to convert into education, income, and '
             'digital-adaptation gains.</p></div>')
 
-    # 7) Brazilification scenario
-    if "Brazilification_Delta_vs_Baseline_pp" in df.columns:
+    # 7) Inclusive mobility and identity-recognition scenario
+    if "Inclusive_Mobility_Delta_vs_Baseline_pp" in df.columns:
         country = df.groupby(["ISO3", "Country"], as_index=False).agg({
-            "Brazilification_Delta_vs_Baseline_pp": lambda s: s.abs().mean(),
-            "Brazilification_Diversity_Index_2050": "first",
+            "Inclusive_Mobility_Delta_vs_Baseline_pp": lambda s: s.abs().mean(),
+            "Inclusive_Mobility_CompositionDiversity_2050": "first",
         })
-        top = country.sort_values("Brazilification_Delta_vs_Baseline_pp", ascending=False).head(1).iloc[0]
+        top = country.sort_values("Inclusive_Mobility_Delta_vs_Baseline_pp", ascending=False).head(1).iloc[0]
         cards.append(
-            '<div class="story"><h3>Brazilification and plural identity fluidity</h3>'
-            f'<div class="big">{top["Brazilification_Delta_vs_Baseline_pp"]:.2f} pp</div>'
+            '<div class="story"><h3>Inclusive mobility and identity recognition</h3>'
+            f'<div class="big">{top["Inclusive_Mobility_Delta_vs_Baseline_pp"]:.2f} pp</div>'
             f'<p>{top["Country"]} has the largest average group-share movement versus baseline under the '
-            'Brazilification scenario, where intermarriage and mixed-identity formation accelerate while '
-            'rigid majority categories soften. The scenario is dampened where structural inequality or '
-            'language-cultural friction blocks mobility convergence.</p></div>')
+            'inclusive-mobility scenario, where broader identity recognition and intergenerational mobility '
+            'change recorded categories. The scenario is descriptive and does not treat any composition as '
+            'a preferred development outcome.</p></div>')
 
     return '<div class="stories">' + "".join(cards) + "</div>"
 
@@ -552,7 +554,7 @@ METHODOLOGY_HTML = """
   <summary>About the model \u2014 data sources &amp; mechanics</summary>
   <div class="meth">
     <h4>Data sources</h4>
-    <p>Baseline ethnic composition is assembled from national censuses and
+    <p>Baseline population-identity composition is assembled from national censuses and
     surveys (US Census Bureau ACS, Statistics Canada, UK ONS, INSEE, Destatis,
     ABS and other statistical offices), Pew Research Center estimates, and
     academic sources, harmonised to a 2024 baseline. Total fertility rates
@@ -581,33 +583,32 @@ METHODOLOGY_HTML = """
       2050, so it mostly changes the 2040s rather than the near-term path.</li>
       <li><b>Intergenerational mobility screen</b> \u2014 combines education,
       human-capital absorption, digital infrastructure, policy openness,
-      dependency pressure, and structural inequality drag to estimate whether
-      immigrant-origin and native-born groups plausibly converge in education
+      dependency pressure, and the inclusive service-delivery gap to estimate whether
+      migration-linked and locally born populations plausibly converge in education
       and income by 2050.</li>
       <li><b>Sub-national concentration screen</b> \u2014 uses urbanization,
-      diversity, demographic pressure, migration intensity, and composition
-      shifts to flag countries where national averages may hide state,
+      demographic pressure, migration intensity, urban-service pressure, and
+      climate exposure to flag countries where national averages may hide state,
       provincial, metropolitan, or rural-heartland divergence.</li>
       <li><b>Climate-migration stress</b> \u2014 combines climate risk,
       climate/resource drag, demographic pressure, urban absorption pressure,
       and skilled-source pressure to identify countries where displacement
       could strain services and city infrastructure.</li>
-      <li><b>Language-cultural vectors</b> \u2014 pair an integration score
-      with a friction score, using diversity, polarization, intermarriage,
-      assimilation, education, digital infrastructure, and policy openness.
-      These refine technology-diffusion and AI-adoption interpretation.</li>
-      <li><b>Brazilification scenario</b> \u2014 exports alternate 2050
-      ethnic shares where intermarriage and mixed-identity formation are
-      amplified, anchor-group assimilation is softened, and fertility
-      convergence is tied to education and income indices. Structural
-      inequality drag dampens the feedback loop where pluralism does not
-      translate into mobility.</li>
-      <li><b>Intermarriage / mixed identity</b> \u2014 in high-intermarriage
-      countries a fraction of the non-mixed population forms new
-      Mixed/Multiracial-identified people each year (US, Canada, NZ, UK,
-      northern Europe).</li>
-      <li><b>Assimilation</b> \u2014 a per-country rate transfers a small
-      fraction of each minority toward the anchor group each year.</li>
+      <li><b>Language-access vectors</b> \u2014 pair an access-capacity score
+      with an access-gap score using education, digital infrastructure,
+      multilingual public-service availability, urban pressure, and policy
+      openness. Identity composition is not used as a penalty.</li>
+      <li><b>Inclusive mobility scenario</b> \u2014 exports alternate 2050
+      recorded shares under broader mixed-identity recognition, more fluid
+      self-identification categories, and stronger intergenerational mobility.
+      It describes possible statistical-category changes and does not define a
+      preferred social outcome.</li>
+      <li><b>Mixed-identity recognition</b> \u2014 approximates how statistical
+      systems may increasingly allow people to report multiple backgrounds.
+      It is not interpreted as a development target.</li>
+      <li><b>Identity-category transition</b> \u2014 represents possible changes
+      in self-identification or census classification over time. It does not
+      assume that movement toward a majority category is desirable.</li>
       <li><b>Convergence</b> \u2014 group TFRs pull toward the national TFR
       over time, and the national TFR moves toward its 2050 target.</li>
       <li><b>Renormalisation</b> \u2014 shares are re-scaled to 100% every
@@ -616,7 +617,7 @@ METHODOLOGY_HTML = """
       country to the HDI console's urbanization proxy so analysts can separate
       rural-heavy pressure from metropolitan-heavy absorption capacity.</li>
       <li><b>Validation fields</b> \u2014 the exported model table includes
-      diversity indices, effective group counts, policy feedback, and HDI
+      composition indices, effective category counts, policy feedback, and HDI
       component links for cross-table regression diagnostics.</li>
     </ul>
     <h4>What-if scenarios</h4>
@@ -635,6 +636,14 @@ METHODOLOGY_HTML = """
     dividend, dependency pressure, growth prospects, and scenario outcomes.
     The dashboard reports simple univariate R-squared diagnostics as screening
     evidence, not causal proof.</p>
+    <h4>Responsible interpretation</h4>
+    <p>Identity categories are socially defined, fluid, and inconsistent across
+    countries and censuses. The model does not rank groups, assign inherent
+    characteristics, or treat diversity or concentration as a direct cause of
+    HDI. Development effects operate only through measurable access and policy
+    conditions such as education, health services, labor-market mobility,
+    institutional inclusion, and language access. These scenarios must not be
+    used for profiling, exclusion, or claims about group capability.</p>
   </div>
 </details>
 """
@@ -798,7 +807,7 @@ def build_html(treemap_data: dict, religion_data: dict, scen_json: str, meta_jso
 <body>
 <header>
   <h1>The World's Demographic Mosaic in 2050</h1>
-  <p>Ethnic and religious composition layers sized by projected 2050 population &bull;
+  <p>Population-identity and religious-composition layers sized by projected 2050 population &bull;
      scenario-style fertility + migration model &bull; 2024 vs 2050 &bull;
      click any tile for details</p>
 </header>
@@ -807,11 +816,11 @@ def build_html(treemap_data: dict, religion_data: dict, scen_json: str, meta_jso
   <section class="bridge">
     <div class="card">
       <h2>HDI interpretation bridge</h2>
-      <p>This mosaic is designed to sit beside the HDI 2050 Projection Console as a demographic context layer. The treemap explains ethnic and religious population composition, while the HDI dashboard explains health, education, income, technology, governance, and scenario outcomes.</p>
+      <p>This mosaic is designed to sit beside the HDI 2050 Projection Console as a demographic context layer. The treemap describes recorded population-identity and religious categories, while the HDI dashboard explains health, education, income, technology, governance, and scenario outcomes.</p>
       <p>Projected group-share movements should be read as signals for labor-force depth, age-structure pressure, migration capacity, integration policy, schooling demand, religious pluralism, health-system load, and human-capital absorption. These are not direct HDI components, but they help explain why two countries with similar income or education baselines can follow different development paths by 2050.</p>
       <div class="data-links">
         <div class="data-link"><b>HDI projection table</b><br><code>data/output/hdi_2050_rankings.csv</code><br>Use for 2025 baseline HDI, 2050 HDI, indices, uncertainty, and development drivers.</div>
-        <div class="data-link"><b>Ethnic composition table</b><br><code>data/output/ethnic_composition_2050_ai_model.csv</code><br>Use for group shares, fertility convergence, migration intensity, policy openness, and demographic pressure.</div>
+        <div class="data-link"><b>Population and identity context table</b><br><code>data/output/demographic_context_2050.csv</code><br>Use for group shares, fertility convergence, migration intensity, policy access, and demographic pressure.</div>
         <div class="data-link"><b>Religious composition table</b><br><code>data/output/religious_composition_2050_model.csv</code><br>Use for projected 2024 and 2050 religion shares, absolute population counts, and country-level pluralism context.</div>
       </div>
     </div>
@@ -839,7 +848,7 @@ def build_html(treemap_data: dict, religion_data: dict, scen_json: str, meta_jso
       <div class="bridge-card">
         <span class="tag">Religious futures</span>
         <h3>North America and Europe</h3>
-        <p>The religion layer now leans into secularization, rising unaffiliated populations, and expanding Muslim minorities, with North America retaining a reduced Christian majority and Western/non-Muslim-majority Europe moving toward roughly one-tenth Muslim by 2050.</p>
+        <p>The religion layer now leans into secularization, rising unaffiliated populations, and growing Muslim population shares, with North America's Christian share declining and Western Europe moving toward roughly one-tenth Muslim by 2050.</p>
       </div>
       <div class="bridge-card">
         <span class="tag">Religious futures</span>
@@ -854,7 +863,7 @@ def build_html(treemap_data: dict, religion_data: dict, scen_json: str, meta_jso
       <div class="bridge-card">
         <span class="tag">Religious futures</span>
         <h3>MENA</h3>
-        <p>The region remains overwhelmingly Muslim in the 2050 layer, while smaller Christian and minority communities are modeled as more sensitive to migration, conflict displacement, and urbanization stress.</p>
+        <p>The region remains overwhelmingly Muslim in the 2050 layer, while smaller Christian and other religious communities are modeled as more sensitive to migration, conflict displacement, and urbanization stress.</p>
       </div>
     </div>
   </section>
@@ -876,7 +885,7 @@ def build_html(treemap_data: dict, religion_data: dict, scen_json: str, meta_jso
       <input id="search" type="text" placeholder="e.g. Japan, Pashtun, Bengali...">
       <button id="clear" type="button">Clear</button>
       <div class="seg" id="layermode">
-        <button data-layer="ethnic" class="active">Ethnic</button>
+        <button data-layer="ethnic" class="active">Population identity</button>
         <button data-layer="religion">Religious</button>
       </div>
       <div class="seg" id="colormode">
@@ -912,7 +921,7 @@ def build_html(treemap_data: dict, religion_data: dict, scen_json: str, meta_jso
     <div class="hint">
       <b>Area</b> = population in 2050. <b>Colour</b>: Dominance = share held
       by the largest group; Change = teal growing / red declining;
-      Driver = immigration, fertility, intermarriage, assimilation, ageing, or religious composition.
+      Driver = immigration, fertility, mixed-identity recognition, identity-category transition, ageing, or religious composition.
       <b>Click a tile</b> to open the country breakdown. <b>Double-click</b>
       drills deeper in the treemap.
     </div>
@@ -925,8 +934,8 @@ def build_html(treemap_data: dict, religion_data: dict, scen_json: str, meta_jso
   <div class="card" id="table-wrap">{table_html}</div>
   {methodology}
 </div>
-<footer>Generated from the evidence-based ethnicity model
-  (data/ethnicity_model.py) &bull; data/output/ethnic_composition_2050_ai.csv</footer>
+<footer>Generated from the population and identity context model
+  &bull; data/output/demographic_context_2050.csv</footer>
 <div id="overlay"></div>
 <aside id="drawer">
   <button id="close-drawer" type="button">&times;</button>
@@ -946,8 +955,8 @@ def build_html(treemap_data: dict, religion_data: dict, scen_json: str, meta_jso
   const MIG_LABELS = ['Zero', 'Low', 'Medium', 'High'];
   const FERT_LABELS = ['Trend continuation', 'Baseline', 'Replacement'];
   const DRIVER_COLORS = {{
-    Immigration: '#e76f51', Fertility: '#2a9d8f', Intermarriage: '#e9c46a',
-    Assimilation: '#a3b18a', Ageing: '#457b9d',
+    Immigration: '#e76f51', Fertility: '#2a9d8f', 'Mixed identity': '#e9c46a',
+    'Identity transition': '#a3b18a', Ageing: '#457b9d',
     'Religious composition': '#7c3aed', Stable: '#c0c9d5'
   }};
   const RELIGION_COLORS = {{
@@ -1364,20 +1373,21 @@ def build_html(treemap_data: dict, religion_data: dict, scen_json: str, meta_jso
       '<div class="chip">Policy openness<b>' + m.openness.toFixed(1) + '</b></div>' +
       '<div class="chip">Policy feedback<b>' + m.policyFeedback.toFixed(2) + '</b></div>' +
       '<div class="chip">Demographic pressure<b>' + (m.pressure * 100).toFixed(0) + '%</b></div>' +
-      '<div class="chip">Intermarriage coefficient<b>' + m.intermarriage.toFixed(3) + '</b></div>' +
-      '<div class="chip">Assimilation coefficient<b>' + m.assimilation.toFixed(4) + '</b></div>' +
-      '<div class="chip">Diversity 2050<b>' + m.diversity50.toFixed(3) + '</b></div>' +
+      '<div class="chip">Mixed-identity recognition<b>' + m.identityRecognition.toFixed(3) + '</b></div>' +
+      '<div class="chip">Identity-category transition<b>' + m.identityTransition.toFixed(4) + '</b></div>' +
+      '<div class="chip">Composition diversity 2050<b>' + m.diversity50.toFixed(3) + '</b></div>' +
       '<div class="chip">Urban layer<b>' + m.urbanLayer.replaceAll('-', ' ') + '</b></div>' +
       '<div class="chip">Urban absorption pressure<b>' + m.urbanAbsorption.toFixed(2) + '</b></div>' +
       '<div class="chip">Mobility convergence<b>' + m.mobilityConvergence.toFixed(2) + '</b></div>' +
       '<div class="chip">Regional concentration<b>' + m.regionalConcentration.toFixed(2) + '</b></div>' +
       '<div class="chip">Climate migration stress<b>' + m.climateMigrationStress.toFixed(2) + '</b></div>' +
-      '<div class="chip">Language integration<b>' + m.languageIntegration.toFixed(2) + '</b></div>' +
-      '<div class="chip">Language friction<b>' + m.languageFriction.toFixed(2) + '</b></div>' +
-      '<div class="chip">Brazilification shift<b>' + m.brazilificationShift.toFixed(2) + ' pp</b></div>' +
-      '<div class="chip">Brazilification diversity<b>' + m.brazilificationDiversity.toFixed(3) + '</b></div>' +
-      '<div class="chip">Intermarriage multiplier<b>' + m.brazilificationIntermarriage.toFixed(2) + 'x</b></div>' +
-      '<div class="chip">Mixed identity multiplier<b>' + m.brazilificationMixedIdentity.toFixed(2) + 'x</b></div>';
+      '<div class="chip">Language access capacity<b>' + m.languageAccess.toFixed(2) + '</b></div>' +
+      '<div class="chip">Language access gap<b>' + m.languageAccessGap.toFixed(2) + '</b></div>' +
+      '<div class="chip">Inclusive service-delivery gap<b>' + m.serviceDeliveryGap.toFixed(2) + '</b></div>' +
+      '<div class="chip">Inclusive-mobility shift<b>' + m.inclusiveShift.toFixed(2) + ' pp</b></div>' +
+      '<div class="chip">Inclusive composition index<b>' + m.inclusiveComposition.toFixed(3) + '</b></div>' +
+      '<div class="chip">Identity-recognition multiplier<b>' + m.inclusiveIdentityRecognition.toFixed(2) + 'x</b></div>' +
+      '<div class="chip">Mixed-identity multiplier<b>' + m.inclusiveMixedIdentity.toFixed(2) + 'x</b></div>';
     const grp = activeCountryGroups()[iso] || [];
     grp.sort((a, b) => shareForEntry(b) - shareForEntry(a));
     const maxS = Math.max.apply(null, grp.map(shareForEntry));
@@ -1556,7 +1566,7 @@ def main():
       <div class="stat"><div class="v">{n_countries}</div>
         <div class="k">Countries</div></div>
       <div class="stat"><div class="v">{n_groups:,}</div>
-        <div class="k">Ethnic groups tracked</div></div>
+        <div class="k">Identity-group rows tracked</div></div>
       <div class="stat"><div class="v">{n_religion_rows:,}</div>
         <div class="k">Religious rows tracked</div></div>
       <div class="stat"><div class="v">{median_chg:.2f} pp</div>
