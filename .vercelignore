@@ -1,0 +1,11 @@
+.venv/
+.idea/
+__pycache__/
+catboost_info/
+data/raw/
+*.log
+/*.py
+/requirements.txt
+/src/
+/audit*.py
+/test*.py

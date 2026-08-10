@@ -1,0 +1,40 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "framework": null,
+  "cleanUrls": false,
+  "rewrites": [
+    {
+      "source": "/",
+      "destination": "/web/hdi-2050-dashboard.html"
+    },
+    {
+      "source": "/dashboard",
+      "destination": "/web/hdi-2050-dashboard.html"
+    }
+  ],
+  "functions": {
+    "api/**/*.py": {
+      "excludeFiles": "{.venv/**,.idea/**,catboost_info/**,data/raw/**,src/**,web/**,**/__pycache__/**,audit*.py,run_*.py,build_*.py}"
+    }
+  },
+  "headers": [
+    {
+      "source": "/data/output/(.*)",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=0, s-maxage=3600, stale-while-revalidate=86400"
+        }
+      ]
+    },
+    {
+      "source": "/web/assets/(.*)",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=0, s-maxage=86400, stale-while-revalidate=604800"
+        }
+      ]
+    }
+  ]
+}

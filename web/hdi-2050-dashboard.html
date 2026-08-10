@@ -2043,7 +2043,7 @@
         </div>
       </div>
       <div class="panel mosaic-panel">
-        <iframe class="mosaic-frame subdivision-explorer-frame" title="Interactive subnational HDI map and explorer for 2025 and 2050" loading="lazy" src="subnational-hdi-infographic.html?v=20260809-korea-usa-fix"></iframe>
+        <iframe class="mosaic-frame subdivision-explorer-frame" title="Interactive subnational HDI map and explorer for 2025 and 2050" loading="lazy" src="subnational-hdi-infographic.html?v=20260810-france-fix"></iframe>
       </div>
     </section>
     </section>
@@ -4711,7 +4711,7 @@
       };
       const endpoints = window.HDI_GPT_ENDPOINT
         ? [window.HDI_GPT_ENDPOINT]
-        : (location.hostname === "localhost" || location.hostname === "127.0.0.1" ? ["/api/hdi-gpt", "http://localhost:8766/api/hdi-gpt"] : []);
+        : (location.hostname === "localhost" || location.hostname === "127.0.0.1" ? ["/api/hdi-gpt", "http://localhost:8766/api/hdi-gpt"] : ["/api/hdi-gpt"]);
       for (const endpoint of endpoints) {
         const response = await fetch(endpoint, {
           method: "POST",
