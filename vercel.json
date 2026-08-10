@@ -2,6 +2,23 @@
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "framework": null,
   "cleanUrls": false,
+  "redirects": [
+    {
+      "source": "/subdivisions",
+      "destination": "/web/subnational-hdi-infographic.html",
+      "permanent": false
+    },
+    {
+      "source": "/subdivision-maps",
+      "destination": "/web/subdivision-hdi-2025-2050.html",
+      "permanent": false
+    },
+    {
+      "source": "/ethnic-mosaic",
+      "destination": "/data/output/ethnic_demographics_2050.html",
+      "permanent": false
+    }
+  ],
   "rewrites": [
     {
       "source": "/",
