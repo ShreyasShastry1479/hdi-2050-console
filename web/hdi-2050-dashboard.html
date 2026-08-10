@@ -13,6 +13,7 @@
 <body>
 <div id="hdi-dashboard-app">
   <style>
+    html, body { max-width:100%; overflow-x:clip; }
     :root {
       color-scheme: dark;
       --bg: #070b14;
@@ -637,6 +638,9 @@
       gap: 14px;
       margin-bottom: 18px;
     }
+    .research-grid > .panel,
+    .research-grid .panel-head > *,
+    .research-grid .control-group { min-width: 0; }
     .insight-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
@@ -804,6 +808,103 @@
       line-height: 1.5;
       margin-top: 10px;
     }
+    .research-foundation {
+      display: grid;
+      gap: 16px;
+      margin-bottom: 16px;
+      border-color: rgba(88, 230, 255, 0.28);
+      background: rgba(7, 17, 31, 0.88);
+    }
+    .research-question {
+      max-width: 980px;
+      margin: 0;
+      color: #f7fbff;
+      font-size: clamp(20px, 2.2vw, 30px);
+      font-weight: 760;
+      line-height: 1.3;
+    }
+    .research-meta-grid,
+    .evidence-grid,
+    .policy-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+      gap: 10px;
+    }
+    .research-meta,
+    .evidence-card,
+    .policy-flag {
+      padding: 12px;
+      border: 1px solid rgba(150, 190, 255, 0.16);
+      border-radius: 8px;
+      background: rgba(9, 20, 36, 0.82);
+    }
+    .research-meta strong,
+    .evidence-card strong,
+    .policy-flag strong {
+      display: block;
+      margin-bottom: 5px;
+      color: #f7fbff;
+      font-size: 12px;
+    }
+    .research-meta span,
+    .evidence-card span,
+    .policy-flag span {
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.5;
+    }
+    .evidence-card.observed { border-left: 3px solid var(--green); }
+    .evidence-card.validated { border-left: 3px solid var(--cyan); }
+    .evidence-card.modeled { border-left: 3px solid var(--gold); }
+    .evidence-card.context { border-left: 3px solid #bf8cff; }
+    .equation-box {
+      padding: 14px;
+      border: 1px solid rgba(246, 206, 106, 0.24);
+      border-radius: 8px;
+      background: rgba(246, 206, 106, 0.055);
+      overflow-x: auto;
+      color: #f8e8bd;
+      font: 600 13px/1.7 ui-monospace, SFMono-Regular, Consolas, monospace;
+      white-space: nowrap;
+    }
+    .research-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .research-links a {
+      display: inline-flex;
+      align-items: center;
+      min-height: 40px;
+      padding: 8px 11px;
+      border: 1px solid rgba(88, 230, 255, 0.24);
+      border-radius: 6px;
+      color: #dff9ff;
+      background: rgba(88, 230, 255, 0.06);
+      text-decoration: none;
+    }
+    .policy-screen {
+      margin-top: 12px;
+      padding-top: 12px;
+      border-top: 1px solid rgba(150, 190, 255, 0.14);
+    }
+    .policy-screen h3 { margin: 0 0 4px; font-size: 14px; }
+    .policy-screen > p { margin: 0 0 10px; color: var(--muted); font-size: 12px; line-height: 1.5; }
+    .policy-flag.priority { border-left: 3px solid var(--red); }
+    .policy-flag.watch { border-left: 3px solid var(--gold); }
+    .policy-flag.capacity { border-left: 3px solid var(--cyan); }
+    .validation-table {
+      width: 100%;
+      margin-top: 12px;
+      border-collapse: collapse;
+      font-size: 12px;
+    }
+    .validation-table caption { padding: 0 0 8px; color: var(--muted); text-align: left; }
+    .validation-table th,
+    .validation-table td { padding: 8px 10px; border-bottom: 1px solid rgba(150, 190, 255, 0.12); text-align: right; }
+    .validation-table th:first-child,
+    .validation-table td:first-child { text-align: left; }
+    #print-brief { display: none; }
     .maps {
       display: grid;
       grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -1554,6 +1655,10 @@
       .hero, .maps { grid-template-columns: 1fr; }
       .chart-grid { grid-template-columns: 1fr; }
       .research-grid { grid-template-columns: 1fr; }
+      .research-grid .panel-head { align-items: flex-start; flex-wrap: wrap; }
+      .research-grid .control-group { width: 100%; flex-wrap: wrap; }
+      .research-grid .control-group > * { flex: 1 1 150px; min-width: 0; }
+      .research-grid .chart-svg { width: 100%; max-width: 100%; }
       .mosaic-brief { grid-template-columns: 1fr; }
       .hdi-gpt-layout { grid-template-columns: 1fr; }
       .graph-builder { grid-template-columns: 1fr; }
@@ -1589,6 +1694,7 @@
       }
       select, button { flex: 0 0 auto; }
       .method-flow { grid-template-columns: 1fr; }
+      .equation-box { white-space: normal; overflow-wrap: anywhere; }
     }
   </style>
 
@@ -1604,6 +1710,23 @@
     .a11y-palette { --cyan:#00b8d4; --green:#009e73; --gold:#f0b429; }
     @media (prefers-reduced-motion: reduce) { *, *::before, *::after { scroll-behavior:auto !important; animation-duration:.01ms !important; animation-iteration-count:1 !important; transition-duration:.01ms !important; } }
     @media (max-width:420px) { .shell { width:100%; padding-inline:10px; } .controls,.nav-bar { position:static; } .control-group { width:100%; } .control-group > * { flex:1 1 100%; min-width:0; } .table-wrap { max-width:100%; } }
+    @media (max-width:980px) { .nav-links { width:100%; max-width:100%; min-width:0; } }
+    @media print {
+      body { background: #fff !important; color: #111827 !important; }
+      .shell, .drawer-backdrop, .glossary-drawer, .compare-drawer, .skip-link { display: none !important; }
+      #print-brief { display: block !important; padding: 18mm; color: #111827; font: 10.5pt/1.42 Arial, sans-serif; }
+      #print-brief h1 { margin: 0 0 4px; font-size: 24pt; }
+      #print-brief h2 { margin: 18px 0 8px; font-size: 14pt; border-bottom: 1px solid #9ca3af; padding-bottom: 4px; }
+      #print-brief h3 { margin: 10px 0 4px; font-size: 11pt; }
+      #print-brief p { margin: 0 0 8px; }
+      #print-brief .print-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
+      #print-brief .print-stat { border: 1px solid #cbd5e1; padding: 8px; }
+      #print-brief .print-stat span { display: block; color: #475569; font-size: 8pt; }
+      #print-brief table { width: 100%; border-collapse: collapse; font-size: 9pt; }
+      #print-brief th, #print-brief td { border-bottom: 1px solid #d1d5db; padding: 5px; text-align: left; }
+      #print-brief .page-break { break-before: page; }
+      #print-brief a { color: #111827; text-decoration: none; }
+    }
   </style>
 
   <a class="skip-link" href="#page-root">Skip to main content</a>
@@ -1933,6 +2056,34 @@
     </section>
 
     <section class="page-view" id="research" data-page-title="Research">
+    <section class="panel research-foundation" aria-labelledby="research-question-title">
+      <div>
+        <div class="section-kicker">Research design</div>
+        <h2 id="research-question-title" class="research-question">How could structural capacity and internal inequality shape human-development convergence by 2050?</h2>
+      </div>
+      <div class="note-box"><strong>Core thesis:</strong> catch-up is conditional. Demographic dividends, industrialization, and digital technology improve human development only when education, health systems, infrastructure, and institutions can absorb and distribute those gains. This is an independent scenario model, not an official UNDP forecast.</div>
+      <div class="research-meta-grid" aria-label="Research scope">
+        <div class="research-meta"><strong>Unit of analysis</strong><span>193 UNDP countries and 1,775 subdivision records across 164 countries.</span></div>
+        <div class="research-meta"><strong>Baseline definition</strong><span>HDR 2025 report release; underlying Table 1 observations are primarily for 2023.</span></div>
+        <div class="research-meta"><strong>Forecast estimand</strong><span>Conditional 2050 scenario HDI, component indices, rank ranges, and internal dispersion.</span></div>
+        <div class="research-meta"><strong>Validation boundary</strong><span>2014-2023 short-horizon backtest; it does not prove 25-year forecast accuracy.</span></div>
+      </div>
+      <div class="equation-box" aria-label="National HDI convergence equation">HDI<sub>2050</sub> = clamp[HDI<sub>baseline</sub> + (0.985 - HDI<sub>baseline</sub>) x (1 - e<sup>-speed x years</sup>) + structural adjustments]</div>
+      <div class="evidence-grid" aria-label="Evidence hierarchy">
+        <div class="evidence-card observed"><strong>1. Observed</strong><span>UNDP baseline HDI and components, historical panel values, and national population totals.</span></div>
+        <div class="evidence-card validated"><strong>2. Historically tested</strong><span>Held-out country-year predictions with MAE, RMSE, bias, R-squared, and year-level diagnostics.</span></div>
+        <div class="evidence-card modeled"><strong>3. Scenario modeled</strong><span>2050 convergence, P10/P90 bounds, structural contributions, and subnational population proxies.</span></div>
+        <div class="evidence-card context"><strong>4. Qualitative context</strong><span>Ethnic and religious composition used to study inclusion, not as an inherent causal penalty.</span></div>
+      </div>
+      <div class="research-links" aria-label="Research documentation and sources">
+        <a href="/methodology" target="_blank" rel="noopener">Full methodology</a>
+        <a href="/research-report" target="_blank" rel="noopener">Research report</a>
+        <a href="https://hdr.undp.org/sites/default/files/2025_HDR/HDR25_Statistical_Annex_HDI_Table.pdf" target="_blank" rel="noopener">UNDP HDR 2025 Table 1</a>
+        <a href="https://hdr.undp.org/sites/default/files/2025_HDR/hdr2025_technical_notes.pdf" target="_blank" rel="noopener">UNDP technical notes</a>
+        <a href="../data/output/hdi_2050_rankings.csv" target="_blank" rel="noopener">National data</a>
+        <a href="../data/output/subdivision_hdi_2025_2050.csv" target="_blank" rel="noopener">Subnational data</a>
+      </div>
+    </section>
     <section class="panel" id="advanced-filters">
       <div class="panel-head">
         <div>
@@ -1989,6 +2140,11 @@
         <div class="driver-list" id="driver-breakdown"></div>
         <svg id="sensitivity-radar" class="chart-svg" viewBox="0 0 640 280" aria-label="Sensitivity radar chart"></svg>
         <div class="note-box" id="qualitative-note">Select a country or row to generate a research brief.</div>
+        <div class="policy-screen" aria-live="polite">
+          <h3>Policy screening</h3>
+          <p>Transparent diagnostic flags derived from component, structural, and subnational gaps. These indicate where to investigate, not which intervention is causally proven.</p>
+          <div class="policy-grid" id="policy-flags"><div class="policy-flag"><strong>No country selected</strong><span>Select a country to generate policy and subnational screening flags.</span></div></div>
+        </div>
         <div class="chart-caption" id="citation-snippet">Citation will update with the current view.</div>
       </div>
       <div class="panel">
@@ -2041,11 +2197,11 @@
         </div>
         <div class="mosaic-insight-grid" aria-label="Subdivision HDI summary metrics">
           <div class="mosaic-stat">
-            <div class="value">1,764</div>
+            <div class="value">1,775</div>
             <div class="label">Subdivision rows</div>
           </div>
           <div class="mosaic-stat">
-            <div class="value">163</div>
+            <div class="value">164</div>
             <div class="label">Countries covered</div>
           </div>
           <div class="mosaic-stat">
@@ -2494,9 +2650,17 @@
         <div class="mini-card"><div class="k">Mean absolute error</div><div class="v" id="backtest-mae">--</div></div>
         <div class="mini-card"><div class="k">RMSE</div><div class="v" id="backtest-rmse">--</div></div>
         <div class="mini-card"><div class="k">Mean error</div><div class="v" id="backtest-bias">--</div></div>
+        <div class="mini-card"><div class="k">R-squared</div><div class="v" id="backtest-r2">--</div></div>
+        <div class="mini-card"><div class="k">P90 absolute error</div><div class="v" id="backtest-p90">--</div></div>
       </div>
       <svg id="backtest-chart" class="chart-svg" viewBox="0 0 640 260" aria-label="Backtest predicted versus actual HDI scatter plot"></svg>
-      <div class="chart-caption">A tighter diagonal cloud indicates stronger historical validation. This panel reads `backtest_predictions.csv` when available.</div>
+      <div class="note-box"><strong>Interpretation boundary:</strong> this is a short-horizon held-out panel test using lagged/current historical covariates. It measures historical numerical fit, not the calibration of geopolitical, climate, demographic, or technology assumptions over 25 years.</div>
+      <table class="validation-table">
+        <caption>Backtest error by held-out year</caption>
+        <thead><tr><th scope="col">Year</th><th scope="col">Observations</th><th scope="col">MAE</th><th scope="col">RMSE</th><th scope="col">Mean error</th></tr></thead>
+        <tbody id="backtest-year-body"></tbody>
+      </table>
+      <div class="chart-caption">The scatter and year diagnostics read `data/output/backtest_predictions.csv` directly.</div>
     </section>
     </section>
 
@@ -2525,7 +2689,7 @@
           <div class="section-kicker">Composite index</div>
           <div class="section-title">Human Development Index</div>
         </div>
-        <div class="section-note">Headline HDI comparison from the 2025 baseline to the model's 2050 projection. The projected value is matched to the 2050 health, education, and income indices through the official geometric HDI formula.</div>
+        <div class="section-note">Headline comparison from the HDR 2025 release baseline to the model's 2050 projection. The projected value is reconciled to the 2050 health, education, and income indices through the geometric HDI identity; the displayed calibration indices are not official UNDP forecasts.</div>
       </div>
       <div class="scenario-map-switcher" aria-label="2050 scenario map switcher">
         <div class="label">2050 scenario map</div>
@@ -2793,6 +2957,7 @@
     </section>
     </section>
     </main>
+    <article id="print-brief" aria-hidden="true"></article>
   </div>
   <div id="a11y-status" class="sr-only" role="status" aria-live="polite" aria-atomic="true"></div>
   <div id="tooltip" class="tooltip"></div>
@@ -2964,7 +3129,7 @@
       HDI_P10: "Low-end uncertainty estimate for the 2050 HDI scenario. It is a pessimistic bound, not an official UN confidence interval.",
       HDI_P90: "High-end uncertainty estimate for the 2050 HDI scenario. It is an optimistic bound, not an official UN confidence interval.",
       HDI_2050_Index_Mismatch: "Difference between projected 2050 HDI and the HDI recomputed from the projected health, education, and income indices.",
-      HDI_2050_Recomputed_From_Indices: "Projected health, education, and income indices combined through the official geometric HDI formula.",
+      HDI_2050_Recomputed_From_Indices: "Projected health, education, and income calibration indices combined through the geometric HDI identity. These component projections are not official UNDP indices.",
       FutureReadiness: "Composite scenario factor for long-run technology, institutional, green-transition, and innovation readiness.",
       ResourceDrag: "Penalty for oil or commodity dependence and volatile growth profiles that can slow durable HDI progress.",
       DigitalInfraDevelopment: "Digital infrastructure development score, including cloud adoption, AI readiness, broadband, and related future-facing variables.",
@@ -4172,6 +4337,7 @@
         document.getElementById("driver-breakdown").innerHTML = "";
         renderSensitivityRadar(null);
         document.getElementById("qualitative-note").textContent = `Filtered view under ${scenarios[activeScenario].label}. Use the filters or select a country to audit specific drivers.`;
+        renderPolicyFlags(null);
         return;
       }
 
@@ -4193,6 +4359,7 @@
       `).join("");
       renderSensitivityRadar(selected);
       document.getElementById("qualitative-note").textContent = qualitativeNote(selected, drivers);
+      renderPolicyFlags(selected);
     }
 
     function renderSensitivityRadar(row) {
@@ -4264,18 +4431,18 @@
       const scenario = scenarios[activeScenario].label;
       const stateUrl = `${window.location.origin}${window.location.pathname}${window.location.search}${window.location.hash}`;
       if (format === "bibtex") {
-        return `@misc{hdi2050projectionconsole2026, title={HDI 2050 Projection Console}, year={2026}, url={${stateUrl}}, note={Scenario: ${scenario}; View: ${citationTarget}; Source data: data/output/hdi_2050_rankings.csv}}`;
+        return `@misc{hdi2050projectionconsole2026, title={Global and Subnational Human Development Scenario Projections}, author={{HDI 2050 Projection Console}}, year={2026}, version={1.2}, url={${stateUrl}}, note={Independent scenario model; Scenario: ${scenario}; View: ${citationTarget}; Source data: data/output/hdi_2050_rankings.csv}}`;
       }
       if (format === "chicago") {
-        return `HDI 2050 Projection Console. 2026. "Scenario Projection Dataset and Interactive Research Dashboard." Scenario: ${scenario}. View: ${citationTarget}. Source data: data/output/hdi_2050_rankings.csv. State URL: ${stateUrl}.`;
+        return `HDI 2050 Projection Console. 2026. "Global and Subnational Human Development Scenario Projections." Version 1.2. Scenario: ${scenario}. View: ${citationTarget}. ${stateUrl}.`;
       }
       if (format === "harvard") {
-        return `HDI 2050 Projection Console (2026) Scenario projection dataset and interactive research dashboard. Scenario: ${scenario}. View: ${citationTarget}. Source data: data/output/hdi_2050_rankings.csv. State URL: ${stateUrl}.`;
+        return `HDI 2050 Projection Console (2026) Global and subnational human development scenario projections, version 1.2. Scenario: ${scenario}. View: ${citationTarget}. Available at: ${stateUrl}.`;
       }
       if (format === "ris") {
-        return `TY  - DATA\nTI  - HDI 2050 Projection Console\nPY  - 2026\nUR  - ${stateUrl}\nN1  - Scenario: ${scenario}; View: ${citationTarget}; Source data: data/output/hdi_2050_rankings.csv\nER  -`;
+        return `TY  - DATA\nTI  - Global and Subnational Human Development Scenario Projections\nAU  - HDI 2050 Projection Console\nPY  - 2026\nET  - 1.2\nUR  - ${stateUrl}\nN1  - Independent scenario model; Scenario: ${scenario}; View: ${citationTarget}\nER  -`;
       }
-      return `HDI 2050 Projection Console. (2026). Scenario projection dataset and interactive research dashboard. Scenario: ${scenario}. View: ${citationTarget}. Source data: data/output/hdi_2050_rankings.csv. State URL: ${stateUrl}.`;
+      return `HDI 2050 Projection Console. (2026). Global and subnational human development scenario projections (Version 1.2) [Data set and interactive dashboard]. Scenario: ${scenario}. View: ${citationTarget}. ${stateUrl}`;
     }
 
     function qualitativeNote(row, drivers) {
@@ -4290,6 +4457,55 @@
       if ((row.ResourceDrag || 0) < -0.01) note += " Resource dependence or economic volatility reduces confidence in the projection.";
       if ((row.DigitalInfraDevelopment || 0) > 0.7) note += " Digital infrastructure is strong enough to matter in the scenario branches.";
       return note;
+    }
+
+    function policyFlagsFor(row) {
+      if (!row) return [];
+      const flags = [];
+      const dimensions = [
+        {label: "health", value: Number(row.HealthIndex_2050)},
+        {label: "education", value: Number(row.EducationIndex_2050)},
+        {label: "income", value: Number(row.IncomeIndex_2050)}
+      ].filter(item => Number.isFinite(item.value)).sort((a, b) => a.value - b.value);
+      if (dimensions.length) {
+        const weakest = dimensions[0];
+        flags.push({level: weakest.value < 0.70 ? "priority" : "capacity", title: `${weakest.label[0].toUpperCase()}${weakest.label.slice(1)} is the binding HDI dimension`, text: `Projected index ${fmt(weakest.value)}. Investigate the delivery constraints behind this dimension before assuming gains in other channels will translate into HDI.`});
+      }
+      if (Number(row.DependencyPressure) > 0.58 || Number(row.YouthDependencyPressure) > 0.58) {
+        flags.push({level: "priority", title: "Human-capital absorption pressure", text: `Dependency pressure is ${fmt(row.DependencyPressure)}. Prioritize school completion, primary care, urban services, and job creation that can convert population momentum into a dividend.`});
+      } else if (Number(row.AgingPressure) > 0.58) {
+        flags.push({level: "watch", title: "Ageing and workforce resilience", text: `Ageing pressure is ${fmt(row.AgingPressure)}. Test skilled migration, participation, healthy ageing, automation, and retention policies rather than treating decline as fixed.`});
+      }
+      if (Number(row.DigitalInfraDevelopment) < 0.50) {
+        flags.push({level: "watch", title: "Digital infrastructure bottleneck", text: `Digital infrastructure score ${fmt(row.DigitalInfraDevelopment)} may limit education delivery, service access, and technology diffusion.`});
+      }
+      if (Number(row.Contrib_Governance) < -0.002 || Number(row.InstEfficiency) < 0.86) {
+        flags.push({level: "priority", title: "Institutional delivery constraint", text: `Governance contribution ${Number(row.Contrib_Governance) >= 0 ? "+" : ""}${fmt(row.Contrib_Governance, 4)}. Audit implementation capacity, rule of law, corruption exposure, and regional service equality.`});
+      }
+      if (Number(row.ResourceDrag) > 0.08 || Number(row.ResourceDependence) > 0.65) {
+        flags.push({level: "watch", title: "Resource conversion and diversification", text: `Resource dependence ${fmt(row.ResourceDependence)} and drag ${fmt(row.ResourceDrag, 4)} warrant stress tests for revenue volatility, diversification, and human-capital investment.`});
+      }
+      const subs = subdivisionRows.filter(item => item.ISO3 === row.ISO3 && Number.isFinite(Number(item.Subdivision_HDI_2050_Projected)));
+      if (subs.length) {
+        const sorted = [...subs].sort((a, b) => Number(a.Subdivision_HDI_2050_Projected) - Number(b.Subdivision_HDI_2050_Projected));
+        const low = sorted[0];
+        const high = sorted[sorted.length - 1];
+        const spread = Number(high.Subdivision_HDI_2050_Projected) - Number(low.Subdivision_HDI_2050_Projected);
+        const below070 = subs.filter(item => Number(item.Subdivision_HDI_2050_Projected) < 0.700).length;
+        flags.push({level: spread > 0.12 ? "priority" : "capacity", title: `Subnational spread ${fmt(spread, 3)}`, text: `${escapeAttr(low.Subdivision)} is lowest at ${fmt(low.Subdivision_HDI_2050_Projected)}; ${escapeAttr(high.Subdivision)} is highest at ${fmt(high.Subdivision_HDI_2050_Projected)}. ${below070} of ${subs.length} source regions remain below 0.700.`});
+      }
+      return flags.slice(0, 6);
+    }
+
+    function renderPolicyFlags(row) {
+      const container = document.getElementById("policy-flags");
+      if (!container) return;
+      const flags = policyFlagsFor(row);
+      if (!flags.length) {
+        container.innerHTML = `<div class="policy-flag"><strong>No country selected</strong><span>Select a country to generate policy and subnational screening flags.</span></div>`;
+        return;
+      }
+      container.innerHTML = flags.map(flag => `<div class="policy-flag ${flag.level}"><strong>${flag.title}</strong><span>${flag.text}</span></div>`).join("");
     }
 
     function updateHdiGptContext() {
@@ -5002,11 +5218,26 @@
       const mae = d3.mean(backtestRows, d => Math.abs(d.actual - d.pred));
       const rmse = Math.sqrt(d3.mean(backtestRows, d => Math.pow(d.actual - d.pred, 2)));
       const bias = d3.mean(backtestRows, d => d.pred - d.actual);
+      const actualMean = d3.mean(backtestRows, d => d.actual);
+      const ssResidual = d3.sum(backtestRows, d => Math.pow(d.actual - d.pred, 2));
+      const ssTotal = d3.sum(backtestRows, d => Math.pow(d.actual - actualMean, 2));
+      const r2 = ssTotal > 0 ? 1 - ssResidual / ssTotal : NaN;
+      const sortedAbsoluteErrors = backtestRows.map(d => Math.abs(d.actual - d.pred)).sort(d3.ascending);
+      const p90 = d3.quantileSorted(sortedAbsoluteErrors, 0.90);
       document.getElementById("backtest-status").textContent = `${d3.min(backtestRows, d => d.year)}-${d3.max(backtestRows, d => d.year)}`;
       document.getElementById("backtest-n").textContent = backtestRows.length.toLocaleString();
       document.getElementById("backtest-mae").textContent = fmt(mae, 4);
       document.getElementById("backtest-rmse").textContent = fmt(rmse, 4);
       document.getElementById("backtest-bias").textContent = bias >= 0 ? `+${fmt(bias, 4)}` : fmt(bias, 4);
+      document.getElementById("backtest-r2").textContent = fmt(r2, 4);
+      document.getElementById("backtest-p90").textContent = fmt(p90, 4);
+      const yearGroups = d3.groups(backtestRows, d => d.year).sort((a, b) => a[0] - b[0]);
+      document.getElementById("backtest-year-body").innerHTML = yearGroups.map(([year, rows]) => {
+        const yearMae = d3.mean(rows, d => Math.abs(d.actual - d.pred));
+        const yearRmse = Math.sqrt(d3.mean(rows, d => Math.pow(d.actual - d.pred, 2)));
+        const yearBias = d3.mean(rows, d => d.pred - d.actual);
+        return `<tr><th scope="row">${year}</th><td>${rows.length}</td><td>${fmt(yearMae, 4)}</td><td>${fmt(yearRmse, 4)}</td><td>${yearBias >= 0 ? "+" : ""}${fmt(yearBias, 4)}</td></tr>`;
+      }).join("");
       renderBacktestChart();
     }
 
@@ -5611,7 +5842,50 @@
 
     function exportPdfBrief() {
       syncUrlState();
+      buildPrintBrief();
       window.print();
+    }
+
+    function buildPrintBrief() {
+      const container = document.getElementById("print-brief");
+      const row = activeCountry;
+      if (!row) {
+        container.innerHTML = `<h1>HDI 2050 Projection Console</h1><p>Select a country before exporting a country intelligence brief.</p>`;
+        return;
+      }
+      const drivers = driverColumns
+        .map(([label, key]) => ({label, value: Number(row[key]) || 0}))
+        .sort((a, b) => Math.abs(b.value) - Math.abs(a.value));
+      const flags = policyFlagsFor(row);
+      const subs = subdivisionRows
+        .filter(item => item.ISO3 === row.ISO3 && Number.isFinite(Number(item.Subdivision_HDI_2050_Projected)))
+        .sort((a, b) => Number(b.Subdivision_HDI_2050_Projected) - Number(a.Subdivision_HDI_2050_Projected));
+      const selectedSubs = [...subs.slice(0, 4), ...subs.slice(-4)].filter((item, index, array) => array.findIndex(other => other.Subdivision === item.Subdivision) === index);
+      const summary = qualitativeNote(row, drivers);
+      const generated = new Date().toLocaleDateString(undefined, {year: "numeric", month: "long", day: "numeric"});
+      container.innerHTML = `
+        <header><div>HDI 2050 Projection Console | Country Intelligence Brief | Version 1.2</div><h1>${escapeAttr(row.Country)}</h1><p>${scenarios[activeScenario].label} | Generated ${generated}</p></header>
+        <h2>Executive summary</h2><p>${escapeAttr(summary)}</p>
+        <div class="print-grid">
+          <div class="print-stat"><span>HDR 2025 baseline</span><strong>${fmt(row.HDI_Baseline)}</strong></div>
+          <div class="print-stat"><span>Scenario 2050 HDI</span><strong>${fmt(scenarioHdi(row))}</strong></div>
+          <div class="print-stat"><span>Baseline rank / 2050 rank</span><strong>#${row.UNDP_Rank_2023} / #${row.Rank}</strong></div>
+          <div class="print-stat"><span>Heuristic P10-P90</span><strong>${fmt(row.HDI_P10)}-${fmt(row.HDI_P90)}</strong></div>
+          <div class="print-stat"><span>Health 2025-2050</span><strong>${fmt(row.HealthIndex_2025)}-${fmt(row.HealthIndex_2050)}</strong></div>
+          <div class="print-stat"><span>Education 2025-2050</span><strong>${fmt(row.EducationIndex_2025)}-${fmt(row.EducationIndex_2050)}</strong></div>
+          <div class="print-stat"><span>Income 2025-2050</span><strong>${fmt(row.IncomeIndex_2025)}-${fmt(row.IncomeIndex_2050)}</strong></div>
+          <div class="print-stat"><span>Working-age share 2050</span><strong>${fmt(row.WorkingAgePct_2050, 1)}%</strong></div>
+        </div>
+        <h2>Driver attribution</h2>
+        <table><thead><tr><th>Driver</th><th>Attributed HDI change</th><th>Interpretation</th></tr></thead><tbody>${drivers.map(driver => `<tr><td>${driver.label}</td><td>${driver.value >= 0 ? "+" : ""}${fmt(driver.value, 4)}</td><td>${driver.value >= 0 ? "Supportive channel" : "Structural drag"}</td></tr>`).join("")}</tbody></table>
+        <div class="page-break"></div>
+        <h2>Policy screening</h2>${flags.map(flag => `<h3>${flag.title}</h3><p>${flag.text}</p>`).join("") || "<p>No flags generated.</p>"}
+        <h2>Subnational distribution</h2>
+        ${selectedSubs.length ? `<table><thead><tr><th>Subdivision</th><th>2025 HDI</th><th>2050 HDI</th><th>Change</th><th>2050 population weight</th></tr></thead><tbody>${selectedSubs.map(item => `<tr><td>${escapeAttr(item.Subdivision)}</td><td>${fmt(item.Subdivision_HDI_2025_Reconciled)}</td><td>${fmt(item.Subdivision_HDI_2050_Projected)}</td><td>${Number(item.Subdivision_HDI_Change_2025_to_2050) >= 0 ? "+" : ""}${fmt(item.Subdivision_HDI_Change_2025_to_2050)}</td><td>${fmt(Number(item.Subdivision_Weight_2050) * 100, 2)}%</td></tr>`).join("")}</tbody></table>` : "<p>No subnational records are available for this country.</p>"}
+        <h2>Method and limitations</h2><p>Independent conditional scenario projection, not a UNDP forecast. The HDR 2025 release baseline primarily contains 2023 observations. P10/P90 values are heuristic stress bounds, not calibrated probability intervals. Subnational population weights are modeled proxies where official projections are unavailable. Historical backtesting measures short-horizon fit and does not validate the full 2050 horizon.</p>
+        <p><strong>HDI reconciliation:</strong> (Health x Education x Income)^(1/3) = ${fmt(row.HDI_2050_Recomputed_From_Indices)}; post-rounding mismatch ${fmt(row.HDI_2050_Index_Mismatch, 8)}.</p>
+        <h2>Citation</h2><p>${escapeAttr(citationText(`${row.Country} (${row.ISO3})`))}</p>
+        <p>Methodology: ${window.location.origin}/METHODOLOGY.md</p>`;
     }
 
     function renderGlossary() {
@@ -5620,7 +5894,8 @@
         ["Scenario branching", "The scenario selector applies transparent client-side adjustments to the 2050 projection for exploration. It does not overwrite the baseline CSV or claim to be a separately trained model."],
         ["Uncertainty", "P10 and P90 values are displayed as projection bounds and rank ranges. These are model uncertainty aids, not official UN intervals."],
         ["Imputation and provenance", "Country rows are sourced from data/output/hdi_2050_rankings.csv. Subdivision population weights use seeded priors for major subdivision countries where available and a transparent modeled fallback elsewhere. All subdivision population estimates are calibrated so every country sums to its national 2024 and 2050 population totals."],
-        ["Backtesting", "The project includes backtest output files in data/output. A future validation tab can surface MAE/RMSE by country/year directly from those files."]
+        ["Backtesting", "The Validation page reports MAE, RMSE, bias, R-squared, P90 absolute error, and held-out-year diagnostics from data/output/backtest_predictions.csv. This is a short-horizon test and does not validate 25-year scenario assumptions."],
+        ["Research boundary", "This is an independent conditional scenario model, not a UNDP forecast. The HDR 2025 release baseline primarily contains observations for 2023. Full equations, assumptions, and limitations are published in METHODOLOGY.md."]
       ];
       const methodologyHtml = methodology.map(([term, definition]) => `
         <div class="glossary-item">

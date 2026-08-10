@@ -17,6 +17,16 @@
       "source": "/ethnic-mosaic",
       "destination": "/data/output/ethnic_demographics_2050.html",
       "permanent": false
+    },
+    {
+      "source": "/methodology",
+      "destination": "/web/research-document.html?doc=methodology",
+      "permanent": false
+    },
+    {
+      "source": "/research-report",
+      "destination": "/web/research-document.html?doc=report",
+      "permanent": false
     }
   ],
   "rewrites": [

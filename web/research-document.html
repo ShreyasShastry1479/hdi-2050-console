@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="HDI 2050 Projection Console research methodology and report">
+  <title>HDI 2050 Research</title>
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  <style>
+    :root { color-scheme: dark; --bg:#07101d; --surface:#0e1b2d; --line:#263b55; --text:#edf6ff; --muted:#a9bad0; --accent:#5ee7ff; --gold:#f6ce6a; }
+    * { box-sizing:border-box; }
+    html { scroll-behavior:smooth; }
+    body { margin:0; background:var(--bg); color:var(--text); font:16px/1.68 Inter,Segoe UI,Arial,sans-serif; }
+    a { color:var(--accent); }
+    a:focus-visible,button:focus-visible { outline:3px solid var(--gold); outline-offset:3px; }
+    .skip { position:fixed; top:8px; left:8px; transform:translateY(-160%); z-index:10; padding:8px 12px; background:#fff; color:#07101d; }
+    .skip:focus { transform:none; }
+    header { position:sticky; top:0; z-index:5; border-bottom:1px solid rgba(94,231,255,.18); background:rgba(7,16,29,.94); backdrop-filter:blur(12px); }
+    .bar { width:min(1120px,calc(100% - 28px)); min-height:64px; margin:auto; display:flex; align-items:center; justify-content:space-between; gap:16px; }
+    .brand { font-weight:800; color:#fff; text-decoration:none; }
+    nav { display:flex; flex-wrap:wrap; gap:8px; }
+    nav a { min-height:40px; display:inline-flex; align-items:center; padding:7px 10px; border:1px solid var(--line); border-radius:6px; color:var(--muted); text-decoration:none; }
+    nav a[aria-current="page"] { border-color:var(--accent); color:#fff; background:rgba(94,231,255,.08); }
+    main { width:min(900px,calc(100% - 28px)); margin:30px auto 70px; padding:clamp(20px,4vw,52px); border:1px solid var(--line); border-radius:8px; background:var(--surface); box-shadow:0 24px 70px rgba(0,0,0,.28); }
+    h1,h2,h3 { line-height:1.24; color:#fff; scroll-margin-top:90px; }
+    h1 { margin-top:0; font-size:clamp(30px,5vw,50px); }
+    h2 { margin-top:42px; padding-bottom:8px; border-bottom:1px solid var(--line); }
+    h3 { margin-top:28px; }
+    p,li { color:#d9e5f2; }
+    blockquote { margin:22px 0; padding:14px 18px; border-left:4px solid var(--accent); background:rgba(94,231,255,.06); }
+    code { color:#ffe8a3; }
+    pre { overflow:auto; padding:15px; border:1px solid var(--line); border-radius:6px; background:#07111f; }
+    table { width:100%; border-collapse:collapse; margin:20px 0; }
+    th,td { padding:9px 11px; border-bottom:1px solid var(--line); text-align:left; }
+    th { color:#fff; }
+    .status { color:var(--muted); }
+    @media (max-width:620px) { .bar { align-items:flex-start; flex-direction:column; padding:12px 0; } header { position:static; } main { margin-top:14px; } }
+    @media (prefers-reduced-motion:reduce) { html { scroll-behavior:auto; } }
+    @media print { header,.skip { display:none; } body { background:#fff; color:#111; } main { width:100%; margin:0; border:0; box-shadow:none; color:#111; } h1,h2,h3,p,li,th,td { color:#111; } a { color:#111; } }
+  </style>
+</head>
+<body>
+  <a class="skip" href="#document">Skip to document</a>
+  <header>
+    <div class="bar">
+      <a class="brand" href="/">HDI 2050 Research</a>
+      <nav aria-label="Research documents">
+        <a id="method-link" href="/methodology">Methodology</a>
+        <a id="report-link" href="/research-report">Research report</a>
+        <a href="/">Interactive console</a>
+      </nav>
+    </div>
+  </header>
+  <main id="document" tabindex="-1"><p class="status" id="status">Loading research document...</p></main>
+  <script>
+    const report = location.pathname.includes("research-report") || new URLSearchParams(location.search).get("doc") === "report";
+    const source = report ? "/RESEARCH_REPORT.md" : "/METHODOLOGY.md";
+    const active = document.getElementById(report ? "report-link" : "method-link");
+    active.setAttribute("aria-current", "page");
+    fetch(source)
+      .then(response => { if (!response.ok) throw new Error(`HTTP ${response.status}`); return response.text(); })
+      .then(markdown => {
+        document.getElementById("document").innerHTML = marked.parse(markdown);
+        document.title = report ? "Human Development to 2050 | Research Report" : "HDI 2050 | Methodology";
+      })
+      .catch(error => { document.getElementById("status").textContent = `Could not load ${source}: ${error.message}`; });
+  </script>
+</body>
+</html>
