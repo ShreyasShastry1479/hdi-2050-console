@@ -1592,6 +1592,21 @@
     }
   </style>
 
+  <style>
+    .skip-link { position:fixed; left:12px; top:8px; z-index:1000; transform:translateY(-160%); padding:10px 14px; background:#fff; color:#07101d; border:2px solid #00b8d4; border-radius:4px; font-weight:700; }
+    .skip-link:focus { transform:translateY(0); }
+    :where(a,button,input,select,textarea,[tabindex]):focus-visible { outline:3px solid #ffd166 !important; outline-offset:3px; box-shadow:0 0 0 2px #07101d; }
+    .page-view, [id] { scroll-margin-top:150px; }
+    button, select, input[type="search"], input[type="number"] { min-height:44px; }
+    .sr-only { position:absolute !important; width:1px !important; height:1px !important; padding:0 !important; margin:-1px !important; overflow:hidden !important; clip:rect(0,0,0,0) !important; white-space:nowrap !important; border:0 !important; }
+    .table-sort { display:flex; width:100%; min-height:44px; align-items:center; justify-content:space-between; gap:8px; padding:8px 10px; border:0; background:transparent; color:inherit; font:inherit; text-align:left; }
+    #data-table tbody tr[tabindex] { cursor:pointer; }
+    .a11y-palette { --cyan:#00b8d4; --green:#009e73; --gold:#f0b429; }
+    @media (prefers-reduced-motion: reduce) { *, *::before, *::after { scroll-behavior:auto !important; animation-duration:.01ms !important; animation-iteration-count:1 !important; transition-duration:.01ms !important; } }
+    @media (max-width:420px) { .shell { width:100%; padding-inline:10px; } .controls,.nav-bar { position:static; } .control-group { width:100%; } .control-group > * { flex:1 1 100%; min-width:0; } .table-wrap { max-width:100%; } }
+  </style>
+
+  <a class="skip-link" href="#page-root">Skip to main content</a>
   <div class="shell">
     <section class="hero">
       <div>
@@ -1651,11 +1666,12 @@
         <button type="button" class="secondary btn-icon" id="clear-selection"><span class="icon">×</span><span>Clear selection</span></button>
         <button type="button" class="secondary btn-icon" id="export-filtered"><span class="icon">↓</span><span>Export CSV</span></button>
         <button type="button" class="secondary btn-icon" id="export-json"><span class="icon">{ }</span><span>Export JSON</span></button>
+        <button type="button" class="secondary btn-icon" id="accessible-palette" aria-pressed="false"><span class="icon" aria-hidden="true">◑</span><span>Accessible palette</span></button>
         <button type="button" class="secondary btn-icon" id="methodology-toggle"><span class="icon">?</span><span>Glossary</span></button>
       </div>
     </section>
 
-    <main id="page-root">
+    <main id="page-root" tabindex="-1">
     <section class="page-view active-page" id="overview" data-page-title="Overview">
     <section class="stats">
       <div class="stat"><div class="label">Projection type</div><div class="value">Scenario</div></div>
@@ -2043,7 +2059,7 @@
         </div>
       </div>
       <div class="panel mosaic-panel">
-        <iframe class="mosaic-frame subdivision-explorer-frame" title="Interactive subnational HDI map and explorer for 2025 and 2050" loading="lazy" src="/web/subnational-hdi-infographic.html?country=India&amp;subdivision=Goa&amp;v=20260810-france-fix"></iframe>
+        <iframe class="mosaic-frame subdivision-explorer-frame" id="subdivision-explorer-frame" title="Interactive subnational HDI maps, chart, profile, and accessible data table for 2025 and 2050" loading="lazy" src="/web/subnational-hdi-infographic.html?country=India&amp;subdivision=Goa&amp;v=20260810-france-fix"></iframe>
       </div>
     </section>
     </section>
@@ -2769,6 +2785,7 @@
       </div>
       <div class="table-wrap">
         <table id="data-table">
+          <caption>Country-level 2025 baseline and 2050 HDI projection data. Activate a column heading to sort.</caption>
           <thead></thead>
           <tbody></tbody>
         </table>
@@ -2777,9 +2794,10 @@
     </section>
     </main>
   </div>
+  <div id="a11y-status" class="sr-only" role="status" aria-live="polite" aria-atomic="true"></div>
   <div id="tooltip" class="tooltip"></div>
   <div id="drawer-backdrop" class="drawer-backdrop"></div>
-  <aside id="glossary-drawer" class="glossary-drawer" aria-label="Methodology and glossary" aria-hidden="true">
+  <aside id="glossary-drawer" class="glossary-drawer" role="dialog" aria-modal="true" aria-label="Methodology and glossary" aria-hidden="true" tabindex="-1">
     <div class="drawer-head">
       <div>
         <div class="section-kicker">Methodology</div>
@@ -2790,7 +2808,7 @@
     <div class="glossary-list" id="glossary-list"></div>
   </aside>
   <div id="compare-backdrop" class="drawer-backdrop"></div>
-  <aside id="compare-drawer" class="compare-drawer" aria-label="Multi-country comparison drawer" aria-hidden="true">
+  <aside id="compare-drawer" class="compare-drawer" role="dialog" aria-modal="true" aria-label="Multi-country comparison drawer" aria-hidden="true" tabindex="-1">
     <div class="drawer-head">
       <div>
         <div class="section-kicker">Comparison Lab</div>
@@ -2803,7 +2821,7 @@
     <div class="compare-drawer-grid" id="compare-drawer-grid"></div>
   </aside>
   <div id="modal-backdrop" class="modal-backdrop"></div>
-  <section id="mismatch-modal" class="diagnostic-modal" aria-label="Index mismatch diagnostic" aria-hidden="true">
+  <section id="mismatch-modal" class="diagnostic-modal" role="dialog" aria-modal="true" aria-labelledby="mismatch-title" aria-hidden="true" tabindex="-1">
     <div class="drawer-head">
       <div>
         <div class="section-kicker">Formula Audit</div>
@@ -2832,6 +2850,22 @@
     const officialWorldHdi2050 = 0.794;
     const aliases = new Map([["PSX", "PSE"], ["SDS", "SSD"]]);
     const compareColors = ["#58e6ff", "#66f3b3", "#f6ce6a", "#ff7aa2", "#9a8cff", "#ff9f6e"];
+    let accessiblePaletteEnabled = false;
+    let dialogReturnFocus = null;
+    function announce(message) {
+      const status = document.getElementById("a11y-status");
+      status.textContent = "";
+      requestAnimationFrame(() => { status.textContent = message; });
+    }
+    function updateDialogFocus(element, open) {
+      if (open) {
+        dialogReturnFocus = document.activeElement;
+        requestAnimationFrame(() => (element.querySelector("button,[href],input,select,textarea,[tabindex]:not([tabindex='-1'])") || element).focus());
+      } else if (dialogReturnFocus?.isConnected) {
+        dialogReturnFocus.focus();
+        dialogReturnFocus = null;
+      }
+    }
     const scenarios = {
       baseline: {label: "Baseline scenario", note: "Core scenario values from the generated CSV."},
       ai: {label: "Aggressive AI adoption", note: "Illustrative upside branch that rewards digital infrastructure, AI adoption, cloud adoption, and future readiness."},
@@ -3120,6 +3154,14 @@
       const center = 0.82;
       const v = Number(value);
       if (!Number.isFinite(v)) return "rgba(140, 155, 180, 0.24)";
+      if (accessiblePaletteEnabled) {
+        if (v < center) {
+          const share = Math.min(1, Math.max(0, (center - v) / (center - 0.4)));
+          return d3.interpolateRgb("#f5f5f5", "#7a3e00")(Math.pow(share, 0.7));
+        }
+        const share = Math.min(1, Math.max(0, (v - center) / (1 - center)));
+        return d3.interpolateRgb("#f5f5f5", "#003f6b")(Math.pow(share, 0.7));
+      }
       if (v < center) {
         const share = Math.min(1, Math.max(0, (center - v) / (center - 0.4)));
         return d3.interpolateRgbBasis(["#f7f7f7", "#f4a582", "#d6604d", "#b2182b", "#67001f", "#21000c"])(Math.pow(share, 0.62));
@@ -3710,6 +3752,9 @@
           const d = getDatum(f);
           return d ? colorForHDI(series.key === "Scenario_HDI_2050" ? scenarioHdi(d) : d[series.key]) : null;
         })
+        .attr("tabindex", f => { const d=getDatum(f); return d&&filteredIso.has(d.ISO3)?0:-1; })
+        .attr("role", f => getDatum(f)?"button":"img")
+        .attr("aria-label", f => { const d=getDatum(f); if(!d)return "Country with no HDI data"; const value=series.key==="Scenario_HDI_2050"?scenarioHdi(d):d[series.key]; return `${d.Country}, ${series.label}, ${fmt(value)}. Activate to select country.`; })
         .classed("active", f => {
           const d = getDatum(f);
           return d && activeCountry && d.ISO3 === activeCountry.ISO3;
@@ -3728,6 +3773,9 @@
           if (d && filteredIso.has(d.ISO3)) showTooltip(event, d, series);
         })
         .on("mouseleave", hideTooltip)
+        .on("focus", (event,f)=>{const d=getDatum(f);if(d&&filteredIso.has(d.ISO3))showTooltip({clientX:window.innerWidth/2,clientY:120},d,series)})
+        .on("blur", hideTooltip)
+        .on("keydown", (event,f)=>{if(!["Enter"," "].includes(event.key))return;event.preventDefault();const d=getDatum(f);if(d&&filteredIso.has(d.ISO3))setActiveCountry(d)})
         .on("click", (event, f) => {
           const d = getDatum(f);
           if (!d || !filteredIso.has(d.ISO3)) return;
@@ -3746,6 +3794,7 @@
       const r = Number(reference);
       if (!Number.isFinite(v) || !Number.isFinite(r)) return "rgba(140, 155, 180, 0.24)";
       if (isReferenceCountry) return "#f6ce6a";
+      if (accessiblePaletteEnabled) return v > r ? "#0072b2" : "#e69f00";
       return v > r ? "#54d7ff" : "#e03c5f";
     }
 
@@ -3811,6 +3860,9 @@
           if (!d || !filteredIso.has(d.ISO3)) return "rgba(140, 155, 180, 0.24)";
           return thresholdColor(valueForSeries(d, series), referenceValue, !Number.isFinite(thresholdCustomValue) && d.ISO3 === thresholdCountry?.ISO3);
         })
+        .attr("tabindex", f => { const d=getDatum(f); return d&&filteredIso.has(d.ISO3)?0:-1; })
+        .attr("role", f => getDatum(f)?"button":"img")
+        .attr("aria-label", f => { const d=getDatum(f); if(!d)return "Country with no data"; const value=valueForSeries(d,series); const relation=value>referenceValue?"higher than":"lower than"; return `${d.Country}, ${series.year} ${series.label}, ${fmt(value)}, ${relation} reference ${fmt(referenceValue)}.`; })
         .classed("filtered-out", f => {
           const d = getDatum(f);
           return d && filteredRows.length && !filteredIso.has(d.ISO3);
@@ -3829,6 +3881,9 @@
           if (d && filteredIso.has(d.ISO3)) showThresholdTooltip(event, d, series, referenceValue);
         })
         .on("mouseleave", hideTooltip)
+        .on("focus", (event,f)=>{const d=getDatum(f);if(d&&filteredIso.has(d.ISO3))showThresholdTooltip({clientX:window.innerWidth/2,clientY:120},d,series,referenceValue)})
+        .on("blur", hideTooltip)
+        .on("keydown", (event,f)=>{if(!["Enter"," "].includes(event.key))return;event.preventDefault();const d=getDatum(f);if(d&&filteredIso.has(d.ISO3)){thresholdCountry=d;thresholdCustomValue=null;renderThresholdMaps();setActiveCountry(d)}})
         .on("click", (event, f) => {
           const d = getDatum(f);
           if (!d || !filteredIso.has(d.ISO3)) return;
@@ -5392,11 +5447,13 @@
         const sorted = sortState.column === col;
         const sortGlyph = sorted ? (sortState.direction === 1 ? "▲" : "▼") : "";
         const help = glossaryDefinitions[col] ? ` title="${escapeAttr(glossaryDefinitions[col])}"` : "";
-        return `<th data-col="${col}" class="${sorted ? "sorted" : ""}" data-sort="${sortGlyph}"${help}>${labels[col] || col}</th>`;
+        const ariaSort = sorted ? (sortState.direction === 1 ? "ascending" : "descending") : "none";
+        if (col === "Compare") return `<th scope="col" aria-sort="none"${help}>${labels[col] || col}</th>`;
+        return `<th scope="col" aria-sort="${ariaSort}" class="${sorted ? "sorted" : ""}"${help}><button type="button" class="table-sort" data-col="${col}" aria-label="Sort by ${escapeAttr(labels[col] || col)}${sorted ? `, currently ${ariaSort}` : ""}"><span>${labels[col] || col}</span><span aria-hidden="true">${sortGlyph}</span></button></th>`;
       }).join("")}</tr>`;
       tbody.innerHTML = rows.map(d => {
         const activeClass = activeCountry && activeCountry.ISO3 === d.ISO3 ? "row-active" : "";
-        return `<tr data-iso="${d.ISO3}" class="${activeClass}" title="Click to select ${escapeAttr(d.Country)}">
+        return `<tr data-iso="${d.ISO3}" class="${activeClass}" tabindex="0" aria-label="Select ${escapeAttr(d.Country)}. 2025 HDI ${fmt(d.HDI_Baseline)}; projected 2050 HDI ${fmt(scenarioHdi(d))}; rank ${d.Rank || "not available"}.">
           ${tableColumns.map(col => {
             if (col === "Compare") {
               const checked = comparedIso.has(d.ISO3) ? "checked" : "";
@@ -5412,13 +5469,13 @@
         </tr>`;
       }).join("");
       document.getElementById("row-count").textContent = `${rows.length} of ${allRows.length} rows`;
-      thead.querySelectorAll("th").forEach(th => {
-        th.addEventListener("click", () => {
-          const col = th.dataset.col;
-          if (col === "Compare") return;
+      thead.querySelectorAll(".table-sort").forEach(button => {
+        button.addEventListener("click", () => {
+          const col = button.dataset.col;
           if (sortState.column === col) sortState.direction *= -1;
           else sortState = {column: col, direction: numericColumns.has(col) ? -1 : 1};
           renderTable();
+          announce(`Table sorted by ${labels[col] || col}, ${sortState.direction === 1 ? "ascending" : "descending"}.`);
         });
       });
       tbody.querySelectorAll("[data-compare-cell]").forEach(cell => {
@@ -5451,7 +5508,14 @@
           const d = allRows.find(row => row.ISO3 === tr.dataset.iso);
           if (d) setActiveCountry(d);
         });
+        tr.addEventListener("keydown", event => {
+          if (event.target !== tr || !["Enter", " "].includes(event.key)) return;
+          event.preventDefault();
+          const d = allRows.find(row => row.ISO3 === tr.dataset.iso);
+          if (d) setActiveCountry(d);
+        });
       });
+      announce(`${rows.length} countries shown in the data table.`);
     }
 
     function currentSortedRows() {
@@ -5481,9 +5545,11 @@
       syncUrlState();
       const rows = currentSortedRows();
       const exportColumns = tableColumns.filter(col => col !== "Compare");
+      const generatedAt = new Date().toISOString();
+      const stateUrl = `${window.location.origin}${window.location.pathname}${window.location.search}${window.location.hash}`;
       const csv = [
-        exportColumns.map(csvEscape).join(","),
-        ...rows.map(row => exportColumns.map(col => csvEscape(row[col])).join(",")),
+        [...exportColumns.map(col => labels[col] || col), "Export scenario", "Export generated at", "Export state URL"].map(csvEscape).join(","),
+        ...rows.map(row => [...exportColumns.map(col => row[col]), scenarios[activeScenario].label, generatedAt, stateUrl].map(csvEscape).join(",")),
       ].join("\n");
       const blob = new Blob([csv], {type: "text/csv;charset=utf-8"});
       const url = URL.createObjectURL(blob);
@@ -5573,22 +5639,28 @@
     }
 
     function setGlossaryOpen(open) {
-      document.getElementById("glossary-drawer").classList.toggle("open", open);
+      const drawer = document.getElementById("glossary-drawer");
+      drawer.classList.toggle("open", open);
       document.getElementById("drawer-backdrop").classList.toggle("open", open);
-      document.getElementById("glossary-drawer").setAttribute("aria-hidden", String(!open));
+      drawer.setAttribute("aria-hidden", String(!open));
+      updateDialogFocus(drawer, open);
     }
 
     function setCompareDrawerOpen(open) {
-      document.getElementById("compare-drawer").classList.toggle("open", open);
+      const drawer = document.getElementById("compare-drawer");
+      drawer.classList.toggle("open", open);
       document.getElementById("compare-backdrop").classList.toggle("open", open);
-      document.getElementById("compare-drawer").setAttribute("aria-hidden", String(!open));
+      drawer.setAttribute("aria-hidden", String(!open));
       if (open) renderCompareDrawer();
+      updateDialogFocus(drawer, open);
     }
 
     function setMismatchOpen(open) {
-      document.getElementById("mismatch-modal").classList.toggle("open", open);
+      const modal = document.getElementById("mismatch-modal");
+      modal.classList.toggle("open", open);
       document.getElementById("modal-backdrop").classList.toggle("open", open);
-      document.getElementById("mismatch-modal").setAttribute("aria-hidden", String(!open));
+      modal.setAttribute("aria-hidden", String(!open));
+      updateDialogFocus(modal, open);
       if (!open) mismatchModalCountry = null;
     }
 
@@ -5879,6 +5951,16 @@
         syncUrlState();
         setGlossaryOpen(true);
       });
+      document.getElementById("accessible-palette").addEventListener("click", event => {
+        accessiblePaletteEnabled = !accessiblePaletteEnabled;
+        root.classList.toggle("a11y-palette", accessiblePaletteEnabled);
+        event.currentTarget.setAttribute("aria-pressed", String(accessiblePaletteEnabled));
+        redrawMaps();
+        renderCharts();
+        document.getElementById("ethnic-mosaic-frame")?.contentWindow?.postMessage({type:"hdi-accessible-palette",enabled:accessiblePaletteEnabled}, "*");
+        document.getElementById("subdivision-explorer-frame")?.contentWindow?.postMessage({type:"hdi-accessible-palette",enabled:accessiblePaletteEnabled}, "*");
+        announce(`Accessible color palette ${accessiblePaletteEnabled ? "enabled" : "disabled"}.`);
+      });
       document.getElementById("close-glossary").addEventListener("click", () => setGlossaryOpen(false));
       document.getElementById("drawer-backdrop").addEventListener("click", () => setGlossaryOpen(false));
       document.getElementById("open-compare-drawer").addEventListener("click", () => setCompareDrawerOpen(true));
@@ -5886,6 +5968,22 @@
       document.getElementById("compare-backdrop").addEventListener("click", () => setCompareDrawerOpen(false));
       document.getElementById("modal-backdrop").addEventListener("click", () => setMismatchOpen(false));
       document.getElementById("close-mismatch").addEventListener("click", () => setMismatchOpen(false));
+      document.addEventListener("keydown", event => {
+        if (["ArrowRight","ArrowDown","ArrowLeft","ArrowUp"].includes(event.key) && event.target instanceof SVGElement && event.target.getAttribute("role") === "button") {
+          const items = [...event.target.closest("svg").querySelectorAll('[role="button"][tabindex="0"]')];
+          const index = items.indexOf(event.target);
+          if (index >= 0 && items.length > 1) {
+            event.preventDefault();
+            const direction = ["ArrowRight","ArrowDown"].includes(event.key) ? 1 : -1;
+            items[(index + direction + items.length) % items.length].focus();
+          }
+          return;
+        }
+        if (event.key !== "Escape") return;
+        if (document.getElementById("mismatch-modal").classList.contains("open")) setMismatchOpen(false);
+        else if (document.getElementById("compare-drawer").classList.contains("open")) setCompareDrawerOpen(false);
+        else if (document.getElementById("glossary-drawer").classList.contains("open")) setGlossaryOpen(false);
+      });
       document.getElementById("mismatch-select-country").addEventListener("click", () => {
         if (mismatchModalCountry) setActiveCountry(mismatchModalCountry);
         setMismatchOpen(false);
@@ -5968,14 +6066,18 @@
         section.classList.toggle("active-page", samePage);
       });
       document.querySelectorAll("[data-nav-link]").forEach(link => {
-        link.classList.toggle("active", link.dataset.navLink === id);
+        const active = link.dataset.navLink === id;
+        link.classList.toggle("active", active);
+        if (active) link.setAttribute("aria-current", "page"); else link.removeAttribute("aria-current");
       });
       if (updateUrl) history.replaceState(null, "", `${window.location.pathname}${window.location.search}#${id}`);
-      window.scrollTo({top: 0, behavior: "smooth"});
+      window.scrollTo({top: 0, behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth"});
+      if (updateUrl) document.getElementById("page-root").focus({preventScroll:true});
       redrawMaps();
       renderCharts();
       renderTable();
       updateHdiGptContext();
+      announce(`${page.dataset.pageTitle || id} page opened.`);
     }
 
     async function boot() {
