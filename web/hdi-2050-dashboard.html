@@ -1015,6 +1015,53 @@
     .tomorrow-row strong { overflow-wrap:anywhere; font-size:11px; }
     .tomorrow-row span { color:var(--muted); text-align:right; }
     .research-limit { padding:13px; border:1px solid rgba(255,85,122,.2); border-left:3px solid var(--red); background:rgba(255,85,122,.05); color:var(--muted); font-size:12px; line-height:1.6; }
+    .electricity-research { display:grid; gap:16px; padding-top:20px; border-top:1px solid rgba(164,198,244,.16); }
+    .electricity-research-head { display:grid; grid-template-columns:minmax(0,1.2fr) minmax(280px,.8fr); gap:18px; align-items:end; }
+    .electricity-research h3 { margin:3px 0 8px; font-size:23px; line-height:1.2; }
+    .electricity-research-head p { max-width:850px; margin:0; color:var(--muted); font-size:13px; line-height:1.65; }
+    .electricity-thesis { padding:13px 14px; border-left:3px solid #43e0a8; background:rgba(67,224,168,.07); color:#d8fff1; font-size:12px; line-height:1.55; }
+    .electricity-thesis strong { display:block; margin-bottom:4px; color:#fff; font-size:13px; }
+    .electricity-chart-panel { position:relative; min-width:0; padding:14px; border:1px solid rgba(164,198,244,.16); border-radius:8px; background:rgba(3,10,20,.62); }
+    .electricity-chart-top { display:flex; justify-content:space-between; gap:12px; align-items:flex-start; flex-wrap:wrap; }
+    .electricity-chart-top h4 { margin:0 0 3px; font-size:16px; }
+    .electricity-legend { display:flex; flex-wrap:wrap; justify-content:flex-end; gap:6px; }
+    .electricity-legend button { min-height:32px; padding:5px 8px; color:#dcecff; border-color:rgba(164,198,244,.2); background:rgba(9,20,36,.72); font-size:10px; }
+    .electricity-legend button[aria-pressed="false"] { opacity:.42; }
+    .electricity-swatch { display:inline-block; width:14px; height:3px; margin-right:6px; vertical-align:middle; background:var(--series-color); }
+    .electricity-chart { width:100%; min-height:390px; margin-top:8px; overflow:visible; }
+    .electricity-chart .grid line { stroke:rgba(164,198,244,.11); }
+    .electricity-chart .grid path { display:none; }
+    .electricity-chart .axis text { fill:#8fa6bf; font-size:10px; }
+    .electricity-chart .axis path,
+    .electricity-chart .axis line { stroke:rgba(164,198,244,.2); }
+    .electricity-chart .series-line { fill:none; stroke-width:2.6; }
+    .electricity-chart .estimate-line { fill:none; stroke-width:2.6; stroke-dasharray:5 5; }
+    .electricity-chart .series-label { font-size:10px; font-weight:700; }
+    .electricity-chart .focus-line { stroke:rgba(247,251,255,.45); stroke-width:1; stroke-dasharray:3 4; pointer-events:none; }
+    .electricity-tooltip { position:absolute; z-index:4; min-width:210px; max-width:270px; padding:10px; border:1px solid rgba(88,230,255,.28); border-radius:6px; background:rgba(3,9,18,.96); box-shadow:0 12px 32px rgba(0,0,0,.35); color:#edf7ff; font-size:11px; pointer-events:none; opacity:0; }
+    .electricity-tooltip strong { display:block; margin-bottom:6px; font-size:12px; }
+    .electricity-tooltip-row { display:flex; justify-content:space-between; gap:14px; margin-top:3px; color:var(--muted); }
+    .electricity-tooltip-row b { color:#fff; }
+    .electricity-metrics { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:8px; }
+    .electricity-metric { min-width:0; padding:11px; border-top:2px solid var(--metric-color,#43e0a8); background:rgba(8,18,32,.72); }
+    .electricity-metric span { display:block; color:var(--muted); font-size:9px; line-height:1.35; text-transform:uppercase; }
+    .electricity-metric strong { display:block; margin:5px 0 2px; color:#fff; font-size:18px; }
+    .electricity-metric small { color:var(--muted); font-size:10px; }
+    .energy-economy-grid { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:10px; }
+    .energy-economy-case { min-width:0; padding:13px; border:1px solid rgba(164,198,244,.14); border-left:3px solid var(--energy-color,#43e0a8); background:rgba(8,18,32,.66); }
+    .energy-economy-case h4 { margin:0 0 6px; font-size:14px; }
+    .energy-economy-case p { margin:0; color:var(--muted); font-size:11px; line-height:1.58; }
+    .energy-model-link { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:8px; }
+    .energy-model-step { position:relative; padding:12px; background:rgba(67,224,168,.045); border-top:1px solid rgba(67,224,168,.26); }
+    .energy-model-step strong { display:block; margin-bottom:4px; color:#e9fff7; font-size:11px; }
+    .energy-model-step span { color:var(--muted); font-size:10px; line-height:1.48; }
+    .electricity-sources { display:flex; flex-wrap:wrap; gap:8px; color:var(--muted); font-size:10px; line-height:1.5; }
+    .electricity-sources a { color:#8feeff; }
+    .electricity-data-table { width:100%; margin-top:10px; border-collapse:collapse; font-size:11px; }
+    .electricity-data-table th,
+    .electricity-data-table td { padding:7px 8px; border-bottom:1px solid rgba(164,198,244,.12); text-align:right; }
+    .electricity-data-table th:first-child,
+    .electricity-data-table td:first-child { text-align:left; }
     .validation-table {
       width: 100%;
       margin-top: 12px;
@@ -1836,6 +1883,9 @@
       .country-case.featured .case-body { columns:1; }
       .transition-framework { grid-template-columns:repeat(3,minmax(0,1fr)); }
       .tomorrow-grid { grid-template-columns:1fr; }
+      .electricity-research-head { grid-template-columns:1fr; align-items:start; }
+      .electricity-metrics { grid-template-columns:repeat(2,minmax(0,1fr)); }
+      .energy-economy-grid { grid-template-columns:1fr; }
     }
     @media (max-width: 560px) {
       .stats, .map-metrics { grid-template-columns: 1fr; }
@@ -2101,6 +2151,8 @@
       .development-lead { font-size:12px; }
       .development-chart { min-height:230px; }
       .transition-framework { grid-template-columns:1fr 1fr; }
+      .energy-model-link { grid-template-columns:1fr; }
+      .electricity-chart { min-height:330px; }
       .tomorrow-row { grid-template-columns:minmax(90px,1fr) 58px 58px; }
       .tomorrow-row .tomorrow-rank { display:none; }
     }
@@ -2554,6 +2606,74 @@
       </div>
 
       <div class="country-case-grid" id="development-country-stories" aria-label="China India and Nigeria development case studies"></div>
+
+      <section class="electricity-research" aria-labelledby="electricity-transition-title">
+        <div class="electricity-research-head">
+          <div>
+            <div class="section-kicker">Energy and industrial transformation</div>
+            <h3 id="electricity-transition-title">The changing shape of global electricity</h3>
+            <p>Electricity is moving away from oil and, more gradually, coal toward wind, solar, hydro, nuclear, and flexible gas generation. This matters for human development because reliable and affordable power expands productive capacity across hospitals, schools, households, transport, digital systems, manufacturing, cooling, and water infrastructure.</p>
+          </div>
+          <aside class="electricity-thesis">
+            <strong>The economic restructuring</strong>
+            The power economy is shifting from repeatedly purchasing and burning fuel toward financing generation, storage, transmission, and digital grid infrastructure up front. The opportunity is substantial, but cheap generation does not produce reliable electricity without networks, flexibility, and institutional execution.
+          </aside>
+        </div>
+
+        <div class="electricity-chart-panel">
+          <div class="electricity-chart-top">
+            <div><h4>Share of world electricity generation by source</h4><div class="panel-note">Observed 1985-2025; dashed 2026 estimate</div></div>
+            <div class="electricity-legend" id="electricity-legend" aria-label="Toggle electricity chart series"></div>
+          </div>
+          <svg id="global-electricity-chart" class="electricity-chart" viewBox="0 0 940 400" role="img" aria-labelledby="electricity-chart-title electricity-chart-desc">
+            <title id="electricity-chart-title">Changing global electricity generation mix from 1985 to 2026</title>
+            <desc id="electricity-chart-desc">Interactive line chart showing coal, natural gas, hydropower, nuclear, oil, and wind solar and other renewable shares of global electricity generation.</desc>
+          </svg>
+          <div class="electricity-tooltip" id="electricity-tooltip" role="tooltip"></div>
+          <div class="chart-caption" id="electricity-chart-summary" aria-live="polite">Select a series or hover over the chart to inspect annual values.</div>
+          <details>
+            <summary>Accessible milestone data</summary>
+            <table class="electricity-data-table">
+              <caption>Selected global electricity-generation shares, percent</caption>
+              <thead><tr><th scope="col">Year</th><th scope="col">Coal</th><th scope="col">Gas</th><th scope="col">Hydro</th><th scope="col">Nuclear</th><th scope="col">Oil</th><th scope="col">Wind, solar &amp; other</th></tr></thead>
+              <tbody>
+                <tr><th scope="row">1985</th><td>37.9</td><td>14.4</td><td>20.0</td><td>15.1</td><td>11.2</td><td>0.8</td></tr>
+                <tr><th scope="row">2000</th><td>38.0</td><td>18.0</td><td>17.2</td><td>16.6</td><td>8.7</td><td>1.5</td></tr>
+                <tr><th scope="row">2010</th><td>39.8</td><td>22.6</td><td>16.1</td><td>12.8</td><td>5.1</td><td>3.6</td></tr>
+                <tr><th scope="row">2020</th><td>35.3</td><td>23.9</td><td>16.3</td><td>9.9</td><td>2.9</td><td>11.7</td></tr>
+                <tr><th scope="row">2025</th><td>33.0</td><td>21.8</td><td>14.0</td><td>8.8</td><td>2.6</td><td>19.8</td></tr>
+                <tr><th scope="row">2026 estimate</th><td>31.5</td><td>21.6</td><td>13.8</td><td>8.8</td><td>2.5</td><td>21.8</td></tr>
+              </tbody>
+            </table>
+          </details>
+        </div>
+
+        <div class="electricity-metrics" aria-label="Electricity transition highlights">
+          <div class="electricity-metric" style="--metric-color:#43e0a8"><span>Renewables including hydro, 2025</span><strong>33.8%</strong><small>Slightly above coal in the historical dataset</small></div>
+          <div class="electricity-metric" style="--metric-color:#f3f5f7"><span>Coal share, 1985 to 2025</span><strong>-5.0 pp</strong><small>Decline accelerates after the 2013 peak</small></div>
+          <div class="electricity-metric" style="--metric-color:#c99764"><span>Oil share, 1985 to 2025</span><strong>-8.6 pp</strong><small>The largest long-run displacement in the mix</small></div>
+          <div class="electricity-metric" style="--metric-color:#58a6ff"><span>IEA demand outlook, 2026-2030</span><strong>+3.6%/yr</strong><small>Electrification grows faster than total energy demand</small></div>
+        </div>
+
+        <div class="energy-economy-grid" aria-label="Economic implications by development pathway">
+          <article class="energy-economy-case" style="--energy-color:#ff6b5f"><h4>China: scale, supply chains, and system balancing</h4><p>China combines the world's largest power system with leading solar, battery, wind, electric-vehicle, and grid-equipment manufacturing. Its next development phase depends less on simply adding capacity and more on transmission, storage, market flexibility, and moving industry toward cleaner electricity while managing coal-region adjustment.</p></article>
+          <article class="energy-economy-case" style="--energy-color:#f6ce6a"><h4>India: electricity as an industrialization multiplier</h4><p>India's factories, cooling, transport, households, and data infrastructure will require rapid supply growth. Meeting more of that demand with domestic solar, wind, hydro, nuclear, storage, and stronger grids can reduce imported-fuel exposure, improve energy security, and support manufacturing-led catch-up without proportionate fossil-fuel growth.</p></article>
+          <article class="energy-economy-case" style="--energy-color:#65f0bd"><h4>Nigeria and emerging Africa: access before abundance</h4><p>High renewable potential is not enough where grids, metering, finance, and distribution remain weak. Reliable power can unlock health delivery, education, refrigeration, digital services, and formal employment, but the HDI payoff depends on connecting households and firms rather than only installing headline generation capacity.</p></article>
+        </div>
+
+        <div class="energy-model-link" aria-label="How electricity transition connects to HDI projections">
+          <div class="energy-model-step"><strong>1. Productive power</strong><span>Reliability and affordability raise firm productivity, enable digital infrastructure, and improve the income dimension.</span></div>
+          <div class="energy-model-step"><strong>2. Human-capital delivery</strong><span>Electricity supports clinics, schools, water systems, cooling, communications, and household time savings, strengthening health and education.</span></div>
+          <div class="energy-model-step"><strong>3. Transition risk</strong><span>Grid bottlenecks, debt, stranded fossil assets, resource dependence, and unequal access can delay or concentrate the gains.</span></div>
+        </div>
+
+        <div class="electricity-sources">
+          <span><strong>Data:</strong> historical shares from Our World in Data, based on Ember Yearly Electricity Data and the Energy Institute Statistical Review.</span>
+          <a href="https://ourworldindata.org/grapher/share-elec-by-source?tab=chart&amp;country=~OWID_WRL" target="_blank" rel="noopener">Open source chart</a>
+          <a href="https://www.iea.org/reports/electricity-2026/executive-summary" target="_blank" rel="noopener">IEA Electricity 2026</a>
+          <span>Wind, solar &amp; other includes wind, solar, bioenergy, geothermal, and other non-hydro renewables. The 2026 point is an estimate from the supplied reference chart and is visually distinguished from observations.</span>
+        </div>
+      </section>
 
       <section class="opportunity-section" aria-labelledby="transition-path-title">
         <h3 id="transition-path-title">How lower-income countries can move into rapid, broad-based development</h3>
@@ -4967,6 +5087,81 @@
         <div class="tomorrow-track" style="--track-color:#65f0bd"><h4>Younger, later-window catch-up economies</h4><p>Large or growing populations with lower starting HDI and meaningful upside, but stronger requirements for schooling, health, infrastructure, and job creation.</p><div class="tomorrow-list">${young.map((row,index)=>tomorrowRow(row,index+1)).join("")}</div></div>`;
     }
 
+    const electricitySeries = [
+      {key:"c", label:"Coal", color:"#f3f5f7"},
+      {key:"r", label:"Wind, solar & other", color:"#43e0a8"},
+      {key:"g", label:"Natural gas", color:"#f6b84a"},
+      {key:"h", label:"Hydropower", color:"#58a6ff"},
+      {key:"n", label:"Nuclear", color:"#d68cff"},
+      {key:"o", label:"Oil", color:"#c99764"}
+    ];
+    const activeElectricitySeries = new Set(electricitySeries.map(series => series.key));
+    const globalElectricityData = [{"y":1985,"c":37.916,"g":14.428,"h":20.021,"n":15.061,"o":11.236,"r":0.783},{"y":1986,"c":37.708,"g":14.072,"h":19.704,"n":15.664,"o":11.475,"r":0.801},{"y":1987,"c":38.03,"g":14.212,"h":19.054,"n":16.257,"o":11.088,"r":0.79},{"y":1988,"c":37.706,"g":13.832,"h":18.835,"n":16.976,"o":11.279,"r":0.782},{"y":1989,"c":37.545,"g":14.827,"h":17.907,"n":16.684,"o":11.582,"r":1.276},{"y":1990,"c":37.289,"g":14.954,"h":18.047,"n":16.725,"o":11.421,"r":1.294},{"y":1991,"c":37.284,"g":14.843,"h":18.069,"n":17.151,"o":11.057,"r":1.016},{"y":1992,"c":37.692,"g":14.821,"h":17.901,"n":17.122,"o":10.779,"r":1.118},{"y":1993,"c":37.522,"g":14.781,"h":18.582,"n":17.341,"o":10.068,"r":1.135},{"y":1994,"c":37.851,"g":14.885,"h":18.23,"n":17.224,"o":10.088,"r":1.163},{"y":1995,"c":37.653,"g":15.206,"h":18.558,"n":17.356,"o":9.429,"r":1.17},{"y":1996,"c":38.265,"g":15.222,"h":18.242,"n":17.443,"o":9.041,"r":1.163},{"y":1997,"c":38.189,"g":16.069,"h":18.129,"n":16.916,"o":8.814,"r":1.208},{"y":1998,"c":37.98,"g":16.593,"h":17.786,"n":16.754,"o":8.928,"r":1.237},{"y":1999,"c":37.723,"g":17.42,"h":17.422,"n":16.908,"o":8.495,"r":1.312},{"y":2000,"c":38.019,"g":17.97,"h":17.211,"n":16.627,"o":8.668,"r":1.505},{"y":2001,"c":38.002,"g":18.804,"h":16.539,"n":16.858,"o":8.291,"r":1.505},{"y":2002,"c":38.283,"g":19.345,"h":16.272,"n":16.541,"o":7.924,"r":1.636},{"y":2003,"c":39.541,"g":19.578,"h":15.708,"n":15.643,"o":7.796,"r":1.734},{"y":2004,"c":39.031,"g":20.115,"h":16.093,"n":15.615,"o":7.256,"r":1.889},{"y":2005,"c":39.523,"g":20.296,"h":16.057,"n":15.038,"o":7.047,"r":2.039},{"y":2006,"c":40.167,"g":20.705,"h":16.02,"n":14.659,"o":6.241,"r":2.208},{"y":2007,"c":40.843,"g":21.402,"h":15.536,"n":13.714,"o":6.067,"r":2.438},{"y":2008,"c":40.165,"g":21.694,"h":16.144,"n":13.405,"o":5.829,"r":2.764},{"y":2009,"c":39.866,"g":21.974,"h":16.252,"n":13.321,"o":5.371,"r":3.215},{"y":2010,"c":39.777,"g":22.611,"h":16.122,"n":12.82,"o":5.073,"r":3.598},{"y":2011,"c":40.556,"g":22.146,"h":15.875,"n":11.88,"o":5.401,"r":4.141},{"y":2012,"c":39.796,"g":22.923,"h":16.256,"n":10.802,"o":5.501,"r":4.721},{"y":2013,"c":40.699,"g":21.846,"h":16.371,"n":10.574,"o":5.169,"r":5.341},{"y":2014,"c":40.442,"g":21.957,"h":16.3,"n":10.522,"o":4.816,"r":5.963},{"y":2015,"c":38.678,"g":23.081,"h":16.174,"n":10.553,"o":4.722,"r":6.793},{"y":2016,"c":37.773,"g":23.689,"h":16.258,"n":10.411,"o":4.394,"r":7.474},{"y":2017,"c":37.951,"g":23.48,"h":15.935,"n":10.197,"o":3.906,"r":8.531},{"y":2018,"c":37.911,"g":23.52,"h":15.783,"n":10.046,"o":3.433,"r":9.306},{"y":2019,"c":36.621,"g":23.857,"h":15.756,"n":10.264,"o":3.187,"r":10.315},{"y":2020,"c":35.314,"g":23.885,"h":16.267,"n":9.91,"o":2.903,"r":11.721},{"y":2021,"c":35.941,"g":23.202,"h":15.176,"n":9.775,"o":2.98,"r":12.925},{"y":2022,"c":35.412,"g":22.921,"h":14.953,"n":9.128,"o":3.069,"r":14.517},{"y":2023,"c":35.044,"g":22.583,"h":14.293,"n":9.094,"o":2.956,"r":16.03},{"y":2024,"c":34.073,"g":22.252,"h":14.334,"n":8.979,"o":2.761,"r":17.601},{"y":2025,"c":32.958,"g":21.784,"h":13.959,"n":8.849,"o":2.649,"r":19.802},{"y":2026,"c":31.5,"g":21.6,"h":13.8,"n":8.8,"o":2.5,"r":21.8,"estimate":true}];
+
+    function renderGlobalElectricityChart() {
+      const svg = d3.select("#global-electricity-chart");
+      const legend = document.getElementById("electricity-legend");
+      if (svg.empty() || !legend) return;
+      svg.selectAll("*").remove();
+      legend.innerHTML = electricitySeries.map(series => `<button type="button" data-electricity-series="${series.key}" aria-pressed="${activeElectricitySeries.has(series.key)}" style="--series-color:${series.color}"><span class="electricity-swatch"></span>${series.label}</button>`).join("");
+      legend.querySelectorAll("[data-electricity-series]").forEach(button => {
+        button.onclick = () => {
+          const key = button.dataset.electricitySeries;
+          if (activeElectricitySeries.has(key) && activeElectricitySeries.size > 1) activeElectricitySeries.delete(key); else activeElectricitySeries.add(key);
+          renderGlobalElectricityChart();
+        };
+      });
+
+      const compact = window.innerWidth <= 520;
+      const width = compact ? 430 : 940, height = 400, margin = {top:18,right:compact?22:172,bottom:42,left:48};
+      const x = d3.scaleLinear().domain([1985,2026]).range([margin.left,width-margin.right]);
+      const y = d3.scaleLinear().domain([0,42]).range([height-margin.bottom,margin.top]);
+      svg.attr("viewBox", `0 0 ${width} ${height}`);
+      svg.append("rect").attr("x",x(2025)).attr("y",margin.top).attr("width",x(2026)-x(2025)).attr("height",height-margin.top-margin.bottom).attr("fill","rgba(246,206,106,.055)");
+      svg.append("text").attr("x",x(2025.5)).attr("y",margin.top+10).attr("text-anchor","middle").attr("fill","#f6ce6a").attr("font-size",9).text("EST.");
+      svg.append("g").attr("class","grid").attr("transform",`translate(${margin.left},0)`).call(d3.axisLeft(y).ticks(5).tickSize(-(width-margin.left-margin.right)).tickFormat(""));
+      svg.append("g").attr("class","axis").attr("transform",`translate(0,${height-margin.bottom})`).call(d3.axisBottom(x).tickValues(compact?[1985,2005,2025]:[1985,1995,2005,2015,2025]).tickFormat(d3.format("d")));
+      svg.append("g").attr("class","axis").attr("transform",`translate(${margin.left},0)`).call(d3.axisLeft(y).ticks(5).tickFormat(value=>`${value}%`));
+      const observed = globalElectricityData.filter(row=>row.y<=2025);
+      const estimate = globalElectricityData.filter(row=>row.y>=2025);
+      const labelOffsets = {r:-10,g:10};
+      electricitySeries.filter(series=>activeElectricitySeries.has(series.key)).forEach(series => {
+        const line = d3.line().x(row=>x(row.y)).y(row=>y(row[series.key])).curve(d3.curveMonotoneX);
+        svg.append("path").datum(observed).attr("class","series-line").attr("d",line).attr("stroke",series.color).append("title").text(`${series.label}, observed 1985 to 2025`);
+        svg.append("path").datum(estimate).attr("class","estimate-line").attr("d",line).attr("stroke",series.color);
+        const last = estimate.at(-1), labelY = y(last[series.key]) + (labelOffsets[series.key] || 0);
+        svg.append("circle").attr("cx",x(2026)).attr("cy",y(last[series.key])).attr("r",3.5).attr("fill","#07111f").attr("stroke",series.color).attr("stroke-width",2);
+        if (!compact) svg.append("text").attr("class","series-label").attr("x",x(2026)+9).attr("y",labelY+3).attr("fill",series.color).text(`${series.label} ${last[series.key].toFixed(1)}%`);
+      });
+
+      const focus = svg.append("g").style("display","none");
+      focus.append("line").attr("class","focus-line").attr("y1",margin.top).attr("y2",height-margin.bottom);
+      const tooltip = d3.select("#electricity-tooltip");
+      const summary = document.getElementById("electricity-chart-summary");
+      const panel = document.querySelector(".electricity-chart-panel");
+      const showYear = (year,event=null) => {
+        const row = globalElectricityData.find(item=>item.y===year) || globalElectricityData.at(-1);
+        const active = electricitySeries.filter(series=>activeElectricitySeries.has(series.key)).sort((a,b)=>row[b.key]-row[a.key]);
+        focus.style("display",null).select("line").attr("x1",x(row.y)).attr("x2",x(row.y));
+        focus.selectAll("circle").data(active,series=>series.key).join("circle").attr("cx",x(row.y)).attr("cy",series=>y(row[series.key])).attr("r",4).attr("fill",series=>series.color).attr("stroke","#07111f").attr("stroke-width",1.5);
+        const label = `${row.y}${row.estimate?" estimate":""}`;
+        tooltip.html(`<strong>${label}</strong>${active.map(series=>`<div class="electricity-tooltip-row"><span><i class="electricity-swatch" style="--series-color:${series.color}"></i>${series.label}</span><b>${row[series.key].toFixed(1)}%</b></div>`).join("")}`).style("opacity",1);
+        summary.textContent = `${label}: ${active.map(series=>`${series.label} ${row[series.key].toFixed(1)}%`).join(", ")}.`;
+        summary.dataset.year = row.y;
+        if (event && panel) {
+          const rect = panel.getBoundingClientRect();
+          tooltip.style("left",`${Math.max(8,Math.min(panel.clientWidth-230,event.clientX-rect.left+14))}px`).style("top",`${Math.max(52,event.clientY-rect.top-20)}px`);
+        }
+      };
+      svg.append("rect").attr("x",margin.left).attr("y",margin.top).attr("width",width-margin.left-margin.right).attr("height",height-margin.top-margin.bottom).attr("fill","transparent").attr("tabindex",0).attr("role","graphics-symbol").attr("aria-label","Inspect annual electricity shares. Use left and right arrow keys to change year.")
+        .on("mousemove",event=>showYear(Math.max(1985,Math.min(2026,Math.round(x.invert(d3.pointer(event)[0])))),event))
+        .on("mouseenter",event=>showYear(2025,event))
+        .on("mouseleave",()=>{focus.style("display","none");tooltip.style("opacity",0);})
+        .on("focus",event=>showYear(2025,event))
+        .on("blur",()=>tooltip.style("opacity",0))
+        .on("keydown",event=>{if(!["ArrowLeft","ArrowRight"].includes(event.key))return;event.preventDefault();const current=Number(summary.dataset.year||2025),next=Math.max(1985,Math.min(2026,current+(event.key==="ArrowRight"?1:-1)));summary.dataset.year=next;showYear(next);});
+    }
+
     function renderDevelopmentResearch() {
       if (!allRows.length || !document.getElementById("development-opportunity-chart")) return;
       const rows = ["CHN","IND","NGA"].map(iso=>allRows.find(row=>row.ISO3===iso)).filter(Boolean);
@@ -4974,6 +5169,7 @@
       renderDevelopmentOpportunityChart(rows);
       renderDevelopmentCountryStories(rows);
       renderTomorrowEconomies();
+      renderGlobalElectricityChart();
     }
 
     function renderResearchBrief(row) {
