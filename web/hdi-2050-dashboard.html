@@ -1702,6 +1702,7 @@
     .skip-link { position:fixed; left:12px; top:8px; z-index:1000; transform:translateY(-160%); padding:10px 14px; background:#fff; color:#07101d; border:2px solid #00b8d4; border-radius:4px; font-weight:700; }
     .skip-link:focus { transform:translateY(0); }
     :where(a,button,input,select,textarea,[tabindex]):focus-visible { outline:3px solid #ffd166 !important; outline-offset:3px; box-shadow:0 0 0 2px #07101d; }
+    #page-root:focus-visible { outline:none !important; box-shadow:none !important; }
     .page-view, [id] { scroll-margin-top:150px; }
     button, select, input[type="search"], input[type="number"] { min-height:44px; }
     .sr-only { position:absolute !important; width:1px !important; height:1px !important; padding:0 !important; margin:-1px !important; overflow:hidden !important; clip:rect(0,0,0,0) !important; white-space:nowrap !important; border:0 !important; }
@@ -1711,6 +1712,229 @@
     @media (prefers-reduced-motion: reduce) { *, *::before, *::after { scroll-behavior:auto !important; animation-duration:.01ms !important; animation-iteration-count:1 !important; transition-duration:.01ms !important; } }
     @media (max-width:420px) { .shell { width:100%; padding-inline:10px; } .controls,.nav-bar { position:static; } .control-group { width:100%; } .control-group > * { flex:1 1 100%; min-width:0; } .table-wrap { max-width:100%; } }
     @media (max-width:980px) { .nav-links { width:100%; max-width:100%; min-width:0; } }
+
+    /* 2026 workspace shell: compact navigation, focused controls, and persistent inspection. */
+    body {
+      background:
+        linear-gradient(135deg, rgba(21, 46, 70, 0.34), transparent 38%),
+        linear-gradient(225deg, rgba(62, 52, 100, 0.22), transparent 34%),
+        #070c15;
+    }
+    #hdi-dashboard-app { padding-top: 16px; }
+    #hdi-dashboard-app::after { opacity: .18; }
+    .hero { padding-top: 8px; margin-bottom: 14px; align-items: center; }
+    .hero h1 { font-size: clamp(32px, 4.3vw, 58px); line-height: 1; }
+    .hero .subtitle { max-width: 780px; }
+    .meta { padding: 14px 16px; box-shadow: 0 18px 48px rgba(0,0,0,.3); }
+    .meta-value { font-size: 23px; }
+    .nav-bar { top: 0; z-index: 50; min-height: 58px; margin-bottom: 10px; padding: 8px 10px; }
+    .nav-links { overflow: visible; }
+    .nav-more { position: relative; }
+    .nav-more-menu,
+    .control-menu {
+      position: absolute;
+      z-index: 70;
+      display: none;
+      min-width: 230px;
+      padding: 8px;
+      border: 1px solid rgba(164,198,244,.24);
+      border-radius: 8px;
+      background: rgba(8,16,29,.98);
+      box-shadow: 0 22px 60px rgba(0,0,0,.48);
+    }
+    .nav-more-menu { top: calc(100% + 8px); right: 0; }
+    .nav-more-menu.open,
+    .control-menu.open { display: grid; gap: 5px; }
+    .nav-more-menu a { width: 100%; justify-content: flex-start; }
+    .nav-menu-button,
+    .mobile-nav-toggle { min-height: 36px; padding: 7px 10px; font-size: 12px; }
+    .mobile-nav-toggle { display: none; }
+    .controls {
+      top: 66px;
+      z-index: 45;
+      flex-wrap: nowrap;
+      padding: 9px;
+      gap: 8px;
+      background: rgba(8,16,29,.92);
+      box-shadow: 0 15px 38px rgba(0,0,0,.28);
+    }
+    .primary-controls { flex: 1 1 auto; min-width: 0; flex-wrap: nowrap; }
+    .control-actions { position: relative; flex: 0 0 auto; flex-wrap: nowrap; }
+    .control-actions > .menu-shell { position: relative; }
+    .control-menu { top: calc(100% + 8px); right: 0; }
+    .control-menu.filters-menu { min-width: min(340px, calc(100vw - 28px)); }
+    .control-menu label { color: var(--muted); font-size: 11px; font-weight: 700; }
+    .control-menu select,
+    .control-menu button { width: 100%; min-width: 0; text-align: left; }
+    .control-menu .menu-divider { height: 1px; margin: 3px 0; background: var(--line); }
+    .search-shell { position: relative; flex: 1 1 310px; max-width: 430px; min-width: 210px; }
+    .search-shell input { width: 100%; min-width: 0; padding-right: 38px; }
+    .search-hint { position: absolute; top: 50%; right: 10px; transform: translateY(-50%); color: var(--muted); font-size: 10px; }
+    .search-suggestions {
+      position: absolute;
+      top: calc(100% + 7px);
+      left: 0;
+      right: 0;
+      z-index: 80;
+      display: none;
+      max-height: 330px;
+      overflow: auto;
+      padding: 6px;
+      border: 1px solid rgba(94,231,255,.26);
+      border-radius: 8px;
+      background: rgba(6,13,24,.98);
+      box-shadow: 0 22px 64px rgba(0,0,0,.5);
+    }
+    .search-suggestions.open { display: grid; gap: 3px; }
+    .search-option {
+      display: grid;
+      grid-template-columns: 34px minmax(0,1fr) auto;
+      gap: 9px;
+      align-items: center;
+      width: 100%;
+      padding: 8px;
+      border-color: transparent;
+      background: transparent;
+      text-align: left;
+    }
+    .search-option.active,
+    .search-option:hover { background: rgba(94,231,255,.09); border-color: rgba(94,231,255,.2); }
+    .country-flag { display: grid; place-items: center; width: 34px; height: 25px; border: 1px solid rgba(255,255,255,.16); border-radius: 4px; background: linear-gradient(135deg,#1e4661,#243254); color: #fff; font-size: 18px; font-weight: 800; line-height:1; }
+    .search-option strong { display:block; font-size: 12px; }
+    .search-option small { color: var(--muted); font-size: 10px; }
+    .view-segment { display: flex; gap: 3px; padding: 3px; border: 1px solid var(--line); border-radius: 8px; background: rgba(5,11,21,.7); }
+    .view-segment button { min-height: 36px; padding: 6px 9px; border-color: transparent; background: transparent; font-size: 11px; }
+    .view-segment button.active { border-color: rgba(94,231,255,.38); background: rgba(94,231,255,.12); }
+    section[id] { scroll-margin-top: 132px; }
+    .stats { grid-template-columns: repeat(5,minmax(150px,1fr)); gap: 10px; }
+    .stat { min-height: 118px; padding: 14px; box-shadow: 0 14px 44px rgba(0,0,0,.3); }
+    .stat::before { height: 2px; background: var(--stat-accent, var(--cyan)); }
+    .stat[data-tone="green"] { --stat-accent: var(--green); }
+    .stat[data-tone="gold"] { --stat-accent: var(--gold); }
+    .stat[data-tone="indigo"] { --stat-accent: var(--indigo); }
+    .stat[data-tone="red"] { --stat-accent: var(--red); }
+    .stat .value { margin-top: 8px; font-size: 27px; text-shadow: none; }
+    .stat-trend { display:flex; align-items:center; gap:6px; margin-top:8px; color:var(--muted); font-size:11px; }
+    .stat-trend.positive { color: var(--green); }
+    .stat-trend .spark { width: 42px; height: 15px; overflow: visible; }
+    .overview-deep-dive { border: 1px solid var(--line); border-radius: 8px; background: rgba(8,16,29,.62); }
+    .overview-deep-dive > summary { display:flex; align-items:center; justify-content:space-between; gap:12px; padding:14px 16px; cursor:pointer; list-style:none; font-weight:750; }
+    .overview-deep-dive > summary::-webkit-details-marker { display:none; }
+    .overview-deep-dive > summary::after { content:"+"; color:var(--cyan); font-size:20px; }
+    .overview-deep-dive[open] > summary::after { content:"-"; }
+    .overview-deep-dive .report-grid { padding: 0 14px 14px; }
+    .overview-actions { display:flex; flex-wrap:wrap; gap:8px; margin-top:12px; }
+    .map-toolbar { display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:8px; margin:0 0 12px; padding:8px; border:1px solid var(--line); border-radius:8px; background:rgba(7,15,27,.68); }
+    .map-presets,.map-zoom { display:flex; flex-wrap:wrap; gap:5px; }
+    .map-toolbar button { min-height:36px; padding:7px 9px; font-size:11px; }
+    .map-toolbar button.active { border-color:var(--cyan); }
+    .tooltip { max-width: 330px; padding: 12px; z-index: 90; }
+    .tooltip-head { display:flex; justify-content:space-between; gap:12px; align-items:start; margin-bottom:7px; }
+    .tooltip-ranks { color:var(--muted); font-size:10px; text-align:right; }
+    .tooltip-shift { margin:5px 0 8px; color:var(--green); font-weight:700; }
+    .tooltip-dimension { display:grid; grid-template-columns:62px minmax(70px,1fr) 34px; gap:6px; align-items:center; margin-top:4px; color:var(--muted); font-size:10px; }
+    .tooltip-track,.inspector-track { height:6px; overflow:hidden; border-radius:999px; background:rgba(160,190,225,.16); }
+    .tooltip-fill,.inspector-fill { height:100%; border-radius:inherit; background:linear-gradient(90deg,var(--cyan),var(--green)); }
+    .country-inspector {
+      position: fixed;
+      top: 76px;
+      right: 14px;
+      bottom: 14px;
+      z-index: 46;
+      width: min(390px, calc(100vw - 28px));
+      padding: 16px;
+      overflow: auto;
+      border: 1px solid rgba(94,231,255,.3);
+      border-radius: 8px;
+      background: rgba(7,15,27,.97);
+      box-shadow: -20px 24px 70px rgba(0,0,0,.48);
+      transform: translateX(calc(100% + 34px));
+      transition: transform 200ms ease;
+    }
+    .country-inspector.open { transform: translateX(0); }
+    .inspector-head { display:flex; justify-content:space-between; gap:12px; align-items:start; padding-bottom:12px; border-bottom:1px solid var(--line); }
+    .inspector-head h2 { margin:3px 0 0; font-size:22px; }
+    .inspector-kpis { display:grid; grid-template-columns:1fr 1fr; gap:8px; margin:12px 0; }
+    .inspector-kpi { padding:10px; border-left:2px solid var(--cyan); background:rgba(18,34,54,.62); }
+    .inspector-kpi span { display:block; color:var(--muted); font-size:10px; }
+    .inspector-kpi strong { display:block; margin-top:4px; font-size:18px; }
+    .inspector-section { padding:12px 0; border-top:1px solid var(--line); }
+    .inspector-section h3 { margin:0 0 8px; font-size:13px; }
+    .inspector-dimension { display:grid; grid-template-columns:66px 1fr 86px; gap:7px; align-items:center; margin-top:8px; font-size:11px; }
+    .inspector-driver-list { display:grid; gap:5px; margin:0; padding:0; list-style:none; }
+    .inspector-driver-list li { display:flex; justify-content:space-between; gap:10px; padding:6px 0; color:var(--muted); font-size:11px; }
+    .inspector-driver-list .positive { color:var(--green); }
+    .inspector-driver-list .negative { color:var(--red); }
+    .inspector-actions { display:grid; grid-template-columns:1fr 1fr; gap:7px; }
+    .inspector-world-note { display:none; margin-top:8px; padding:9px; border:1px solid var(--line); color:var(--muted); font-size:11px; line-height:1.5; }
+    .inspector-world-note.open { display:block; }
+    .command-backdrop { position:fixed; inset:0; z-index:95; display:none; background:rgba(0,0,0,.58); }
+    .command-backdrop.open { display:block; }
+    .command-palette { position:fixed; top:12vh; left:50%; z-index:96; display:none; width:min(680px,calc(100vw - 24px)); max-height:72vh; transform:translateX(-50%); overflow:hidden; border:1px solid rgba(94,231,255,.34); border-radius:8px; background:#091321; box-shadow:0 32px 110px rgba(0,0,0,.64); }
+    .command-palette.open { display:block; }
+    .command-palette input { width:100%; min-width:0; border:0; border-bottom:1px solid var(--line); border-radius:0; padding:17px; font-size:16px; }
+    .command-results { max-height:54vh; overflow:auto; padding:7px; }
+    .command-result { display:grid; grid-template-columns:36px minmax(0,1fr) auto; align-items:center; gap:9px; width:100%; padding:10px; border-color:transparent; background:transparent; text-align:left; }
+    .command-result.active,.command-result:hover { border-color:rgba(94,231,255,.22); background:rgba(94,231,255,.09); }
+    .command-result .country-flag { font-size:8px; letter-spacing:.04em; }
+    .command-result strong { display:block; font-size:12px; }
+    .command-result small { display:block; margin-top:2px; color:var(--muted); font-size:10px; }
+    .command-key { color:var(--muted); font-size:10px; }
+    .tour-card { position:fixed; right:22px; bottom:22px; z-index:94; display:none; width:min(360px,calc(100vw - 28px)); padding:16px; border:1px solid rgba(94,231,255,.36); border-radius:8px; background:#0a1626; box-shadow:0 26px 82px rgba(0,0,0,.54); }
+    .tour-card.open { display:block; }
+    .tour-card h2 { margin:5px 0 8px; font-size:20px; }
+    .tour-card p { margin:0; color:var(--muted); font-size:13px; line-height:1.55; }
+    .tour-progress { color:var(--cyan); font-size:10px; font-weight:800; text-transform:uppercase; }
+    .tour-actions { display:flex; justify-content:space-between; gap:8px; margin-top:14px; }
+    .tour-highlight { outline:3px solid var(--gold) !important; outline-offset:4px; }
+    @media (max-width: 1100px) {
+      .stats { grid-template-columns:repeat(3,minmax(150px,1fr)); }
+      .primary-controls { overflow-x:auto; }
+      .search-shell { flex:0 0 280px; }
+    }
+    @media (max-width: 820px) {
+      #hdi-dashboard-app { padding:10px; }
+      .hero { grid-template-columns:1fr; padding-top:4px; }
+      .hero .meta { display:none; }
+      .nav-bar { flex-direction:row; align-items:center; }
+      .mobile-nav-toggle { display:inline-flex; }
+      .nav-links { position:absolute; top:calc(100% + 7px); left:0; right:0; display:none; max-height:calc(100vh - 90px); overflow:auto; padding:8px; border:1px solid var(--line); border-radius:8px; background:rgba(7,15,27,.99); box-shadow:0 24px 70px rgba(0,0,0,.5); }
+      .nav-links.mobile-open { display:grid; }
+      .nav-links a { width:100%; }
+      .nav-more { display:grid; }
+      .nav-menu-button { display:none; }
+      .nav-more-menu { position:static; display:grid; min-width:0; padding:0; border:0; background:transparent; box-shadow:none; }
+      .controls { top:58px; overflow:visible; }
+      .primary-controls { overflow-x:auto; padding-bottom:2px; }
+      .control-actions .utility-label { display:none; }
+      .stats { grid-template-columns:repeat(2,minmax(0,1fr)); }
+      .country-inspector { top:auto; left:8px; right:8px; bottom:8px; width:auto; max-height:76vh; transform:translateY(calc(100% + 20px)); }
+      .country-inspector.open { transform:translateY(0); }
+      .maps { display:flex; flex-direction:column; }
+      .map-panel { display:flex; flex-direction:column; order:0; }
+      .map-panel .panel-head,.map-panel .legend { order:0; }
+      .map-panel .map-wrap { order:1; }
+      .map-panel .map-metrics { order:2; }
+    }
+    @media (max-width: 520px) {
+      .hero h1 { font-size:34px; }
+      .subtitle { font-size:13px; }
+      .controls,.nav-bar { position:sticky; }
+      .controls { display:grid; grid-template-columns:minmax(0,1fr); overflow:visible; }
+      .primary-controls,.control-actions { width:100%; min-width:0; }
+      .primary-controls { flex:0 0 auto; overflow-x:auto; }
+      .primary-controls > * { flex:0 0 auto !important; }
+      .control-actions { justify-content:flex-end; }
+      .scenario-map-switcher,.map-toolbar { flex-wrap:nowrap; overflow-x:auto; }
+      .scenario-map-switcher > *,.map-toolbar > * { flex:0 0 auto; }
+      .stats { grid-template-columns:1fr 1fr; }
+      .stat { min-height:105px; }
+      .stat .value { font-size:22px; }
+      .view-segment button span { display:none; }
+      .search-shell { flex-basis:235px; }
+      .map-toolbar { align-items:flex-start; }
+      .inspector-actions { grid-template-columns:1fr; }
+    }
     @media print {
       body { background: #fff !important; color: #111827 !important; }
       .shell, .drawer-backdrop, .glossary-drawer, .compare-drawer, .skip-link { display: none !important; }
@@ -1746,24 +1970,34 @@
 
     <nav class="nav-bar" aria-label="Dashboard sections">
       <div class="nav-brand">HDI Console</div>
-      <div class="nav-links">
+      <button type="button" class="mobile-nav-toggle secondary" id="mobile-nav-toggle" aria-expanded="false" aria-controls="dashboard-nav-links">Menu</button>
+      <div class="nav-links" id="dashboard-nav-links">
         <a href="#overview" data-nav-link="overview">Overview</a>
         <a href="#filters" data-nav-link="filters">Filters & Maps</a>
-        <a href="#comparison-maps" data-nav-link="comparison-maps">Comparison Maps</a>
-        <a href="#tuning" data-nav-link="tuning">Tuning & Charts</a>
-        <a href="#research" data-nav-link="research">Research</a>
         <a href="#subdivisions" data-nav-link="subdivisions">Subdivisions</a>
-        <a href="#ethnic-mosaic" data-nav-link="ethnic-mosaic">Demographic Context</a>
         <a href="#hdi-gpt" data-nav-link="hdi-gpt">HDI-GPT</a>
-        <a href="#validation" data-nav-link="validation">Validation</a>
-        <a href="#explorer" data-nav-link="explorer">Explorer</a>
-        <a href="#table" data-nav-link="table">Table</a>
+        <a href="#research" data-nav-link="research">Research</a>
+        <div class="nav-more">
+          <button type="button" class="nav-menu-button secondary" id="nav-more-toggle" aria-expanded="false" aria-controls="nav-more-menu">More</button>
+          <div class="nav-more-menu" id="nav-more-menu">
+            <a href="#comparison-maps" data-nav-link="comparison-maps">Comparison Maps</a>
+            <a href="#tuning" data-nav-link="tuning">Tuning & Charts</a>
+            <a href="#ethnic-mosaic" data-nav-link="ethnic-mosaic">Demographic Context</a>
+            <a href="#validation" data-nav-link="validation">Validation</a>
+            <a href="#explorer" data-nav-link="explorer">Explorer</a>
+            <a href="#table" data-nav-link="table">Data Table</a>
+          </div>
+        </div>
       </div>
     </nav>
 
     <section class="controls" aria-label="Persistent research controls">
-      <div class="control-group">
-        <input id="search" type="search" placeholder="Search country or ISO3" aria-label="Search country or ISO3">
+      <div class="control-group primary-controls">
+        <div class="search-shell">
+          <input id="search" type="search" placeholder="Search country or ISO3" aria-label="Search country or ISO3" autocomplete="off" aria-autocomplete="list" aria-controls="search-suggestions" aria-expanded="false">
+          <span class="search-hint" aria-hidden="true">/</span>
+          <div class="search-suggestions" id="search-suggestions" role="listbox" aria-label="Country search suggestions"></div>
+        </div>
         <select id="scenario-select" aria-label="Scenario view">
           <option value="baseline">Baseline scenario</option>
           <option value="ai">Aggressive AI adoption</option>
@@ -1771,37 +2005,49 @@
           <option value="inclusive">Inclusive mobility &amp; cohesion</option>
           <option value="stagnation">Stagnation stress test</option>
         </select>
-        <select id="tier-filter" aria-label="Momentum tier filter">
-          <option value="">All momentum tiers</option>
-        </select>
-        <select id="trajectory-filter" aria-label="Trajectory filter">
-          <option value="">All trajectories</option>
-        </select>
-        <select id="country-jump" aria-label="Jump to country">
-          <option value="">Select country</option>
-        </select>
+        <div class="view-segment" role="group" aria-label="Map year view">
+          <button type="button" class="active" data-view="both" aria-label="Show 2025 and 2050 maps"><span>Both</span></button>
+          <button type="button" data-view="baseline" aria-label="Show 2025 map only"><span>2025</span></button>
+          <button type="button" data-view="projection" aria-label="Show 2050 map only"><span>2050</span></button>
+        </div>
       </div>
-      <div class="control-group">
-        <button type="button" class="active btn-icon" data-view="both"><span class="icon">⊞</span><span>Both maps</span></button>
-        <button type="button" class="btn-icon" data-view="baseline"><span class="icon">◐</span><span>2025 only</span></button>
-        <button type="button" class="btn-icon" data-view="projection"><span class="icon">◑</span><span>2050 only</span></button>
-        <button type="button" class="secondary btn-icon" id="reset-filters"><span class="icon">↺</span><span>Reset</span></button>
-        <button type="button" class="secondary btn-icon" id="clear-selection"><span class="icon">×</span><span>Clear selection</span></button>
-        <button type="button" class="secondary btn-icon" id="export-filtered"><span class="icon">↓</span><span>Export CSV</span></button>
-        <button type="button" class="secondary btn-icon" id="export-json"><span class="icon">{ }</span><span>Export JSON</span></button>
-        <button type="button" class="secondary btn-icon" id="accessible-palette" aria-pressed="false"><span class="icon" aria-hidden="true">◑</span><span>Accessible palette</span></button>
-        <button type="button" class="secondary btn-icon" id="methodology-toggle"><span class="icon">?</span><span>Glossary</span></button>
+      <div class="control-group control-actions">
+        <div class="menu-shell">
+          <button type="button" class="secondary" id="filter-menu-toggle" aria-expanded="false" aria-controls="filter-menu">Filters</button>
+          <div class="control-menu filters-menu" id="filter-menu">
+            <label for="tier-filter">Momentum tier</label>
+            <select id="tier-filter" aria-label="Momentum tier filter"><option value="">All momentum tiers</option></select>
+            <label for="trajectory-filter">Trajectory</label>
+            <select id="trajectory-filter" aria-label="Trajectory filter"><option value="">All trajectories</option></select>
+            <label for="country-jump">Jump to country</label>
+            <select id="country-jump" aria-label="Jump to country"><option value="">Select country</option></select>
+            <div class="menu-divider"></div>
+            <button type="button" class="secondary" id="reset-filters">Reset filters</button>
+            <button type="button" class="secondary" id="clear-selection">Clear country selection</button>
+          </div>
+        </div>
+        <div class="menu-shell">
+          <button type="button" class="secondary" id="utility-menu-toggle" aria-expanded="false" aria-controls="utility-menu"><span class="utility-label">Export &amp; Settings</span><span aria-hidden="true">...</span></button>
+          <div class="control-menu" id="utility-menu">
+            <button type="button" class="secondary" id="export-filtered">Export filtered CSV</button>
+            <button type="button" class="secondary" id="export-json">Export filtered JSON</button>
+            <button type="button" class="secondary" id="accessible-palette" aria-pressed="false">Accessible palette</button>
+            <button type="button" class="secondary" id="methodology-toggle">Methodology &amp; glossary</button>
+            <button type="button" class="secondary" id="restart-tour">Quick Start tour</button>
+          </div>
+        </div>
+        <button type="button" class="secondary" id="command-palette-button" aria-haspopup="dialog">Command</button>
       </div>
     </section>
 
     <main id="page-root" tabindex="-1">
     <section class="page-view active-page" id="overview" data-page-title="Overview">
-    <section class="stats">
-      <div class="stat"><div class="label">Projection type</div><div class="value">Scenario</div></div>
-      <div class="stat"><div class="label">Official global 2025 HDI</div><div class="value" id="avg-2025">--</div></div>
-      <div class="stat"><div class="label">Pop-weighted 2050 HDI</div><div class="value" id="avg-2050">--</div></div>
-      <div class="stat"><div class="label">Countries improving</div><div class="value" id="improving-count">--</div></div>
-      <div class="stat"><div class="label">Max index mismatch</div><div class="value" id="max-index-mismatch">--</div></div>
+    <section class="stats" aria-label="Global projection indicators">
+      <div class="stat" data-tone="indigo"><div class="label">Active scenario</div><div class="value" id="kpi-scenario">Baseline</div><div class="stat-trend">Scenario branch</div></div>
+      <div class="stat" data-tone="gold"><div class="label">Official global 2025 HDI</div><div class="value" id="avg-2025">--</div><div class="stat-trend">UNDP reference aggregate</div></div>
+      <div class="stat" data-tone="green"><div class="label">Pop-weighted 2050 HDI</div><div class="value" id="avg-2050">--</div><div class="stat-trend positive" id="avg-2050-trend">Calculating shift</div></div>
+      <div class="stat" data-tone="green"><div class="label">Countries improving</div><div class="value" id="improving-count">--</div><div class="stat-trend positive" id="improving-trend">Calculating share</div></div>
+      <div class="stat" data-tone="red"><div class="label">Max index mismatch</div><div class="value" id="max-index-mismatch">--</div><div class="stat-trend">Formula audit residual</div></div>
     </section>
     <section class="overview-report" aria-label="HDI projection research report">
       <div class="report-hero">
@@ -1826,7 +2072,13 @@
         </div>
       </div>
 
-      <div class="report-grid">
+      <div class="overview-actions">
+        <button type="button" id="overview-open-maps">Explore global maps</button>
+        <button type="button" class="secondary" id="overview-open-research">Open full research workspace</button>
+      </div>
+      <details class="overview-deep-dive">
+        <summary>Read the full model overview and calculation guide</summary>
+        <div class="report-grid">
         <article class="report-card wide">
           <h3><span class="anchor-icon">01</span>Project Purpose</h3>
           <p>The project asks a long-range development question: which countries are likely to move upward or downward in relative human development by 2050, and which structural drivers explain that movement? Instead of treating HDI as a single black-box score, the dashboard is built around the official conceptual structure of HDI: health, education, and income. This makes the projections easier to audit because a country’s final 2050 HDI can be traced back to component indices rather than only to a ranking table.</p>
@@ -1947,7 +2199,8 @@
           <p>The projected 2050 HDI values are best interpreted as scenario projections conditioned on the dataset’s assumptions, not as official forecasts. A country’s rank can change because its own HDI rises, because peer countries rise more slowly, because demographic or technological conditions improve, or because structural drags reduce the expected translation of growth into human development. When two countries differ by only a few thousandths of HDI, the dashboard should be read in clusters rather than exact ordinal certainty.</p>
           <p>The strongest research use case is comparative exploration: selecting peer countries, changing scenarios, testing thresholds, examining driver breakdowns, and checking whether the component indices support the headline HDI value. The project is designed to make those questions visible and testable inside one analytical interface.</p>
         </article>
-      </div>
+        </div>
+      </details>
     </section>
     </section>
 
@@ -2703,6 +2956,20 @@
         <button type="button" class="secondary" data-scenario-map="inclusive">Inclusive mobility</button>
         <button type="button" class="secondary" data-scenario-map="stagnation">Stagnation stress test</button>
       </div>
+      <div class="map-toolbar" aria-label="Map viewport controls">
+        <div class="map-presets" role="group" aria-label="Map region presets">
+          <button type="button" class="active" data-map-region="world">World</button>
+          <button type="button" class="secondary" data-map-region="africa">Africa</button>
+          <button type="button" class="secondary" data-map-region="asia">Asia-Pacific</button>
+          <button type="button" class="secondary" data-map-region="americas">Americas</button>
+          <button type="button" class="secondary" data-map-region="europe">Europe</button>
+        </div>
+        <div class="map-zoom" role="group" aria-label="Map zoom controls">
+          <button type="button" class="secondary" data-map-zoom="out" aria-label="Zoom maps out">-</button>
+          <button type="button" class="secondary" data-map-zoom="reset">Reset view</button>
+          <button type="button" class="secondary" data-map-zoom="in" aria-label="Zoom maps in">+</button>
+        </div>
+      </div>
       <div class="maps" id="maps-grid">
         <div class="panel map-panel" data-panel="baseline">
           <div class="panel-head">
@@ -2965,6 +3232,24 @@
   </div>
   <div id="a11y-status" class="sr-only" role="status" aria-live="polite" aria-atomic="true"></div>
   <div id="tooltip" class="tooltip"></div>
+  <aside id="country-inspector" class="country-inspector" aria-label="Selected country inspector" aria-hidden="true">
+    <div class="inspector-head">
+      <div><div class="section-kicker">Country inspector</div><h2 id="inspector-country">Select a country</h2><div class="panel-note" id="inspector-meta">Click a map region or table row.</div></div>
+      <button type="button" class="secondary" id="close-country-inspector" aria-label="Close country inspector">Close</button>
+    </div>
+    <div id="inspector-content"></div>
+  </aside>
+  <div id="command-backdrop" class="command-backdrop"></div>
+  <section id="command-palette" class="command-palette" role="dialog" aria-modal="true" aria-label="Global command palette" aria-hidden="true">
+    <input id="command-input" type="search" placeholder="Jump to a country, subdivision, scenario, or page" aria-label="Command search" autocomplete="off" aria-controls="command-results">
+    <div id="command-results" class="command-results" role="listbox"></div>
+  </section>
+  <section id="quick-start-tour" class="tour-card" role="dialog" aria-modal="false" aria-labelledby="tour-title" aria-hidden="true">
+    <div class="tour-progress" id="tour-progress">Step 1 of 3</div>
+    <h2 id="tour-title">Choose a scenario</h2>
+    <p id="tour-copy">Start with the baseline, then test AI, climate mitigation, inclusion, or stagnation assumptions.</p>
+    <div class="tour-actions"><button type="button" class="secondary" id="tour-skip">Skip</button><button type="button" id="tour-next">Next</button></div>
+  </section>
   <div id="drawer-backdrop" class="drawer-backdrop"></div>
   <aside id="glossary-drawer" class="glossary-drawer" role="dialog" aria-modal="true" aria-label="Methodology and glossary" aria-hidden="true" tabindex="-1">
     <div class="drawer-head">
@@ -3018,6 +3303,11 @@
     const officialWorldHdi2025 = 0.756;
     const officialWorldHdi2050 = 0.794;
     const aliases = new Map([["PSX", "PSE"], ["SDS", "SSD"]]);
+    const iso2ByIso3 = {"AFG":"AF","ALB":"AL","DZA":"DZ","AND":"AD","AGO":"AO","ATG":"AG","ARG":"AR","ARM":"AM","AUS":"AU","AUT":"AT","AZE":"AZ","BHS":"BS","BHR":"BH","BGD":"BD","BRB":"BB","BLR":"BY","BEL":"BE","BLZ":"BZ","BEN":"BJ","BTN":"BT","BOL":"BO","BIH":"BA","BWA":"BW","BRA":"BR","BRN":"BN","BGR":"BG","BFA":"BF","BDI":"BI","CPV":"CV","KHM":"KH","CMR":"CM","CAN":"CA","CAF":"CF","TCD":"TD","CHL":"CL","CHN":"CN","COL":"CO","COM":"KM","COG":"CG","COD":"CD","CRI":"CR","CIV":"CI","HRV":"HR","CUB":"CU","CYP":"CY","CZE":"CZ","DNK":"DK","DJI":"DJ","DMA":"DM","DOM":"DO","ECU":"EC","EGY":"EG","SLV":"SV","GNQ":"GQ","ERI":"ER","EST":"EE","SWZ":"SZ","ETH":"ET","FJI":"FJ","FIN":"FI","FRA":"FR","GAB":"GA","GMB":"GM","GEO":"GE","DEU":"DE","GHA":"GH","GRC":"GR","GRD":"GD","GTM":"GT","GIN":"GN","GNB":"GW","GUY":"GY","HTI":"HT","HND":"HN","HUN":"HU","ISL":"IS","IND":"IN","IDN":"ID","IRN":"IR","IRQ":"IQ","IRL":"IE","ISR":"IL","ITA":"IT","JAM":"JM","JPN":"JP","JOR":"JO","KAZ":"KZ","KEN":"KE","KIR":"KI","PRK":"KP","KOR":"KR","KWT":"KW","KGZ":"KG","LAO":"LA","LVA":"LV","LBN":"LB","LSO":"LS","LBR":"LR","LBY":"LY","LIE":"LI","LTU":"LT","LUX":"LU","MDG":"MG","MWI":"MW","MYS":"MY","MDV":"MV","MLI":"ML","MLT":"MT","MHL":"MH","MRT":"MR","MUS":"MU","MEX":"MX","FSM":"FM","MDA":"MD","MCO":"MC","MNG":"MN","MNE":"ME","MAR":"MA","MOZ":"MZ","MMR":"MM","NAM":"NA","NRU":"NR","NPL":"NP","NLD":"NL","NZL":"NZ","NIC":"NI","NER":"NE","NGA":"NG","MKD":"MK","NOR":"NO","OMN":"OM","PAK":"PK","PLW":"PW","PAN":"PA","PNG":"PG","PRY":"PY","PER":"PE","PHL":"PH","POL":"PL","PRT":"PT","QAT":"QA","ROU":"RO","RUS":"RU","RWA":"RW","KNA":"KN","LCA":"LC","VCT":"VC","WSM":"WS","SMR":"SM","STP":"ST","SAU":"SA","SEN":"SN","SRB":"RS","SYC":"SC","SLE":"SL","SGP":"SG","SVK":"SK","SVN":"SI","SLB":"SB","SOM":"SO","ZAF":"ZA","SSD":"SS","ESP":"ES","LKA":"LK","SDN":"SD","SUR":"SR","SWE":"SE","CHE":"CH","SYR":"SY","TJK":"TJ","TZA":"TZ","THA":"TH","TLS":"TL","TGO":"TG","TON":"TO","TTO":"TT","TUN":"TN","TUR":"TR","TKM":"TM","TUV":"TV","UGA":"UG","UKR":"UA","ARE":"AE","GBR":"GB","USA":"US","URY":"UY","UZB":"UZ","VUT":"VU","VAT":"VA","VEN":"VE","VNM":"VN","YEM":"YE","ZMB":"ZM","ZWE":"ZW","PSE":"PS"};
+    function flagEmoji(iso3) {
+      const code = iso2ByIso3[iso3];
+      return code ? [...code].map(letter => String.fromCodePoint(127397 + letter.charCodeAt(0))).join("") : iso3;
+    }
     const compareColors = ["#58e6ff", "#66f3b3", "#f6ce6a", "#ff7aa2", "#9a8cff", "#ff9f6e"];
     let accessiblePaletteEnabled = false;
     let dialogReturnFocus = null;
@@ -3186,6 +3476,12 @@
     let chatHistory = [];
     let lastHdiGptCountries = [];
     let lastSubdivisionQueryRows = [];
+    let searchSuggestionIndex = -1;
+    let commandResultIndex = 0;
+    let activeMapRegion = "world";
+    let mapZoomFactor = 1;
+    let tourStepIndex = 0;
+    let searchFilterTimer = null;
     const explorerVariables = [
       ["HDI 2050", "Scenario_HDI"],
       ["HDI gain", "Scenario_Gain"],
@@ -3443,6 +3739,9 @@
       document.getElementById("avg-2050").textContent = fmt(avg2050, 3);
       document.getElementById("improving-count").textContent = improving.toString();
       document.getElementById("max-index-mismatch").textContent = fmt(maxIndexMismatch, 6);
+      document.getElementById("kpi-scenario").textContent = scenarios[activeScenario].label.replace(" scenario", "");
+      document.getElementById("avg-2050-trend").textContent = `${hdiShift >= 0 ? "↑" : "↓"} ${hdiShift >= 0 ? "+" : ""}${fmt(hdiShift, 3)} from 2025`;
+      document.getElementById("improving-trend").textContent = `↑ ${Math.round(improvingShare * 100)}% of countries`;
       const story = document.getElementById("overview-data-story");
       if (story) {
         story.textContent = `Global human development is projected to move from ${fmt(officialWorldHdi2025, 3)} to ${fmt(avg2050, 3)} under the active scenario, a ${hdiShift >= 0 ? "+" : ""}${fmt(hdiShift, 3)} population-weighted shift. ${Math.round(improvingShare * 100)}% of countries register net gains by 2050.`;
@@ -3879,6 +4178,30 @@
     const countries = feature(world, world.objects.features).features;
     const projection = d3.geoNaturalEarth1().fitExtent([[8, 8], [952, 472]], {type: "Sphere"});
     const path = d3.geoPath(projection);
+    const mapRegionPresets = {
+      world: {center: [0, 12], scale: 1},
+      africa: {center: [20, 3], scale: 1.75},
+      asia: {center: [103, 18], scale: 1.5},
+      americas: {center: [-77, 8], scale: 1.45},
+      europe: {center: [15, 51], scale: 2.35}
+    };
+
+    function mapViewportTransform() {
+      const preset = mapRegionPresets[activeMapRegion] || mapRegionPresets.world;
+      const scale = Math.max(1, Math.min(4.5, preset.scale * mapZoomFactor));
+      if (scale === 1 && activeMapRegion === "world") return null;
+      const [x, y] = projection(preset.center);
+      return `translate(480 250) scale(${scale}) translate(${-x} ${-y})`;
+    }
+
+    function applyMapViewport(animate = true) {
+      const transform = mapViewportTransform();
+      const selectors = [...mapSeries, ...thresholdSeries].map(series => `${series.selector} > g`).join(",");
+      let layers = d3.selectAll(selectors);
+      if (animate && !window.matchMedia("(prefers-reduced-motion: reduce)").matches) layers = layers.transition().duration(260);
+      layers.attr("transform", transform);
+      document.querySelectorAll("[data-map-region]").forEach(button => button.classList.toggle("active", button.dataset.mapRegion === activeMapRegion));
+    }
 
     function getDatum(featureRow) {
       const id = featureRow.properties.id;
@@ -3907,7 +4230,7 @@
         })
         .attr("tabindex", f => { const d=getDatum(f); return d&&filteredIso.has(d.ISO3)?0:-1; })
         .attr("role", f => getDatum(f)?"button":"img")
-        .attr("aria-label", f => { const d=getDatum(f); if(!d)return "Country with no HDI data"; const value=series.key==="Scenario_HDI_2050"?scenarioHdi(d):d[series.key]; return `${d.Country}, ${series.label}, ${fmt(value)}. Activate to select country.`; })
+        .attr("aria-label", f => { const d=getDatum(f); if(!d)return "Country with no HDI data"; const value=series.key==="Scenario_HDI_2050"?scenarioHdi(d):d[series.key]; return `${d.Country}, ${series.label}, ${fmt(value)}. 2025 rank ${d.UNDP_Rank_2023 || "not available"}; projected 2050 rank ${d.Rank || "not available"}. Activate to inspect country.`; })
         .classed("active", f => {
           const d = getDatum(f);
           return d && activeCountry && d.ISO3 === activeCountry.ISO3;
@@ -4096,6 +4419,7 @@
     function redrawMaps() {
       mapSeries.forEach(drawMap);
       renderThresholdMaps();
+      applyMapViewport(false);
     }
 
     function applyMapView() {
@@ -4114,9 +4438,14 @@
       const seriesValue = series ? fmt(value) : fmt(scenarioHdi(d));
       const gain = scenarioGain(d);
       const hdiGain = gain >= 0 ? `+${fmt(gain)}` : fmt(gain);
-      tooltip.innerHTML = `<strong>${d.Country}</strong><br>${seriesLabel} ${seriesValue}<br>${scenarios[activeScenario].label}<br>HDR 2025 HDI ${fmt(d.HDI_Baseline)}<br>2050 HDI ${fmt(scenarioHdi(d))}<br>HDI change ${hdiGain}<br>Population 2024 ${fmtMaybe(d.Population_2024)}<br>Population 2050 ${fmtMaybe(d.Population_2050)}`;
-      tooltip.style.left = `${Math.min(window.innerWidth - 290, event.clientX + 14)}px`;
-      tooltip.style.top = `${event.clientY + 14}px`;
+      const dimensions = [
+        ["Health", d.HealthIndex_2050],
+        ["Education", d.EducationIndex_2050],
+        ["Income", d.IncomeIndex_2050]
+      ];
+      tooltip.innerHTML = `<div class="tooltip-head"><div><strong>${d.Country}</strong><br><small>${d.ISO3} · ${seriesLabel} ${seriesValue}</small></div><div class="tooltip-ranks">2025 #${d.UNDP_Rank_2023 || "--"}<br>2050 #${d.Rank || "--"}</div></div><div>${scenarios[activeScenario].label}</div><div class="tooltip-shift">${fmt(d.HDI_Baseline)} → ${fmt(scenarioHdi(d))} (${hdiGain})</div>${dimensions.map(([label,index]) => `<div class="tooltip-dimension"><span>${label}</span><div class="tooltip-track"><div class="tooltip-fill" style="width:${Math.max(0,Math.min(100,Number(index)*100))}%"></div></div><strong>${fmt(index,3)}</strong></div>`).join("")}<div class="panel-note" style="margin-top:8px">Population 2050 ${fmtMaybe(d.Population_2050)}</div>`;
+      tooltip.style.left = `${Math.max(8, Math.min(window.innerWidth - 345, event.clientX + 14))}px`;
+      tooltip.style.top = `${Math.max(8, Math.min(window.innerHeight - 250, event.clientY + 14))}px`;
       tooltip.style.opacity = "1";
     }
 
@@ -5589,6 +5918,7 @@
 
     function clearActiveCountry() {
       activeCountry = null;
+      setCountryInspectorOpen(false);
       resetMapMetrics();
       document.getElementById("country-jump").value = "";
       renderMosaicSelectedContext();
@@ -5602,6 +5932,7 @@
 
     function setActiveCountry(d) {
       activeCountry = d;
+      hideTooltip();
       document.getElementById("country-jump").value = d.ISO3;
       setMetric("country", `${d.Country} (${d.ISO3})`);
       setMetric("hdi-2025", fmt(d.HDI_Baseline));
@@ -5624,6 +5955,8 @@
       redrawMaps();
       renderCharts();
       renderTable();
+      renderCountryInspector(d);
+      setCountryInspectorOpen(true);
       updateHdiGptContext();
     }
 
@@ -6058,6 +6391,179 @@
       updateTuningLabels();
     }
 
+    function setCountryInspectorOpen(open) {
+      const inspector = document.getElementById("country-inspector");
+      inspector.classList.toggle("open", open);
+      inspector.setAttribute("aria-hidden", String(!open));
+    }
+
+    function renderCountryInspector(row) {
+      if (!row) return;
+      const gain = scenarioGain(row);
+      const drivers = driverColumns
+        .map(([label, key]) => ({label, value: Number(row[key]) || 0}))
+        .sort((a, b) => b.value - a.value);
+      const positive = drivers.filter(item => item.value > 0).slice(0, 3);
+      const negative = [...drivers].sort((a, b) => a.value - b.value).filter(item => item.value < 0).slice(0, 3);
+      const dimensions = [
+        ["Health", row.HealthIndex_2025, row.HealthIndex_2050],
+        ["Education", row.EducationIndex_2025, row.EducationIndex_2050],
+        ["Income", row.IncomeIndex_2025, row.IncomeIndex_2050]
+      ];
+      document.getElementById("inspector-country").textContent = row.Country;
+      document.getElementById("inspector-meta").textContent = `${row.ISO3} · ${row.Trajectory || "Unclassified"} · ${scenarios[activeScenario].label}`;
+      document.getElementById("inspector-content").innerHTML = `
+        <div class="inspector-kpis">
+          <div class="inspector-kpi"><span>HDR 2025 HDI</span><strong>${fmt(row.HDI_Baseline)}</strong></div>
+          <div class="inspector-kpi"><span>Projected 2050 HDI</span><strong>${fmt(scenarioHdi(row))}</strong></div>
+          <div class="inspector-kpi"><span>HDI change</span><strong class="${gain >= 0 ? "gain-pos" : "gain-neg"}">${gain >= 0 ? "+" : ""}${fmt(gain)}</strong></div>
+          <div class="inspector-kpi"><span>Rank shift</span><strong>#${row.UNDP_Rank_2023 || "--"} → #${row.Rank || "--"}</strong></div>
+        </div>
+        <div class="inspector-section"><h3>Dimension trajectory</h3>${dimensions.map(([label,start,end]) => `<div class="inspector-dimension"><span>${label}</span><div class="inspector-track"><div class="inspector-fill" style="width:${Math.max(0,Math.min(100,Number(end)*100))}%"></div></div><strong>${fmt(start,3)} → ${fmt(end,3)}</strong></div>`).join("")}</div>
+        <div class="inspector-section"><h3>Leading growth drivers</h3><ul class="inspector-driver-list">${positive.length ? positive.map(item => `<li><span>${escapeHtml(item.label)}</span><strong class="positive">+${fmt(item.value,4)}</strong></li>`).join("") : "<li>No positive attribution recorded.</li>"}</ul></div>
+        <div class="inspector-section"><h3>Leading structural drags</h3><ul class="inspector-driver-list">${negative.length ? negative.map(item => `<li><span>${escapeHtml(item.label)}</span><strong class="negative">${fmt(item.value,4)}</strong></li>`).join("") : "<li>No negative attribution recorded.</li>"}</ul></div>
+        <div class="inspector-section"><div class="inspector-actions"><button type="button" id="inspector-world">Compare with world</button><button type="button" class="secondary" id="inspector-compare">Add to Comparison Lab</button></div><div class="inspector-world-note" id="inspector-world-note">World reference: 2025 HDI ${fmt(officialWorldHdi2025,3)}; projected 2050 HDI ${fmt(calibratedWorldHdi2050(allRows),3)}. ${row.Country} is ${scenarioHdi(row) >= calibratedWorldHdi2050(allRows) ? "above" : "below"} the projected population-weighted world aggregate.</div></div>`;
+      document.getElementById("inspector-world").addEventListener("click", () => document.getElementById("inspector-world-note").classList.toggle("open"));
+      document.getElementById("inspector-compare").addEventListener("click", () => {
+        addCompareCountry(row.ISO3);
+        setCompareDrawerOpen(true);
+      });
+    }
+
+    function matchingCountries(query) {
+      const value = query.trim().toLowerCase();
+      if (!value) return [];
+      return [...allRows]
+        .filter(row => row.Country.toLowerCase().includes(value) || row.ISO3.toLowerCase().includes(value))
+        .sort((a, b) => {
+          const aExact = a.Country.toLowerCase().startsWith(value) || a.ISO3.toLowerCase().startsWith(value);
+          const bExact = b.Country.toLowerCase().startsWith(value) || b.ISO3.toLowerCase().startsWith(value);
+          return Number(bExact) - Number(aExact) || a.Country.localeCompare(b.Country);
+        }).slice(0, 8);
+    }
+
+    function renderSearchSuggestions() {
+      const input = document.getElementById("search");
+      const panel = document.getElementById("search-suggestions");
+      const matches = matchingCountries(input.value);
+      searchSuggestionIndex = matches.length ? Math.max(0, Math.min(searchSuggestionIndex, matches.length - 1)) : -1;
+      panel.innerHTML = matches.map((row, index) => `<button type="button" class="search-option${index === searchSuggestionIndex ? " active" : ""}" role="option" aria-selected="${index === searchSuggestionIndex}" data-search-country="${row.ISO3}"><span class="country-flag" aria-hidden="true">${flagEmoji(row.ISO3)}</span><span><strong>${escapeHtml(row.Country)}</strong><small>${escapeHtml(row.DevelopmentMomentumTier || row.Trajectory || "Country projection")}</small></span><small>2025 ${fmt(row.HDI_Baseline,3)}</small></button>`).join("");
+      panel.classList.toggle("open", matches.length > 0 && document.activeElement === input);
+      input.setAttribute("aria-expanded", String(panel.classList.contains("open")));
+      panel.querySelectorAll("[data-search-country]").forEach(button => button.addEventListener("click", () => selectSearchCountry(button.dataset.searchCountry)));
+    }
+
+    function selectSearchCountry(iso) {
+      const row = allRows.find(item => item.ISO3 === iso);
+      if (!row) return;
+      document.getElementById("search").value = row.Country;
+      document.getElementById("search-suggestions").classList.remove("open");
+      applyFilters();
+      setActiveCountry(row);
+      showPage("filters", true);
+    }
+
+    function commandEntries(query = "") {
+      const pages = [
+        ["Overview","overview"],["Filters & Maps","filters"],["Subdivisions","subdivisions"],["HDI-GPT","hdi-gpt"],["Research","research"],["Comparison Maps","comparison-maps"],["Tuning & Charts","tuning"],["Demographic Context","ethnic-mosaic"],["Validation","validation"],["Explorer","explorer"],["Data Table","table"]
+      ].map(([label,value]) => ({type:"Page",label,value,meta:"Open workspace"}));
+      const scenarioItems = Object.entries(scenarios).map(([value,item]) => ({type:"Scenario",label:item.label,value,meta:"Switch scenario"}));
+      const countryItems = allRows.map(row => ({type:"Country",label:row.Country,value:row.ISO3,meta:`${row.ISO3} · 2025 HDI ${fmt(row.HDI_Baseline,3)}`}));
+      const subdivisionItems = subdivisionRows.map(row => ({type:"Subdivision",label:row.Subdivision,value:`${row.ISO3}|${row.Subdivision}`,meta:`${row.Country} · 2050 ${fmt(row.Subdivision_HDI_2050_Projected,3)}`}));
+      const value = query.trim().toLowerCase();
+      const all = [...pages,...scenarioItems,...countryItems,...subdivisionItems];
+      return (value ? all.filter(item => `${item.label} ${item.meta} ${item.type}`.toLowerCase().includes(value)) : [...pages,...scenarioItems]).slice(0, 12);
+    }
+
+    function renderCommandResults() {
+      const results = commandEntries(document.getElementById("command-input").value);
+      commandResultIndex = Math.max(0, Math.min(commandResultIndex, Math.max(0, results.length - 1)));
+      const panel = document.getElementById("command-results");
+      panel.innerHTML = results.map((item,index) => `<button type="button" class="command-result${index === commandResultIndex ? " active" : ""}" role="option" aria-selected="${index === commandResultIndex}" data-command-index="${index}"><span class="country-flag" aria-hidden="true">${item.type.slice(0,3).toUpperCase()}</span><span><strong>${escapeHtml(item.label)}</strong><small>${escapeHtml(item.meta)}</small></span><span class="command-key">${escapeHtml(item.type)}</span></button>`).join("");
+      panel.querySelectorAll("[data-command-index]").forEach(button => button.addEventListener("click", () => executeCommand(results[Number(button.dataset.commandIndex)])));
+      return results;
+    }
+
+    function executeCommand(item) {
+      if (!item) return;
+      if (item.type === "Page") showPage(item.value, true);
+      if (item.type === "Scenario") setScenario(item.value);
+      if (item.type === "Country") {
+        const row = allRows.find(country => country.ISO3 === item.value);
+        if (row) { setActiveCountry(row); showPage("filters", true); }
+      }
+      if (item.type === "Subdivision") {
+        const [iso, subdivision] = item.value.split("|");
+        const country = allRows.find(row => row.ISO3 === iso);
+        const frame = document.getElementById("subdivision-explorer-frame");
+        if (country && frame) frame.src = `subnational-hdi-infographic.html?country=${encodeURIComponent(country.Country)}&subdivision=${encodeURIComponent(subdivision)}`;
+        showPage("subdivisions", true);
+      }
+      setCommandPaletteOpen(false);
+    }
+
+    function setCommandPaletteOpen(open) {
+      const palette = document.getElementById("command-palette");
+      const wasOpen = palette.classList.contains("open");
+      document.getElementById("command-backdrop").classList.toggle("open", open);
+      palette.classList.toggle("open", open);
+      palette.setAttribute("aria-hidden", String(!open));
+      if (open) {
+        commandResultIndex = 0;
+        document.getElementById("command-input").value = "";
+        renderCommandResults();
+        updateDialogFocus(palette, true);
+      } else if (wasOpen) {
+        updateDialogFocus(palette, false);
+      }
+    }
+
+    const tourSteps = [
+      {title:"Choose a scenario",copy:"Start with the baseline, then test AI, climate mitigation, inclusion, or stagnation assumptions.",selector:"#scenario-select"},
+      {title:"Inspect the maps",copy:"Select any country with a mouse, touch, Enter, or Space. Region presets and zoom controls keep spatial comparisons fast.",selector:"#maps-grid"},
+      {title:"Audit the drivers",copy:"The persistent inspector shows HDI change, dimension trajectories, positive drivers, structural drags, and a direct Comparison Lab action.",selector:"#country-inspector"}
+    ];
+
+    function showTourStep(index) {
+      document.querySelectorAll(".tour-highlight").forEach(element => element.classList.remove("tour-highlight"));
+      tourStepIndex = index;
+      const step = tourSteps[index];
+      document.getElementById("tour-progress").textContent = `Step ${index + 1} of ${tourSteps.length}`;
+      document.getElementById("tour-title").textContent = step.title;
+      document.getElementById("tour-copy").textContent = step.copy;
+      document.getElementById("tour-next").textContent = index === tourSteps.length - 1 ? "Finish" : "Next";
+      const target = document.querySelector(step.selector);
+      if (target && !(target.id === "country-inspector" && !target.classList.contains("open"))) target.classList.add("tour-highlight");
+    }
+
+    function setTourOpen(open, restart = false) {
+      const tour = document.getElementById("quick-start-tour");
+      tour.classList.toggle("open", open);
+      tour.setAttribute("aria-hidden", String(!open));
+      if (open) showTourStep(restart ? 0 : tourStepIndex);
+      else {
+        document.querySelectorAll(".tour-highlight").forEach(element => element.classList.remove("tour-highlight"));
+        try { localStorage.setItem("hdi-quick-start-seen", "1"); } catch {}
+      }
+    }
+
+    function closeShellMenus(except = null) {
+      ["nav-more-menu","filter-menu","utility-menu"].forEach(id => {
+        if (id === except) return;
+        document.getElementById(id)?.classList.remove("open");
+        document.querySelector(`[aria-controls="${id}"]`)?.setAttribute("aria-expanded", "false");
+      });
+    }
+
+    function toggleShellMenu(id) {
+      const menu = document.getElementById(id);
+      const button = document.querySelector(`[aria-controls="${id}"]`);
+      const willOpen = !menu.classList.contains("open");
+      closeShellMenus(id);
+      menu.classList.toggle("open", willOpen);
+      button?.setAttribute("aria-expanded", String(willOpen));
+    }
+
     function resetFilters() {
       document.getElementById("search").value = "";
       document.getElementById("tier-filter").value = "";
@@ -6074,7 +6580,20 @@
     }
 
     function setupControls() {
-      document.getElementById("search").addEventListener("input", applyFilters);
+      const searchInput = document.getElementById("search");
+      searchInput.addEventListener("input", () => {
+        renderSearchSuggestions();
+        clearTimeout(searchFilterTimer);
+        searchFilterTimer = setTimeout(applyFilters, 220);
+      });
+      searchInput.addEventListener("focus", renderSearchSuggestions);
+      searchInput.addEventListener("keydown", event => {
+        const matches = matchingCountries(searchInput.value);
+        if (event.key === "ArrowDown" && matches.length) { event.preventDefault(); searchSuggestionIndex = (searchSuggestionIndex + 1) % matches.length; renderSearchSuggestions(); }
+        if (event.key === "ArrowUp" && matches.length) { event.preventDefault(); searchSuggestionIndex = (searchSuggestionIndex - 1 + matches.length) % matches.length; renderSearchSuggestions(); }
+        if (event.key === "Enter" && matches.length && searchSuggestionIndex >= 0) { event.preventDefault(); selectSearchCountry(matches[searchSuggestionIndex].ISO3); }
+        if (event.key === "Escape") { document.getElementById("search-suggestions").classList.remove("open"); searchInput.setAttribute("aria-expanded", "false"); }
+      });
       document.getElementById("scenario-select").addEventListener("change", event => {
         setScenario(event.target.value);
       });
@@ -6224,6 +6743,52 @@
         document.getElementById("subdivision-explorer-frame")?.contentWindow?.postMessage({type:"hdi-accessible-palette",enabled:accessiblePaletteEnabled}, "*");
         announce(`Accessible color palette ${accessiblePaletteEnabled ? "enabled" : "disabled"}.`);
       });
+      document.getElementById("nav-more-toggle").addEventListener("click", () => toggleShellMenu("nav-more-menu"));
+      document.getElementById("filter-menu-toggle").addEventListener("click", () => toggleShellMenu("filter-menu"));
+      document.getElementById("utility-menu-toggle").addEventListener("click", () => toggleShellMenu("utility-menu"));
+      document.getElementById("mobile-nav-toggle").addEventListener("click", event => {
+        const nav = document.getElementById("dashboard-nav-links");
+        const open = nav.classList.toggle("mobile-open");
+        event.currentTarget.setAttribute("aria-expanded", String(open));
+      });
+      document.addEventListener("click", event => {
+        if (!event.target.closest(".menu-shell") && !event.target.closest(".nav-more")) closeShellMenus();
+        if (!event.target.closest(".search-shell")) {
+          document.getElementById("search-suggestions").classList.remove("open");
+          searchInput.setAttribute("aria-expanded", "false");
+        }
+      });
+      document.querySelectorAll("[data-map-region]").forEach(button => button.addEventListener("click", () => {
+        activeMapRegion = button.dataset.mapRegion;
+        mapZoomFactor = 1;
+        applyMapViewport();
+        announce(`${button.textContent} map preset applied.`);
+      }));
+      document.querySelectorAll("[data-map-zoom]").forEach(button => button.addEventListener("click", () => {
+        if (button.dataset.mapZoom === "in") mapZoomFactor = Math.min(2.2, mapZoomFactor * 1.25);
+        if (button.dataset.mapZoom === "out") mapZoomFactor = Math.max(0.65, mapZoomFactor / 1.25);
+        if (button.dataset.mapZoom === "reset") { activeMapRegion = "world"; mapZoomFactor = 1; }
+        applyMapViewport();
+      }));
+      document.getElementById("close-country-inspector").addEventListener("click", () => setCountryInspectorOpen(false));
+      document.getElementById("command-palette-button").addEventListener("click", () => setCommandPaletteOpen(true));
+      document.getElementById("command-backdrop").addEventListener("click", () => setCommandPaletteOpen(false));
+      document.getElementById("command-input").addEventListener("input", () => { commandResultIndex = 0; renderCommandResults(); });
+      document.getElementById("command-input").addEventListener("keydown", event => {
+        const results = commandEntries(event.currentTarget.value);
+        if (event.key === "ArrowDown" && results.length) { event.preventDefault(); commandResultIndex = (commandResultIndex + 1) % results.length; renderCommandResults(); }
+        if (event.key === "ArrowUp" && results.length) { event.preventDefault(); commandResultIndex = (commandResultIndex - 1 + results.length) % results.length; renderCommandResults(); }
+        if (event.key === "Enter") { event.preventDefault(); executeCommand(results[commandResultIndex]); }
+        if (event.key === "Escape") { event.preventDefault(); setCommandPaletteOpen(false); }
+      });
+      document.getElementById("restart-tour").addEventListener("click", () => { closeShellMenus(); setTourOpen(true, true); });
+      document.getElementById("tour-skip").addEventListener("click", () => setTourOpen(false));
+      document.getElementById("tour-next").addEventListener("click", () => {
+        if (tourStepIndex >= tourSteps.length - 1) setTourOpen(false);
+        else showTourStep(tourStepIndex + 1);
+      });
+      document.getElementById("overview-open-maps").addEventListener("click", () => showPage("filters", true));
+      document.getElementById("overview-open-research").addEventListener("click", () => showPage("research", true));
       document.getElementById("close-glossary").addEventListener("click", () => setGlossaryOpen(false));
       document.getElementById("drawer-backdrop").addEventListener("click", () => setGlossaryOpen(false));
       document.getElementById("open-compare-drawer").addEventListener("click", () => setCompareDrawerOpen(true));
@@ -6243,6 +6808,7 @@
           return;
         }
         if (event.key !== "Escape") return;
+        if (document.getElementById("command-palette").classList.contains("open")) { setCommandPaletteOpen(false); return; }
         if (document.getElementById("mismatch-modal").classList.contains("open")) setMismatchOpen(false);
         else if (document.getElementById("compare-drawer").classList.contains("open")) setCompareDrawerOpen(false);
         else if (document.getElementById("glossary-drawer").classList.contains("open")) setGlossaryOpen(false);
@@ -6278,6 +6844,9 @@
       });
       setupNavigation();
       setupKeyboardShortcuts();
+      let seenTour = false;
+      try { seenTour = localStorage.getItem("hdi-quick-start-seen") === "1"; } catch {}
+      if (!seenTour) setTimeout(() => setTourOpen(true, true), 500);
     }
 
     function setupKeyboardShortcuts() {
@@ -6288,6 +6857,11 @@
         if (event.key === "/" && !typing) {
           event.preventDefault();
           document.getElementById("search").focus();
+          return;
+        }
+        if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === "k") {
+          event.preventDefault();
+          setCommandPaletteOpen(true);
           return;
         }
         if (/^[1-9]$/.test(event.key) && !typing && !event.altKey && !event.ctrlKey && !event.metaKey) {
@@ -6305,6 +6879,9 @@
       links.forEach(link => {
         link.addEventListener("click", event => {
           event.preventDefault();
+          document.getElementById("dashboard-nav-links").classList.remove("mobile-open");
+          document.getElementById("mobile-nav-toggle").setAttribute("aria-expanded", "false");
+          closeShellMenus();
           showPage(link.dataset.navLink, true);
         });
       });
