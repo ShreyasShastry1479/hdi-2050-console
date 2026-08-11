@@ -13,7 +13,7 @@
 <body>
 <div id="hdi-dashboard-app">
   <style>
-    html, body { max-width:100%; overflow-x:clip; }
+    html, body { width:100%; max-width:100%; min-width:0; overflow-x:hidden; }
     :root {
       color-scheme: dark;
       --bg: #070b14;
@@ -48,6 +48,9 @@
     }
     #hdi-dashboard-app {
       min-height: 100vh;
+      width: 100%;
+      max-width: 100%;
+      min-width: 0;
       padding: 28px;
       position: relative;
       overflow: visible;
@@ -75,6 +78,7 @@
       opacity: 0.42;
     }
     .shell {
+      width: min(1480px, 100%);
       max-width: 1480px;
       margin: 0 auto;
       position: relative;
@@ -112,6 +116,8 @@
       font-weight: 780;
       letter-spacing: 0;
       max-width: 920px;
+      overflow-wrap: anywhere;
+      text-wrap: balance;
     }
     .subtitle {
       margin: 14px 0 0;
@@ -893,6 +899,122 @@
     .policy-flag.priority { border-left: 3px solid var(--red); }
     .policy-flag.watch { border-left: 3px solid var(--gold); }
     .policy-flag.capacity { border-left: 3px solid var(--cyan); }
+    .shell > *,
+    #page-root,
+    .page-view,
+    .map-section,
+    .mosaic-shell,
+    .research-grid,
+    .research-foundation,
+    .panel,
+    .panel-head,
+    .section-head { min-width: 0; max-width: 100%; }
+    img, svg, iframe, canvas { max-width: 100%; }
+
+    .development-research {
+      display: grid;
+      gap: 18px;
+      margin-bottom: 16px;
+      padding: 20px;
+      border: 1px solid rgba(101, 240, 189, 0.24);
+      border-radius: 8px;
+      background:
+        linear-gradient(135deg, rgba(101, 240, 189, 0.07), transparent 36%),
+        linear-gradient(225deg, rgba(246, 206, 106, 0.06), transparent 34%),
+        rgba(7, 17, 31, 0.9);
+      box-shadow: 0 20px 62px rgba(0,0,0,.28);
+    }
+    .development-research h2 {
+      max-width: 1040px;
+      margin: 4px 0 8px;
+      font-size: 30px;
+      line-height: 1.16;
+      text-wrap: balance;
+    }
+    .development-lead {
+      max-width: 1080px;
+      margin: 0;
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.7;
+    }
+    .development-thesis {
+      display: grid;
+      grid-template-columns: minmax(0, 1.25fr) minmax(280px, .75fr);
+      gap: 16px;
+      align-items: start;
+    }
+    .development-thesis h3,
+    .opportunity-section h3 { margin: 0 0 8px; font-size: 18px; }
+    .development-thesis p,
+    .opportunity-section p { margin: 0; color: var(--muted); font-size: 13px; line-height: 1.65; }
+    .dividend-callout {
+      padding: 15px;
+      border-left: 3px solid var(--gold);
+      background: rgba(246, 206, 106, .07);
+      color: #f8e8bd;
+      font-size: 13px;
+      line-height: 1.6;
+    }
+    .dividend-callout strong { display: block; margin-bottom: 5px; color: #fff3cc; font-size: 14px; }
+    .opportunity-chart-wrap {
+      min-width: 0;
+      padding: 14px 14px 8px;
+      border: 1px solid rgba(164,198,244,.16);
+      border-radius: 8px;
+      background: rgba(5, 13, 24, .68);
+    }
+    .opportunity-chart-wrap h3 { margin: 0; font-size: 16px; }
+    .development-chart { width: 100%; min-height: 280px; }
+    .development-chart .axis text { fill: var(--muted); font-size: 11px; }
+    .development-chart .axis path,
+    .development-chart .axis line { stroke: rgba(164,198,244,.22); }
+    .development-chart .benchmark { stroke: var(--gold); stroke-width: 1; stroke-dasharray: 5 5; }
+    .development-chart .trajectory-line { stroke-width: 5; stroke-linecap: round; opacity: .72; }
+    .development-chart .baseline-dot { fill: #f7fbff; stroke: rgba(7,15,27,.9); stroke-width: 2; }
+    .development-chart .future-dot { stroke: #f7fbff; stroke-width: 2; }
+    .country-case-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+    }
+    .country-case {
+      min-width: 0;
+      padding: 15px;
+      border: 1px solid rgba(164,198,244,.16);
+      border-top: 3px solid var(--case-color, var(--cyan));
+      border-radius: 8px;
+      background: rgba(9,20,36,.78);
+    }
+    .country-case h3 { display:flex; align-items:center; justify-content:space-between; gap:8px; margin:0 0 8px; font-size:18px; }
+    .country-case.featured { grid-column:1 / -1; }
+    .country-case.featured .case-body { columns:2; column-gap:22px; }
+    .country-case h3 span { color:var(--muted); font-size:10px; font-weight:700; }
+    .country-case .case-score { margin-bottom: 10px; color:#fff; font-size:20px; font-weight:780; }
+    .country-case .case-score small { color:var(--muted); font-size:11px; font-weight:600; }
+    .country-case p { margin:0; color:var(--muted); font-size:12px; line-height:1.62; }
+    .case-metrics { display:grid; grid-template-columns:1fr 1fr; gap:6px; margin-top:12px; }
+    .case-metric { padding:8px; border-left:2px solid var(--case-color,var(--cyan)); background:rgba(5,13,24,.58); }
+    .case-metric span { display:block; color:var(--muted); font-size:9px; text-transform:uppercase; }
+    .case-metric strong { display:block; margin-top:3px; font-size:13px; }
+    .transition-framework {
+      display: grid;
+      grid-template-columns: repeat(6, minmax(0, 1fr));
+      gap: 8px;
+    }
+    .transition-step { position:relative; min-width:0; padding:12px 10px; border-top:2px solid var(--step-color,var(--cyan)); background:rgba(8,18,32,.7); }
+    .transition-step .number { display:grid; place-items:center; width:26px; height:26px; margin-bottom:8px; border:1px solid var(--step-color,var(--cyan)); border-radius:50%; color:var(--step-color,var(--cyan)); font-size:10px; font-weight:800; }
+    .transition-step strong { display:block; margin-bottom:5px; font-size:11px; }
+    .transition-step span { display:block; color:var(--muted); font-size:10px; line-height:1.48; }
+    .tomorrow-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:12px; }
+    .tomorrow-track { min-width:0; padding:14px; border:1px solid rgba(164,198,244,.16); border-radius:8px; background:rgba(5,13,24,.58); }
+    .tomorrow-track h4 { margin:0 0 4px; font-size:14px; }
+    .tomorrow-track > p { margin:0 0 10px; color:var(--muted); font-size:11px; line-height:1.5; }
+    .tomorrow-list { display:grid; gap:6px; }
+    .tomorrow-row { display:grid; grid-template-columns:minmax(105px,1fr) 66px 66px 58px; gap:7px; align-items:center; padding:8px; border-left:2px solid var(--track-color,var(--cyan)); background:rgba(10,22,39,.72); font-size:10px; }
+    .tomorrow-row strong { overflow-wrap:anywhere; font-size:11px; }
+    .tomorrow-row span { color:var(--muted); text-align:right; }
+    .research-limit { padding:13px; border:1px solid rgba(255,85,122,.2); border-left:3px solid var(--red); background:rgba(255,85,122,.05); color:var(--muted); font-size:12px; line-height:1.6; }
     .validation-table {
       width: 100%;
       margin-top: 12px;
@@ -1676,6 +1798,12 @@
       .section-head { align-items: start; flex-direction: column; }
       .section-note { text-align: left; }
       .mosaic-frame { min-height: 760px; }
+      .development-thesis { grid-template-columns:1fr; }
+      .country-case-grid { grid-template-columns:1fr; }
+      .country-case.featured { grid-column:auto; }
+      .country-case.featured .case-body { columns:1; }
+      .transition-framework { grid-template-columns:repeat(3,minmax(0,1fr)); }
+      .tomorrow-grid { grid-template-columns:1fr; }
     }
     @media (max-width: 560px) {
       .stats, .map-metrics { grid-template-columns: 1fr; }
@@ -1934,6 +2062,32 @@
       .search-shell { flex-basis:235px; }
       .map-toolbar { align-items:flex-start; }
       .inspector-actions { grid-template-columns:1fr; }
+      .hero h1 { font-size:29px; line-height:1.06; }
+      .eyebrow { max-width:100%; font-size:10px; letter-spacing:.1em; }
+      .development-research { padding:14px 12px; }
+      .development-research h2 { font-size:23px; }
+      .development-lead { font-size:12px; }
+      .development-chart { min-height:230px; }
+      .transition-framework { grid-template-columns:1fr 1fr; }
+      .tomorrow-row { grid-template-columns:minmax(90px,1fr) 58px 58px; }
+      .tomorrow-row .tomorrow-rank { display:none; }
+    }
+    @media (max-width: 420px) {
+      .shell { padding-inline:0; }
+      .hero h1 { font-size:26px; }
+      .primary-controls { display:grid; grid-template-columns:minmax(0,1fr); overflow:visible; }
+      .primary-controls .search-shell,
+      .primary-controls #scenario-select,
+      .primary-controls .view-segment { width:100%; max-width:100%; min-width:0; }
+      .primary-controls .view-segment button { flex:1 1 0 !important; }
+      .primary-controls .view-segment button span { display:inline; }
+      .case-metrics { grid-template-columns:1fr; }
+      .transition-framework { grid-template-columns:1fr; }
+    }
+    @media (max-width: 820px) and (max-height: 600px) {
+      .nav-bar,.controls { position:relative; top:auto; }
+      .hero { margin-bottom:6px; }
+      .hero .subtitle { display:none; }
     }
     @media print {
       body { background: #fff !important; color: #111827 !important; }
@@ -2336,6 +2490,59 @@
         <a href="../data/output/hdi_2050_rankings.csv" target="_blank" rel="noopener">National data</a>
         <a href="../data/output/subdivision_hdi_2025_2050.csv" target="_blank" rel="noopener">Subnational data</a>
       </div>
+    </section>
+    <section class="development-research" aria-labelledby="development-opportunity-title">
+      <header>
+        <div class="section-kicker">Development opportunity research</div>
+        <h2 id="development-opportunity-title">Demographic dividends, industrial catch-up, and the economies that could reshape 2050</h2>
+        <p class="development-lead">The central development opportunity of the next quarter-century is not population growth by itself. It is the conversion of a changing age structure into healthier, better educated, productively employed people, supported by reliable infrastructure and institutions. China demonstrates how quickly structural transformation can compound. India has the largest near-term scale opportunity. Nigeria has a later, younger window whose upside is substantial but more conditional.</p>
+      </header>
+
+      <div class="development-thesis">
+        <article>
+          <h3>What a demographic dividend actually requires</h3>
+          <p>A falling child-dependency burden can raise the share of people available for work, saving, and investment. That window becomes an HDI accelerator only when children survive and learn, women can participate fully in education and employment, cities absorb new workers, firms create productive jobs, and governments reinvest growth into health, schooling, power, water, transport, and social protection. Without those conversion systems, a youth bulge can instead magnify unemployment, informality, housing shortages, and service pressure.</p>
+        </article>
+        <aside class="dividend-callout">
+          <strong>The model's interpretation</strong>
+          Demographic Dividend is read together with Human Capital Absorption, Working-Age Share, Dependency Pressure, Digital Infrastructure, Industrialization, and Governance. No country receives an automatic development upgrade merely for being young or populous.
+        </aside>
+      </div>
+
+      <div class="opportunity-chart-wrap">
+        <div class="panel-head">
+          <div><h3>Three development arcs</h3><div class="panel-note">HDR 2025 baseline to scenario-adjusted 2050 HDI</div></div>
+          <div class="panel-note" id="development-scenario-label">Baseline scenario</div>
+        </div>
+        <svg id="development-opportunity-chart" class="development-chart" viewBox="0 0 920 310" role="img" aria-labelledby="development-chart-title development-chart-desc">
+          <title id="development-chart-title">China, India, and Nigeria projected HDI trajectories</title>
+          <desc id="development-chart-desc">A dumbbell chart comparing each country's HDR 2025 baseline HDI with its scenario-adjusted projected 2050 HDI.</desc>
+        </svg>
+        <div class="chart-caption" id="development-chart-summary">The chart updates with the active scenario.</div>
+      </div>
+
+      <div class="country-case-grid" id="development-country-stories" aria-label="China India and Nigeria development case studies"></div>
+
+      <section class="opportunity-section" aria-labelledby="transition-path-title">
+        <h3 id="transition-path-title">How lower-income countries can move into rapid, broad-based development</h3>
+        <p>Historical catch-up is rarely a single leap. It is a reinforcing sequence in which basic human capability, productive investment, urban systems, trade, technology, and public-service delivery compound over time.</p>
+        <div class="transition-framework" aria-label="Six-stage development transition framework">
+          <div class="transition-step" style="--step-color:#65f0bd"><span class="number">01</span><strong>Survival and learning</strong><span>Primary health, nutrition, clean water, foundational literacy, and girls' education expand effective human capability.</span></div>
+          <div class="transition-step" style="--step-color:#5ee7ff"><span class="number">02</span><strong>Demographic transition</strong><span>Lower mortality and voluntary fertility decline reduce dependency pressure and widen the potential workforce window.</span></div>
+          <div class="transition-step" style="--step-color:#6f7cff"><span class="number">03</span><strong>Productive urbanization</strong><span>Power, housing, transit, logistics, and land systems let cities absorb workers without losing health and education gains.</span></div>
+          <div class="transition-step" style="--step-color:#f6ce6a"><span class="number">04</span><strong>Export and firm upgrading</strong><span>Manufacturing, tradable services, supply chains, and domestic competition lift productivity and job quality.</span></div>
+          <div class="transition-step" style="--step-color:#ff8a70"><span class="number">05</span><strong>Technology diffusion</strong><span>Broadband, digital public infrastructure, cloud systems, AI, finance, and skills raise capability across firms and services.</span></div>
+          <div class="transition-step" style="--step-color:#d49cff"><span class="number">06</span><strong>Reinvestment and resilience</strong><span>Tax capacity, accountable institutions, social protection, and climate adaptation convert growth into durable HDI gains.</span></div>
+        </div>
+      </section>
+
+      <section class="opportunity-section" aria-labelledby="tomorrow-economies-title">
+        <h3 id="tomorrow-economies-title">Rapidly growing economies of tomorrow</h3>
+        <p>The lists below are generated from the active model data, not hand-set rankings. The first combines growth prospects, development momentum, human-capital absorption, digital infrastructure, industrialization, and demographic dividend. The second highlights younger, lower-HDI countries with scale and projected catch-up, where execution risk remains higher.</p>
+        <div class="tomorrow-grid" id="tomorrow-economies-grid"></div>
+      </section>
+
+      <div class="research-limit"><strong>Interpretation limit:</strong> These are conditional scenarios, not forecasts of inevitable convergence. Wars, debt crises, climate shocks, policy reversals, weak job creation, exclusion, or deteriorating institutions can interrupt catch-up. Conversely, sustained reform and technology diffusion can produce faster progress than a model calibrated to recent history.</div>
     </section>
     <section class="panel" id="advanced-filters">
       <div class="panel-head">
@@ -3482,6 +3689,7 @@
     let mapZoomFactor = 1;
     let tourStepIndex = 0;
     let searchFilterTimer = null;
+    let researchResizeTimer = null;
     const explorerVariables = [
       ["HDI 2050", "Scenario_HDI"],
       ["HDI gain", "Scenario_Gain"],
@@ -3748,6 +3956,7 @@
       }
       const scenarioSummary = document.getElementById("overview-scenario-summary");
       if (scenarioSummary) scenarioSummary.innerHTML = scenarioNarratives[activeScenario] || scenarioNarratives.baseline;
+      renderDevelopmentResearch();
     }
 
     function normalizeEthnicRow(row) {
@@ -4639,6 +4848,97 @@
         .attr("fill", "var(--muted)")
         .attr("font-size", 11)
         .text("HDI gain");
+    }
+
+    function developmentOpportunityScore(row) {
+      return 0.24 * (Number(row.GrowthProspectScore) || 0)
+        + 0.20 * ((Number(row.DevelopmentMomentumScore) || 0) / 100)
+        + 0.18 * (Number(row.HumanCapitalAbsorption) || 0)
+        + 0.14 * (Number(row.DigitalInfraDevelopment) || 0)
+        + 0.12 * (Number(row.IndustrializationHDIAcceleration) || 0)
+        + 0.12 * (Number(row.DemographicDividend) || 0);
+    }
+
+    function countryCaseNarrative(row) {
+      if (row.ISO3 === "CHN") return `China is the project's anchor case for rapid structural transformation. Its historical rise was not a simple result of a large population: agricultural reform, mass basic education, export manufacturing, dense infrastructure, urban job creation, supply-chain depth, and sustained investment reinforced one another for decades. That compounding process shows how a country can move from low income toward high human development within a generation when productivity growth is translated into health, schooling, housing, transport, and industrial capability. Looking to 2050, China's challenge changes. Its working-age share falls by ${Math.abs(Number(row.WorkforceChangePP_2024_to_2050)).toFixed(1)} percentage points and its median age rises toward ${fmt(row.MedianAge_2050,1)}. Future gains therefore rely less on a classic demographic dividend and more on automation, advanced manufacturing, green technology, research capacity, service productivity, preventative health, pension reform, and more efficient allocation of human and financial capital.`;
+      if (row.ISO3 === "IND") return `India's opportunity is defined by scale and an unusually broad set of possible growth engines: a vast internal market, digital public infrastructure, globally competitive services, expanding transport and energy systems, a growing manufacturing base, and a large pool of young workers. The model projects a sizeable HDI rise, but the national average conceals large state-level gaps. The decisive question is whether improvements in nutrition, public health, foundational learning, women's employment, urban governance, power reliability, and vocational skills can spread quickly enough to convert economic expansion into broad human development. A services-only path would leave too many workers in low-productivity employment; a stronger mix of manufacturing, construction, logistics, modern agriculture, and tradable digital services creates a wider bridge from demographic scale to household income and public revenue.`;
+      return `Nigeria's development window arrives later and is more conditional. Its population remains extremely young, its working-age share rises rather than contracts, and its digital and entrepreneurial ecosystems provide a base for faster progress during the 2030s and 2040s. The upside is large because gains from electricity, maternal and child health, girls' secondary education, family planning access, urban transport, regional trade, financial inclusion, and job-rich industrial clusters can reinforce one another from a comparatively low base. The risk is that population and city growth outrun schools, power, housing, security, and formal employment. The model therefore treats Nigeria's youth as potential productive capacity, not an automatic dividend. Realizing the higher path requires human-capital investment, reliable institutions, non-oil diversification, and enough productive firms to absorb millions of new workers.`;
+    }
+
+    function renderDevelopmentOpportunityChart(rows) {
+      const svg = d3.select("#development-opportunity-chart");
+      if (svg.empty()) return;
+      svg.selectAll(":scope > :not(title):not(desc)").remove();
+      const compact = window.innerWidth <= 520;
+      const width = compact ? 440 : 920;
+      const height = compact ? 300 : 310;
+      const margin = compact ? {top: 38, right: 40, bottom: 44, left: 72} : {top: 38, right: 82, bottom: 44, left: 112};
+      svg.attr("viewBox", `0 0 ${width} ${height}`);
+      const x = d3.scaleLinear().domain([0.4, 1]).range([margin.left, width - margin.right]);
+      const y = d3.scalePoint().domain(rows.map(row => row.Country)).range([margin.top + 26, height - margin.bottom - 12]).padding(0.45);
+      const color = d3.scaleOrdinal().domain(["CHN","IND","NGA"]).range(["#f6ce6a","#5ee7ff","#65f0bd"]);
+
+      svg.append("line").attr("class","benchmark").attr("x1",x(0.82)).attr("x2",x(0.82)).attr("y1",margin.top - 6).attr("y2",height - margin.bottom);
+      svg.append("text").attr("x",x(0.82)+5).attr("y",margin.top-12).attr("fill","#f6ce6a").attr("font-size",10).text("0.82 high-HDI reference");
+
+      const groups = svg.append("g").selectAll("g.country-arc").data(rows).join("g").attr("class","country-arc").attr("role","graphics-symbol").attr("aria-label",row => `${row.Country}: HDR 2025 HDI ${fmt(row.HDI_Baseline)}, projected 2050 HDI ${fmt(scenarioHdi(row))}, change ${fmt(scenarioGain(row))}.`);
+      groups.append("title").text(row => `${row.Country}: ${fmt(row.HDI_Baseline)} to ${fmt(scenarioHdi(row))}; gain ${scenarioGain(row)>=0?"+":""}${fmt(scenarioGain(row))}`);
+      groups.append("line").attr("class","trajectory-line").attr("x1",row=>x(row.HDI_Baseline)).attr("x2",row=>x(scenarioHdi(row))).attr("y1",row=>y(row.Country)).attr("y2",row=>y(row.Country)).attr("stroke",row=>color(row.ISO3));
+      groups.append("circle").attr("class","baseline-dot").attr("cx",row=>x(row.HDI_Baseline)).attr("cy",row=>y(row.Country)).attr("r",7);
+      groups.append("circle").attr("class","future-dot").attr("cx",row=>x(scenarioHdi(row))).attr("cy",row=>y(row.Country)).attr("r",9).attr("fill",row=>color(row.ISO3));
+      groups.append("text").attr("x",margin.left-14).attr("y",row=>y(row.Country)+4).attr("text-anchor","end").attr("fill","#f7fbff").attr("font-size",13).attr("font-weight",760).text(row=>row.Country);
+      groups.append("text").attr("x",row=>x(row.HDI_Baseline)-10).attr("y",row=>y(row.Country)-14).attr("text-anchor","end").attr("fill","#c6d4e8").attr("font-size",10).text(row=>fmt(row.HDI_Baseline,3));
+      groups.append("text").attr("x",row=>x(scenarioHdi(row))+12).attr("y",row=>y(row.Country)+4).attr("fill",row=>color(row.ISO3)).attr("font-size",11).attr("font-weight",760).text(row=>`${fmt(scenarioHdi(row),3)} (${scenarioGain(row)>=0?"+":""}${fmt(scenarioGain(row),3)})`);
+
+      svg.append("g").attr("class","axis").attr("transform",`translate(0,${height-margin.bottom})`).call(d3.axisBottom(x).ticks(7).tickFormat(d3.format(".2f")));
+      document.getElementById("development-chart-summary").textContent = rows.map(row => `${row.Country} moves from ${fmt(row.HDI_Baseline,3)} to ${fmt(scenarioHdi(row),3)} (${scenarioGain(row)>=0?"+":""}${fmt(scenarioGain(row),3)})`).join("; ") + ` under ${scenarios[activeScenario].label}.`;
+    }
+
+    function renderDevelopmentCountryStories(rows) {
+      const colors = {CHN:"#f6ce6a",IND:"#5ee7ff",NGA:"#65f0bd"};
+      document.getElementById("development-country-stories").innerHTML = rows.map((row,index) => `
+        <article class="country-case${index===0?" featured":""}" style="--case-color:${colors[row.ISO3]}">
+          <h3>${escapeHtml(row.Country)} <span>${row.ISO3} · ${escapeHtml(row.DevelopmentMomentumTier || "scenario")}</span></h3>
+          <div class="case-score">${fmt(row.HDI_Baseline,3)} → ${fmt(scenarioHdi(row),3)} <small>${scenarioGain(row)>=0?"+":""}${fmt(scenarioGain(row),3)} HDI</small></div>
+          <p class="case-body">${escapeHtml(countryCaseNarrative(row))}</p>
+          <div class="case-metrics">
+            <div class="case-metric"><span>2050 rank</span><strong>#${row.Rank || "--"}</strong></div>
+            <div class="case-metric"><span>2050 working age</span><strong>${fmt(row.WorkingAgePct_2050,1)}%</strong></div>
+            <div class="case-metric"><span>Demographic dividend</span><strong>${fmt(row.DemographicDividend,3)}</strong></div>
+            <div class="case-metric"><span>Human-capital absorption</span><strong>${fmt(row.HumanCapitalAbsorption,3)}</strong></div>
+            <div class="case-metric"><span>Digital infrastructure</span><strong>${fmt(row.DigitalInfraDevelopment,3)}</strong></div>
+            <div class="case-metric"><span>Industrial acceleration</span><strong>${fmt(row.IndustrializationHDIAcceleration,3)}</strong></div>
+          </div>
+        </article>`).join("");
+    }
+
+    function tomorrowRow(row, rank) {
+      return `<div class="tomorrow-row"><strong>${escapeHtml(row.Country)}</strong><span>${fmt(row.HDI_Baseline,3)} → ${fmt(scenarioHdi(row),3)}</span><span>+${fmt(scenarioGain(row),3)}</span><span class="tomorrow-rank">#${rank}</span></div>`;
+    }
+
+    function renderTomorrowEconomies() {
+      const excluded = new Set(["CHN","IND","NGA"]);
+      const scaled = allRows
+        .filter(row => !excluded.has(row.ISO3) && row.HDI_Baseline < 0.82 && row.Population_2050 > 20000000)
+        .sort((a,b) => developmentOpportunityScore(b)-developmentOpportunityScore(a) || scenarioGain(b)-scenarioGain(a));
+      const industrial = scaled.slice(0,5);
+      const industrialIso = new Set(industrial.map(row=>row.ISO3));
+      const young = allRows
+        .filter(row => !excluded.has(row.ISO3) && !industrialIso.has(row.ISO3) && row.HDI_Baseline < 0.75 && row.Population_2050 > 20000000 && row.MedianAge_2050 < 35)
+        .sort((a,b) => (0.35*b.DemographicDividend + 0.25*b.DevelopmentMomentumScore/100 + 0.20*b.GrowthProspectScore + 0.10*b.HumanCapitalAbsorption + 0.10*b.DigitalInfraDevelopment) - (0.35*a.DemographicDividend + 0.25*a.DevelopmentMomentumScore/100 + 0.20*a.GrowthProspectScore + 0.10*a.HumanCapitalAbsorption + 0.10*a.DigitalInfraDevelopment) || scenarioGain(b)-scenarioGain(a))
+        .slice(0,5);
+      document.getElementById("tomorrow-economies-grid").innerHTML = `
+        <div class="tomorrow-track" style="--track-color:#5ee7ff"><h4>Industrial and digital catch-up leaders</h4><p>Higher modeled readiness to translate supply chains, productive investment, skills, and digital systems into broad development.</p><div class="tomorrow-list">${industrial.map((row,index)=>tomorrowRow(row,index+1)).join("")}</div></div>
+        <div class="tomorrow-track" style="--track-color:#65f0bd"><h4>Younger, later-window catch-up economies</h4><p>Large or growing populations with lower starting HDI and meaningful upside, but stronger requirements for schooling, health, infrastructure, and job creation.</p><div class="tomorrow-list">${young.map((row,index)=>tomorrowRow(row,index+1)).join("")}</div></div>`;
+    }
+
+    function renderDevelopmentResearch() {
+      if (!allRows.length || !document.getElementById("development-opportunity-chart")) return;
+      const rows = ["CHN","IND","NGA"].map(iso=>allRows.find(row=>row.ISO3===iso)).filter(Boolean);
+      document.getElementById("development-scenario-label").textContent = scenarios[activeScenario].label;
+      renderDevelopmentOpportunityChart(rows);
+      renderDevelopmentCountryStories(rows);
+      renderTomorrowEconomies();
     }
 
     function renderResearchBrief(row) {
@@ -6844,6 +7144,10 @@
       });
       setupNavigation();
       setupKeyboardShortcuts();
+      window.addEventListener("resize", () => {
+        clearTimeout(researchResizeTimer);
+        researchResizeTimer = setTimeout(renderDevelopmentResearch, 180);
+      });
       let seenTour = false;
       try { seenTour = localStorage.getItem("hdi-quick-start-seen") === "1"; } catch {}
       if (!seenTour) setTimeout(() => setTourOpen(true, true), 500);
