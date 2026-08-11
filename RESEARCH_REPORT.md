@@ -38,6 +38,14 @@ Resource dependence can raise fiscal capacity but also increase volatility and w
 
 The subdivision layer preserves source-region ordering, compresses internal gaps modestly, evolves population weights, and re-centers each country to the national target. It is best used to flag lagging regions for deeper local analysis, not as a substitute for official provincial forecasting.
 
+#### 6. Extreme-poverty progress can reverse even while global HDI rises
+
+The external World Bank/Our World in Data baseline falls from 2.301 billion people below the $3 international poverty line in 1990 to 837.2 million in 2025. It reaches a projected trough of 737.6 million in 2030 before rising to 888.0 million by 2040. Sub-Saharan Africa's share increases from 69.9 percent in 2025 to 75.8 percent in 2040.
+
+This is not a contradiction of rising average HDI. HDI uses national average health, education, and income indices; it does not measure the income distribution or count people below a poverty line. The projected reversal is driven by slow and unequal per-capita growth where extreme poverty is concentrated, combined with population growth. It can be changed by faster job-rich productivity growth, reliable electricity and infrastructure, human-capital investment, urban absorption, social protection, peace, and stronger state capacity.
+
+The post-2030 poverty path is especially uncertain because it assumes average 2015-2024 country growth persists through 2040. It is external context rather than an output of the HDI model and is not extrapolated to 2050 in this project.
+
 ### Validation and Evidentiary Strength
 
 The 2014-2023 historical backtest reports MAE 0.00199, RMSE 0.00286, mean error -0.00001, R-squared 0.99958, and 90th-percentile absolute error 0.00416 over 2,170 observations. The fit is strong for short-horizon historical prediction. It does not validate the 25-year scenario assumptions, which remain the dominant source of 2050 uncertainty.

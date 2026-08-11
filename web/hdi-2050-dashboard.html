@@ -1062,6 +1062,63 @@
     .electricity-data-table td { padding:7px 8px; border-bottom:1px solid rgba(164,198,244,.12); text-align:right; }
     .electricity-data-table th:first-child,
     .electricity-data-table td:first-child { text-align:left; }
+    .poverty-research { display:grid; gap:16px; padding-top:20px; border-top:1px solid rgba(164,198,244,.16); }
+    .poverty-research-head { display:grid; grid-template-columns:minmax(0,1.15fr) minmax(300px,.85fr); gap:18px; align-items:end; }
+    .poverty-research h3 { margin:3px 0 8px; font-size:23px; line-height:1.2; }
+    .poverty-research-head p { margin:0; color:var(--muted); font-size:13px; line-height:1.65; }
+    .poverty-thesis { padding:13px 14px; border-left:3px solid #f6ce6a; background:rgba(246,206,106,.07); color:#fff2c7; font-size:12px; line-height:1.58; }
+    .poverty-thesis strong { display:block; margin-bottom:5px; color:#fff; }
+    .poverty-kpis { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:8px; }
+    .poverty-kpi { min-width:0; padding:12px; border-top:3px solid var(--poverty-color,#f6ce6a); background:rgba(8,18,32,.7); }
+    .poverty-kpi span { display:block; color:#8fa6bf; font-size:9px; font-weight:750; text-transform:uppercase; }
+    .poverty-kpi strong { display:block; margin:5px 0 3px; font-size:20px; }
+    .poverty-kpi small { display:block; color:var(--muted); font-size:9px; line-height:1.4; }
+    .poverty-chart-panel { position:relative; min-width:0; padding:14px; border:1px solid rgba(164,198,244,.16); border-radius:8px; background:rgba(3,10,20,.62); }
+    .poverty-chart-panel h4 { margin:0 0 3px; font-size:16px; }
+    .poverty-chart { width:100%; min-height:390px; margin-top:8px; overflow:visible; }
+    .poverty-chart .axis text { fill:#8fa6bf; font-size:10px; }
+    .poverty-chart .axis path,
+    .poverty-chart .axis line { stroke:rgba(164,198,244,.2); }
+    .poverty-chart .grid line { stroke:rgba(164,198,244,.1); }
+    .poverty-chart .grid path { display:none; }
+    .poverty-chart .poverty-area { stroke:#07111f; stroke-width:.7; transition:opacity .16s ease; }
+    .poverty-chart .projection-boundary { stroke:#f6ce6a; stroke-width:1.3; stroke-dasharray:5 4; }
+    .poverty-chart .focus-line { stroke:#fff; stroke-width:1; stroke-dasharray:3 3; opacity:.7; }
+    .poverty-legend { display:flex; flex-wrap:wrap; gap:8px 12px; color:var(--muted); font-size:9px; }
+    .poverty-legend span::before { content:""; display:inline-block; width:9px; height:9px; margin-right:5px; background:var(--legend-color); vertical-align:-1px; }
+    .poverty-tooltip { position:absolute; z-index:4; min-width:240px; max-width:300px; padding:10px; border:1px solid rgba(246,206,106,.32); border-radius:6px; background:rgba(3,9,18,.97); box-shadow:0 12px 32px rgba(0,0,0,.35); color:#edf7ff; font-size:10px; pointer-events:none; opacity:0; }
+    .poverty-tooltip strong { display:block; margin-bottom:6px; font-size:12px; }
+    .poverty-tooltip-row { display:flex; justify-content:space-between; gap:16px; margin-top:3px; color:var(--muted); }
+    .poverty-tooltip-row b { color:#fff; }
+    .poverty-analysis-grid { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:9px; }
+    .poverty-analysis { min-width:0; padding:13px; border-top:3px solid var(--analysis-color); background:rgba(8,18,32,.68); }
+    .poverty-analysis .analysis-type { color:var(--analysis-color); font-size:9px; font-weight:800; text-transform:uppercase; }
+    .poverty-analysis h4 { margin:5px 0 7px; font-size:13px; }
+    .poverty-analysis p { margin:0; color:var(--muted); font-size:10px; line-height:1.55; }
+    .poverty-analysis ul { margin:9px 0 0; padding-left:16px; color:#dbe9f8; font-size:9px; line-height:1.5; }
+    .poverty-solutions { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:8px; }
+    .poverty-solution { display:grid; grid-template-columns:34px minmax(0,1fr); gap:9px; padding:11px; border:1px solid rgba(164,198,244,.12); background:rgba(8,18,32,.58); }
+    .poverty-solution .solution-number { color:#65f0bd; font-size:11px; font-weight:850; }
+    .poverty-solution strong { display:block; margin-bottom:4px; color:#fff; font-size:11px; }
+    .poverty-solution span { color:var(--muted); font-size:9px; line-height:1.48; }
+    .poverty-country-grid { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:9px; }
+    .poverty-country { min-width:0; padding:13px; border-left:3px solid var(--country-color); background:rgba(8,18,32,.68); }
+    .poverty-country h4 { display:flex; justify-content:space-between; gap:8px; margin:0 0 6px; font-size:14px; }
+    .poverty-country h4 span { color:var(--country-color); font-size:9px; text-transform:uppercase; }
+    .poverty-country p { margin:0; color:var(--muted); font-size:10px; line-height:1.55; }
+    .poverty-country-metrics { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:6px; margin-top:9px; }
+    .poverty-country-metrics div { padding:7px; background:rgba(3,10,20,.56); }
+    .poverty-country-metrics span { display:block; color:#8fa6bf; font-size:8px; text-transform:uppercase; }
+    .poverty-country-metrics strong { display:block; margin-top:3px; font-size:10px; }
+    .poverty-table-wrap { max-height:280px; overflow:auto; border:1px solid rgba(164,198,244,.14); }
+    .poverty-data-table { width:100%; border-collapse:collapse; color:#dbe9f8; font-size:9px; }
+    .poverty-data-table caption { padding:9px; color:var(--muted); text-align:left; }
+    .poverty-data-table th { position:sticky; top:0; z-index:1; padding:8px; background:#0c1828; color:#fff; text-align:right; }
+    .poverty-data-table td { padding:7px 8px; border-top:1px solid rgba(164,198,244,.1); text-align:right; }
+    .poverty-data-table th:first-child,
+    .poverty-data-table td:first-child { text-align:left; }
+    .poverty-sources { display:flex; flex-wrap:wrap; gap:8px; color:var(--muted); font-size:10px; line-height:1.5; }
+    .poverty-sources a { color:#8feeff; }
     .mobility-research { display:grid; gap:16px; padding-top:20px; border-top:1px solid rgba(164,198,244,.16); }
     .mobility-research-head { display:grid; grid-template-columns:minmax(0,1.2fr) minmax(280px,.8fr); gap:18px; align-items:end; }
     .mobility-research h3 { margin:3px 0 8px; font-size:23px; line-height:1.2; }
@@ -1931,6 +1988,10 @@
       .electricity-research-head { grid-template-columns:1fr; align-items:start; }
       .electricity-metrics { grid-template-columns:repeat(2,minmax(0,1fr)); }
       .energy-economy-grid { grid-template-columns:1fr; }
+      .poverty-research-head { grid-template-columns:1fr; align-items:start; }
+      .poverty-kpis { grid-template-columns:repeat(2,minmax(0,1fr)); }
+      .poverty-analysis-grid { grid-template-columns:1fr; }
+      .poverty-country-grid { grid-template-columns:1fr; }
       .mobility-research-head { grid-template-columns:1fr; align-items:start; }
       .mobility-stage-grid { grid-template-columns:repeat(2,minmax(0,1fr)); }
       .mobility-policy-grid { grid-template-columns:1fr; }
@@ -2201,6 +2262,8 @@
       .transition-framework { grid-template-columns:1fr 1fr; }
       .energy-model-link { grid-template-columns:1fr; }
       .electricity-chart { min-height:330px; }
+      .poverty-chart { min-height:330px; }
+      .poverty-solutions { grid-template-columns:1fr; }
       .mobility-case-grid { grid-template-columns:1fr; }
       .fertility-chart { min-height:330px; }
       .tomorrow-row { grid-template-columns:minmax(90px,1fr) 58px 58px; }
@@ -2217,6 +2280,7 @@
       .primary-controls .view-segment button span { display:inline; }
       .case-metrics { grid-template-columns:1fr; }
       .transition-framework { grid-template-columns:1fr; }
+      .poverty-kpis { grid-template-columns:1fr; }
       .mobility-stage-grid { grid-template-columns:1fr; }
       .mobility-case-metrics { grid-template-columns:1fr 1fr; }
     }
@@ -2724,6 +2788,73 @@
           <a href="https://ourworldindata.org/grapher/share-elec-by-source?tab=chart&amp;country=~OWID_WRL" target="_blank" rel="noopener">Open source chart</a>
           <a href="https://www.iea.org/reports/electricity-2026/executive-summary" target="_blank" rel="noopener">IEA Electricity 2026</a>
           <span>Wind, solar &amp; other includes wind, solar, bioenergy, geothermal, and other non-hydro renewables. The 2026 point is an estimate from the supplied reference chart and is visually distinguished from observations.</span>
+        </div>
+      </section>
+
+      <section class="poverty-research" aria-labelledby="poverty-transition-title">
+        <div class="poverty-research-head">
+          <div>
+            <div class="section-kicker">Extreme poverty, structural change, and HDI</div>
+            <h3 id="poverty-transition-title">The geography of extreme poverty has shifted, and progress may reverse after 2030</h3>
+            <p>East and South Asia drove the historic reduction in extreme poverty through rising productivity, structural transformation, urbanization, infrastructure, and wider access to health and education. The remaining challenge is increasingly concentrated in Sub-Saharan Africa and fragile economies, where rapid population growth, weak job creation, conflict, climate exposure, and infrastructure deficits can offset falling poverty rates.</p>
+          </div>
+          <aside class="poverty-thesis">
+            <strong>Research conclusion</strong>
+            The baseline is not a prediction of inevitable African failure. It is a warning about arithmetic: the number of people in extreme poverty falls only when poverty-rate reduction is faster than population growth. Faster, more inclusive per-capita growth can still bend the post-2030 curve downward.
+          </aside>
+        </div>
+
+        <div class="poverty-kpis" id="poverty-kpis" aria-label="Global extreme poverty milestones"></div>
+
+        <div class="poverty-chart-panel">
+          <div class="panel-head">
+            <div><h4>People living below the international extreme-poverty line</h4><div class="panel-note">Regional totals, 1990-2040; $3 per day in 2021 international dollars</div></div>
+            <div class="poverty-legend" id="poverty-legend" aria-label="World Bank region legend"></div>
+          </div>
+          <svg id="global-poverty-chart" class="poverty-chart" viewBox="0 0 940 410" role="img" aria-labelledby="poverty-chart-title poverty-chart-desc">
+            <title id="poverty-chart-title">Regional composition of global extreme poverty from 1990 to 2040</title>
+            <desc id="poverty-chart-desc">Stacked area chart showing the historical decline in East and South Asia, the growing concentration in Sub-Saharan Africa, and a projected global reversal after 2030.</desc>
+          </svg>
+          <div class="poverty-tooltip" id="poverty-tooltip" role="tooltip"></div>
+          <div class="chart-caption" id="poverty-chart-summary">Use the pointer or keyboard arrows to inspect a year.</div>
+        </div>
+
+        <div class="poverty-analysis-grid" aria-label="Problems predictions and interpretation">
+          <article class="poverty-analysis" style="--analysis-color:#ff807d"><div class="analysis-type">Problems</div><h4>Why poverty reduction is slowing</h4><p>Growth has weakened where extreme poverty is now concentrated, while conflict, debt, climate shocks, low state capacity, and rapid population growth make each percentage-point reduction harder to sustain.</p><ul><li>GDP growth can coexist with stagnant living standards when population grows as fast as output.</li><li>Informal urbanization without productive firms creates density without enough wage growth.</li><li>Electricity generation does not become development without reliable grids, connections, and affordable service.</li><li>High inequality weakens the amount of poverty reduction produced by average income growth.</li></ul></article>
+          <article class="poverty-analysis" style="--analysis-color:#f6ce6a"><div class="analysis-type">Baseline prediction</div><h4>A 2030 trough followed by reversal</h4><p>The source projection reaches its lowest global total near 2030 and then rises through 2040. This is driven primarily by Sub-Saharan Africa, while East Asia remains near the end of its historic extreme-poverty transition and South Asia continues to improve.</p><ul><li>2026-2030 uses World Bank and IMF growth forecasts.</li><li>2031-2040 holds country growth near its 2015-2024 average, making the later path especially assumption-sensitive.</li><li>The projection is a conditional baseline, not a demographic destiny or a country-level 2050 forecast.</li></ul></article>
+          <article class="poverty-analysis" style="--analysis-color:#65f0bd"><div class="analysis-type">Solutions</div><h4>Make productivity growth broad enough to outrun demography</h4><p>The strongest route combines human capital with job-rich structural transformation. Neither growth, electricity, education, nor social protection is sufficient alone; the mechanisms must reinforce one another.</p><ul><li>Raise agricultural productivity while creating manufacturing and tradable-service jobs.</li><li>Expand reliable electricity, transport, digital systems, housing, water, and urban governance.</li><li>Invest in nutrition, health, foundational learning, girls' education, and voluntary reproductive autonomy.</li><li>Pair macroeconomic stability with targeted transfers and shock-responsive social protection.</li></ul></article>
+        </div>
+
+        <div class="section-head"><div><div class="section-kicker">Policy architecture</div><h3>Six mechanisms that can change the baseline</h3></div><div class="panel-note">Each mechanism affects at least one HDI dimension and the distribution of its gains.</div></div>
+        <div class="poverty-solutions" aria-label="Six policy mechanisms for poverty reduction">
+          <div class="poverty-solution"><div class="solution-number">01</div><div><strong>Reliable productive electricity</strong><span>Finance generation together with transmission, distribution, metering, storage, and firm connections. Power must reduce downtime and operating costs for farms, clinics, schools, and productive businesses.</span></div></div>
+          <div class="poverty-solution"><div class="solution-number">02</div><div><strong>Foundational human capability</strong><span>Nutrition, maternal and child health, clean water, foundational literacy, and girls' secondary education reduce preventable deprivation and raise the productivity of later skills investment.</span></div></div>
+          <div class="poverty-solution"><div class="solution-number">03</div><div><strong>Job-rich structural transformation</strong><span>Connect farms and informal firms to logistics, finance, export markets, construction, manufacturing, and modern services so workers can move into higher-productivity employment.</span></div></div>
+          <div class="poverty-solution"><div class="solution-number">04</div><div><strong>Urban absorption before congestion</strong><span>Serviced land, housing, transit, sanitation, safety, and accountable local government allow cities to become engines of mobility rather than large concentrations of informal deprivation.</span></div></div>
+          <div class="poverty-solution"><div class="solution-number">05</div><div><strong>Inclusive growth and social protection</strong><span>Track income growth among poorer households, remove exclusionary barriers, and use well-targeted cash, food, health, and climate-risk systems to prevent temporary shocks from becoming poverty traps.</span></div></div>
+          <div class="poverty-solution"><div class="solution-number">06</div><div><strong>Fiscal capacity, peace, and measurement</strong><span>Debt sustainability, domestic revenue, public investment quality, conflict prevention, and frequent household surveys determine whether policy can be financed, delivered, and audited.</span></div></div>
+        </div>
+
+        <div class="section-head"><div><div class="section-kicker">Development pathways</div><h3>China, India, and Nigeria show three different stages of the transition</h3></div><div class="panel-note">Country narratives are linked to the active HDI scenario; poverty projections remain source-defined.</div></div>
+        <div class="poverty-country-grid" id="poverty-country-cases" aria-label="China India and Nigeria poverty and development pathways"></div>
+
+        <div class="energy-model-link" aria-label="How extreme poverty connects to HDI">
+          <div class="energy-model-step"><strong>1. Poverty is not the income index</strong><span>HDI uses average GNI per capita with diminishing returns; it does not measure the bottom of the distribution. Extreme poverty can persist despite rising average income when inequality or exclusion remains high.</span></div>
+          <div class="energy-model-step"><strong>2. Deprivation depresses all three dimensions</strong><span>Low consumption constrains nutrition, housing, transport, healthcare access, school attendance, and learning. Poverty reduction can therefore reinforce health, education, and income gains simultaneously.</span></div>
+          <div class="energy-model-step"><strong>3. HDI gains need distributional verification</strong><span>A rising national HDI is not proof that the poorest households are advancing. The model should be read alongside poverty headcounts, national poverty lines, inequality, multidimensional poverty, and subnational disparities.</span></div>
+        </div>
+
+        <div class="poverty-table-wrap"><table class="poverty-data-table" id="poverty-milestone-table"><caption>Regional extreme-poverty milestones in millions of people; table alternative to the chart.</caption></table></div>
+
+        <div class="research-limit"><strong>Forecast and measurement boundary:</strong> The international line is a common global benchmark, not a complete definition of wellbeing. The World Bank recommends national poverty lines for country policy and higher $4.20 and $8.30 lines for broader middle-income analysis. Household surveys differ in timing and construction, recent years are extrapolated, West African coverage is limited, and the post-2030 path assumes recent growth persists. No poverty value in this section is generated by the HDI model.</div>
+
+        <div class="poverty-sources">
+          <span><strong>Sources and definitions:</strong></span>
+          <a href="https://ourworldindata.org/grapher/projections-extreme-poverty-wb" target="_blank" rel="noopener">OWID regional projection data</a>
+          <a href="https://ourworldindata.org/data-insights/the-world-has-made-huge-progress-in-reducing-extreme-poverty-could-this-be-coming-to-an-end" target="_blank" rel="noopener">OWID research note</a>
+          <a href="https://www.worldbank.org/en/news/factsheet/2025/06/05/june-2025-update-to-global-poverty-lines" target="_blank" rel="noopener">World Bank poverty-line update</a>
+          <a href="https://www.worldbank.org/en/publication/poverty-prosperity-and-planet" target="_blank" rel="noopener">Poverty, Prosperity, and Planet</a>
+          <span>Dataset: Lakner et al. (2025), updated with World Bank PIP in March 2026, processed by Our World in Data. CC BY.</span>
         </div>
       </section>
 
@@ -3765,6 +3896,7 @@
     const subdivisionCsvPath = "../data/output/subdivision_hdi_2025_2050.csv?v=20260809-hdi-gpt";
     const ethnicCsvPath = "../data/output/demographic_context_2050.csv?v=20260810-ethics-review";
     const religionCsvPath = "../data/output/religious_composition_2050_model.csv?v=20260809-hindu-2025-baseline";
+    const povertyCsvPath = "../data/output/extreme_poverty_regional_1990_2040.csv?v=20260811";
     const officialWorldHdi2025 = 0.756;
     const officialWorldHdi2050 = 0.794;
     const aliases = new Map([["PSX", "PSE"], ["SDS", "SSD"]]);
@@ -3922,6 +4054,7 @@
     let ethnicRows = [];
     let religionRows = [];
     let subdivisionRows = [];
+    let povertyRows = [];
     let selectedSubdivisionContext = null;
     let activeCountry = null;
     let sortState = {column: "Rank", direction: 1};
@@ -4194,6 +4327,15 @@
         }
       }
       return addDimensionIndices(out);
+    }
+
+    function normalizePovertyRow(row) {
+      return {
+        Entity: row.Entity,
+        Code: row.Code,
+        Year: Number(row.Year),
+        People: Number(row["Number of people in poverty ($3 a day)"])
+      };
     }
 
     function updateStats() {
@@ -5287,6 +5429,139 @@
         <div class="tomorrow-track" style="--track-color:#65f0bd"><h4>Younger, later-window catch-up economies</h4><p>Large or growing populations with lower starting HDI and meaningful upside, but stronger requirements for schooling, health, infrastructure, and job creation.</p><div class="tomorrow-list">${young.map((row,index)=>tomorrowRow(row,index+1)).join("")}</div></div>`;
     }
 
+    const povertyRegionSeries = [
+      {key:"WB_NA", label:"North America", color:"#8d83cc"},
+      {key:"WB_ECA", label:"Europe & Central Asia", color:"#5f84a8"},
+      {key:"WB_LAC", label:"Latin America & Caribbean", color:"#b74652"},
+      {key:"WB_MENAP", label:"MENA, Afghanistan & Pakistan", color:"#d19a55"},
+      {key:"WB_SSA", label:"Sub-Saharan Africa", color:"#9b5a7c"},
+      {key:"WB_EAP", label:"East Asia & Pacific", color:"#57bbcb"},
+      {key:"WB_SA", label:"South Asia", color:"#88a961"}
+    ];
+
+    function povertyValue(code, year) {
+      return povertyRows.find(row=>row.Code===code && row.Year===year)?.People ?? NaN;
+    }
+
+    function formatPeople(value, digits=0) {
+      const n = Number(value);
+      if (!Number.isFinite(n)) return "--";
+      if (n >= 1e9) return `${(n/1e9).toFixed(digits || 1)}B`;
+      return `${(n/1e6).toFixed(digits)}M`;
+    }
+
+    function povertyCountryNarrative(row) {
+      if (row.ISO3 === "CHN") return "China is the strongest modern precedent for mass poverty reduction through agricultural productivity, export manufacturing, urban job creation, infrastructure, electrification, and broad basic education. It is not a copy-and-paste template: the external trade environment, demographic structure, carbon constraint, and state capacity facing today's low-income countries are different. The transferable lesson is coordinated productivity growth whose gains reach households and public services.";
+      if (row.ISO3 === "IND") return "India demonstrates that poverty can fall rapidly before every region reaches high human development. Digital public infrastructure, services, roads, electrification, social transfers, and consumption growth have supported major progress, but state-level health, learning, gender, nutrition, and job-quality gaps remain. The next phase depends on converting a large working-age population into productive formal and semi-formal employment at much greater scale.";
+      return "Nigeria is one of the decisive tests of whether the post-2030 global curve bends upward or downward. Oil revenue and headline GDP growth are insufficient when electricity is unreliable, population expands quickly, and productivity gains are uneven. An upside path combines non-oil exports, reliable grids, agricultural processing, manufacturing clusters, urban services, girls' education, health, security, and enough firms to absorb a rapidly growing workforce.";
+    }
+
+    function renderPovertyCountryCases() {
+      const container = document.getElementById("poverty-country-cases");
+      if (!container) return;
+      const meta = {
+        CHN:{color:"#ff807d",label:"Transformation precedent"},
+        IND:{color:"#f6ce6a",label:"Mass transition"},
+        NGA:{color:"#65f0bd",label:"Decisive future test"}
+      };
+      const rows = ["CHN","IND","NGA"].map(iso=>allRows.find(row=>row.ISO3===iso)).filter(Boolean);
+      container.innerHTML = rows.map(row=>`<article class="poverty-country" style="--country-color:${meta[row.ISO3].color}"><h4>${escapeHtml(row.Country)} <span>${meta[row.ISO3].label}</span></h4><p>${escapeHtml(povertyCountryNarrative(row))}</p><div class="poverty-country-metrics"><div><span>HDI path</span><strong>${fmt(row.HDI_Baseline,3)} &rarr; ${fmt(scenarioHdi(row),3)}</strong></div><div><span>Education path</span><strong>${fmt(row.EducationIndex_2025,3)} &rarr; ${fmt(row.EducationIndex_2050,3)}</strong></div><div><span>2050 working age</span><strong>${fmt(row.WorkingAgePct_2050,1)}%</strong></div><div><span>Digital infrastructure</span><strong>${fmt(row.DigitalInfraDevelopment,3)}</strong></div></div></article>`).join("");
+    }
+
+    function renderPovertyMilestoneTable(yearData) {
+      const table = document.getElementById("poverty-milestone-table");
+      if (!table) return;
+      const years = [1990,2000,2020,2025,2030,2040];
+      const columns = [
+        {key:"world",label:"World"},
+        {key:"WB_SSA",label:"Sub-Saharan Africa"},
+        {key:"WB_SA",label:"South Asia"},
+        {key:"WB_EAP",label:"East Asia & Pacific"},
+        {key:"WB_MENAP",label:"MENA, Afghanistan & Pakistan"},
+        {key:"WB_LAC",label:"Latin America & Caribbean"}
+      ];
+      const caption = table.querySelector("caption")?.outerHTML || "";
+      table.innerHTML = `${caption}<thead><tr><th scope="col">Year</th>${columns.map(column=>`<th scope="col">${column.label}</th>`).join("")}</tr></thead><tbody>${years.map(year=>{const row=yearData.find(item=>item.year===year);return `<tr><th scope="row">${year}${year>2025?" projected":""}</th>${columns.map(column=>`<td>${formatPeople(row?.[column.key],1)}</td>`).join("")}</tr>`;}).join("")}</tbody>`;
+    }
+
+    function renderGlobalPovertyResearch() {
+      const svg = d3.select("#global-poverty-chart");
+      const legend = document.getElementById("poverty-legend");
+      const kpis = document.getElementById("poverty-kpis");
+      const summary = document.getElementById("poverty-chart-summary");
+      const panel = document.querySelector(".poverty-chart-panel");
+      if (svg.empty() || !legend || !kpis || !summary || !panel || !povertyRows.length) return;
+      svg.selectAll(":scope > :not(title):not(desc)").remove();
+      legend.innerHTML = povertyRegionSeries.map(series=>`<span style="--legend-color:${series.color}">${series.label}</span>`).join("");
+
+      const years = d3.range(1990,2041);
+      const worldByYear = new Map(povertyRows.filter(row=>row.Code==="OWID_WRL").map(row=>[row.Year,row.People]));
+      const regionMaps = new Map(povertyRegionSeries.map(series=>[series.key,new Map(povertyRows.filter(row=>row.Code===series.key).map(row=>[row.Year,row.People]))]));
+      const yearData = years.map(year=>{
+        const row = {year,world:worldByYear.get(year)||0};
+        povertyRegionSeries.forEach(series=>row[series.key]=regionMaps.get(series.key).get(year)||0);
+        return row;
+      });
+      const world1990 = worldByYear.get(1990), world2025 = worldByYear.get(2025), world2030 = worldByYear.get(2030), world2040 = worldByYear.get(2040);
+      const ssa2025 = regionMaps.get("WB_SSA").get(2025), ssa2040 = regionMaps.get("WB_SSA").get(2040);
+      const historicReduction = world1990-world2025;
+      kpis.innerHTML = `
+        <div class="poverty-kpi" style="--poverty-color:#57bbcb"><span>1990-2025 reduction</span><strong>${formatPeople(historicReduction,1)}</strong><small>${fmt(100*historicReduction/world1990,1)}% fewer people below the line</small></div>
+        <div class="poverty-kpi" style="--poverty-color:#f6ce6a"><span>Global 2025</span><strong>${formatPeople(world2025,1)}</strong><small>About ${fmt(100*ssa2025/world2025,1)}% in Sub-Saharan Africa</small></div>
+        <div class="poverty-kpi" style="--poverty-color:#65f0bd"><span>Projected trough, 2030</span><strong>${formatPeople(world2030,1)}</strong><small>Baseline decline continues through 2030</small></div>
+        <div class="poverty-kpi" style="--poverty-color:#ff807d"><span>Projected 2040</span><strong>${formatPeople(world2040,1)}</strong><small>${fmt(100*ssa2040/world2040,1)}% in Sub-Saharan Africa</small></div>`;
+
+      const compact = window.innerWidth <= 520;
+      const width = compact ? 430 : 940, height = 410;
+      const margin = compact ? {top:22,right:18,bottom:46,left:48} : {top:22,right:34,bottom:46,left:58};
+      const x = d3.scaleLinear().domain([1990,2040]).range([margin.left,width-margin.right]);
+      const stack = d3.stack().keys(povertyRegionSeries.map(series=>series.key));
+      const layers = stack(yearData);
+      const yMax = d3.max(layers.at(-1),point=>point[1]);
+      const y = d3.scaleLinear().domain([0,yMax]).nice().range([height-margin.bottom,margin.top]);
+      const area = d3.area().x((point,index)=>x(yearData[index].year)).y0(point=>y(point[0])).y1(point=>y(point[1])).curve(d3.curveMonotoneX);
+      const colorByKey = new Map(povertyRegionSeries.map(series=>[series.key,series.color]));
+      const labelByKey = new Map(povertyRegionSeries.map(series=>[series.key,series.label]));
+      svg.attr("viewBox",`0 0 ${width} ${height}`);
+      svg.append("rect").attr("x",x(2025)).attr("y",margin.top).attr("width",x(2040)-x(2025)).attr("height",height-margin.top-margin.bottom).attr("fill","rgba(246,206,106,.045)");
+      svg.append("g").attr("class","grid").attr("transform",`translate(${margin.left},0)`).call(d3.axisLeft(y).ticks(5).tickSize(-(width-margin.left-margin.right)).tickFormat(""));
+      svg.append("g").attr("class","axis").attr("transform",`translate(0,${height-margin.bottom})`).call(d3.axisBottom(x).tickValues(compact?[1990,2000,2010,2020,2030,2040]:[1990,2000,2010,2020,2025,2030,2040]).tickFormat(d3.format("d")));
+      svg.append("g").attr("class","axis").attr("transform",`translate(${margin.left},0)`).call(d3.axisLeft(y).ticks(5).tickFormat(value=>value===0?"0":`${(value/1e9).toFixed(1)}B`));
+      svg.append("g").selectAll("path").data(layers).join("path").attr("class","poverty-area").attr("d",area).attr("fill",layer=>colorByKey.get(layer.key)).attr("fill-opacity",.9).attr("tabindex",0).attr("role","graphics-symbol").attr("aria-label",layer=>`${labelByKey.get(layer.key)}: ${formatPeople(yearData[0][layer.key],1)} people in 1990 and ${formatPeople(yearData.at(-1)[layer.key],1)} projected in 2040.`).append("title").text(layer=>`${labelByKey.get(layer.key)}: ${formatPeople(yearData[0][layer.key],1)} in 1990; ${formatPeople(yearData.at(-1)[layer.key],1)} projected in 2040`);
+      svg.append("line").attr("class","projection-boundary").attr("x1",x(2025)).attr("x2",x(2025)).attr("y1",margin.top).attr("y2",height-margin.bottom);
+      svg.append("text").attr("x",x(2025)+5).attr("y",margin.top+11).attr("fill","#f6ce6a").attr("font-size",9).text(compact?"PROJ.":"PROJECTIONS FROM 2026");
+
+      const focus = svg.append("g").style("display","none");
+      focus.append("line").attr("class","focus-line").attr("y1",margin.top).attr("y2",height-margin.bottom);
+      const tooltip = d3.select("#poverty-tooltip");
+      const showYear = (year,event=null) => {
+        const row = yearData.find(item=>item.year===year) || yearData.at(-1);
+        const values = povertyRegionSeries.map(series=>({...series,value:row[series.key]})).sort((a,b)=>b.value-a.value);
+        const ssaShare = 100*row.WB_SSA/row.world;
+        focus.style("display",null).select("line").attr("x1",x(row.year)).attr("x2",x(row.year));
+        focus.selectAll("circle").data(values,series=>series.key).join("circle").attr("cx",x(row.year)).attr("cy",series=>{
+          const layer=layers.find(item=>item.key===series.key);const index=row.year-1990;return y((layer[index][0]+layer[index][1])/2);
+        }).attr("r",3).attr("fill",series=>series.color).attr("stroke","#07111f");
+        tooltip.html(`<strong>${row.year}${row.year>2025?" projection":""} / Total ${formatPeople(row.world,1)}</strong>${values.map(series=>`<div class="poverty-tooltip-row"><span>${series.label}</span><b>${formatPeople(series.value,1)}</b></div>`).join("")}<div class="poverty-tooltip-row"><span>Sub-Saharan Africa share</span><b>${fmt(ssaShare,1)}%</b></div>`).style("opacity",1);
+        summary.textContent = `${row.year}${row.year>2025?" projection":""}: ${formatPeople(row.world,1)} people globally, including ${formatPeople(row.WB_SSA,1)} in Sub-Saharan Africa (${fmt(ssaShare,1)}%).`;
+        summary.dataset.year = row.year;
+        if (event) {
+          const rect = panel.getBoundingClientRect();
+          tooltip.style("left",`${Math.max(8,Math.min(panel.clientWidth-250,event.clientX-rect.left+12))}px`).style("top",`${Math.max(48,event.clientY-rect.top-20)}px`);
+        } else {
+          tooltip.style("left","64px").style("top","62px");
+        }
+      };
+      svg.append("rect").attr("x",margin.left).attr("y",margin.top).attr("width",width-margin.left-margin.right).attr("height",height-margin.top-margin.bottom).attr("fill","transparent").attr("tabindex",0).attr("role","graphics-symbol").attr("aria-label","Inspect annual regional extreme-poverty totals. Use left and right arrow keys to change year.")
+        .on("mousemove",event=>showYear(Math.max(1990,Math.min(2040,Math.round(x.invert(d3.pointer(event)[0])))),event))
+        .on("mouseenter",event=>showYear(2025,event)).on("mouseleave",()=>{focus.style("display","none");tooltip.style("opacity",0);})
+        .on("focus",()=>showYear(2025)).on("blur",()=>tooltip.style("opacity",0))
+        .on("keydown",event=>{if(!["ArrowLeft","ArrowRight"].includes(event.key))return;event.preventDefault();const current=Number(summary.dataset.year||2025);showYear(Math.max(1990,Math.min(2040,current+(event.key==="ArrowRight"?1:-1))));});
+      renderPovertyMilestoneTable(yearData);
+      renderPovertyCountryCases();
+      summary.textContent = `Global extreme poverty falls from ${formatPeople(world1990,1)} in 1990 to a projected ${formatPeople(world2030,1)} in 2030, then rises to ${formatPeople(world2040,1)} by 2040 under the baseline assumptions.`;
+    }
+
     const electricitySeries = [
       {key:"c", label:"Coal", color:"#f3f5f7"},
       {key:"r", label:"Wind, solar & other", color:"#43e0a8"},
@@ -5370,6 +5645,7 @@
       renderDevelopmentCountryStories(rows);
       renderTomorrowEconomies();
       renderGlobalElectricityChart();
+      renderGlobalPovertyResearch();
       renderFertilityHdiChart();
       renderMobilityCaseStudies();
     }
@@ -7947,6 +8223,11 @@ LIVE_EVIDENCE: ${JSON.stringify(hdiGptEvidencePayload(prompt))}`
       try {
         allRows = (await d3.csv(csvPath, normalize)).filter(d => d.ISO3 && d.Country);
         subdivisionRows = (await d3.csv(subdivisionCsvPath, normalizeSubdivisionRow)).filter(d => d.ISO3 && d.Country && d.Subdivision);
+        try {
+          povertyRows = (await d3.csv(povertyCsvPath, normalizePovertyRow)).filter(d => d.Code && Number.isFinite(d.Year) && Number.isFinite(d.People));
+        } catch (povertyError) {
+          console.warn("Extreme-poverty research data could not be loaded.", povertyError);
+        }
         filteredRows = [...allRows];
         window.addEventListener("message", event => {
           if (event.origin !== location.origin || event.data?.type !== "hdi-subdivision-selected") return;
