@@ -6,13 +6,13 @@ Run from the project root:
     python hdi_gpt_server.py
 
 Optional environment variables:
-    HDI_GPT_MODEL       default: gpt-4o-mini
+    HDI_GPT_MODEL       default: gpt-4.1-mini
     HDI_GPT_BASE_URL    default: https://api.openai.com/v1
     HDI_GPT_PORT        default: 8766
 
 OpenRouter/OpenAI-compatible example:
     $env:HDI_GPT_BASE_URL="https://openrouter.ai/api/v1"
-    $env:HDI_GPT_MODEL="openai/gpt-4o-mini"
+    $env:HDI_GPT_MODEL="openai/gpt-4.1-mini"
     $env:OPENAI_API_KEY="..."
 
 Do not put API keys in web/hdi-2050-dashboard.html. The browser posts dashboard
@@ -28,7 +28,7 @@ from urllib.error import HTTPError, URLError
 from urllib.request import Request, urlopen
 
 
-MODEL = os.environ.get("HDI_GPT_MODEL", "gpt-4o-mini")
+MODEL = os.environ.get("HDI_GPT_MODEL", "gpt-4.1-mini")
 BASE_URL = os.environ.get("HDI_GPT_BASE_URL", "https://api.openai.com/v1").rstrip("/")
 PORT = int(os.environ.get("HDI_GPT_PORT", "8766"))
 

@@ -28,6 +28,17 @@ python hdi_gpt_server.py
 
 Open `http://localhost:8765/`. API-backed HDI-GPT requires `OPENAI_API_KEY` or `HDI_GPT_API_KEY` in the server process environment. Never place a key in client-side JavaScript or commit it to the repository.
 
+### Enable HDI-GPT on Vercel
+
+The browser calls the server-side `/api/hdi-gpt` function; the API key must therefore be configured in the Vercel project, not only in a local PowerShell session.
+
+1. Open **Vercel Project Settings -> Environment Variables**.
+2. Add `OPENAI_API_KEY` for Production, Preview, and Development.
+3. Optionally add `HDI_GPT_MODEL`; the default is `gpt-4.1-mini`.
+4. Redeploy the latest commit so the function receives the new environment variables.
+
+If `/api/hdi-gpt` returns HTTP `503`, the deployed function cannot see either `OPENAI_API_KEY` or `HDI_GPT_API_KEY`.
+
 ## Rebuild Outputs
 
 ```powershell

@@ -1603,7 +1603,7 @@
     }
     .hdi-gpt-chat {
       display: grid;
-      grid-template-rows: auto minmax(360px, 1fr) auto;
+      grid-template-rows: auto auto minmax(360px, 1fr) auto;
       min-height: 620px;
     }
     .hdi-gpt-feed {
@@ -1643,6 +1643,19 @@
       margin: 8px 0 0;
       padding-left: 18px;
     }
+    .chat-message p { margin: 0 0 9px; }
+    .chat-message p:last-child { margin-bottom: 0; }
+    .chat-message h3,
+    .chat-message h4 { margin: 4px 0 8px; color: #fff; font-size: 14px; }
+    .chat-message code { padding: 2px 5px; border-radius: 4px; background: #030a14; color: #9ff7f2; }
+    .chat-message a { color: #73e8ff; }
+    .chat-message table { width: 100%; margin-top: 9px; border-collapse: collapse; font-size: 12px; }
+    .chat-message th,
+    .chat-message td { padding: 7px 8px; border: 1px solid rgba(150,190,255,.15); text-align: left; }
+    .chat-message th { color: #9ff7f2; background: rgba(88,230,255,.06); }
+    .chat-message.typing { color: var(--muted); }
+    .chat-message.typing::after { content: ""; display: inline-block; width: 18px; height: 4px; margin-left: 8px; vertical-align: middle; background: radial-gradient(circle, #58e6ff 1.6px, transparent 2px) 0 0/6px 4px; animation: chat-pulse 900ms linear infinite; }
+    @keyframes chat-pulse { 50% { opacity: .35; } }
     .chat-data-card { margin-top:10px; overflow:hidden; border:1px solid rgba(88,230,255,.2); border-radius:6px; background:#08111f; }
     .chat-data-card .card-title { padding:9px 11px; color:#9ff7f2; font-size:12px; font-weight:700; text-transform:uppercase; }
     .chat-data-card table { width:100%; border-collapse:collapse; font-size:12px; }
@@ -1653,6 +1666,16 @@
     .chat-driver-track { height:7px; background:#1d2a3d; }
     .chat-driver-fill { height:100%; background:#37d6d0; }
     .chat-driver-fill.negative { background:#ff807d; }
+    .chat-response-actions { display:flex; flex-wrap:wrap; gap:7px; margin-top:11px; padding-top:10px; border-top:1px solid rgba(150,190,255,.12); }
+    .chat-response-actions button { min-height:34px; padding:6px 10px; font-size:12px; color:#e9fbff; border-color:rgba(88,230,255,.28); background:rgba(88,230,255,.08); }
+    .chat-grounding { margin-top:10px; display:grid; gap:7px; }
+    .chat-grounding-row { display:grid; grid-template-columns:minmax(92px,1.25fr) repeat(3,minmax(48px,.65fr)); gap:7px; align-items:center; padding:7px 9px; border:1px solid rgba(150,190,255,.12); background:rgba(3,10,20,.52); font-size:12px; }
+    .chat-grounding-row span { color:var(--muted); }
+    .chat-grounding-row strong { color:#fff; }
+    .hdi-gpt-status { display:inline-flex; align-items:center; gap:7px; margin-top:5px; color:var(--muted); font-size:12px; }
+    .hdi-gpt-status::before { content:""; width:7px; height:7px; border-radius:50%; background:#6fe1aa; box-shadow:0 0 0 3px rgba(111,225,170,.1); }
+    .hdi-gpt-status.busy::before { background:#f4c95d; }
+    .hdi-gpt-status.offline::before { background:#ff807d; }
     .chat-composer {
       display: grid;
       grid-template-columns: minmax(0, 1fr) auto;
@@ -1680,6 +1703,7 @@
       border-color: rgba(88, 230, 255, 0.28);
       background: rgba(88, 230, 255, 0.08);
     }
+    .prompt-chip:hover { border-color:rgba(88,230,255,.58); background:rgba(88,230,255,.14); }
     .hdi-gpt-context {
       display: grid;
       gap: 12px;
@@ -1701,6 +1725,14 @@
       display: block;
       color: #f7fbff;
       margin-bottom: 2px;
+    }
+    @media (max-width: 520px) {
+      .chat-message { max-width: 96%; }
+      .chat-grounding-row { grid-template-columns:minmax(90px,1fr) repeat(3,48px); font-size:11px; }
+      .hdi-gpt-chat { min-height: 560px; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .chat-message.typing::after { animation: none; }
     }
     .modal-actions {
       display: flex;
@@ -3044,11 +3076,12 @@
         <div class="panel-head">
           <div>
             <div class="panel-title">HDI-GPT</div>
-            <div class="panel-note">Local conversational analyst for the 193-country projection dataset</div>
+            <div class="panel-note">API-backed conversational co-analyst grounded in the live projection dataset</div>
+            <div class="hdi-gpt-status" id="hdi-gpt-status" role="status">Ready for a research question</div>
           </div>
           <button type="button" class="secondary" id="clear-hdi-gpt">Clear chat</button>
         </div>
-        <div class="prompt-chip-row" aria-label="Suggested HDI-GPT prompts">
+        <div class="prompt-chip-row" id="hdi-gpt-prompts" aria-label="Contextual HDI-GPT prompts">
           <button type="button" class="prompt-chip" data-hdi-prompt="Summarize India's 2050 trajectory">Summarize India</button>
           <button type="button" class="prompt-chip" data-hdi-prompt="Which nations benefit most from AI adoption?">AI beneficiaries</button>
           <button type="button" class="prompt-chip" data-hdi-prompt="Compare South Korea, United Kingdom, and Japan">Compare peers</button>
@@ -3683,6 +3716,8 @@
     let chatHistory = [];
     let lastHdiGptCountries = [];
     let lastSubdivisionQueryRows = [];
+    let lastHdiGptRankingRows = [];
+    let hdiGptBusy = false;
     let searchSuggestionIndex = -1;
     let commandResultIndex = 0;
     let activeMapRegion = "world";
@@ -5133,15 +5168,17 @@
       document.getElementById("hdi-gpt-country").textContent = activeCountry ? `${activeCountry.Country} (${activeCountry.ISO3})` : "World";
       document.getElementById("hdi-gpt-compared").textContent = compared.length ? compared.map(row => row.ISO3).join(", ") : "None";
       document.getElementById("hdi-gpt-state-note").textContent = `Current state: ${scenarioLabel}; page ${location.hash.replace("#", "") || "overview"}; ${filteredRows.length} countries; ${activeCountry ? activeCountry.Country : "no selected country"}${selectedSubdivisionContext ? `; subdivision ${selectedSubdivisionContext.subdivision}, ${selectedSubdivisionContext.country}` : ""}.`;
+      renderHdiGptPromptChips();
     }
 
-    function appendHdiMessage(role, html) {
+    function appendHdiMessage(role, html, extraClass = "") {
       const feed = document.getElementById("hdi-gpt-feed");
       const message = document.createElement("div");
-      message.className = `chat-message ${role}`;
+      message.className = `chat-message ${role}${extraClass ? ` ${extraClass}` : ""}`;
       message.innerHTML = html;
       feed.appendChild(message);
       feed.scrollTop = feed.scrollHeight;
+      return message;
     }
 
     function escapeHtml(value) {
@@ -5150,6 +5187,156 @@
         .replaceAll("<", "&lt;")
         .replaceAll(">", "&gt;")
         .replaceAll('"', "&quot;");
+    }
+
+    function renderHdiGptPromptChips() {
+      const container = document.getElementById("hdi-gpt-prompts");
+      if (!container) return;
+      const country = activeCountry?.Country;
+      const prompts = country ? [
+        [`Explain ${country}'s 2050 drivers`, `Explain the main drivers and structural drags behind ${country}'s 2050 HDI projection.`],
+        ["Compare with peers", `Compare ${country} with appropriate regional or structural peers and explain the differences.`],
+        ["Scenario sensitivity", `How sensitive is ${country}'s projection across the available scenarios?`],
+        ["Dimension balance", `Compare ${country}'s health, education, and income indices in 2025 and 2050.`]
+      ] : [
+        ["Largest gains", "Which five countries have the largest projected HDI gains, and what drives them?"],
+        ["AI beneficiaries", "Which countries benefit most from aggressive AI adoption compared with baseline?"],
+        ["Compare development paths", "Compare China, India, and Nigeria as three different development paths to 2050."],
+        ["Explain uncertainty", "Explain how I should interpret the P10 and P90 projection bounds."]
+      ];
+      container.innerHTML = prompts.map(([label, prompt]) => `<button type="button" class="prompt-chip" data-hdi-prompt="${escapeAttr(prompt)}">${escapeHtml(label)}</button>`).join("");
+    }
+
+    function setHdiGptBusy(busy, label = "Thinking with live dashboard data") {
+      hdiGptBusy = busy;
+      const send = document.getElementById("send-hdi-gpt");
+      const input = document.getElementById("hdi-gpt-input");
+      const status = document.getElementById("hdi-gpt-status");
+      send.disabled = busy;
+      input.disabled = busy;
+      status.className = `hdi-gpt-status${busy ? " busy" : ""}`;
+      status.textContent = busy ? label : "Ready for a research question";
+      document.getElementById("hdi-gpt-thinking")?.remove();
+      if (busy) {
+        const node = appendHdiMessage("assistant", "Analyzing the live dataset", "typing");
+        node.id = "hdi-gpt-thinking";
+      }
+    }
+
+    function inlineMarkdown(value) {
+      return escapeHtml(value)
+        .replace(/`([^`]+)`/g, "<code>$1</code>")
+        .replace(/\*\*([^*]+)\*\*/g, "<strong>$1</strong>")
+        .replace(/\*([^*]+)\*/g, "<em>$1</em>");
+    }
+
+    function markdownToSafeHtml(markdown) {
+      const lines = String(markdown || "").replace(/\r/g, "").split("\n");
+      const html = [];
+      let listType = "";
+      const closeList = () => { if (listType) { html.push(`</${listType}>`); listType = ""; } };
+      for (let i = 0; i < lines.length; i += 1) {
+        const line = lines[i].trim();
+        const next = lines[i + 1]?.trim() || "";
+        if (line.includes("|") && /^\|?\s*:?-{3,}/.test(next)) {
+          closeList();
+          const headers = line.replace(/^\||\|$/g, "").split("|").map(cell => cell.trim());
+          html.push(`<div class="chat-data-card"><table><thead><tr>${headers.map(cell => `<th>${inlineMarkdown(cell)}</th>`).join("")}</tr></thead><tbody>`);
+          i += 2;
+          while (i < lines.length && lines[i].includes("|")) {
+            const cells = lines[i].trim().replace(/^\||\|$/g, "").split("|").map(cell => cell.trim());
+            html.push(`<tr>${cells.map(cell => `<td>${inlineMarkdown(cell)}</td>`).join("")}</tr>`);
+            i += 1;
+          }
+          html.push("</tbody></table></div>");
+          i -= 1;
+          continue;
+        }
+        if (!line) { closeList(); continue; }
+        const heading = line.match(/^#{2,4}\s+(.+)/);
+        if (heading) { closeList(); html.push(`<h3>${inlineMarkdown(heading[1])}</h3>`); continue; }
+        const unordered = line.match(/^[-*]\s+(.+)/);
+        const ordered = line.match(/^\d+[.)]\s+(.+)/);
+        if (unordered || ordered) {
+          const wanted = unordered ? "ul" : "ol";
+          if (listType !== wanted) { closeList(); listType = wanted; html.push(`<${wanted}>`); }
+          html.push(`<li>${inlineMarkdown((unordered || ordered)[1])}</li>`);
+          continue;
+        }
+        closeList();
+        html.push(`<p>${inlineMarkdown(line)}</p>`);
+      }
+      closeList();
+      return html.join("");
+    }
+
+    function scenarioRankFor(row) {
+      return [...allRows].sort((a, b) => scenarioHdi(b) - scenarioHdi(a)).findIndex(item => item.ISO3 === row.ISO3) + 1;
+    }
+
+    function countryDataPacket(row) {
+      if (!row) return null;
+      const drivers = driverColumns.map(([label, key]) => ({label, value: Number(row[key]) || 0})).sort((a, b) => Math.abs(b.value) - Math.abs(a.value));
+      return {
+        country: row.Country, iso3: row.ISO3,
+        hdi_2025: Number(row.HDI_Baseline), hdi_2050: scenarioHdi(row), hdi_gain: scenarioGain(row), scenario_rank_2050: scenarioRankFor(row),
+        health: {index_2025: Number(row.HealthIndex_2025), index_2050: Number(row.HealthIndex_2050)},
+        education: {index_2025: Number(row.EducationIndex_2025), index_2050: Number(row.EducationIndex_2050)},
+        income: {index_2025: Number(row.IncomeIndex_2025), index_2050: Number(row.IncomeIndex_2050)},
+        uncertainty: {p10: Number(row.HDI_P10), p50: Number(row.HDI_P50), p90: Number(row.HDI_P90)},
+        profile: {trajectory: row.Trajectory, momentum_tier: row.DevelopmentMomentumTier, population_2050: Number(row.Population_2050)},
+        demographics: {median_age_2050: Number(row.MedianAge_2050), working_age_pct_2050: Number(row.WorkingAgePct_2050), demographic_dividend: Number(row.DemographicDividend), human_capital_absorption: Number(row.HumanCapitalAbsorption), dependency_pressure: Number(row.DependencyPressure)},
+        readiness: {future_readiness: Number(row.FutureReadiness), digital_infrastructure: Number(row.DigitalInfraDevelopment), growth_prospect: Number(row.GrowthProspectScore), industrialization_signal: Number(row.IndustrializationSignal)},
+        strongest_model_contributions: drivers.slice(0, 6)
+      };
+    }
+
+    function rankingRows(metric = "hdi", direction = "desc", limit = 6) {
+      const metrics = {
+        hdi: scenarioHdi, gain: scenarioGain,
+        digital: row => Number(row.DigitalInfraDevelopment),
+        ai: row => Number(row.ai_adoption_index),
+        future_readiness: row => Number(row.FutureReadiness),
+        mismatch: row => Math.abs(Number(row.HDI_2050_Index_Mismatch) || 0)
+      };
+      const source = filteredRows.length ? filteredRows : allRows;
+      return rankRows(source, metrics[metric] || metrics.hdi, direction, Math.max(1, Math.min(20, Number(limit) || 6)));
+    }
+
+    function hdiGptEvidencePayload(prompt) {
+      const mentioned = findCountriesInText(prompt);
+      const relevant = [...mentioned, ...rememberedCountries(), activeCountry].filter(Boolean);
+      const unique = [...new Map(relevant.map(row => [row.ISO3, row])).values()].slice(0, 8);
+      const lower = String(prompt).toLowerCase();
+      const includeLeaders = /\b(top|highest|lowest|largest|smallest|gain|rank|benefit|leader|best|worst)\b/.test(lower);
+      return {
+        data_status: "2025 values are baseline observations/estimates; 2050 values and P10-P90 bounds are modeled scenario projections, not certainties.",
+        dashboard_state: hdiGptStatePayload(),
+        relevant_country_records: unique.map(countryDataPacket),
+        filtered_dataset_summary: {countries: filteredRows.length, total_countries: allRows.length, active_scenario: scenarios[activeScenario]?.label},
+        ranking_evidence: includeLeaders ? {
+          highest_2050_hdi: rankingRows("hdi", "desc", 6).map(countryDataPacket),
+          largest_hdi_gain: rankingRows("gain", "desc", 6).map(countryDataPacket),
+          lowest_2050_hdi: rankingRows("hdi", "asc", 6).map(countryDataPacket)
+        } : null,
+        glossary: /\b(p10|p90|uncertainty|mismatch|geometric|formula)\b/.test(lower) ? glossaryDefinitions : null
+      };
+    }
+
+    function groundingCard(rows) {
+      const unique = [...new Map((rows || []).filter(Boolean).map(row => [row.ISO3, row])).values()].slice(0, 4);
+      if (!unique.length) return "";
+      return `<div class="chat-grounding" aria-label="Exact data used in this answer">${unique.map(row => `<div class="chat-grounding-row"><strong>${escapeHtml(row.Country)}</strong><span>2025<br><strong>${fmt(row.HDI_Baseline)}</strong></span><span>2050<br><strong>${fmt(scenarioHdi(row))}</strong></span><span>Gain<br><strong>${formatSignedValue(scenarioGain(row))}</strong></span></div>`).join("")}</div>`;
+    }
+
+    function responseActionButtons(calls, rows) {
+      const buttons = [];
+      const unique = [...new Map((rows || []).filter(Boolean).map(row => [row.ISO3, row])).values()];
+      if (unique[0]) buttons.push(`<button type="button" data-hdi-chat-action="country" data-country="${escapeAttr(unique[0].ISO3)}">Inspect ${escapeHtml(unique[0].Country)}</button>`);
+      if (unique.length > 1) buttons.push(`<button type="button" data-hdi-chat-action="compare" data-countries="${escapeAttr(unique.map(row => row.ISO3).join(","))}">Open comparison</button>`);
+      if (calls.some(call => call.name === "set_scenario")) buttons.push(`<button type="button" data-hdi-chat-action="maps">View scenario maps</button>`);
+      if (calls.some(call => call.name === "highlight_variable_explorer")) buttons.push(`<button type="button" data-hdi-chat-action="explorer">Open Explorer</button>`);
+      return buttons.length ? `<div class="chat-response-actions">${buttons.join("")}</div>` : "";
     }
 
     function countryAliases(row) {
@@ -5376,16 +5563,24 @@
 
     async function submitHdiGpt(prompt) {
       const text = prompt.trim();
-      if (!text) return;
-      chatHistory.push({role: "user", content: text});
-      chatHistory = chatHistory.slice(-12);
+      if (!text || hdiGptBusy) return;
       appendHdiMessage("user", escapeHtml(text));
-      const answer = await routeHdiGptAgentAction(text);
-      chatHistory.push({role: "assistant", content: answer.replace(/<[^>]+>/g, " ")});
-      chatHistory = chatHistory.slice(-12);
-      appendHdiMessage("assistant", answer);
-      updateHdiGptContext();
       document.getElementById("hdi-gpt-input").value = "";
+      setHdiGptBusy(true);
+      try {
+        const result = await routeHdiGptAgentAction(text);
+        document.getElementById("hdi-gpt-thinking")?.remove();
+        appendHdiMessage("assistant", result.html);
+        chatHistory.push({role: "user", content: text}, {role: "assistant", content: result.text});
+        chatHistory = chatHistory.slice(-16);
+      } catch (error) {
+        document.getElementById("hdi-gpt-thinking")?.remove();
+        appendHdiMessage("assistant", `<strong>I could not complete that analysis.</strong><p>${escapeHtml(error.message || "The model endpoint did not respond.")}</p><p>Your dashboard state has not been changed.</p>`);
+      } finally {
+        setHdiGptBusy(false);
+        updateHdiGptContext();
+        document.getElementById("hdi-gpt-input").focus();
+      }
     }
 
     const hdiGptTools = [
@@ -5435,7 +5630,8 @@
           type: "object",
           properties: {
             metric: {type: "string", enum: ["hdi", "gain", "digital", "ai", "future_readiness", "mismatch"]},
-            direction: {type: "string", enum: ["desc", "asc"]}
+            direction: {type: "string", enum: ["desc", "asc"]},
+            limit: {type: "integer", minimum: 1, maximum: 20}
           },
           required: ["metric"]
         },
@@ -5467,16 +5663,27 @@
         selectedCountry: activeCountry ? {country: activeCountry.Country, iso3: activeCountry.ISO3} : null,
         selectedSubdivision: selectedSubdivisionContext,
         activePage: location.hash.replace("#", "") || "overview",
+        tuning: {...tuning},
         loadedSubdivisionRows: subdivisionRows.length,
         comparedCountries: compareRows().map(row => ({country: row.Country, iso3: row.ISO3})),
         rememberedCountries: rememberedCountries().map(row => ({country: row.Country, iso3: row.ISO3}))
       };
     }
 
-    function hdiGptSystemMessage() {
+    function hdiGptSystemMessage(prompt) {
       return {
         role: "system",
-        content: `You are HDI-GPT, an embedded data co-analyst for the HDI 2050 Projection Console. Use function tools for dashboard actions and structured subdivision queries instead of inventing values. Answers should cite exact country or subdivision metrics returned by tools, distinguish modeled projections from observations, and stay aware of the active page, selected country, selected subdivision, filters, scenarios, and tuning state. Current state: ${JSON.stringify(hdiGptStatePayload())}`
+        content: `You are HDI-GPT, the conversational research co-analyst embedded in the HDI 2050 Projection Console.
+
+CONVERSATION: Speak naturally and remember prior turns. Resolve pronouns such as "it", "its", and "that country" from the conversation and live state. Handle greetings and clarifying questions normally. If a request is ambiguous, ask one concise clarification instead of inventing an interpretation.
+
+DATA DISCIPLINE: Use only values in LIVE_EVIDENCE or returned by tools. Never fabricate a country value, rank, causal estimate, source, or projection. Explicitly distinguish 2025 baseline observations/estimates from modeled 2050 scenario projections. Describe driver contributions as model attribution, not proven causality. State uncertainty where relevant.
+
+TOOLS: Use tools whenever the user asks to select, compare, rank, query subdivisions, change a scenario, tune assumptions, open an audit, or build a chart. Tool results will be returned to you; after receiving them, write a complete analytical answer rather than merely saying the action succeeded.
+
+ANSWER STYLE: For a country analysis, use: (1) a 1-2 sentence executive summary, (2) a compact 2025 versus 2050 Markdown table, (3) primary modeled drivers and structural drags, and (4) one useful next analytical step. For comparisons, explain the substantive differences rather than only listing values. Keep routine answers concise and research answers detailed enough to be useful.
+
+LIVE_EVIDENCE: ${JSON.stringify(hdiGptEvidencePayload(prompt))}`
       };
     }
 
@@ -5589,13 +5796,12 @@
       };
     }
 
-    async function requestHdiGptPlan(prompt) {
-      const deterministicPlan = localHdiAgentPlan(prompt);
-      if (["subdivision-query", "executive-brief", "sensitivity"].includes(deterministicPlan.intent)) return deterministicPlan;
+    async function requestHdiGptCompletion(messages) {
       const payload = {
-        messages: [hdiGptSystemMessage(), ...chatHistory, {role: "user", content: prompt}],
+        messages,
         tools: openAiHdiGptTools,
-        dashboard_state: hdiGptStatePayload()
+        dashboard_state: hdiGptStatePayload(),
+        temperature: 0.25
       };
       const endpoints = window.HDI_GPT_ENDPOINT
         ? [window.HDI_GPT_ENDPOINT]
@@ -5608,12 +5814,29 @@
         }).catch(() => null);
         if (response?.ok) {
           const raw = await response.json();
-          if (/API mode is not configured|Set OPENAI_API_KEY/i.test(raw?.reply || raw?.error || "")) return localHdiAgentPlan(prompt);
-          return normalizeHdiGptPlan(raw, prompt);
+          if (/API mode is not configured|Set OPENAI_API_KEY/i.test(raw?.reply || raw?.error || "")) continue;
+          return raw;
         }
       }
       if (window.HDI_GPT_MODEL?.complete) return window.HDI_GPT_MODEL.complete(payload);
-      return localHdiAgentPlan(prompt);
+      return null;
+    }
+
+    function extractHdiAssistantMessage(raw) {
+      if (!raw) return null;
+      if (raw.choices?.[0]?.message) return raw.choices[0].message;
+      if (raw.reply || raw.tool_calls) return {role: "assistant", content: raw.reply || "", tool_calls: raw.tool_calls || []};
+      return null;
+    }
+
+    function normalizedToolCalls(message) {
+      return (message?.tool_calls || []).map((call, index) => {
+        let args = call.arguments || {};
+        if (call.function) {
+          try { args = JSON.parse(call.function.arguments || "{}"); } catch { args = {}; }
+        }
+        return {id: call.id || `hdi_tool_${Date.now()}_${index}`, name: call.function?.name || call.name, arguments: args};
+      }).filter(call => call.name);
     }
 
     function executeHdiToolCall(call) {
@@ -5660,6 +5883,11 @@
           return `Opened formula audit for ${row.Country}.`;
         }
       }
+      if (call.name === "answer_ranking") {
+        lastHdiGptRankingRows = rankingRows(args.metric || "hdi", args.direction || "desc", args.limit || 6);
+        lastHdiGptCountries = lastHdiGptRankingRows.slice(0, 6);
+        return `Ranked ${lastHdiGptRankingRows.length} countries by ${args.metric || "hdi"} in ${args.direction === "asc" ? "ascending" : "descending"} order.`;
+      }
       if (call.name === "query_subdivisions") {
         lastSubdivisionQueryRows = querySubdivisions(args);
         return `Queried ${lastSubdivisionQueryRows.length} subdivision records.`;
@@ -5678,6 +5906,33 @@
         if (row) { setActiveCountry(row); lastHdiGptCountries = [row]; return `${call.name === "generate_executive_brief" ? "Generated executive briefing" : "Audited scenario sensitivity"} for ${row.Country}.`; }
       }
       return "";
+    }
+
+    function toolResultPayload(call, note) {
+      const args = call.arguments || {};
+      let data = null;
+      if (call.name === "filter_country" || call.name === "open_formula_audit" || call.name === "generate_executive_brief" || call.name === "audit_scenario_sensitivity") {
+        const row = resolveCountry(args.country_name) || activeCountry || rememberedCountries()[0];
+        data = countryDataPacket(row);
+        if (call.name === "audit_scenario_sensitivity" && row) {
+          const original = activeScenario;
+          data.scenarios = Object.keys(scenarios).map(key => { activeScenario = key; return {scenario: scenarios[key].label, hdi_2050: scenarioHdi(row)}; });
+          activeScenario = original;
+        }
+      } else if (call.name === "open_comparison_lab") {
+        data = lastHdiGptCountries.map(countryDataPacket);
+      } else if (call.name === "answer_ranking") {
+        data = lastHdiGptRankingRows.map((row, index) => ({position: index + 1, ...countryDataPacket(row)}));
+      } else if (call.name === "query_subdivisions") {
+        data = lastSubdivisionQueryRows.map(row => ({country: row.Country, iso3: row.ISO3, subdivision: row.Subdivision, hdi_2025: row.Subdivision_HDI_2025_Reconciled, hdi_2050: row.Subdivision_HDI_2050_Projected, gain: row.Subdivision_HDI_Change_2025_to_2050, population_2050: row.Subdivision_Population_2050_Est}));
+      } else if (call.name === "set_scenario") {
+        data = {active_scenario: scenarios[activeScenario]?.label, relevant_countries: rememberedCountries().map(countryDataPacket)};
+      } else if (call.name === "set_tuning") {
+        data = {tuning: {...tuning}, relevant_countries: rememberedCountries().map(countryDataPacket)};
+      } else if (call.name === "highlight_variable_explorer") {
+        data = {x: document.getElementById("matrix-x")?.value, y: document.getElementById("matrix-y")?.value};
+      }
+      return {ok: Boolean(note), action: call.name, note: note || `The ${call.name} action could not be completed with the supplied arguments.`, exact_data: data};
     }
 
     function responseFromAgentPlan(plan, actionNotes) {
@@ -5726,23 +5981,70 @@
       if (fillers.includes(compact)) {
         return `Any time. Ask me for a country trend, a scenario comparison, a driver breakdown, or a metric explanation when you want to keep exploring.`;
       }
-      if (compact.length <= 3 && !findCountriesInText(userInput).length && !scenarioFromText(userInput)) {
-        return `I am tuned specifically for the 193-country dataset and dashboard actions. You can ask me to summarize a country, compare nations, switch scenarios, or check a metric.`;
+      if (compact.length === 1 && !findCountriesInText(userInput).length && !scenarioFromText(userInput)) {
+        return `I did not quite understand "${escapeHtml(compact)}". Did you mean to search for a country beginning with that letter, or would you like a preset analysis such as the largest projected HDI gains?`;
       }
       return null;
     }
 
     async function routeHdiGptAgentAction(prompt) {
       const conversationalReply = handleConversationalIntent(prompt);
-      if (conversationalReply) return conversationalReply;
-      const plan = await requestHdiGptPlan(prompt);
-      const calls = plan.tool_calls || plan.toolCalls || [];
-      const actionNotes = calls.map(executeHdiToolCall).filter(Boolean);
-      updateHdiGptContext();
-      if (plan.reply && !plan.intent) {
-        return `${escapeHtml(plan.reply)}${actionNotes.length ? `<ul>${actionNotes.map(note => `<li>${escapeHtml(note)}</li>`).join("")}</ul>` : ""}`;
+      if (conversationalReply && prompt.trim().length === 1) return {html: conversationalReply, text: conversationalReply.replace(/<[^>]+>/g, " ")};
+
+      const messages = [hdiGptSystemMessage(prompt), ...chatHistory.slice(-12), {role: "user", content: prompt}];
+      let raw = await requestHdiGptCompletion(messages);
+      if (!raw) {
+        if (conversationalReply) return {html: conversationalReply, text: conversationalReply.replace(/<[^>]+>/g, " ")};
+        const fallbackPlan = localHdiAgentPlan(prompt);
+        const fallbackCalls = fallbackPlan.tool_calls || [];
+        const fallbackNotes = fallbackCalls.map(executeHdiToolCall).filter(Boolean);
+        const fallbackHtml = responseFromAgentPlan(fallbackPlan, fallbackNotes);
+        const fallbackRows = fallbackPlan.rows || rememberedCountries();
+        return {
+          html: `${fallbackHtml}${groundingCard(fallbackRows)}${responseActionButtons(fallbackCalls, fallbackRows)}<p class="panel-note">API-backed analysis is unavailable, so this answer used the local deterministic fallback.</p>`,
+          text: fallbackHtml.replace(/<[^>]+>/g, " ")
+        };
       }
-      return responseFromAgentPlan(plan, actionNotes);
+
+      let message = extractHdiAssistantMessage(raw);
+      if (!message) throw new Error("The model returned an unreadable response.");
+      const allCalls = [];
+      const actionNotes = [];
+      for (let round = 0; round < 2; round += 1) {
+        const calls = normalizedToolCalls(message);
+        if (!calls.length) break;
+        allCalls.push(...calls);
+        const results = calls.map(call => {
+          const note = executeHdiToolCall(call);
+          if (note) actionNotes.push(note);
+          return {call, payload: toolResultPayload(call, note)};
+        });
+        updateHdiGptContext();
+        messages.push({role: "assistant", content: message.content || null, tool_calls: message.tool_calls});
+        results.forEach(({call, payload}) => messages.push({role: "tool", tool_call_id: call.id, content: JSON.stringify(payload)}));
+        raw = await requestHdiGptCompletion(messages);
+        if (!raw) break;
+        message = extractHdiAssistantMessage(raw) || message;
+      }
+
+      const mentionedRows = findCountriesInText(prompt);
+      const actionRows = allCalls.flatMap(call => {
+        if (call.name === "open_comparison_lab") return (call.arguments.countries || []).map(resolveCountry);
+        if (["filter_country", "open_formula_audit", "generate_executive_brief", "audit_scenario_sensitivity"].includes(call.name)) return [resolveCountry(call.arguments.country_name)];
+        if (call.name === "answer_ranking") return lastHdiGptRankingRows;
+        return [];
+      }).filter(Boolean);
+      const rows = [...new Map([...mentionedRows, ...actionRows, ...rememberedCountries()].map(row => [row.ISO3, row])).values()];
+      let replyText = String(message.content || "").trim();
+      if (!replyText) {
+        const fallbackPlan = normalizeHdiGptPlan({tool_calls: allCalls, rows, intent: allCalls.some(call => call.name === "open_comparison_lab") ? "compare" : rows.length ? "summarize" : "fallback", originalText: prompt}, prompt);
+        replyText = responseFromAgentPlan(fallbackPlan, actionNotes).replace(/<[^>]+>/g, " ");
+      }
+      const actionSummary = actionNotes.length ? `<div class="chat-response-actions" aria-label="Completed dashboard actions"><span class="panel-note">${actionNotes.map(escapeHtml).join(" ")}</span></div>` : "";
+      return {
+        html: `${markdownToSafeHtml(replyText)}${groundingCard(rows)}${actionSummary}${responseActionButtons(allCalls, rows)}`,
+        text: replyText
+      };
     }
 
     function compareRows() {
@@ -7003,10 +7305,29 @@
         document.getElementById("hdi-gpt-feed").innerHTML = "";
         chatHistory = [];
         lastHdiGptCountries = activeCountry ? [activeCountry] : [];
+        lastHdiGptRankingRows = [];
+        lastSubdivisionQueryRows = [];
         appendHdiMessage("assistant", `<strong>HDI-GPT reset.</strong> Ask about a country, scenario, top ranking, formula mismatch, or tell me to compare countries.`);
       });
-      document.querySelectorAll("[data-hdi-prompt]").forEach(button => {
-        button.addEventListener("click", () => submitHdiGpt(button.dataset.hdiPrompt));
+      document.getElementById("hdi-gpt-prompts").addEventListener("click", event => {
+        const button = event.target.closest("[data-hdi-prompt]");
+        if (button) submitHdiGpt(button.dataset.hdiPrompt);
+      });
+      document.getElementById("hdi-gpt-feed").addEventListener("click", event => {
+        const button = event.target.closest("[data-hdi-chat-action]");
+        if (!button) return;
+        if (button.dataset.hdiChatAction === "country") {
+          const row = resolveCountry(button.dataset.country);
+          if (row) { setActiveCountry(row); showPage("filters", true); }
+        } else if (button.dataset.hdiChatAction === "compare") {
+          const rows = String(button.dataset.countries || "").split(",").map(resolveCountry).filter(Boolean);
+          executeHdiToolCall({name: "open_comparison_lab", arguments: {countries: rows.map(row => row.ISO3)}});
+        } else if (button.dataset.hdiChatAction === "maps") {
+          showPage("filters", true);
+        } else if (button.dataset.hdiChatAction === "explorer") {
+          showPage("explorer", true);
+        }
+        updateHdiGptContext();
       });
       document.getElementById("export-filtered").addEventListener("click", exportFilteredRows);
       document.getElementById("export-json").addEventListener("click", exportFilteredJson);

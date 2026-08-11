@@ -13,7 +13,7 @@ from urllib.error import HTTPError, URLError
 from urllib.request import Request, urlopen
 
 
-MODEL = os.environ.get("HDI_GPT_MODEL", "gpt-4o-mini")
+MODEL = os.environ.get("HDI_GPT_MODEL", "gpt-4.1-mini")
 BASE_URL = os.environ.get("HDI_GPT_BASE_URL", "https://api.openai.com/v1").rstrip("/")
 MAX_REQUEST_BYTES = 1_000_000
 
