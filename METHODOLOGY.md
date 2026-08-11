@@ -66,7 +66,7 @@ Raw 2050 component values are allocated from the modeled HDI gain using the heal
 (Health_2050 x Education_2050 x Income_2050)^(1/3) = HDI_2050
 ```
 
-The exported `HDI_2050_Index_Mismatch` is the post-rounding residual and should be effectively zero.
+The exported recomputed HDI field should equal the projected HDI after display rounding.
 
 ## 4. National Projection Model
 
