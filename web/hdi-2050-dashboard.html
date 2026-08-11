@@ -1062,6 +1062,51 @@
     .electricity-data-table td { padding:7px 8px; border-bottom:1px solid rgba(164,198,244,.12); text-align:right; }
     .electricity-data-table th:first-child,
     .electricity-data-table td:first-child { text-align:left; }
+    .mobility-research { display:grid; gap:16px; padding-top:20px; border-top:1px solid rgba(164,198,244,.16); }
+    .mobility-research-head { display:grid; grid-template-columns:minmax(0,1.2fr) minmax(280px,.8fr); gap:18px; align-items:end; }
+    .mobility-research h3 { margin:3px 0 8px; font-size:23px; line-height:1.2; }
+    .mobility-research-head p { margin:0; color:var(--muted); font-size:13px; line-height:1.65; }
+    .mobility-ethics { padding:13px 14px; border-left:3px solid #d68cff; background:rgba(214,140,255,.07); color:#f4ddff; font-size:12px; line-height:1.55; }
+    .mobility-ethics strong { display:block; margin-bottom:4px; color:#fff; }
+    .mobility-stage-grid { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:8px; }
+    .mobility-stage { min-width:0; padding:13px; border-top:3px solid var(--stage-color); background:rgba(8,18,32,.72); }
+    .mobility-stage .stage-range { color:var(--stage-color); font-size:9px; font-weight:800; letter-spacing:.06em; text-transform:uppercase; }
+    .mobility-stage h4 { margin:5px 0 7px; font-size:13px; }
+    .mobility-stage p { margin:0; color:var(--muted); font-size:10px; line-height:1.52; }
+    .mobility-stage dl { display:grid; gap:5px; margin:10px 0 0; }
+    .mobility-stage dl div { display:grid; grid-template-columns:78px 1fr; gap:6px; padding-top:5px; border-top:1px solid rgba(164,198,244,.1); }
+    .mobility-stage dt { color:#8fa6bf; font-size:9px; }
+    .mobility-stage dd { margin:0; color:#eaf5ff; font-size:9px; line-height:1.35; }
+    .fertility-chart-panel { position:relative; min-width:0; padding:14px; border:1px solid rgba(164,198,244,.16); border-radius:8px; background:rgba(3,10,20,.62); }
+    .fertility-chart-panel h4 { margin:0 0 3px; font-size:16px; }
+    .fertility-chart { width:100%; min-height:390px; margin-top:8px; overflow:visible; }
+    .fertility-chart .grid line { stroke:rgba(164,198,244,.1); }
+    .fertility-chart .grid path { display:none; }
+    .fertility-chart .axis text { fill:#8fa6bf; font-size:10px; }
+    .fertility-chart .axis path,
+    .fertility-chart .axis line { stroke:rgba(164,198,244,.2); }
+    .fertility-chart .trend { fill:none; stroke:#f6ce6a; stroke-width:2.5; stroke-dasharray:5 4; }
+    .fertility-chart .replacement { stroke:#d68cff; stroke-width:1.2; stroke-dasharray:5 5; }
+    .fertility-chart .case-label { fill:#fff; font-size:10px; font-weight:750; paint-order:stroke; stroke:#07111f; stroke-width:3px; }
+    .fertility-tooltip { position:absolute; z-index:4; min-width:220px; max-width:280px; padding:10px; border:1px solid rgba(214,140,255,.3); border-radius:6px; background:rgba(3,9,18,.96); box-shadow:0 12px 32px rgba(0,0,0,.35); color:#edf7ff; font-size:11px; pointer-events:none; opacity:0; }
+    .fertility-tooltip strong { display:block; margin-bottom:5px; }
+    .fertility-legend { display:flex; flex-wrap:wrap; gap:10px; color:var(--muted); font-size:10px; }
+    .fertility-legend span::before { content:""; display:inline-block; width:8px; height:8px; margin-right:5px; border-radius:50%; background:var(--legend-color); }
+    .mobility-case-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:10px; }
+    .mobility-case { min-width:0; padding:14px; border:1px solid rgba(164,198,244,.14); border-left:3px solid var(--case-color,#d68cff); background:rgba(8,18,32,.68); }
+    .mobility-case h4 { display:flex; justify-content:space-between; gap:8px; margin:0 0 6px; font-size:15px; }
+    .mobility-case h4 span { color:var(--muted); font-size:9px; }
+    .mobility-case p { margin:0; color:var(--muted); font-size:11px; line-height:1.58; }
+    .mobility-case-metrics { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:6px; margin-top:10px; }
+    .mobility-case-metric { padding:7px; background:rgba(3,10,20,.55); }
+    .mobility-case-metric span { display:block; color:#8fa6bf; font-size:8px; text-transform:uppercase; }
+    .mobility-case-metric strong { display:block; margin-top:3px; font-size:11px; }
+    .mobility-policy-grid { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:8px; }
+    .mobility-policy { padding:12px; border-top:2px solid var(--policy-color,#65f0bd); background:rgba(8,18,32,.62); }
+    .mobility-policy strong { display:block; margin-bottom:5px; color:#fff; font-size:11px; }
+    .mobility-policy span { color:var(--muted); font-size:10px; line-height:1.48; }
+    .mobility-sources { display:flex; flex-wrap:wrap; gap:8px; color:var(--muted); font-size:10px; line-height:1.5; }
+    .mobility-sources a { color:#8feeff; }
     .validation-table {
       width: 100%;
       margin-top: 12px;
@@ -1886,6 +1931,9 @@
       .electricity-research-head { grid-template-columns:1fr; align-items:start; }
       .electricity-metrics { grid-template-columns:repeat(2,minmax(0,1fr)); }
       .energy-economy-grid { grid-template-columns:1fr; }
+      .mobility-research-head { grid-template-columns:1fr; align-items:start; }
+      .mobility-stage-grid { grid-template-columns:repeat(2,minmax(0,1fr)); }
+      .mobility-policy-grid { grid-template-columns:1fr; }
     }
     @media (max-width: 560px) {
       .stats, .map-metrics { grid-template-columns: 1fr; }
@@ -2153,6 +2201,8 @@
       .transition-framework { grid-template-columns:1fr 1fr; }
       .energy-model-link { grid-template-columns:1fr; }
       .electricity-chart { min-height:330px; }
+      .mobility-case-grid { grid-template-columns:1fr; }
+      .fertility-chart { min-height:330px; }
       .tomorrow-row { grid-template-columns:minmax(90px,1fr) 58px 58px; }
       .tomorrow-row .tomorrow-rank { display:none; }
     }
@@ -2167,6 +2217,8 @@
       .primary-controls .view-segment button span { display:inline; }
       .case-metrics { grid-template-columns:1fr; }
       .transition-framework { grid-template-columns:1fr; }
+      .mobility-stage-grid { grid-template-columns:1fr; }
+      .mobility-case-metrics { grid-template-columns:1fr 1fr; }
     }
     @media (max-width: 820px) and (max-height: 600px) {
       .nav-bar,.controls { position:relative; top:auto; }
@@ -2672,6 +2724,59 @@
           <a href="https://ourworldindata.org/grapher/share-elec-by-source?tab=chart&amp;country=~OWID_WRL" target="_blank" rel="noopener">Open source chart</a>
           <a href="https://www.iea.org/reports/electricity-2026/executive-summary" target="_blank" rel="noopener">IEA Electricity 2026</a>
           <span>Wind, solar &amp; other includes wind, solar, bioenergy, geothermal, and other non-hydro renewables. The 2026 point is an estimate from the supplied reference chart and is visually distinguished from observations.</span>
+        </div>
+      </section>
+
+      <section class="mobility-research" aria-labelledby="mobility-transition-title">
+        <div class="mobility-research-head">
+          <div>
+            <div class="section-kicker">Fertility, skills, and human mobility</div>
+            <h3 id="mobility-transition-title">From demographic transition to a global competition for workers</h3>
+            <p>Fertility decline changes the age pyramid before it changes development outcomes. A larger working-age share can accelerate growth, but only when health, education, infrastructure, labor demand, and institutions turn demographic potential into capability. Migration then connects countries at different stages: youthful economies can supply workers and skills, while ageing economies increasingly seek labor, care capacity, entrepreneurship, and technical expertise.</p>
+          </div>
+          <aside class="mobility-ethics">
+            <strong>People are not higher or lower quality</strong>
+            This research discusses the <em>skill and credential composition</em> of migration flows, not the quality or worth of migrants. Skills reflect access to education, experience, legal pathways, credential recognition, and destination demand. Refugee and distressed movements also require a rights-based analysis that cannot be reduced to labor-market matching.
+          </aside>
+        </div>
+
+        <div class="mobility-stage-grid" aria-label="Heuristic HDI mobility transition stages">
+          <article class="mobility-stage" style="--stage-color:#ff807d"><div class="stage-range">Low HDI · below 0.550</div><h4>Mobility constrained by capability</h4><p>High fertility and dependency burdens are common, but not universal. Poverty can suppress expensive long-distance migration even where the desire to move is high; forced and regional movement may still be substantial.</p><dl><div><dt>Fertility</dt><dd>Often high, gradually falling with survival, education, and reproductive autonomy</dd></div><div><dt>Migration</dt><dd>More regional, informal, family, or distress-driven</dd></div><div><dt>Skill profile</dt><dd>Highly mixed; formal credentials constrained by unequal education access</dd></div></dl></article>
+          <article class="mobility-stage" style="--stage-color:#f6ce6a"><div class="stage-range">Medium HDI · 0.550-0.699</div><h4>The migration-capability rise</h4><p>Falling mortality and fertility create large youth cohorts. Rising income, schooling, transport, and networks can finance migration, so emigration may initially rise with development rather than fall immediately: the migration-hump hypothesis.</p><dl><div><dt>Fertility</dt><dd>Declining, with wide urban-rural and regional differences</dd></div><div><dt>Migration</dt><dd>Higher capability and aspiration; diaspora networks deepen</dd></div><div><dt>Skill profile</dt><dd>Growing secondary, vocational, health, technical, and service credentials</dd></div></dl></article>
+          <article class="mobility-stage" style="--stage-color:#65f0bd"><div class="stage-range">High HDI · 0.700-0.799</div><h4>Skilled, diversified, and circular mobility</h4><p>Tertiary education, urban labor markets, and international firms widen occupational pathways. Countries can be major origins and destinations simultaneously, while return migration and diaspora investment transmit knowledge and capital.</p><dl><div><dt>Fertility</dt><dd>Often near or below replacement</dd></div><div><dt>Migration</dt><dd>Labor, study, family, and professional channels diversify</dd></div><div><dt>Skill profile</dt><dd>More degree, licensing, managerial, digital, and technical specialization</dd></div></dl></article>
+          <article class="mobility-stage" style="--stage-color:#5ee7ff"><div class="stage-range">Very high HDI · 0.800 and above</div><h4>Ageing and talent attraction</h4><p>Low fertility and rising old-age dependency increase demand for workers. Immigration becomes a demographic and fiscal adjustment mechanism, although housing, recognition, inclusion, and political institutions determine whether potential gains materialize.</p><dl><div><dt>Fertility</dt><dd>Frequently below replacement; family policy may only partly offset ageing</dd></div><div><dt>Migration</dt><dd>Greater destination pull alongside continued high-skill circulation</dd></div><div><dt>Skill profile</dt><dd>Selective programs target care, trades, STEM, entrepreneurship, and study-to-work routes</dd></div></dl></article>
+        </div>
+
+        <div class="fertility-chart-panel">
+          <div class="panel-head">
+            <div><h4>Fertility and human development</h4><div class="panel-note">UN WPP 2023 fertility context joined to the dashboard's HDR 2025 baseline</div></div>
+            <div class="fertility-legend" aria-label="HDI category legend"><span style="--legend-color:#ff807d">Low</span><span style="--legend-color:#f6ce6a">Medium</span><span style="--legend-color:#65f0bd">High</span><span style="--legend-color:#5ee7ff">Very high</span></div>
+          </div>
+          <svg id="hdi-fertility-chart" class="fertility-chart" viewBox="0 0 900 410" role="img" aria-labelledby="fertility-chart-title fertility-chart-desc">
+            <title id="fertility-chart-title">Country fertility rates compared with Human Development Index</title>
+            <desc id="fertility-chart-desc">Scatter plot of 2023 UN fertility estimates against the dashboard's HDI baseline, with China, India, the Philippines, and Nigeria labeled.</desc>
+          </svg>
+          <div class="fertility-tooltip" id="fertility-tooltip" role="tooltip"></div>
+          <div class="chart-caption" id="fertility-chart-summary">The dashed line summarizes median fertility within HDI bands; it is descriptive, not causal.</div>
+        </div>
+
+        <div class="mobility-case-grid" id="mobility-case-studies" aria-label="China India Philippines and Nigeria mobility case studies"></div>
+
+        <div class="mobility-policy-grid" aria-label="Policies connecting migration with HDI gains">
+          <div class="mobility-policy" style="--policy-color:#65f0bd"><strong>Build skills before selecting migrants</strong><span>Universal foundational learning, vocational quality, tertiary capacity, health systems, and portable qualifications broaden opportunity for movers and non-movers instead of educating only a narrow export cohort.</span></div>
+          <div class="mobility-policy" style="--policy-color:#5ee7ff"><strong>Turn brain drain into circulation</strong><span>Bilateral training finance, ethical recruitment, return pathways, diaspora research links, remote work, and recognition agreements can preserve knowledge transfers while protecting shortage occupations at origin.</span></div>
+          <div class="mobility-policy" style="--policy-color:#d68cff"><strong>Protect rights and recognize credentials</strong><span>Legal status, fair recruitment, worker mobility between employers, family inclusion, anti-discrimination, and qualification recognition determine whether migration raises productivity and human development.</span></div>
+        </div>
+
+        <div class="research-limit"><strong>Interpretation boundary:</strong> HDI does not mechanically determine fertility or migration. Fertility is not an HDI component, and this dashboard does not contain bilateral migration-flow projections. The stages above are research heuristics. Conflict, climate shocks, border policy, language, colonial ties, recruitment systems, gender, geography, and diaspora networks can produce very different outcomes at the same HDI level. UN fertility values in this section are contextual and do not retroactively alter the existing 2050 HDI scenarios.</div>
+
+        <div class="mobility-sources">
+          <span><strong>Research anchors:</strong></span>
+          <a href="https://desapublications.un.org/publications/world-population-prospects-2024-summary-results" target="_blank" rel="noopener">UN World Population Prospects 2024</a>
+          <a href="https://ourworldindata.org/grapher/children-per-woman-un" target="_blank" rel="noopener">UN fertility data via OWID</a>
+          <a href="https://www.worldbank.org/en/publication/wdr2023" target="_blank" rel="noopener">World Development Report 2023</a>
+          <a href="https://www.ilo.org/resource/decent-work-seafarers" target="_blank" rel="noopener">ILO: Filipino seafarers</a>
+          <span>The World Bank's “match and motive” framework distinguishes labor-market matching from the legal and humanitarian reasons people move.</span>
         </div>
       </section>
 
@@ -5014,6 +5119,101 @@
         + 0.12 * (Number(row.DemographicDividend) || 0);
     }
 
+    // UN World Population Prospects 2024 edition, 2023 total fertility rate.
+    // This is research context only; it does not alter the HDI projection model.
+    const unFertility2023 = {"AFG":4.84,"ALB":1.348,"DZA":2.766,"AND":1.082,"AGO":5.124,"ATG":1.578,"ARG":1.5,"ARM":1.714,"AUS":1.638,"AUT":1.317,"AZE":1.67,"BHS":1.373,"BHR":1.824,"BGD":2.163,"BRB":1.708,"BLR":1.208,"BEL":1.379,"BLZ":2.007,"BEN":4.556,"BTN":1.462,"BOL":2.547,"BIH":1.486,"BWA":2.732,"BRA":1.619,"BRN":1.747,"BGR":1.749,"BFA":4.186,"BDI":4.878,"CPV":1.522,"KHM":2.579,"CMR":4.322,"CAN":1.349,"CAF":6.012,"TCD":6.12,"CHL":1.167,"CHN":0.999,"COL":1.645,"COM":3.878,"COG":4.157,"COD":6.051,"CRI":1.33,"CIV":4.283,"HRV":1.468,"CUB":1.439,"CYP":1.389,"CZE":1.448,"DNK":1.511,"DJI":2.609,"DMA":1.484,"DOM":2.243,"ECU":1.823,"EGY":2.75,"SLV":1.775,"GNQ":4.081,"ERI":3.713,"EST":1.35,"SWZ":2.753,"ETH":3.989,"FJI":2.281,"FIN":1.28,"FRA":1.639,"GAB":3.647,"GMB":4.006,"GEO":1.81,"DEU":1.441,"GHA":3.397,"GRC":1.334,"GRD":1.487,"GTM":2.311,"GIN":4.217,"GNB":3.836,"GUY":2.412,"HTI":2.656,"HND":2.5,"HKG":0.717,"HUN":1.486,"ISL":1.54,"IND":1.975,"IDN":2.127,"IRN":1.695,"IRQ":3.249,"IRL":1.598,"ISR":2.83,"ITA":1.198,"JAM":1.358,"JPN":1.208,"JOR":2.639,"KAZ":3.012,"KEN":3.208,"KIR":3.147,"PRK":1.78,"KOR":0.72,"KWT":1.525,"KGZ":2.8,"LAO":2.421,"LVA":1.338,"LBN":2.239,"LSO":2.694,"LBR":3.95,"LBY":2.355,"LIE":1.537,"LTU":1.201,"LUX":1.396,"MDG":3.972,"MWI":3.648,"MYS":1.55,"MDV":1.575,"MLI":5.614,"MLT":1.098,"MHL":2.919,"MRT":4.697,"MUS":1.241,"MEX":1.91,"FSM":2.748,"MDA":1.731,"MCO":2.11,"MNG":2.685,"MNE":1.803,"MAR":2.23,"MOZ":4.763,"MMR":2.115,"NAM":3.212,"NRU":3.331,"NPL":1.984,"NLD":1.43,"NZL":1.667,"NIC":2.218,"NER":6.061,"NGA":4.482,"MKD":1.465,"NOR":1.405,"OMN":2.525,"PAK":3.605,"PLW":1.907,"PAN":2.119,"PNG":3.099,"PRY":2.422,"PER":1.98,"PHL":1.916,"POL":1.299,"PRT":1.508,"QAT":1.729,"ROU":1.713,"RUS":1.449,"RWA":3.698,"KNA":1.505,"LCA":1.379,"VCT":1.775,"WSM":3.829,"SMR":1.149,"STP":3.644,"SAU":2.28,"SEN":3.818,"SRB":1.5,"SYC":2.133,"SLE":3.791,"SGP":0.943,"SVK":1.56,"SVN":1.576,"SLB":3.557,"SOM":6.132,"ZAF":2.216,"SSD":3.864,"ESP":1.213,"LKA":1.974,"SDN":4.323,"SUR":2.249,"SWE":1.43,"CHE":1.433,"SYR":2.712,"TJK":3.072,"TZA":4.606,"THA":1.212,"TLS":2.707,"TGO":4.192,"TON":3.129,"TTO":1.532,"TUN":1.832,"TUR":1.625,"TKM":2.69,"TUV":3.208,"UGA":4.283,"UKR":0.977,"ARE":1.2,"GBR":1.56,"USA":1.624,"URY":1.409,"UZB":3.5,"VUT":3.596,"VEN":2.079,"VNM":1.913,"YEM":4.59,"ZMB":4.101,"ZWE":3.724,"PSE":3.311};
+
+    function fertilityHdiColor(hdi) {
+      if (hdi < 0.55) return "#ff807d";
+      if (hdi < 0.70) return "#f6ce6a";
+      if (hdi < 0.80) return "#65f0bd";
+      return "#5ee7ff";
+    }
+
+    function renderFertilityHdiChart() {
+      const svg = d3.select("#hdi-fertility-chart");
+      const panel = document.querySelector(".fertility-chart-panel");
+      const summary = document.getElementById("fertility-chart-summary");
+      if (svg.empty() || !panel || !summary) return;
+      svg.selectAll(":scope > :not(title):not(desc)").remove();
+
+      const data = allRows
+        .map(row => ({...row, Fertility_UN_2023: unFertility2023[row.ISO3]}))
+        .filter(row => Number.isFinite(row.HDI_Baseline) && Number.isFinite(row.Fertility_UN_2023));
+      if (!data.length) return;
+
+      const compact = window.innerWidth <= 520;
+      const width = compact ? 430 : 900;
+      const height = compact ? 360 : 410;
+      const margin = compact ? {top:24,right:18,bottom:52,left:46} : {top:24,right:44,bottom:52,left:56};
+      const x = d3.scaleLinear().domain([0.35,1]).range([margin.left,width-margin.right]);
+      const y = d3.scaleLinear().domain([0.5,6.5]).range([height-margin.bottom,margin.top]);
+      const populationExtent = d3.extent(data, row => Math.max(1, Number(row.Population_2050) || 1));
+      const radius = d3.scaleSqrt().domain(populationExtent).range([2.8,compact?7.5:10]);
+      svg.attr("viewBox",`0 0 ${width} ${height}`);
+
+      svg.append("g").attr("class","grid").attr("transform",`translate(${margin.left},0)`).call(d3.axisLeft(y).ticks(6).tickSize(-(width-margin.left-margin.right)).tickFormat(""));
+      svg.append("g").attr("class","axis").attr("transform",`translate(0,${height-margin.bottom})`).call(d3.axisBottom(x).ticks(compact?5:7).tickFormat(d3.format(".2f")));
+      svg.append("g").attr("class","axis").attr("transform",`translate(${margin.left},0)`).call(d3.axisLeft(y).ticks(6).tickFormat(value=>value.toFixed(1)));
+
+      svg.append("line").attr("class","replacement").attr("x1",margin.left).attr("x2",width-margin.right).attr("y1",y(2.1)).attr("y2",y(2.1));
+      svg.append("text").attr("x",width-margin.right-2).attr("y",y(2.1)-6).attr("text-anchor","end").attr("fill","#e8b7ff").attr("font-size",9).text(compact?"2.1 reference":"2.1 replacement-level reference");
+
+      const bins = d3.range(0.4,1,0.05).map(low => {
+        const members = data.filter(row=>row.HDI_Baseline>=low && row.HDI_Baseline<low+0.05);
+        return members.length >= 2 ? {hdi:low+0.025,fertility:d3.median(members,row=>row.Fertility_UN_2023)} : null;
+      }).filter(Boolean);
+      svg.append("path").datum(bins).attr("class","trend").attr("d",d3.line().x(point=>x(point.hdi)).y(point=>y(point.fertility)).curve(d3.curveMonotoneX));
+
+      const tooltip = d3.select("#fertility-tooltip");
+      const showPoint = (event,row) => {
+        const change = Number(row.WorkforceChangePP_2024_to_2050);
+        tooltip.html(`<strong>${escapeHtml(row.Country)}</strong><div>HDR 2025 HDI: <b>${fmt(row.HDI_Baseline,3)}</b></div><div>UN fertility, 2023: <b>${fmt(row.Fertility_UN_2023,2)} births per woman</b></div><div>Education index, 2025: <b>${fmt(row.EducationIndex_2025,3)}</b></div><div>Working-age share, 2050: <b>${fmt(row.WorkingAgePct_2050,1)}%</b></div><div>Workforce-share shift: <b>${change>=0?"+":""}${fmt(change,1)} pp</b></div>`).style("opacity",1);
+        summary.textContent = `${row.Country}: HDR 2025 HDI ${fmt(row.HDI_Baseline,3)}, UN 2023 fertility ${fmt(row.Fertility_UN_2023,2)}, projected 2050 working-age share ${fmt(row.WorkingAgePct_2050,1)}%.`;
+        const panelRect = panel.getBoundingClientRect();
+        const clientX = event?.clientX || panelRect.left + panel.clientWidth / 2;
+        const clientY = event?.clientY || panelRect.top + 90;
+        tooltip.style("left",`${Math.max(8,Math.min(panel.clientWidth-230,clientX-panelRect.left+12))}px`).style("top",`${Math.max(48,clientY-panelRect.top-16)}px`);
+      };
+      const hidePoint = () => tooltip.style("opacity",0);
+
+      svg.append("g").selectAll("circle").data(data).join("circle")
+        .attr("cx",row=>x(row.HDI_Baseline)).attr("cy",row=>y(row.Fertility_UN_2023))
+        .attr("r",row=>radius(Math.max(1,Number(row.Population_2050)||1)))
+        .attr("fill",row=>fertilityHdiColor(row.HDI_Baseline)).attr("fill-opacity",.68)
+        .attr("stroke",row=>["CHN","IND","PHL","NGA"].includes(row.ISO3)?"#fff":"rgba(7,17,31,.75)")
+        .attr("stroke-width",row=>["CHN","IND","PHL","NGA"].includes(row.ISO3)?1.8:.6)
+        .attr("tabindex",0).attr("role","graphics-symbol")
+        .attr("aria-label",row=>`${row.Country}, HDR 2025 HDI ${fmt(row.HDI_Baseline,3)}, 2023 fertility ${fmt(row.Fertility_UN_2023,2)} births per woman, projected 2050 working-age share ${fmt(row.WorkingAgePct_2050,1)} percent.`)
+        .on("mouseenter",showPoint).on("mousemove",showPoint).on("mouseleave",hidePoint)
+        .on("focus",showPoint).on("blur",hidePoint).on("click",(event,row)=>setActiveCountry(row));
+
+      const labelOffsets = {CHN:[8,-9],IND:[9,-10],PHL:[9,13],NGA:[9,-9]};
+      svg.append("g").selectAll("text").data(data.filter(row=>labelOffsets[row.ISO3])).join("text")
+        .attr("class","case-label").attr("x",row=>x(row.HDI_Baseline)+labelOffsets[row.ISO3][0]).attr("y",row=>y(row.Fertility_UN_2023)+labelOffsets[row.ISO3][1]).text(row=>row.Country);
+      svg.append("text").attr("x",(margin.left+width-margin.right)/2).attr("y",height-7).attr("text-anchor","middle").attr("fill","#8fa6bf").attr("font-size",10).text("Human Development Index, HDR 2025 baseline");
+      svg.append("text").attr("transform","rotate(-90)").attr("x",-(margin.top+height-margin.bottom)/2).attr("y",12).attr("text-anchor","middle").attr("fill","#8fa6bf").attr("font-size",10).text("Births per woman, UN 2023");
+      summary.textContent = `${data.length} countries with matched UN fertility context. The dashed median trend is descriptive, not causal; circle size reflects projected 2050 population.`;
+    }
+
+    function mobilityCaseNarrative(row) {
+      if (row.ISO3 === "CHN") return "China illustrates the late-transition shift from labor abundance toward productivity, automation, and workforce renewal. Ultra-low fertility and a contracting working-age share increase demand for advanced skills, care capacity, return migration, and selective talent attraction. Its migration future is therefore more likely to combine outward professional mobility, return and circular migration, and stronger competition for specialized workers than mass labor export.";
+      if (row.ISO3 === "IND") return "India sits near replacement fertility nationally but contains very different state-level transitions. Its scale in STEM, health, digital services, entrepreneurship, and higher education can expand professional mobility, while manufacturing and urban job creation determine whether talent circulates back into domestic growth or becomes persistent brain drain. Rising HDI can initially increase emigration capability before stronger local opportunity changes the balance.";
+      if (row.ISO3 === "PHL") return "The Philippines combines near-replacement fertility with mature education, recruitment, diaspora, maritime, care, and service-sector migration channels. Ageing destination countries may increase demand for Filipino health, technical, and care workers. Remittances and returning skills can support HDI, but ethical recruitment and domestic workforce planning are necessary so overseas demand does not deepen shortages in essential services.";
+      return "Nigeria's later demographic transition creates a large potential workforce through the 2030s and 2040s. Better foundational learning, tertiary quality, vocational credentials, health, and formal job creation could shift a larger share of mobility into professional and skilled pathways while also raising domestic productivity. Without enough local opportunity, however, selective recruitment abroad can intensify shortages and unequal access to migration.";
+    }
+
+    function renderMobilityCaseStudies() {
+      const container = document.getElementById("mobility-case-studies");
+      if (!container) return;
+      const colors = {CHN:"#ff807d",IND:"#f6ce6a",PHL:"#65f0bd",NGA:"#5ee7ff"};
+      const rows = ["CHN","IND","PHL","NGA"].map(iso=>allRows.find(row=>row.ISO3===iso)).filter(Boolean);
+      container.innerHTML = rows.map(row=>{
+        const workforceChange = Number(row.WorkforceChangePP_2024_to_2050);
+        return `<article class="mobility-case" style="--case-color:${colors[row.ISO3]}"><h4>${escapeHtml(row.Country)} <span>${escapeHtml(row.ISO3)} / ${escapeHtml(row.DevelopmentMomentumTier || "scenario")}</span></h4><p>${escapeHtml(mobilityCaseNarrative(row))}</p><div class="mobility-case-metrics"><div class="mobility-case-metric"><span>HDI path</span><strong>${fmt(row.HDI_Baseline,3)} &rarr; ${fmt(scenarioHdi(row),3)}</strong></div><div class="mobility-case-metric"><span>UN fertility 2023</span><strong>${fmt(unFertility2023[row.ISO3],2)}</strong></div><div class="mobility-case-metric"><span>Workforce share</span><strong>${fmt(row.WorkingAgePct_2024,1)}% &rarr; ${fmt(row.WorkingAgePct_2050,1)}%</strong></div><div class="mobility-case-metric"><span>Workforce shift</span><strong>${workforceChange>=0?"+":""}${fmt(workforceChange,1)} pp</strong></div><div class="mobility-case-metric"><span>Education path</span><strong>${fmt(row.EducationIndex_2025,3)} &rarr; ${fmt(row.EducationIndex_2050,3)}</strong></div><div class="mobility-case-metric"><span>Median age 2050</span><strong>${fmt(row.MedianAge_2050,1)}</strong></div><div class="mobility-case-metric"><span>Human-capital absorption</span><strong>${fmt(row.HumanCapitalAbsorption,3)}</strong></div><div class="mobility-case-metric"><span>Demographic dividend</span><strong>${fmt(row.DemographicDividend,3)}</strong></div></div></article>`;
+      }).join("");
+    }
+
     function countryCaseNarrative(row) {
       if (row.ISO3 === "CHN") return `China is the project's anchor case for rapid structural transformation. Its historical rise was not a simple result of a large population: agricultural reform, mass basic education, export manufacturing, dense infrastructure, urban job creation, supply-chain depth, and sustained investment reinforced one another for decades. That compounding process shows how a country can move from low income toward high human development within a generation when productivity growth is translated into health, schooling, housing, transport, and industrial capability. Looking to 2050, China's challenge changes. Its working-age share falls by ${Math.abs(Number(row.WorkforceChangePP_2024_to_2050)).toFixed(1)} percentage points and its median age rises toward ${fmt(row.MedianAge_2050,1)}. Future gains therefore rely less on a classic demographic dividend and more on automation, advanced manufacturing, green technology, research capacity, service productivity, preventative health, pension reform, and more efficient allocation of human and financial capital.`;
       if (row.ISO3 === "IND") return `India's opportunity is defined by scale and an unusually broad set of possible growth engines: a vast internal market, digital public infrastructure, globally competitive services, expanding transport and energy systems, a growing manufacturing base, and a large pool of young workers. The model projects a sizeable HDI rise, but the national average conceals large state-level gaps. The decisive question is whether improvements in nutrition, public health, foundational learning, women's employment, urban governance, power reliability, and vocational skills can spread quickly enough to convert economic expansion into broad human development. A services-only path would leave too many workers in low-productivity employment; a stronger mix of manufacturing, construction, logistics, modern agriculture, and tradable digital services creates a wider bridge from demographic scale to household income and public revenue.`;
@@ -5170,6 +5370,8 @@
       renderDevelopmentCountryStories(rows);
       renderTomorrowEconomies();
       renderGlobalElectricityChart();
+      renderFertilityHdiChart();
+      renderMobilityCaseStudies();
     }
 
     function renderResearchBrief(row) {
