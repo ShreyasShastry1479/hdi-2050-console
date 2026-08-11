@@ -174,6 +174,18 @@ The poverty projection has two materially different forecast regimes:
 
 The later reversal is therefore conditional on recent growth persistence. It is not extrapolated to 2050 by this project. Regional totals reconcile to the published world aggregate within rounding. Country policy should use national poverty lines and household-survey evidence alongside the common international line.
 
+### Africa industrial and digital strategy
+
+The Research page adds an evidence synthesis on poverty reduction in Africa through industrialization, productive digitization, human capability, and regional trade. It is a policy framework rather than a causal estimate or a new model input. The synthesis separates three types of content:
+
+- **Observed indicators:** published measures of workforce growth, employment structure, electricity access, and mobile-internet use.
+- **Conditional estimates:** published modeling such as the World Bank's estimate that full African Continental Free Trade Area implementation could raise regional income by about 7 percent and lift 30 million people from extreme poverty by 2035. This is a modeled benefit under implementation assumptions, not a forecast.
+- **Project interpretation:** illustrative value chains, sequencing, safeguards, and country entry pathways. These are hypotheses for policy analysis and require country-specific feasibility, distributional, fiscal, environmental, and political-economy review.
+
+The dashboard's country table joins these illustrative pathways to existing scenario outputs for HDI, industrial acceleration, digital infrastructure, and human-capital absorption. Changing the active scenario updates the displayed model values, but the pathways themselves do not change country scores. The analysis does not treat Africa as a single economy: infrastructure, institutions, firm capabilities, labor markets, geography, and feasible specialization differ materially across 54 countries.
+
+The proposed mechanism is complementary rather than substitutive. Manufacturing and agro-processing can create tradable output, supplier networks, and scalable employment; digital systems can lower payment, coordination, logistics, and information costs. Neither can substitute for reliable electricity, transport, water, housing, foundational health and education, capable public administration, or worker protections. The framework therefore avoids claims that low wages alone create competitiveness or that connectivity alone creates structural transformation.
+
 ## 11. Policy Screening
 
 The dashboard generates transparent screening flags for low component scores, ageing/dependency pressure, weak digital infrastructure, negative governance or resource contributions, and large subnational gaps. These are prioritization prompts, not causal treatment recommendations. A policy decision requires local administrative data, budget constraints, implementation evidence, and stakeholder review.
@@ -218,3 +230,10 @@ Primary outputs:
 - World Bank. [June 2025 Update to Global Poverty Lines](https://www.worldbank.org/en/news/factsheet/2025/06/05/june-2025-update-to-global-poverty-lines).
 - World Bank. [Poverty, Prosperity, and Planet Report](https://www.worldbank.org/en/publication/poverty-prosperity-and-planet).
 - Our World in Data. [Total population living in extreme poverty by world region](https://ourworldindata.org/grapher/projections-extreme-poverty-wb).
+- World Bank. [Africa's Pulse, October 2025](https://www.worldbank.org/en/publication/africa-pulse).
+- World Bank. [Digital Africa: Technological Transformation for Jobs](https://www.worldbank.org/en/region/afr/publication/digital-africa).
+- World Bank. [African Continental Free Trade Area could lift 30 million people from extreme poverty](https://www.worldbank.org/en/news/press-release/2020/07/27/african-continental-free-trade-area).
+- International Energy Agency. [Stepping Up the Value Chain in Africa](https://www.iea.org/reports/stepping-up-the-value-chain-in-africa).
+- International Energy Agency. [Financing Electricity Access in Africa](https://www.iea.org/reports/financing-electricity-access-in-africa).
+- United Nations Industrial Development Organization. [Industrial Development Report 2024 for Africa](https://www.unido.org/news/unido-launches-industrial-development-report-2024-africa).
+- GSMA. [The Mobile Economy Africa 2026](https://www.gsma.com/solutions-and-impact/connectivity-for-good/mobile-economy/africa/).

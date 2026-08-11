@@ -1119,6 +1119,60 @@
     .poverty-data-table td:first-child { text-align:left; }
     .poverty-sources { display:flex; flex-wrap:wrap; gap:8px; color:var(--muted); font-size:10px; line-height:1.5; }
     .poverty-sources a { color:#8feeff; }
+    .africa-strategy { display:grid; gap:16px; padding-top:20px; border-top:1px solid rgba(164,198,244,.16); }
+    .africa-strategy-head { display:grid; grid-template-columns:minmax(0,1.2fr) minmax(300px,.8fr); gap:18px; align-items:end; }
+    .africa-strategy h3 { margin:3px 0 8px; font-size:22px; line-height:1.22; }
+    .africa-strategy-head p { margin:0; color:var(--muted); font-size:12px; line-height:1.65; }
+    .africa-premise { padding:13px 14px; border-left:3px solid #65f0bd; background:rgba(101,240,189,.07); color:#d9fff1; font-size:11px; line-height:1.58; }
+    .africa-premise strong { display:block; margin-bottom:5px; color:#fff; }
+    .africa-evidence { display:grid; grid-template-columns:repeat(5,minmax(0,1fr)); gap:7px; }
+    .africa-evidence-item { min-width:0; padding:10px; border-top:2px solid var(--evidence-color,#65f0bd); background:rgba(8,18,32,.68); }
+    .africa-evidence-item strong { display:block; color:#fff; font-size:17px; }
+    .africa-evidence-item span { display:block; margin-top:3px; color:var(--muted); font-size:8px; line-height:1.4; }
+    .africa-equation { display:grid; grid-template-columns:repeat(7,minmax(0,1fr)); gap:4px; align-items:stretch; }
+    .africa-equation div { display:grid; place-items:center; min-height:58px; padding:7px; border:1px solid rgba(164,198,244,.13); background:rgba(3,10,20,.58); color:#e9f5ff; font-size:9px; font-weight:750; text-align:center; }
+    .africa-equation-note { margin:-9px 0 0; color:var(--muted); font-size:9px; line-height:1.5; }
+    .africa-engine-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:10px; }
+    .africa-engine { min-width:0; padding:14px; border-top:3px solid var(--engine-color); background:rgba(8,18,32,.7); }
+    .africa-engine .engine-label { color:var(--engine-color); font-size:9px; font-weight:850; text-transform:uppercase; }
+    .africa-engine h4 { margin:5px 0 7px; font-size:15px; }
+    .africa-engine > p { margin:0; color:var(--muted); font-size:10px; line-height:1.58; }
+    .engine-stack { display:grid; gap:5px; margin-top:11px; }
+    .engine-layer { display:grid; grid-template-columns:25px minmax(0,1fr); gap:7px; padding-top:6px; border-top:1px solid rgba(164,198,244,.1); }
+    .engine-layer b { color:var(--engine-color); font-size:9px; }
+    .engine-layer strong { display:block; color:#fff; font-size:10px; }
+    .engine-layer span { display:block; margin-top:2px; color:var(--muted); font-size:9px; line-height:1.42; }
+    .africa-flywheel { display:grid; grid-template-columns:repeat(6,minmax(0,1fr)); gap:5px; }
+    .africa-flywheel-step { min-width:0; padding:10px; border-bottom:2px solid var(--flywheel-color); background:rgba(8,18,32,.6); }
+    .africa-flywheel-step b { color:var(--flywheel-color); font-size:9px; }
+    .africa-flywheel-step strong { display:block; margin:4px 0; color:#fff; font-size:10px; }
+    .africa-flywheel-step span { color:var(--muted); font-size:8px; line-height:1.42; }
+    .africa-value-grid { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:7px; }
+    .africa-value-chain { padding:11px; border-left:2px solid var(--chain-color,#f6ce6a); background:rgba(8,18,32,.62); }
+    .africa-value-chain strong { display:block; margin-bottom:4px; color:#fff; font-size:10px; }
+    .africa-value-chain .chain-path { color:var(--chain-color); font-size:9px; font-weight:750; }
+    .africa-value-chain p { margin:5px 0 0; color:var(--muted); font-size:8px; line-height:1.43; }
+    .africa-roadmap { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:8px; }
+    .africa-roadmap-phase { padding:12px; border-top:3px solid var(--phase-color); background:rgba(8,18,32,.65); }
+    .africa-roadmap-phase .phase-years { color:var(--phase-color); font-size:9px; font-weight:850; }
+    .africa-roadmap-phase strong { display:block; margin:4px 0 6px; font-size:11px; }
+    .africa-roadmap-phase ul { margin:0; padding-left:15px; color:var(--muted); font-size:9px; line-height:1.5; }
+    .africa-risk-grid { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:7px; }
+    .africa-risk { padding:11px; border:1px solid rgba(255,128,125,.17); background:rgba(255,128,125,.035); }
+    .africa-risk strong { display:block; margin-bottom:4px; color:#ffd5d3; font-size:10px; }
+    .africa-risk span { color:var(--muted); font-size:8px; line-height:1.45; }
+    .africa-opportunity-wrap { overflow:auto; border:1px solid rgba(164,198,244,.14); }
+    .africa-opportunity-table { width:100%; border-collapse:collapse; color:#dbe9f8; font-size:9px; }
+    .africa-opportunity-table caption { padding:9px; color:var(--muted); text-align:left; }
+    .africa-opportunity-table th { position:sticky; top:0; z-index:1; padding:8px; background:#0c1828; color:#fff; text-align:left; }
+    .africa-opportunity-table td { padding:7px 8px; border-top:1px solid rgba(164,198,244,.1); }
+    .africa-opportunity-table td.num { text-align:right; font-variant-numeric:tabular-nums; }
+    .africa-outcomes { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:8px; }
+    .africa-outcome { padding:12px; border-top:3px solid var(--outcome-color); background:rgba(8,18,32,.65); }
+    .africa-outcome strong { display:block; margin-bottom:5px; color:#fff; font-size:11px; }
+    .africa-outcome span { color:var(--muted); font-size:9px; line-height:1.48; }
+    .africa-sources { display:flex; flex-wrap:wrap; gap:8px; color:var(--muted); font-size:9px; line-height:1.5; }
+    .africa-sources a { color:#8feeff; }
     .mobility-research { display:grid; gap:16px; padding-top:20px; border-top:1px solid rgba(164,198,244,.16); }
     .mobility-research-head { display:grid; grid-template-columns:minmax(0,1.2fr) minmax(280px,.8fr); gap:18px; align-items:end; }
     .mobility-research h3 { margin:3px 0 8px; font-size:23px; line-height:1.2; }
@@ -1992,6 +2046,9 @@
       .poverty-kpis { grid-template-columns:repeat(2,minmax(0,1fr)); }
       .poverty-analysis-grid { grid-template-columns:1fr; }
       .poverty-country-grid { grid-template-columns:1fr; }
+      .africa-strategy-head { grid-template-columns:1fr; align-items:start; }
+      .africa-evidence { grid-template-columns:repeat(3,minmax(0,1fr)); }
+      .africa-flywheel { grid-template-columns:repeat(3,minmax(0,1fr)); }
       .mobility-research-head { grid-template-columns:1fr; align-items:start; }
       .mobility-stage-grid { grid-template-columns:repeat(2,minmax(0,1fr)); }
       .mobility-policy-grid { grid-template-columns:1fr; }
@@ -2264,6 +2321,9 @@
       .electricity-chart { min-height:330px; }
       .poverty-chart { min-height:330px; }
       .poverty-solutions { grid-template-columns:1fr; }
+      .africa-engine-grid { grid-template-columns:1fr; }
+      .africa-value-grid { grid-template-columns:1fr 1fr; }
+      .africa-risk-grid { grid-template-columns:1fr 1fr; }
       .mobility-case-grid { grid-template-columns:1fr; }
       .fertility-chart { min-height:330px; }
       .tomorrow-row { grid-template-columns:minmax(90px,1fr) 58px 58px; }
@@ -2281,6 +2341,10 @@
       .case-metrics { grid-template-columns:1fr; }
       .transition-framework { grid-template-columns:1fr; }
       .poverty-kpis { grid-template-columns:1fr; }
+      .africa-evidence { grid-template-columns:1fr 1fr; }
+      .africa-equation { grid-template-columns:1fr 1fr; }
+      .africa-flywheel { grid-template-columns:1fr 1fr; }
+      .africa-value-grid,.africa-roadmap,.africa-risk-grid,.africa-outcomes { grid-template-columns:1fr; }
       .mobility-stage-grid { grid-template-columns:1fr; }
       .mobility-case-metrics { grid-template-columns:1fr 1fr; }
     }
@@ -2834,6 +2898,105 @@
           <div class="poverty-solution"><div class="solution-number">05</div><div><strong>Inclusive growth and social protection</strong><span>Track income growth among poorer households, remove exclusionary barriers, and use well-targeted cash, food, health, and climate-risk systems to prevent temporary shocks from becoming poverty traps.</span></div></div>
           <div class="poverty-solution"><div class="solution-number">06</div><div><strong>Fiscal capacity, peace, and measurement</strong><span>Debt sustainability, domestic revenue, public investment quality, conflict prevention, and frequent household surveys determine whether policy can be financed, delivered, and audited.</span></div></div>
         </div>
+
+        <section class="africa-strategy" aria-labelledby="africa-strategy-title">
+          <div class="africa-strategy-head">
+            <div>
+              <div class="section-kicker">Africa transformation strategy</div>
+              <h3 id="africa-strategy-title">Industrialization and digitization must operate as one productivity system</h3>
+              <p>Manufacturing is a powerful bridge from low-productivity agriculture into higher-productivity urban employment, but it is not Africa's only route and cannot succeed as an isolated factory policy. Digital systems can reduce transaction costs, improve logistics, formalize payments, scale services, and connect firms to markets. Physical industry creates tradable output and mass employment; digitization makes agriculture, factories, logistics, government, and services more productive.</p>
+            </div>
+            <aside class="africa-premise"><strong>Core proposition</strong>A durable strategy is not "cheap labor plus factories" or "smartphones instead of infrastructure." It is reliable electricity + productive firms + regional trade + human capability + digital coordination. The binding constraint differs across Africa's 54 countries, so sequencing must be national and regional rather than continent-wide boilerplate.</aside>
+          </div>
+
+          <div class="africa-evidence" aria-label="Evidence informing the Africa strategy">
+            <div class="africa-evidence-item" style="--evidence-color:#65f0bd"><strong>+620M</strong><span>Projected increase in Sub-Saharan Africa's working-age population, 2025-2050</span></div>
+            <div class="africa-evidence-item" style="--evidence-color:#f6ce6a"><strong>24%</strong><span>Share of employment currently in wage-paying jobs, according to Africa's Pulse 2025</span></div>
+            <div class="africa-evidence-item" style="--evidence-color:#ff807d"><strong>~600M</strong><span>People in Africa still lacking electricity access or reliable access</span></div>
+            <div class="africa-evidence-item" style="--evidence-color:#5ee7ff"><strong>63%</strong><span>Share of Africa's population not using mobile internet in 2025 despite wider coverage</span></div>
+            <div class="africa-evidence-item" style="--evidence-color:#d68cff"><strong>+7%</strong><span>Modeled continental income gain by 2035 under full AfCFTA implementation, not a forecast</span></div>
+          </div>
+
+          <div class="section-head"><div><div class="section-kicker">The weakest-link problem</div><h3>Labor becomes competitive when the production system is competitive</h3></div><div class="panel-note">Conceptual multiplicative relationship; not an estimated equation.</div></div>
+          <div class="africa-equation" aria-label="Conceptual productive employment equation">
+            <div>Reliable and affordable power</div><div>Transport and trade logistics</div><div>Worker and management skills</div><div>Patient and working capital</div><div>Large accessible markets</div><div>Digital coordination</div><div>Capable predictable institutions</div>
+          </div>
+          <p class="africa-equation-note">A severe failure in any one factor can dominate gains elsewhere. Low wages cannot compensate for repeated outages, week-long border delays, scarce foreign exchange, weak quality control, or unpredictable regulation.</p>
+
+          <div class="africa-engine-grid">
+            <article class="africa-engine" style="--engine-color:#f6ce6a">
+              <div class="engine-label">Engine 1 / Physical transformation</div><h4>Industrialization creates productive depth and tradable scale</h4>
+              <p>The objective is not manufacturing for its own sake. It is to move labor and domestic inputs into activities with learning, supplier linkages, export potential, economies of scale, and wages that can rise with productivity.</p>
+              <div class="engine-stack">
+                <div class="engine-layer"><b>01</b><div><strong>Modernize agriculture first</strong><span>Irrigation, inputs, storage, land security, extension, rural roads, and market information raise food output per worker and release labor without creating food insecurity.</span></div></div>
+                <div class="engine-layer"><b>02</b><div><strong>Enter through feasible value chains</strong><span>Agro-processing, garments, construction materials, consumer goods, pharmaceuticals, assembly, and mineral processing offer different combinations of employment, scale, and domestic demand.</span></div></div>
+                <div class="engine-layer"><b>03</b><div><strong>Build supplier ecosystems, not enclaves</strong><span>Industrial parks create broader development only when local firms can meet standards, obtain finance, train workers, and sell inputs and services to anchor investors.</span></div></div>
+                <div class="engine-layer"><b>04</b><div><strong>Use regional markets to reach scale</strong><span>AfCFTA trade facilitation, common standards, interoperable payments, ports, corridors, and power pools can turn fragmented national markets into viable production networks.</span></div></div>
+                <div class="engine-layer"><b>05</b><div><strong>Upgrade before labor-cost advantages erode</strong><span>Firms must progress from assembly toward engineering, process control, machinery, chemicals, design, logistics, and after-sales services as wages rise and automation spreads.</span></div></div>
+              </div>
+            </article>
+            <article class="africa-engine" style="--engine-color:#5ee7ff">
+              <div class="engine-label">Engine 2 / Digital productivity</div><h4>Digitization lowers coordination costs across the real economy</h4>
+              <p>The highest payoff is productive use rather than connectivity alone. Mobile internet, cloud tools, digital identity, interoperable payments, and AI should improve firms, farms, public services, and cross-border trade rather than remain a narrow consumer layer.</p>
+              <div class="engine-stack">
+                <div class="engine-layer"><b>01</b><div><strong>Build affordable access and trust</strong><span>Spectrum policy, open-access fiber, device finance, electricity, competition, cybersecurity, privacy, consumer protection, and relevant local-language content determine real adoption.</span></div></div>
+                <div class="engine-layer"><b>02</b><div><strong>Make payments and identity interoperable</strong><span>Low-cost accounts, digital identity, mobile money, instant payments, and cross-border settlement can formalize transactions while preserving cash access and appeal mechanisms.</span></div></div>
+                <div class="engine-layer"><b>03</b><div><strong>Digitize production and logistics</strong><span>Inventory, procurement, quality control, customs, freight matching, traceability, tax, and warehouse systems reduce uncertainty and make smaller suppliers legible to lenders and buyers.</span></div></div>
+                <div class="engine-layer"><b>04</b><div><strong>Scale scarce expertise</strong><span>Telemedicine, digital records, teacher support, vocational platforms, agronomy tools, weather data, and remote diagnostics extend capability, but do not replace clinics, schools, or skilled professionals.</span></div></div>
+                <div class="engine-layer"><b>05</b><div><strong>Create tradable digital services</strong><span>Cloud-enabled firms can export software, business services, creative work, finance, and professional support. Success requires reliable power, advanced skills, language capability, data governance, and global market access.</span></div></div>
+              </div>
+            </article>
+          </div>
+
+          <div class="section-head"><div><div class="section-kicker">Combined development flywheel</div><h3>How the two engines reinforce one another</h3></div><div class="panel-note">The sequence can overlap, but no stage removes the need for physical infrastructure.</div></div>
+          <div class="africa-flywheel" aria-label="Industrial and digital development flywheel">
+            <div class="africa-flywheel-step" style="--flywheel-color:#65f0bd"><b>01</b><strong>Productive farms</strong><span>Higher yields, cold chains, and market access raise rural incomes and food security.</span></div>
+            <div class="africa-flywheel-step" style="--flywheel-color:#5ee7ff"><b>02</b><strong>Connected transactions</strong><span>Payments, identity, data, and logistics reduce the cost of formal exchange.</span></div>
+            <div class="africa-flywheel-step" style="--flywheel-color:#f6ce6a"><b>03</b><strong>Scaling firms</strong><span>Finance, power, management, and regional demand let productive firms grow beyond micro scale.</span></div>
+            <div class="africa-flywheel-step" style="--flywheel-color:#ff9f6e"><b>04</b><strong>Urban jobs</strong><span>Manufacturing, construction, logistics, and services absorb workers at higher productivity.</span></div>
+            <div class="africa-flywheel-step" style="--flywheel-color:#d68cff"><b>05</b><strong>Fiscal capacity</strong><span>Formal incomes and firms broaden revenue for health, education, infrastructure, and protection.</span></div>
+            <div class="africa-flywheel-step" style="--flywheel-color:#8fa6ff"><b>06</b><strong>Technology upgrading</strong><span>Skills, R&amp;D, automation, design, and advanced services sustain wage and HDI growth.</span></div>
+          </div>
+
+          <div class="section-head"><div><div class="section-kicker">Value-chain strategy</div><h3>Capture more domestic value instead of exporting unprocessed potential</h3></div><div class="panel-note">Priorities should follow local resources, capabilities, market access, and environmental constraints.</div></div>
+          <div class="africa-value-grid">
+            <article class="africa-value-chain" style="--chain-color:#65f0bd"><strong>Food and agriculture</strong><div class="chain-path">farm &rarr; storage &rarr; processing &rarr; brands &rarr; regional retail</div><p>Cold chains, standards, packaging, fertilizer access, finance, and logistics can reduce losses while expanding rural and urban employment.</p></article>
+            <article class="africa-value-chain" style="--chain-color:#f6ce6a"><strong>Textiles and apparel</strong><div class="chain-path">cotton &rarr; yarn &rarr; fabric &rarr; garments &rarr; design</div><p>Entry is relatively labor intensive, but competitiveness depends on power, water, ports, labor standards, buyer reliability, and rapid upgrading.</p></article>
+            <article class="africa-value-chain" style="--chain-color:#ff9f6e"><strong>Minerals and clean technology</strong><div class="chain-path">ore &rarr; refining &rarr; materials &rarr; components &rarr; recycling</div><p>Domestic processing can deepen capability when power is competitive and contracts, community benefits, water use, and environmental liabilities are governed transparently.</p></article>
+            <article class="africa-value-chain" style="--chain-color:#5ee7ff"><strong>Construction and urban systems</strong><div class="chain-path">materials &rarr; components &rarr; housing &rarr; infrastructure services</div><p>Cement substitutes, steel, glass, prefabrication, engineering, and maintenance meet unavoidable urban demand and create locally anchored jobs.</p></article>
+            <article class="africa-value-chain" style="--chain-color:#d68cff"><strong>Health and pharmaceuticals</strong><div class="chain-path">basic medicines &rarr; diagnostics &rarr; devices &rarr; regional supply</div><p>Procurement certainty, quality regulation, technical skills, cold chains, and regional purchasing can turn health security into industrial capability.</p></article>
+            <article class="africa-value-chain" style="--chain-color:#8fa6ff"><strong>Digital and professional services</strong><div class="chain-path">connectivity &rarr; cloud tools &rarr; local platforms &rarr; service exports</div><p>Software, finance, media, logistics, support, and professional services diversify exports without eliminating the need for power, skills, and physical production.</p></article>
+          </div>
+
+          <div class="section-head"><div><div class="section-kicker">Conditional sequencing</div><h3>A practical 2025-2050 policy roadmap</h3></div><div class="panel-note">Timelines differ by country; this is a capability sequence, not a universal schedule.</div></div>
+          <div class="africa-roadmap">
+            <article class="africa-roadmap-phase" style="--phase-color:#65f0bd"><div class="phase-years">2025-2030 / Foundations</div><strong>Reduce the cost and risk of producing</strong><ul><li>Stabilize inflation, debt, foreign exchange, and core regulation.</li><li>Finance grids, corridors, ports, fiber, water, and serviced industrial land.</li><li>Prioritize foundational learning, nutrition, health, and vocational quality.</li><li>Implement digital identity, interoperable payments, customs, and firm registries with rights protections.</li></ul></article>
+            <article class="africa-roadmap-phase" style="--phase-color:#f6ce6a"><div class="phase-years">2030-2040 / Scale</div><strong>Grow firms, jobs, and regional value chains</strong><ul><li>Use transparent industrial support tied to exports, productivity, training, and sunset conditions.</li><li>Connect local suppliers to anchor firms and public procurement.</li><li>Make AfCFTA standards, payments, border systems, and logistics operational.</li><li>Expand productive digital adoption in agriculture, manufacturing, health, and education.</li></ul></article>
+            <article class="africa-roadmap-phase" style="--phase-color:#5ee7ff"><div class="phase-years">2040-2050 / Upgrade</div><strong>Move from cost advantage to capability advantage</strong><ul><li>Deepen engineering, management, research, design, and domestic capital markets.</li><li>Automate selectively while expanding complementary skilled employment.</li><li>Develop advanced materials, machinery, health technology, green industry, and service exports.</li><li>Use higher revenue to universalize quality public services and climate resilience.</li></ul></article>
+          </div>
+
+          <div class="section-head"><div><div class="section-kicker">Failure conditions and safeguards</div><h3>What could prevent the strategy from reducing poverty</h3></div><div class="panel-note">Industrial output or app adoption alone is not the target; broad human development is.</div></div>
+          <div class="africa-risk-grid">
+            <div class="africa-risk"><strong>Enclave industrialization</strong><span>Foreign-owned mines or factories can export output with few local suppliers, weak tax capture, and little learning. Require transparent contracts, supplier development, skills transfer, and competitive procurement.</span></div>
+            <div class="africa-risk"><strong>Permanent subsidy and protection</strong><span>Industrial policy can become rent allocation. Support should be time-limited, measurable, contestable, and conditional on productivity, exports, employment, and technology transfer.</span></div>
+            <div class="africa-risk"><strong>Automation without upgrading</strong><span>Robotics may reduce the value of low labor costs. Compete on reliability, speed, regional demand, resources, design, and skills rather than wages alone.</span></div>
+            <div class="africa-risk"><strong>Digital exclusion and surveillance</strong><span>Unaffordable devices, gender gaps, fraud, weak privacy, identity errors, and internet shutdowns can deepen exclusion. Preserve offline access, due process, security, competition, and rights.</span></div>
+            <div class="africa-risk"><strong>Debt-heavy infrastructure</strong><span>Poorly selected megaprojects can weaken fiscal capacity. Use transparent appraisal, maintenance funding, competitive tenders, realistic demand, and blended finance where public benefits exceed private returns.</span></div>
+            <div class="africa-risk"><strong>Growth without distribution</strong><span>GDP and HDI averages can rise while poorer regions or groups remain excluded. Monitor poverty, wages, learning, health access, gender outcomes, emissions, and subnational convergence alongside output.</span></div>
+          </div>
+
+          <div class="section-head"><div><div class="section-kicker">Model-linked opportunity portfolio</div><h3>Nine large or strategically positioned economies</h3></div><div class="panel-note">Current dashboard factors support comparison, not investment recommendations.</div></div>
+          <div class="africa-opportunity-wrap"><table class="africa-opportunity-table"><caption>Illustrative pathways and active-scenario HDI indicators.</caption><thead><tr><th scope="col">Country</th><th scope="col">Illustrative entry pathway</th><th scope="col">HDI 2025 &rarr; 2050</th><th scope="col">Industrial acceleration</th><th scope="col">Digital infrastructure</th><th scope="col">Human-capital absorption</th></tr></thead><tbody id="africa-opportunity-body"></tbody></table></div>
+
+          <div class="africa-outcomes" aria-label="Conditional Africa development outcomes">
+            <div class="africa-outcome" style="--outcome-color:#65f0bd"><strong>Upside: coordinated transformation</strong><span>Reliable infrastructure, scalable firms, regional trade, rising female employment, productive digital use, and capable institutions raise per-capita growth faster than population. Poverty declines and HDI gains broaden.</span></div>
+            <div class="africa-outcome" style="--outcome-color:#f6ce6a"><strong>Middle path: growth without enough jobs</strong><span>Consumption, commodities, construction, and digital services expand, but firm scale and formal employment lag. HDI rises gradually while the absolute poverty headcount remains stubbornly high.</span></div>
+            <div class="africa-outcome" style="--outcome-color:#ff807d"><strong>Downside: fragmented stagnation</strong><span>Conflict, debt distress, climate shocks, unreliable power, protectionism, and weak learning prevent productivity from outrunning demography. The post-2030 poverty reversal becomes more severe.</span></div>
+          </div>
+
+          <div class="research-limit"><strong>Strategic boundary:</strong> Manufacturing is a powerful route to productivity and mass employment, not the only hope. Agribusiness, construction, logistics, tourism, health, green industry, and tradable services also matter. Country specialization is preferable to every state subsidizing the same industries. Digital systems complement physical infrastructure and public capacity; they do not replace them. Policy must protect worker rights, communities, competition, privacy, and environmental assets.</div>
+          <div class="africa-sources"><span><strong>Evidence foundation:</strong></span><a href="https://www.worldbank.org/en/publication/africa-pulse" target="_blank" rel="noopener">World Bank Africa's Pulse 2025</a><a href="https://www.worldbank.org/en/region/afr/publication/digital-africa" target="_blank" rel="noopener">World Bank Digital Africa</a><a href="https://www.iea.org/reports/stepping-up-the-value-chain-in-africa" target="_blank" rel="noopener">IEA value-chain analysis</a><a href="https://www.iea.org/reports/financing-electricity-access-in-africa" target="_blank" rel="noopener">IEA electricity-access finance</a><a href="https://www.unido.org/news/unido-launches-industrial-development-report-2024-africa" target="_blank" rel="noopener">UNIDO industrial development</a><a href="https://www.worldbank.org/en/news/press-release/2020/07/27/african-continental-free-trade-area" target="_blank" rel="noopener">World Bank AfCFTA modeling</a><a href="https://www.gsma.com/solutions-and-impact/connectivity-for-good/mobile-economy/africa/" target="_blank" rel="noopener">GSMA Mobile Economy Africa 2026</a></div>
+        </section>
 
         <div class="section-head"><div><div class="section-kicker">Development pathways</div><h3>China, India, and Nigeria show three different stages of the transition</h3></div><div class="panel-note">Country narratives are linked to the active HDI scenario; poverty projections remain source-defined.</div></div>
         <div class="poverty-country-grid" id="poverty-country-cases" aria-label="China India and Nigeria poverty and development pathways"></div>
@@ -5468,6 +5631,33 @@
       container.innerHTML = rows.map(row=>`<article class="poverty-country" style="--country-color:${meta[row.ISO3].color}"><h4>${escapeHtml(row.Country)} <span>${meta[row.ISO3].label}</span></h4><p>${escapeHtml(povertyCountryNarrative(row))}</p><div class="poverty-country-metrics"><div><span>HDI path</span><strong>${fmt(row.HDI_Baseline,3)} &rarr; ${fmt(scenarioHdi(row),3)}</strong></div><div><span>Education path</span><strong>${fmt(row.EducationIndex_2025,3)} &rarr; ${fmt(row.EducationIndex_2050,3)}</strong></div><div><span>2050 working age</span><strong>${fmt(row.WorkingAgePct_2050,1)}%</strong></div><div><span>Digital infrastructure</span><strong>${fmt(row.DigitalInfraDevelopment,3)}</strong></div></div></article>`).join("");
     }
 
+    function renderAfricaOpportunityTable() {
+      const body = document.getElementById("africa-opportunity-body");
+      if (!body) return;
+      const pathways = {
+        EGY: "Textiles, food processing, construction materials, green industry",
+        MAR: "Automotive, aerospace, electronics, phosphates",
+        ZAF: "Advanced industry, mining services, green technology",
+        NGA: "Agro-processing, petrochemicals, light manufacturing, digital services",
+        KEN: "Agro-processing, logistics, digital services, health technology",
+        ETH: "Textiles, agro-processing, light manufacturing, renewable power",
+        TZA: "Agro-processing, minerals, logistics, construction",
+        GHA: "Cocoa processing, food, business services, light industry",
+        CIV: "Cocoa and food processing, logistics, consumer manufacturing"
+      };
+      const rows = Object.keys(pathways)
+        .map(iso => allRows.find(row => row.ISO3 === iso))
+        .filter(Boolean);
+      body.innerHTML = rows.map(row => `<tr>
+        <th scope="row">${escapeHtml(row.Country)}</th>
+        <td>${escapeHtml(pathways[row.ISO3])}</td>
+        <td class="num">${fmt(row.HDI_Baseline,3)} &rarr; ${fmt(scenarioHdi(row),3)}</td>
+        <td class="num">${fmt(row.IndustrializationHDIAcceleration,3)}</td>
+        <td class="num">${fmt(row.DigitalInfraDevelopment,3)}</td>
+        <td class="num">${fmt(row.HumanCapitalAbsorption,3)}</td>
+      </tr>`).join("");
+    }
+
     function renderPovertyMilestoneTable(yearData) {
       const table = document.getElementById("poverty-milestone-table");
       if (!table) return;
@@ -5559,6 +5749,7 @@
         .on("keydown",event=>{if(!["ArrowLeft","ArrowRight"].includes(event.key))return;event.preventDefault();const current=Number(summary.dataset.year||2025);showYear(Math.max(1990,Math.min(2040,current+(event.key==="ArrowRight"?1:-1))));});
       renderPovertyMilestoneTable(yearData);
       renderPovertyCountryCases();
+      renderAfricaOpportunityTable();
       summary.textContent = `Global extreme poverty falls from ${formatPeople(world1990,1)} in 1990 to a projected ${formatPeople(world2030,1)} in 2030, then rises to ${formatPeople(world2040,1)} by 2040 under the baseline assumptions.`;
     }
 
