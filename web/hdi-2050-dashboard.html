@@ -1737,8 +1737,51 @@
     .city-data-table tbody tr:hover,.city-data-table tbody tr.selected { background:rgba(88,230,255,.08); }
     .city-badge { display:inline-flex; align-items:center; min-height:24px; padding:3px 7px; border:1px solid var(--line); border-radius:4px; color:#dbe8f7; font-size:10px; }
     .city-badge.capital { border-color:rgba(246,206,106,.45); color:var(--gold); }
-    @media (max-width:980px) { .city-hero,.city-visual-grid { grid-template-columns:1fr; } .city-controls { position:relative; top:auto; } .city-selected-grid { grid-template-columns:repeat(4,minmax(0,1fr)); } .city-selected-grid > div:first-child { grid-column:span 2; } }
-    @media (max-width:640px) { .city-kpis,.city-selected-grid { grid-template-columns:1fr 1fr; } .city-selected-grid > div:first-child { grid-column:1/-1; } .city-map,.city-chart { min-height:330px; } }
+    .city-research { display:grid; gap:18px; margin-top:22px; padding-top:24px; border-top:1px solid rgba(164,198,244,.18); }
+    .city-research-head { display:grid; grid-template-columns:minmax(0,1.25fr) minmax(300px,.75fr); gap:18px; align-items:end; }
+    .city-research-head h2 { margin:5px 0 9px; font-size:clamp(24px,3vw,36px); letter-spacing:0; }
+    .city-research-head p { max-width:84ch; margin:0; color:var(--muted); font-size:13px; line-height:1.7; }
+    .city-research-thesis { padding:14px 15px; border-left:3px solid #58e6ff; background:rgba(88,230,255,.07); color:#ddfaff; font-size:12px; line-height:1.62; }
+    .city-research-thesis strong { display:block; margin-bottom:5px; color:#fff; font-size:13px; }
+    .city-evidence-grid { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:9px; }
+    .city-evidence { min-width:0; padding:14px; border-top:2px solid var(--evidence-color,#58e6ff); background:rgba(8,18,32,.72); }
+    .city-evidence span { display:block; color:var(--muted); font-size:10px; font-weight:760; text-transform:uppercase; }
+    .city-evidence strong { display:block; margin-top:7px; color:#fff; font-size:22px; }
+    .city-evidence small { display:block; margin-top:5px; color:#a9bfd5; font-size:10px; line-height:1.45; }
+    .city-research-chart-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:14px; }
+    .city-research-chart-panel { position:relative; min-width:0; padding:15px; overflow:hidden; }
+    .city-research-chart-panel.wide { grid-column:1/-1; }
+    .city-research-chart { width:100%; min-height:350px; display:block; overflow:visible; }
+    .city-research-chart-panel.wide .city-research-chart { min-height:390px; }
+    .city-research-legend { display:flex; flex-wrap:wrap; gap:10px; margin-top:8px; color:var(--muted); font-size:10px; }
+    .city-research-legend span { display:inline-flex; align-items:center; gap:5px; }
+    .city-research-legend i { width:10px; height:10px; display:inline-block; border:2px solid var(--legend-color,#58e6ff); border-radius:50%; background:var(--legend-fill,transparent); }
+    .city-chart-summary { min-height:34px; margin-top:8px; color:var(--muted); font-size:10px; line-height:1.55; }
+    .city-selected-brief { padding:14px 15px; border-left:3px solid #f6ce6a; background:rgba(246,206,106,.06); color:#dce8f5; font-size:12px; line-height:1.62; }
+    .city-selected-brief strong { color:#fff; }
+    .city-transition-grid { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:9px; }
+    .city-transition-card { min-width:0; padding:14px; border-top:1px solid rgba(164,198,244,.22); background:rgba(8,18,32,.62); }
+    .city-transition-card h3 { margin:0 0 7px; font-size:14px; }
+    .city-transition-card p { margin:0; color:var(--muted); font-size:11px; line-height:1.58; }
+    .city-transition-card strong { color:#eaf7ff; }
+    .city-research-accordions { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:10px; }
+    .city-research-accordions details { min-width:0; border:1px solid rgba(164,198,244,.16); background:rgba(7,16,29,.62); }
+    .city-research-accordions summary { padding:13px 14px; color:#eff8ff; font-size:13px; font-weight:750; cursor:pointer; }
+    .city-research-accordions details[open] summary { border-bottom:1px solid rgba(164,198,244,.13); color:#8feeff; }
+    .city-research-body { display:grid; gap:9px; padding:13px 14px 15px; }
+    .city-research-body p { margin:0; color:var(--muted); font-size:11px; line-height:1.65; }
+    .city-research-body strong { color:#e9f5ff; }
+    .city-source-strip { display:flex; flex-wrap:wrap; gap:8px; padding-top:4px; color:var(--muted); font-size:10px; line-height:1.5; }
+    .city-source-strip a { color:#8feeff; }
+    .city-research-data { overflow:auto; }
+    .city-research-data table { width:100%; border-collapse:collapse; font-size:11px; }
+    .city-research-data caption { padding:9px 0; color:var(--muted); text-align:left; }
+    .city-research-data th,.city-research-data td { padding:7px 8px; border-bottom:1px solid rgba(164,198,244,.12); text-align:right; }
+    .city-research-data th:first-child,.city-research-data td:first-child { text-align:left; }
+    @media (max-width:980px) { .city-hero,.city-visual-grid,.city-research-head { grid-template-columns:1fr; } .city-controls { position:relative; top:auto; } .city-selected-grid { grid-template-columns:repeat(4,minmax(0,1fr)); } .city-selected-grid > div:first-child { grid-column:span 2; } .city-evidence-grid,.city-transition-grid { grid-template-columns:repeat(2,minmax(0,1fr)); } }
+    @media (max-width:720px) { .city-research-chart-grid,.city-research-accordions { grid-template-columns:1fr; } .city-research-chart-panel.wide { grid-column:auto; } }
+    @media (max-width:640px) { .city-kpis,.city-selected-grid,.city-evidence-grid,.city-transition-grid { grid-template-columns:1fr 1fr; } .city-selected-grid > div:first-child { grid-column:1/-1; } .city-map,.city-chart { min-height:330px; } .city-research-chart-panel { overflow-x:auto; } .city-research-chart { width:560px; max-width:none; min-height:325px; } .city-research-chart-panel.wide .city-research-chart { width:760px; min-height:350px; } }
+    @media (max-width:420px) { .city-evidence-grid,.city-transition-grid { grid-template-columns:1fr; } }
     .table-wrap::-webkit-scrollbar {
       height: 10px;
       width: 10px;
@@ -3395,6 +3438,123 @@
             <div><span>Projection anchor</span><strong id="city-selected-method">--</strong></div>
           </div>
         </div>
+
+        <section class="city-research" aria-labelledby="city-research-title">
+          <div class="city-research-head">
+            <div>
+              <div class="section-kicker">Urban futures research</div>
+              <h2 id="city-research-title">Cities in 2050: expansion, adaptation, and human development</h2>
+              <p>By 2050, urban systems will concentrate more people, employment, education, healthcare, infrastructure, and technological capability than at any earlier point. There will not be one universal city of the future. Fast-growing cities in Africa and South Asia must convert population expansion into serviced housing, productive work, and human capital. Mature cities in Europe, East Asia, and North America must adapt to ageing, high housing costs, remote work, infrastructure renewal, and changing migration.</p>
+            </div>
+            <div class="city-research-thesis">
+              <strong>Central research finding</strong>
+              Urban scale does not automatically produce human development. The decisive question is whether housing, transport, sanitation, electricity, education, health systems, and municipal capacity expand at least as quickly as population and economic activity. Technology raises the potential return, but institutions determine whether that return reaches ordinary residents.
+            </div>
+          </div>
+
+          <div class="city-evidence-grid" aria-label="Urban research evidence and active projection metrics">
+            <div class="city-evidence" style="--evidence-color:#58e6ff"><span>Urban share by 2050</span><strong>Nearly 70%</strong><small>UN SDG 11 global projection context.</small></div>
+            <div class="city-evidence" style="--evidence-color:#f6ce6a"><span>Slum residents, 2022</span><strong>1.12B</strong><small>One quarter of the global urban population.</small></div>
+            <div class="city-evidence" style="--evidence-color:#43e0a8"><span>Visible cities improving</span><strong id="city-research-improving">--</strong><small id="city-research-improving-note">Active city filters and scenario.</small></div>
+            <div class="city-evidence" style="--evidence-color:#ff7597"><span>Median modeled gain</span><strong id="city-research-median-gain">--</strong><small id="city-research-gain-note">2025 to 2050, active city set.</small></div>
+          </div>
+
+          <div class="city-selected-brief" id="city-research-selected-brief" aria-live="polite">Select a city to connect its modeled trajectory to the urban research framework.</div>
+
+          <div class="city-research-chart-grid">
+            <div class="panel city-research-chart-panel wide">
+              <div class="city-panel-head"><div><h3>Regional city-HDI transition</h3><p>Median modeled city HDI by region, 2025 versus the active 2050 scenario.</p></div><span class="city-badge" id="city-regional-count">--</span></div>
+              <svg id="city-regional-transition" class="city-research-chart" viewBox="0 0 920 390" role="img" aria-labelledby="city-regional-title city-regional-desc"><title id="city-regional-title">Regional median city HDI transition</title><desc id="city-regional-desc">Slope chart comparing regional median city HDI in 2025 and 2050.</desc></svg>
+              <div class="city-chart-summary" id="city-regional-summary" aria-live="polite"></div>
+            </div>
+
+            <div class="panel city-research-chart-panel">
+              <div class="city-panel-head"><div><h3>Distribution of projected gains</h3><p>Number of visible cities in each modeled HDI-change interval.</p></div><span class="city-badge">25-year change</span></div>
+              <svg id="city-gain-distribution" class="city-research-chart" viewBox="0 0 620 360" role="img" aria-labelledby="city-gain-title city-gain-desc"><title id="city-gain-title">Distribution of projected city HDI gains</title><desc id="city-gain-desc">Histogram showing the distribution of modeled city HDI change from 2025 to 2050.</desc></svg>
+              <div class="city-chart-summary" id="city-gain-summary" aria-live="polite"></div>
+            </div>
+
+            <div class="panel city-research-chart-panel">
+              <div class="city-panel-head"><div><h3>Metropolitan premium and development level</h3><p>Projected city advantage over its subdivision anchor; point size reflects population context.</p></div><span class="city-badge">Capital = gold ring</span></div>
+              <svg id="city-premium-scatter" class="city-research-chart" viewBox="0 0 620 360" role="img" aria-labelledby="city-premium-title city-premium-desc"><title id="city-premium-title">Urban premium versus subdivision development</title><desc id="city-premium-desc">Scatter plot relating subdivision HDI to the modeled city premium in 2050.</desc></svg>
+              <div class="city-research-legend" aria-label="Metropolitan premium chart legend"><span><i style="--legend-color:#58e6ff;--legend-fill:#58e6ff"></i>Major city</span><span><i style="--legend-color:#f6ce6a;--legend-fill:#07111e"></i>National capital</span><span><i style="--legend-color:#fff;--legend-fill:#fff"></i>Selected city</span></div>
+              <div class="city-chart-summary" id="city-premium-summary" aria-live="polite"></div>
+            </div>
+          </div>
+
+          <details class="panel" open>
+            <summary>Accessible regional chart data</summary>
+            <div class="city-research-data" id="city-regional-data"></div>
+          </details>
+
+          <div class="city-transition-grid" aria-label="Four urban transition types">
+            <article class="city-transition-card"><h3>Rapid expansion</h3><p><strong>Problem:</strong> population and land conversion can outpace water, sanitation, schools, housing, and transit. <strong>2050 pathway:</strong> serviced land, transit corridors, grid expansion, and mass human-capital investment can turn a youth surge into productivity rather than informality.</p></article>
+            <article class="city-transition-card"><h3>High-cost adaptation</h3><p><strong>Problem:</strong> successful cities can exclude families and essential workers through housing scarcity and long commutes. <strong>2050 pathway:</strong> housing near transit, office conversion, mixed-use districts, and skilled migration can sustain labour depth and social mobility.</p></article>
+            <article class="city-transition-card"><h3>Ageing and smart shrinkage</h3><p><strong>Problem:</strong> a smaller tax base may inherit infrastructure built for a larger population. <strong>2050 pathway:</strong> consolidate services, reuse vacant land, redesign for older residents, and measure prosperity per resident rather than treating population growth as the only success criterion.</p></article>
+            <article class="city-transition-card"><h3>Climate-exposed transformation</h3><p><strong>Problem:</strong> heat, flooding, water stress, and pollution can erase health and productivity gains. <strong>2050 pathway:</strong> cooling, drainage, clean power, resilient utilities, compact mobility, and risk-sensitive land policy protect the health component of HDI.</p></article>
+          </div>
+
+          <div class="city-research-accordions">
+            <details open>
+              <summary>Expansion, housing, and the infrastructure gap</summary>
+              <div class="city-research-body">
+                <p><strong>Problem.</strong> Urban opportunity attracts residents faster than formal housing and serviced land are produced. The result is overcrowding, insecure tenure, informal settlements, congestion, and unequal access to schools and clinics. Smaller cities may be at greatest risk because they often have weaker planning departments than well-known megacities.</p>
+                <p><strong>Solution.</strong> Reserve transport and utility corridors before settlement becomes dense; expand rental and incremental housing; upgrade established informal areas with tenure, drainage, electricity, and sanitation rather than relying on mass displacement. Polycentric growth can distribute jobs and reduce pressure on one central business district.</p>
+                <p><strong>HDI link and prediction.</strong> Reliable water and sanitation raise health outcomes; shorter commutes improve access to work and education; secure housing supports household investment. Cities that build infrastructure before or alongside growth should gain faster than cities that only expand physically.</p>
+              </div>
+            </details>
+            <details>
+              <summary>Digital systems, AI, and the future of work</summary>
+              <div class="city-research-body">
+                <p><strong>Problem.</strong> Connectivity can become a new inequality layer: advanced cloud and AI access for some residents, expensive or unreliable mobile access for others. Routine service work in outsourcing centres may be transformed before new high-productivity sectors absorb displaced workers.</p>
+                <p><strong>Solution.</strong> Treat fibre, affordable devices, digital identity, payment rails, cybersecurity, and continuous skills training as infrastructure. Municipal AI should target practical capacity gaps such as leak detection, permit processing, traffic coordination, flood warnings, and multilingual service delivery, with human appeal channels and privacy safeguards.</p>
+                <p><strong>HDI link and prediction.</strong> Digital systems can expand education, health access, formal finance, and government reach at lower marginal cost. The largest gains should occur where technology is paired with electricity, skills, trusted institutions, and competitive local firms rather than deployed as a stand-alone product.</p>
+              </div>
+            </details>
+            <details>
+              <summary>Demography, migration, and the urban workforce</summary>
+              <div class="city-research-body">
+                <p><strong>Problem.</strong> Young cities need to create productive jobs at exceptional speed, while ageing cities need workers, accessible housing, and age-friendly services. A demographic dividend is conditional: a large working-age cohort raises development only when education, health, housing, and labour demand absorb it.</p>
+                <p><strong>Solution.</strong> Build vocational and tertiary pathways linked to real employers, portable benefits for platform workers, affordable newcomer housing, credential recognition, and lifelong learning. Migration policy should be integrated with municipal service and construction capacity rather than treated as a population target alone.</p>
+                <p><strong>HDI link and prediction.</strong> Lagos, Nairobi, Dhaka, and other young metropolitan regions have substantial upside if female education, public health, and productive employment improve together. Toronto, London, Melbourne, and other migrant destinations can offset ageing, but only if housing and infrastructure prevent skilled-worker outflow and long-term exclusion.</p>
+              </div>
+            </details>
+            <details>
+              <summary>Climate, public health, and urban resilience</summary>
+              <div class="city-research-body">
+                <p><strong>Problem.</strong> Heat islands, polluted air, flooding, water insecurity, and unreliable power directly reduce life expectancy and labour productivity. Informal-settlement residents and outdoor workers carry disproportionate exposure.</p>
+                <p><strong>Solution.</strong> Combine clean power and public transit with shade, trees, reflective surfaces, passive cooling, floodable public space, drainage, leakage control, and neighbourhood clinics. Distributed energy can strengthen local resilience, but large grids remain essential for industry, hospitals, and mass transit.</p>
+                <p><strong>HDI link and prediction.</strong> Climate adaptation is not an environmental add-on to HDI; it preserves health, schooling continuity, income, and public assets. Coastal and tropical cities that delay adaptation face wider uncertainty ranges and a greater chance that nominal income growth will fail to become human development.</p>
+              </div>
+            </details>
+            <details>
+              <summary>Developed cities, remote work, and changing downtowns</summary>
+              <div class="city-research-body">
+                <p><strong>Problem.</strong> Remote work weakens the old five-day connection between offices and downtown demand. Expensive metropolitan regions may remain productive while losing middle-income households, families, and service workers to outer suburbs or cheaper regions.</p>
+                <p><strong>Solution.</strong> Diversify central districts with housing, universities, healthcare, culture, and public space; convert feasible offices; strengthen suburban centres; and coordinate regional rail and land use. Cities facing population decline should pursue smart shrinkage rather than costly attempts to restore obsolete growth patterns.</p>
+                <p><strong>HDI link and prediction.</strong> Mature cities are close to the HDI ceiling, so gains will be marginal and depend less on higher income than on affordable access, healthy ageing, integration, and service quality. Their core risk is distribution: strong averages can conceal declining accessibility for younger and lower-income residents.</p>
+              </div>
+            </details>
+            <details>
+              <summary>Governance, inequality, and the city that delivers</summary>
+              <div class="city-research-body">
+                <p><strong>Problem.</strong> Technology can make a city efficient without making it inclusive. Weak land records, fragmented authority, limited municipal revenue, surveillance without accountability, and private service enclaves can create sharply different lived realities inside the same city.</p>
+                <p><strong>Solution.</strong> Strengthen land registration, property-tax administration, procurement, maintenance, open data, public participation, and inter-municipal coordination. Land-value capture and congestion pricing can finance infrastructure when their burdens and benefits are transparent.</p>
+                <p><strong>HDI link and prediction.</strong> Municipal capacity is the conversion mechanism between investment and outcomes. The most successful city of 2050 will not necessarily be the largest or most automated; it will be the one that reliably converts resources into healthy, educated, secure, and productive lives.</p>
+              </div>
+            </details>
+          </div>
+
+          <div class="city-source-strip">
+            <strong>Research sources:</strong>
+            <a href="https://www.un.org/development/desa/pd/world-urbanization-prospects-2025" target="_blank" rel="noreferrer">UN World Urbanization Prospects 2025</a>
+            <a href="https://unstats.un.org/sdgs/report/2024/Goal-11/" target="_blank" rel="noreferrer">UN SDG 11</a>
+            <a href="https://www.who.int/news-room/fact-sheets/detail/urban-health" target="_blank" rel="noreferrer">WHO Urban Health</a>
+            <a href="https://www.worldbank.org/ext/en/topic/digital-and-ai" target="_blank" rel="noreferrer">World Bank Digital and AI</a>
+            <a href="https://unhabitat.org/wcr/" target="_blank" rel="noreferrer">UN-Habitat World Cities Report</a>
+            <span>Projection charts: project city dataset, active scenario, and current filters. City HDI values are modeled estimates rather than official UNDP observations.</span>
+          </div>
+        </section>
 
         <div class="city-table-wrap" tabindex="0" aria-label="Scrollable city HDI data table">
           <table class="city-data-table" id="city-data-table">
@@ -5408,6 +5568,7 @@
       selectedCity = row;
       renderSelectedCity();
       renderCityMap();
+      renderCityResearch();
       renderCityTable();
       const hdi2050 = scenarioCityHdi(row);
       announce(`${row.City}, ${row.Country} selected. 2025 HDI ${fmt(row.City_HDI_2025,3)}; 2050 HDI ${fmt(hdi2050,3)}.`);
@@ -5424,6 +5585,7 @@
         const typeMatch = type === "all" || (type === "capital" ? row.Is_Capital : !row.Is_Capital);
         return queryMatch && regionMatch && typeMatch;
       });
+      if (filteredCityRows.length && !filteredCityRows.some(row => row.GeoNames_ID === selectedCity?.GeoNames_ID)) selectedCity = filteredCityRows[0];
       renderCityWorkspace();
     }
 
@@ -5478,6 +5640,159 @@
       svg.append("text").attr("x",(margin.left+width-margin.right)/2).attr("y",height-7).attr("text-anchor","middle").attr("fill","#8fa6bf").attr("font-size",11).text("Human Development Index");
     }
 
+    const cityRegionPalette = new Map([
+      ["Africa", "#ff7597"],
+      ["America", "#58e6ff"],
+      ["Asia/Pacific", "#43e0a8"],
+      ["Europe", "#f6ce6a"],
+      ["Other", "#a9bfd5"]
+    ]);
+    const cityRegionDash = [null, "8 4", "3 3", "11 4 2 4", "2 5"];
+
+    function cityRegion(row) {
+      return row.Continent || "Other";
+    }
+
+    function cityResearchTooltip(event, html) {
+      const clientX = Number.isFinite(event.clientX) ? event.clientX : window.innerWidth / 2;
+      const clientY = Number.isFinite(event.clientY) ? event.clientY : window.innerHeight / 2;
+      tooltip.innerHTML = html;
+      tooltip.style.left = `${Math.max(8, Math.min(window.innerWidth - 340, clientX + 14))}px`;
+      tooltip.style.top = `${Math.max(8, Math.min(window.innerHeight - 190, clientY + 14))}px`;
+      tooltip.style.opacity = "1";
+    }
+
+    function styleCityResearchAxis(group) {
+      group.selectAll("text").attr("fill", "#8fa6bf").attr("font-size", 10);
+      group.selectAll("line,path").attr("stroke", "rgba(164,198,244,.2)");
+    }
+
+    function renderCityRegionalTransition(rows) {
+      const svg = d3.select("#city-regional-transition");
+      if (!svg.size()) return;
+      svg.selectAll("*").remove();
+      svg.append("title").attr("id","city-regional-title").text("Regional median city HDI transition");
+      svg.append("desc").attr("id","city-regional-desc").text("Slope chart comparing regional median city HDI in 2025 and 2050.");
+      const width = 920, height = 390, margin = {top:24,right:185,bottom:48,left:62};
+      if (!rows.length) { renderEmptyChart(svg,width,height,"No cities match the active filters"); return; }
+      const regions = d3.rollups(rows, members => ({
+        count: members.length,
+        hdi2025: d3.median(members, row => row.City_HDI_2025),
+        hdi2050: d3.median(members, scenarioCityHdi),
+        gain: d3.median(members, scenarioCityGain)
+      }), cityRegion).map(([region, values]) => ({region, ...values})).sort((a,b) => b.hdi2050 - a.hdi2050);
+      const domainMin = Math.max(.35, d3.min(regions, row => Math.min(row.hdi2025,row.hdi2050)) - .035);
+      const domainMax = Math.min(1, d3.max(regions, row => Math.max(row.hdi2025,row.hdi2050)) + .025);
+      const x = d3.scalePoint().domain(["2025","2050"]).range([margin.left,width-margin.right]).padding(.25);
+      const y = d3.scaleLinear().domain([domainMin,domainMax]).nice().range([height-margin.bottom,margin.top]);
+      svg.append("g").attr("transform",`translate(0,${height-margin.bottom})`).call(d3.axisBottom(x).tickSize(0).tickPadding(12)).call(styleCityResearchAxis);
+      svg.append("g").attr("transform",`translate(${margin.left},0)`).call(d3.axisLeft(y).ticks(7).tickFormat(d3.format(".3f")).tickSize(-(width-margin.left-margin.right))).call(styleCityResearchAxis).call(group => group.select(".domain").remove()).call(group => group.selectAll(".tick line").attr("stroke","rgba(164,198,244,.1)"));
+      const labelPositions = [];
+      regions.forEach((row,index) => {
+        const color = cityRegionPalette.get(row.region) || cityRegionPalette.get("Other");
+        const points = [[x("2025"),y(row.hdi2025)],[x("2050"),y(row.hdi2050)]];
+        const group = svg.append("g");
+        group.append("path").attr("d",d3.line()(points)).attr("fill","none").attr("stroke",color).attr("stroke-width",3).attr("stroke-dasharray",cityRegionDash[index % cityRegionDash.length]).attr("opacity",.82);
+        group.append("circle").attr("cx",points[0][0]).attr("cy",points[0][1]).attr("r",5).attr("fill","#07111e").attr("stroke",color).attr("stroke-width",2.5);
+        group.append("circle").attr("cx",points[1][0]).attr("cy",points[1][1]).attr("r",6).attr("fill",color).attr("stroke","#07111e").attr("stroke-width",2)
+          .attr("tabindex",0).attr("role","graphics-symbol").attr("aria-label",`${row.region}: median city HDI ${fmt(row.hdi2025,3)} in 2025 and ${fmt(row.hdi2050,3)} in 2050; median change ${row.gain>=0?"plus ":"minus "}${fmt(Math.abs(row.gain),3)} across ${row.count} cities.`)
+          .on("mouseenter focus",event => cityResearchTooltip(event,`<strong>${escapeHtml(row.region)}</strong><br>${row.count} visible cities<br>Median HDI: ${fmt(row.hdi2025,3)} to ${fmt(row.hdi2050,3)}<br>Median change: ${row.gain>=0?"+":""}${fmt(row.gain,3)}<br>${escapeHtml(scenarios[activeScenario].label)}`)).on("mouseleave blur",hideTooltip);
+        const naturalY = points[1][1];
+        const previous = labelPositions.length ? labelPositions.at(-1) : margin.top - 18;
+        const labelY = Math.max(naturalY, previous + 18);
+        labelPositions.push(labelY);
+        group.append("line").attr("x1",points[1][0]+7).attr("x2",points[1][0]+18).attr("y1",naturalY).attr("y2",labelY).attr("stroke",color).attr("opacity",.6);
+        group.append("text").attr("x",points[1][0]+23).attr("y",labelY+4).attr("fill",color).attr("font-size",10).attr("font-weight",700).text(`${row.region} ${fmt(row.hdi2050,3)} (${row.gain>=0?"+":""}${fmt(row.gain,3)})`);
+      });
+      svg.append("text").attr("x",14).attr("y",15).attr("fill","#8fa6bf").attr("font-size",9).text("MEDIAN MODELED HDI");
+      document.getElementById("city-regional-count").textContent = `${rows.length} cities / ${regions.length} regions`;
+      const leader = [...regions].sort((a,b)=>b.gain-a.gain)[0];
+      document.getElementById("city-regional-summary").textContent = `${leader.region} has the largest median modeled gain in the visible set (${leader.gain>=0?"+":""}${fmt(leader.gain,3)}). Regional medians summarize the selected city records; they are not population-weighted urban averages.`;
+      document.getElementById("city-regional-desc").textContent = `${regions.length} regional series compare median city HDI in 2025 and 2050 under ${scenarios[activeScenario].label}.`;
+      document.getElementById("city-regional-data").innerHTML = `<table><caption>Regional medians for the active city filters and ${escapeHtml(scenarios[activeScenario].label)}</caption><thead><tr><th scope="col">Region</th><th scope="col">Cities</th><th scope="col">2025 median</th><th scope="col">2050 median</th><th scope="col">Median change</th></tr></thead><tbody>${regions.map(row=>`<tr><th scope="row">${escapeHtml(row.region)}</th><td>${row.count}</td><td>${fmt(row.hdi2025,3)}</td><td>${fmt(row.hdi2050,3)}</td><td>${row.gain>=0?"+":""}${fmt(row.gain,3)}</td></tr>`).join("")}</tbody></table>`;
+    }
+
+    function renderCityGainDistribution(rows) {
+      const svg = d3.select("#city-gain-distribution");
+      if (!svg.size()) return;
+      svg.selectAll("*").remove();
+      svg.append("title").attr("id","city-gain-title").text("Distribution of projected city HDI gains");
+      svg.append("desc").attr("id","city-gain-desc").text("Histogram showing the distribution of modeled city HDI change from 2025 to 2050.");
+      const width=620,height=360,margin={top:22,right:22,bottom:52,left:50};
+      if (!rows.length) { renderEmptyChart(svg,width,height,"No cities match the active filters"); return; }
+      const gains=rows.map(scenarioCityGain).filter(Number.isFinite);
+      let [minimum,maximum]=d3.extent(gains);
+      if (minimum===maximum) { minimum-=.01; maximum+=.01; }
+      const x=d3.scaleLinear().domain([Math.min(-.01,minimum-.006),maximum+.006]).nice().range([margin.left,width-margin.right]);
+      const bins=d3.bin().domain(x.domain()).thresholds(12)(gains);
+      const y=d3.scaleLinear().domain([0,d3.max(bins,bin=>bin.length)||1]).nice().range([height-margin.bottom,margin.top]);
+      svg.append("g").attr("transform",`translate(0,${height-margin.bottom})`).call(d3.axisBottom(x).ticks(7).tickFormat(value=>`${value>=0?"+":""}${d3.format(".2f")(value)}`)).call(styleCityResearchAxis);
+      svg.append("g").attr("transform",`translate(${margin.left},0)`).call(d3.axisLeft(y).ticks(5).tickSize(-(width-margin.left-margin.right))).call(styleCityResearchAxis).call(group=>group.select(".domain").remove()).call(group=>group.selectAll(".tick line").attr("stroke","rgba(164,198,244,.1)"));
+      svg.append("g").selectAll("rect").data(bins).join("rect").attr("x",bin=>x(bin.x0)+1).attr("y",bin=>y(bin.length)).attr("width",bin=>Math.max(0,x(bin.x1)-x(bin.x0)-2)).attr("height",bin=>y(0)-y(bin.length)).attr("fill","#58e6ff").attr("fill-opacity",.68).attr("stroke","#8feeff").attr("stroke-width",.6)
+        .attr("tabindex",0).attr("role","graphics-symbol").attr("aria-label",bin=>`${bin.length} cities have projected HDI change from ${fmt(bin.x0,3)} to ${fmt(bin.x1,3)}.`)
+        .on("mouseenter focus",(event,bin)=>cityResearchTooltip(event,`<strong>${bin.length} cities</strong><br>Projected change ${bin.x0>=0?"+":""}${fmt(bin.x0,3)} to ${bin.x1>=0?"+":""}${fmt(bin.x1,3)}<br>${escapeHtml(scenarios[activeScenario].label)}`)).on("mouseleave blur",hideTooltip);
+      if (x.domain()[0] <= 0 && x.domain()[1] >= 0) svg.append("line").attr("x1",x(0)).attr("x2",x(0)).attr("y1",margin.top).attr("y2",height-margin.bottom).attr("stroke","#a9bfd5").attr("stroke-dasharray","4 4");
+      const median=d3.median(gains);
+      svg.append("line").attr("x1",x(median)).attr("x2",x(median)).attr("y1",margin.top).attr("y2",height-margin.bottom).attr("stroke","#f6ce6a").attr("stroke-width",2).attr("stroke-dasharray","7 4");
+      svg.append("text").attr("x",Math.min(width-margin.right-80,x(median)+6)).attr("y",margin.top+11).attr("fill","#f6ce6a").attr("font-size",9).text(`MEDIAN ${median>=0?"+":""}${fmt(median,3)}`);
+      if (selectedCity && rows.some(row=>row.GeoNames_ID===selectedCity.GeoNames_ID)) {
+        const selectedGain=scenarioCityGain(selectedCity);
+        svg.append("path").attr("d",`M${x(selectedGain)-5},${height-margin.bottom+5}L${x(selectedGain)+5},${height-margin.bottom+5}L${x(selectedGain)},${height-margin.bottom-4}Z`).attr("fill","#fff");
+      }
+      svg.append("text").attr("x",(margin.left+width-margin.right)/2).attr("y",height-10).attr("text-anchor","middle").attr("fill","#8fa6bf").attr("font-size",10).text("Modeled HDI change, 2025 to 2050");
+      const improving=gains.filter(value=>value>0).length;
+      const declining=gains.filter(value=>value<0).length;
+      document.getElementById("city-gain-summary").textContent = `${improving} of ${gains.length} visible cities improve; ${declining} decline. The dashed gold line marks the median change (${median>=0?"+":""}${fmt(median,3)}).`;
+      document.getElementById("city-gain-desc").textContent = `Histogram of ${gains.length} city projections. ${improving} improve and ${declining} decline under ${scenarios[activeScenario].label}.`;
+    }
+
+    function renderCityPremiumScatter(rows) {
+      const svg=d3.select("#city-premium-scatter");
+      if (!svg.size()) return;
+      svg.selectAll("*").remove();
+      svg.append("title").attr("id","city-premium-title").text("Urban premium versus subdivision development");
+      svg.append("desc").attr("id","city-premium-desc").text("Scatter plot relating subdivision HDI to the modeled city premium in 2050.");
+      const width=620,height=360,margin={top:22,right:24,bottom:56,left:58};
+      if (!rows.length) { renderEmptyChart(svg,width,height,"No cities match the active filters"); return; }
+      const data=rows.map(row=>({row,anchor:scenarioCityAnchor(row),premium:Math.max(0,scenarioCityHdi(row)-scenarioCityAnchor(row)),population:Math.max(1,row.GeoNames_Population||1)}));
+      const x=d3.scaleLinear().domain([Math.max(.35,d3.min(data,item=>item.anchor)-.025),Math.min(1,d3.max(data,item=>item.anchor)+.018)]).nice().range([margin.left,width-margin.right]);
+      const y=d3.scaleLinear().domain([0,Math.max(.012,d3.max(data,item=>item.premium)*1.12)]).nice().range([height-margin.bottom,margin.top]);
+      const radius=d3.scaleSqrt().domain(d3.extent(data,item=>item.population)).range([2.2,8]);
+      svg.append("g").attr("transform",`translate(0,${height-margin.bottom})`).call(d3.axisBottom(x).ticks(6).tickFormat(d3.format(".3f"))).call(styleCityResearchAxis);
+      svg.append("g").attr("transform",`translate(${margin.left},0)`).call(d3.axisLeft(y).ticks(6).tickFormat(d3.format(".3f")).tickSize(-(width-margin.left-margin.right))).call(styleCityResearchAxis).call(group=>group.select(".domain").remove()).call(group=>group.selectAll(".tick line").attr("stroke","rgba(164,198,244,.1)"));
+      const anchorBins=d3.bin().domain(x.domain()).thresholds(8).value(item=>item.anchor)(data).map(bin=>({anchor:d3.mean(bin,item=>item.anchor),premium:d3.median(bin,item=>item.premium),count:bin.length})).filter(bin=>bin.count>=3&&Number.isFinite(bin.anchor)&&Number.isFinite(bin.premium));
+      if (anchorBins.length>1) svg.append("path").datum(anchorBins).attr("d",d3.line().x(item=>x(item.anchor)).y(item=>y(item.premium)).curve(d3.curveMonotoneX)).attr("fill","none").attr("stroke","#a9bfd5").attr("stroke-width",2).attr("stroke-dasharray","6 4").attr("opacity",.8);
+      svg.append("g").selectAll("circle").data([...data].sort((a,b)=>b.population-a.population)).join("circle").attr("cx",item=>x(item.anchor)).attr("cy",item=>y(item.premium)).attr("r",item=>selectedCity?.GeoNames_ID===item.row.GeoNames_ID?Math.max(6,radius(item.population)+2):radius(item.population)).attr("fill",item=>selectedCity?.GeoNames_ID===item.row.GeoNames_ID?"#fff":item.row.Is_Capital?"#07111e":"#58e6ff").attr("fill-opacity",item=>selectedCity?.GeoNames_ID===item.row.GeoNames_ID?1:.52).attr("stroke",item=>selectedCity?.GeoNames_ID===item.row.GeoNames_ID?"#fff":item.row.Is_Capital?"#f6ce6a":"#8feeff").attr("stroke-width",item=>selectedCity?.GeoNames_ID===item.row.GeoNames_ID?2.5:item.row.Is_Capital?2:0.7)
+        .attr("tabindex",0).attr("role","graphics-symbol").attr("aria-label",item=>`${item.row.City}, ${item.row.Country}: 2050 subdivision HDI ${fmt(item.anchor,3)}, modeled urban premium ${fmt(item.premium,3)}.`)
+        .on("mouseenter focus",(event,item)=>cityResearchTooltip(event,`<strong>${escapeHtml(item.row.City)}, ${escapeHtml(item.row.Country)}</strong><br>${item.row.Is_Capital?"National capital":"Major city"}<br>2050 subdivision ${fmt(item.anchor,3)}<br>2050 city ${fmt(scenarioCityHdi(item.row),3)}<br>Modeled urban premium +${fmt(item.premium,3)}<br>Population context ${cityPopulation(item.population)}`)).on("mouseleave blur",hideTooltip).on("click",(event,item)=>setSelectedCity(item.row)).on("keydown",(event,item)=>{if(["Enter"," "].includes(event.key)){event.preventDefault();setSelectedCity(item.row)}});
+      svg.append("text").attr("x",(margin.left+width-margin.right)/2).attr("y",height-10).attr("text-anchor","middle").attr("fill","#8fa6bf").attr("font-size",10).text("Projected 2050 subdivision HDI");
+      svg.append("text").attr("transform","rotate(-90)").attr("x",-(margin.top+height-margin.bottom)/2).attr("y",13).attr("text-anchor","middle").attr("fill","#8fa6bf").attr("font-size",10).text("City premium over subdivision");
+      const medianPremium=d3.median(data,item=>item.premium);
+      document.getElementById("city-premium-summary").textContent = `Median visible metropolitan premium: +${fmt(medianPremium,3)}. The dashed trend summarizes the central pattern; the model constrains premiums as subdivision HDI approaches the ceiling.`;
+      document.getElementById("city-premium-desc").textContent = `${data.length} cities compare projected subdivision HDI and modeled metropolitan premium under ${scenarios[activeScenario].label}.`;
+    }
+
+    function renderCityResearch() {
+      if (!document.getElementById("city-regional-transition")) return;
+      const rows=filteredCityRows || [];
+      const gains=rows.map(scenarioCityGain).filter(Number.isFinite);
+      const improving=gains.filter(value=>value>0).length;
+      const medianGain=gains.length?d3.median(gains):null;
+      document.getElementById("city-research-improving").textContent = gains.length ? `${Math.round(100*improving/gains.length)}%` : "--";
+      document.getElementById("city-research-improving-note").textContent = gains.length ? `${improving} of ${gains.length} visible city estimates.` : "No cities match the active filters.";
+      document.getElementById("city-research-median-gain").textContent = Number.isFinite(medianGain) ? `${medianGain>=0?"+":""}${fmt(medianGain,3)}` : "--";
+      document.getElementById("city-research-gain-note").textContent = `${scenarios[activeScenario].label}, 2025 to 2050.`;
+      if (selectedCity) {
+        const hdi2050=scenarioCityHdi(selectedCity),anchor=scenarioCityAnchor(selectedCity),gain=scenarioCityGain(selectedCity),premium=Math.max(0,hdi2050-anchor);
+        const comparison=Number.isFinite(medianGain)?(gain>=medianGain?"above":"below"):"near";
+        const lens=selectedCity.City_HDI_2025<.75?"rapid expansion and service absorption":selectedCity.City_HDI_2025>.9?"high-cost adaptation, ageing, and inclusion":"productive convergence and infrastructure quality";
+        document.getElementById("city-research-selected-brief").innerHTML = `<strong>${escapeHtml(selectedCity.City)}, ${escapeHtml(selectedCity.Country)}</strong> moves from ${fmt(selectedCity.City_HDI_2025,3)} to ${fmt(hdi2050,3)} under ${escapeHtml(scenarios[activeScenario].label)}. Its modeled gain (${gain>=0?"+":""}${fmt(gain,3)}) is ${comparison} the visible-set median, while its 2050 metropolitan premium is +${fmt(premium,3)} over the subdivision anchor. The most relevant analytical lens is ${lens}.`;
+      }
+      renderCityRegionalTransition(rows);
+      renderCityGainDistribution(rows);
+      renderCityPremiumScatter(rows);
+    }
+
     function renderCityTable() {
       const body=document.querySelector("#city-data-table tbody");
       if (!body) return;
@@ -5494,7 +5809,7 @@
       document.getElementById("city-kpi-capitals").textContent=cityRows.filter(row=>row.Is_Capital).length.toLocaleString();
       document.getElementById("city-kpi-2025").textContent=fmt(d3.median(cityRows,row=>row.City_HDI_2025),3);
       document.getElementById("city-kpi-2050").textContent=fmt(d3.median(cityRows,scenarioCityHdi),3);
-      renderSelectedCity(); renderCityMap(); renderCityDumbbell(); renderCityTable();
+      renderSelectedCity(); renderCityMap(); renderCityDumbbell(); renderCityResearch(); renderCityTable();
     }
 
     function setupCityWorkspace() {
