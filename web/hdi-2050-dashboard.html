@@ -32,6 +32,8 @@
       --glass: rgba(10, 18, 32, 0.72);
       --shadow: 0 22px 80px rgba(0, 0, 0, 0.34);
       --glow-cyan: 0 0 0 1px rgba(94, 231, 255, 0.12), 0 0 38px rgba(94, 231, 255, 0.08);
+      --scenario-accent: #5ee7ff;
+      --scenario-accent-rgb: 94, 231, 255;
     }
     * { box-sizing: border-box; }
     body {
@@ -65,7 +67,12 @@
         linear-gradient(90deg, rgba(94, 231, 255, 0.04) 1px, transparent 1px);
       background-size: 44px 44px;
       mask-image: linear-gradient(to bottom, black, transparent 90%);
+      animation: gridDrift 34s linear infinite;
     }
+    #hdi-dashboard-app[data-scenario="ai"] { --scenario-accent:#b58cff; --scenario-accent-rgb:181,140,255; }
+    #hdi-dashboard-app[data-scenario="climate"] { --scenario-accent:#65f0bd; --scenario-accent-rgb:101,240,189; }
+    #hdi-dashboard-app[data-scenario="inclusive"] { --scenario-accent:#f6ce6a; --scenario-accent-rgb:246,206,106; }
+    #hdi-dashboard-app[data-scenario="stagnation"] { --scenario-accent:#ff557a; --scenario-accent-rgb:255,85,122; }
     #hdi-dashboard-app::after {
       content: "";
       position: fixed;
@@ -193,8 +200,9 @@
       width: 9px;
       height: 9px;
       border-radius: 50%;
-      background: var(--cyan);
-      box-shadow: 0 0 18px rgba(88, 230, 255, 0.82);
+      background: var(--scenario-accent);
+      box-shadow: 0 0 18px rgba(var(--scenario-accent-rgb), 0.72);
+      animation: signalPulse 2.8s ease-in-out infinite;
     }
     .nav-links {
       display: flex;
@@ -221,16 +229,16 @@
     .nav-links a:hover,
     .nav-links a.active {
       color: #ffffff;
-      border-color: rgba(94, 231, 255, 0.42);
-      background: linear-gradient(135deg, rgba(94, 231, 255, 0.16), rgba(111, 124, 255, 0.1));
-      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08), 0 0 22px rgba(94, 231, 255, 0.08);
+      border-color: rgba(var(--scenario-accent-rgb), 0.46);
+      background: linear-gradient(135deg, rgba(var(--scenario-accent-rgb), 0.16), rgba(111, 124, 255, 0.08));
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08), 0 0 22px rgba(var(--scenario-accent-rgb), 0.1);
     }
     section[id] {
       scroll-margin-top: 146px;
     }
     .page-view {
       display: none;
-      animation: pageFade 180ms ease;
+      animation: pageFade 420ms cubic-bezier(.2,.8,.2,1);
     }
     .page-view.active-page {
       display: block;
@@ -240,9 +248,26 @@
       gap: 14px;
     }
     @keyframes pageFade {
-      from { opacity: 0; transform: translateY(6px); }
+      from { opacity: 0; transform: translateY(14px); filter: saturate(.78); }
       to { opacity: 1; transform: translateY(0); }
     }
+    @keyframes contentReveal {
+      from { opacity:0; transform:translateY(12px); }
+      to { opacity:1; transform:translateY(0); }
+    }
+    @keyframes gridDrift {
+      to { background-position:44px 44px, 44px 44px; }
+    }
+    @keyframes signalPulse {
+      0%,100% { transform:scale(.9); opacity:.72; }
+      50% { transform:scale(1.16); opacity:1; }
+    }
+    .page-view.active-page > * {
+      animation: contentReveal 520ms cubic-bezier(.2,.8,.2,1) both;
+    }
+    .page-view.active-page > *:nth-child(2) { animation-delay:55ms; }
+    .page-view.active-page > *:nth-child(3) { animation-delay:105ms; }
+    .page-view.active-page > *:nth-child(4) { animation-delay:155ms; }
     .stats {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
@@ -257,6 +282,13 @@
       border-radius: 8px;
       box-shadow: var(--shadow);
       backdrop-filter: blur(18px);
+      transition: transform 240ms cubic-bezier(.2,.8,.2,1), border-color 240ms ease, box-shadow 240ms ease;
+    }
+    .stat:hover,
+    .map-panel:hover {
+      transform: translateY(-2px);
+      border-color: rgba(var(--scenario-accent-rgb), .32);
+      box-shadow: 0 22px 76px rgba(0,0,0,.36), 0 0 30px rgba(var(--scenario-accent-rgb),.07);
     }
     .stat {
       padding: 15px;
@@ -1236,9 +1268,49 @@
       gap: 14px;
       margin-bottom: 16px;
     }
+    .maps.hdi-period-maps {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
     .maps.single-map {
       grid-template-columns: minmax(0, 1fr);
     }
+    .hdi-era-strip {
+      display:grid;
+      grid-template-columns:repeat(3,minmax(0,1fr));
+      gap:0;
+      margin:0 0 14px;
+      border:1px solid rgba(var(--scenario-accent-rgb),.24);
+      border-radius:8px;
+      overflow:hidden;
+      background:rgba(6,14,26,.7);
+      box-shadow:inset 0 1px 0 rgba(255,255,255,.045);
+    }
+    .hdi-era {
+      position:relative;
+      min-width:0;
+      padding:13px 15px 14px;
+      border-right:1px solid rgba(164,198,244,.14);
+    }
+    .hdi-era:last-child { border-right:0; }
+    .hdi-era::before {
+      content:"";
+      position:absolute;
+      top:0;
+      left:0;
+      right:0;
+      height:2px;
+      background:var(--era-color,var(--scenario-accent));
+      transform-origin:left;
+      animation:eraLineIn 720ms cubic-bezier(.2,.8,.2,1) both;
+    }
+    .hdi-era:nth-child(2)::before { animation-delay:90ms; }
+    .hdi-era:nth-child(3)::before { animation-delay:180ms; }
+    .hdi-era-year { color:var(--muted); font-size:10px; font-weight:800; letter-spacing:.12em; text-transform:uppercase; }
+    .hdi-era-value { margin-top:4px; color:#fff; font-size:25px; font-weight:780; font-variant-numeric:tabular-nums; }
+    .hdi-era-note { margin-top:3px; color:var(--muted); font-size:10px; line-height:1.4; }
+    .history-source-note { margin:-3px 0 14px; color:var(--muted); font-size:11px; line-height:1.55; }
+    .history-source-note a { color:#9ceeff; }
+    @keyframes eraLineIn { from { transform:scaleX(0); } to { transform:scaleX(1); } }
     .map-section {
       margin-bottom: 18px;
     }
@@ -1258,6 +1330,20 @@
       font-size: 12px;
       font-weight: 700;
       margin-right: 4px;
+    }
+    .scenario-map-switcher button.active,
+    .view-segment button.active {
+      border-color:rgba(var(--scenario-accent-rgb),.5) !important;
+      background:rgba(var(--scenario-accent-rgb),.14) !important;
+      box-shadow:0 0 22px rgba(var(--scenario-accent-rgb),.08);
+    }
+    .scenario-shift .map-wrap svg,
+    .scenario-shift .hdi-era-strip {
+      animation:scenarioShift 520ms cubic-bezier(.2,.8,.2,1) both;
+    }
+    @keyframes scenarioShift {
+      from { opacity:.62; filter:saturate(.62); transform:scale(.996); }
+      to { opacity:1; filter:saturate(1); transform:scale(1); }
     }
     .section-head {
       display: flex;
@@ -1472,12 +1558,13 @@
       stroke-width: 0.42;
       vector-effect: non-scaling-stroke;
       cursor: pointer;
-      transition: opacity 160ms ease, stroke-width 160ms ease;
+      transition: opacity 220ms ease, stroke-width 220ms ease, fill 420ms cubic-bezier(.2,.8,.2,1);
     }
     .country.no-data {
       fill: rgba(140, 155, 180, 0.24);
       cursor: default;
     }
+    .country.historical-gap { fill:rgba(140,155,180,.24); }
     .country.filtered-out {
       opacity: 0.12;
       cursor: default;
@@ -2017,9 +2104,15 @@
       color: #ffd8df;
       padding: 14px;
     }
+    @media (max-width: 1280px) {
+      .maps.hdi-period-maps { grid-template-columns:repeat(2,minmax(0,1fr)); }
+      .maps.hdi-period-maps .map-panel[data-panel="projection"] { grid-column:1 / -1; }
+    }
     @media (max-width: 980px) {
       #hdi-dashboard-app { padding: 18px; }
       .hero, .maps { grid-template-columns: 1fr; }
+      .maps.hdi-period-maps { grid-template-columns:1fr; }
+      .maps.hdi-period-maps .map-panel[data-panel="projection"] { grid-column:auto; }
       .chart-grid { grid-template-columns: 1fr; }
       .research-grid { grid-template-columns: 1fr; }
       .research-grid .panel-head { align-items: flex-start; flex-wrap: wrap; }
@@ -2221,6 +2314,11 @@
     .tooltip-dimension { display:grid; grid-template-columns:62px minmax(70px,1fr) 34px; gap:6px; align-items:center; margin-top:4px; color:var(--muted); font-size:10px; }
     .tooltip-track,.inspector-track { height:6px; overflow:hidden; border-radius:999px; background:rgba(160,190,225,.16); }
     .tooltip-fill,.inspector-fill { height:100%; border-radius:inherit; background:linear-gradient(90deg,var(--cyan),var(--green)); }
+    .tooltip-timeline { width:100%; height:56px; margin:5px 0 2px; overflow:visible; }
+    .tooltip-timeline .timeline-line { fill:none; stroke:var(--scenario-accent); stroke-width:2.4; stroke-linecap:round; stroke-linejoin:round; }
+    .tooltip-timeline .timeline-guide { stroke:rgba(164,198,244,.13); stroke-width:1; }
+    .tooltip-timeline text { fill:#9fb2ca; font-size:8px; }
+    .tooltip-timeline circle { stroke:#07101d; stroke-width:1.4; }
     .country-inspector {
       position: fixed;
       top: 76px;
@@ -2303,6 +2401,9 @@
       .map-panel .map-metrics { order:2; }
     }
     @media (max-width: 520px) {
+      .hdi-era-strip { grid-template-columns:1fr; }
+      .hdi-era { border-right:0; border-bottom:1px solid rgba(164,198,244,.14); }
+      .hdi-era:last-child { border-bottom:0; }
       .hero h1 { font-size:34px; }
       .subtitle { font-size:13px; }
       .controls,.nav-bar { position:sticky; }
@@ -2387,7 +2488,7 @@
       <div>
         <div class="eyebrow">Global forecast system</div>
         <h1>HDI 2050 Projection Console</h1>
-        <p class="subtitle">Interactive comparison of 2025 UNDP HDR baseline HDI values against the project's 2050 scenario projection, with the underlying driver table used by the model.</p>
+        <p class="subtitle">Interactive comparison of the UNDP HDR 2000 report's 1998 HDI, the HDR 2025 baseline, and the project's 2050 scenario projection, with the underlying driver table used by the model.</p>
       </div>
       <div class="meta">
         <div class="meta-label">Dataset</div>
@@ -2435,7 +2536,8 @@
           <option value="stagnation">Stagnation stress test</option>
         </select>
         <div class="view-segment" role="group" aria-label="Map year view">
-          <button type="button" class="active" data-view="both" aria-label="Show 2025 and 2050 maps"><span>Both</span></button>
+          <button type="button" class="active" data-view="both" aria-label="Show 1998, 2025, and 2050 maps"><span>All years</span></button>
+          <button type="button" data-view="historical" aria-label="Show 1998 HDI map only"><span>1998</span></button>
           <button type="button" data-view="baseline" aria-label="Show 2025 map only"><span>2025</span></button>
           <button type="button" data-view="projection" aria-label="Show 2050 map only"><span>2050</span></button>
         </div>
@@ -2473,6 +2575,7 @@
     <section class="page-view active-page" id="overview" data-page-title="Overview">
     <section class="stats" aria-label="Global projection indicators">
       <div class="stat" data-tone="indigo"><div class="label">Active scenario</div><div class="value" id="kpi-scenario">Baseline</div><div class="stat-trend">Scenario branch</div></div>
+      <div class="stat" data-tone="red"><div class="label">HDR 2000 world HDI (1998)</div><div class="value" id="avg-1998">--</div><div class="stat-trend">Report-vintage UNDP aggregate</div></div>
       <div class="stat" data-tone="gold"><div class="label">Official global 2025 HDI</div><div class="value" id="avg-2025">--</div><div class="stat-trend">UNDP reference aggregate</div></div>
       <div class="stat" data-tone="green"><div class="label">Pop-weighted 2050 HDI</div><div class="value" id="avg-2050">--</div><div class="stat-trend positive" id="avg-2050-trend">Calculating shift</div></div>
       <div class="stat" data-tone="green"><div class="label">Countries improving</div><div class="value" id="improving-count">--</div><div class="stat-trend positive" id="improving-trend">Calculating share</div></div>
@@ -3769,13 +3872,13 @@
     </section>
 
     <section class="page-view" id="maps" data-page-group="filters" data-page-title="Maps">
-    <section class="map-section">
+    <section class="map-section" data-historical-supported="true">
       <div class="section-head">
         <div>
           <div class="section-kicker">Composite index</div>
           <div class="section-title">Human Development Index</div>
         </div>
-        <div class="section-note">Headline comparison from the HDR 2025 release baseline to the model's 2050 projection. The projected value is reconciled to the 2050 health, education, and income indices through the geometric HDI identity; the displayed calibration indices are not official UNDP forecasts.</div>
+        <div class="section-note">Historical context from HDR 2000's published 1998 HDI, the HDR 2025 release baseline, and the model's 2050 projection. Historical values retain their original report methodology; 2050 values are scenario estimates, not official UNDP forecasts.</div>
       </div>
       <div class="scenario-map-switcher" aria-label="2050 scenario map switcher">
         <div class="label">2050 scenario map</div>
@@ -3799,7 +3902,30 @@
           <button type="button" class="secondary" data-map-zoom="in" aria-label="Zoom maps in">+</button>
         </div>
       </div>
-      <div class="maps" id="maps-grid">
+      <div class="hdi-era-strip" aria-label="Selected geography HDI timeline for 1998, 2025, and 2050">
+        <div class="hdi-era" style="--era-color:#ff557a"><div class="hdi-era-year">1998 · HDR 2000</div><div class="hdi-era-value" data-metric="hdi-1998">--</div><div class="hdi-era-note">Published report-vintage value</div></div>
+        <div class="hdi-era" style="--era-color:#f6ce6a"><div class="hdi-era-year">2025 · HDR baseline</div><div class="hdi-era-value" data-metric="hdi-2025">--</div><div class="hdi-era-note">Current reference release</div></div>
+        <div class="hdi-era" style="--era-color:var(--scenario-accent)"><div class="hdi-era-year">2050 · Active scenario</div><div class="hdi-era-value" data-metric="hdi-2050">--</div><div class="hdi-era-note" id="timeline-scenario-note">Baseline scenario projection</div></div>
+      </div>
+      <div class="history-source-note"><strong>Comparability note:</strong> the 1998 layer reproduces values published in the 2000 report for 174 ranked countries. It is not a retrospectively revised time series, so methodology and source revisions contribute to the apparent 1998-2025 change. <a href="https://hdr.undp.org/content/human-development-report-2000" target="_blank" rel="noreferrer">Open the UNDP report record</a>.</div>
+      <div class="maps hdi-period-maps" id="maps-grid">
+        <div class="panel map-panel" data-panel="historical">
+          <div class="panel-head">
+            <div class="panel-title">HDR 2000: 1998 HDI</div>
+            <div class="panel-note">174 published country values; unranked countries remain no data</div>
+          </div>
+          <div class="map-metrics">
+            <div class="map-metric"><div class="k">Selected country</div><div class="v" data-metric="country">World</div></div>
+            <div class="map-metric"><div class="k">1998 HDI</div><div class="v" data-metric="hdi-1998">--</div></div>
+            <div class="map-metric"><div class="k">1998 report rank</div><div class="v" data-metric="rank-1998">--</div></div>
+            <div class="map-metric"><div class="k">Change to 2025</div><div class="v" data-metric="hdi-gain-1998-2025">--</div></div>
+          </div>
+          <div class="legend">
+            <div class="legend-bar"></div>
+            <div class="legend-labels"><span>0.400</span><span>center 0.820</span><span>1.000</span></div>
+          </div>
+          <div class="map-wrap"><svg id="map-1998" viewBox="0 0 960 500" aria-label="1998 HDI world map using values published in Human Development Report 2000"><g></g></svg></div>
+        </div>
         <div class="panel map-panel" data-panel="baseline">
           <div class="panel-head">
           <div class="panel-title">HDR 2025 HDI Baseline</div>
@@ -4040,13 +4166,13 @@
       <div class="table-head">
         <div>
           <div class="panel-title">Model Data Table</div>
-        <div class="panel-note">HDR 2025 baseline values are sourced from HDI_Baseline. The local 2024 estimate is kept separate as HDI_2024.</div>
+        <div class="panel-note">HDR 2000 report-vintage 1998 values, the HDR 2025 baseline, and the 2050 scenario output are kept as separate fields for auditability.</div>
         </div>
         <div class="panel-note" id="row-count">-- rows</div>
       </div>
       <div class="table-wrap">
         <table id="data-table">
-          <caption>Country-level 2025 baseline and 2050 HDI projection data. Activate a column heading to sort.</caption>
+          <caption>Country-level HDR 2000 (1998), HDR 2025 baseline, and 2050 HDI projection data. Activate a column heading to sort.</caption>
           <thead></thead>
           <tbody></tbody>
         </table>
@@ -4108,11 +4234,13 @@
     const root = document.getElementById("hdi-dashboard-app");
     const tooltip = document.getElementById("tooltip");
     const csvPath = "../data/output/hdi_2050_rankings.csv";
+    const historicalHdiCsvPath = "../data/output/hdi_1998_hdr2000.csv?v=20260812-hdr2000";
     const subdivisionCsvPath = "../data/output/subdivision_hdi_2025_2050.csv?v=20260809-hdi-gpt";
     const cityCsvPath = "../data/output/city_hdi_2025_2050.csv?v=20260811-subdivision-anchors";
     const ethnicCsvPath = "../data/output/demographic_context_2050.csv?v=20260810-ethics-review";
     const religionCsvPath = "../data/output/religious_composition_2050_model.csv?v=20260809-hindu-2025-baseline";
     const povertyCsvPath = "../data/output/extreme_poverty_regional_1990_2040.csv?v=20260811";
+    const officialWorldHdi1998 = 0.712;
     const officialWorldHdi2025 = 0.756;
     const officialWorldHdi2050 = 0.794;
     const aliases = new Map([["PSX", "PSE"], ["SDS", "SSD"]]);
@@ -4165,7 +4293,7 @@
       ["Shock risk", "Contrib_ShockRisk"]
     ];
     const numericColumns = new Set([
-      "Rank", "UNDP_Rank_2023", "HDI_Baseline", "HDI_2024", "HDI_2050", "HDI_2050_Gain",
+      "Rank", "UNDP_Rank_2023", "Rank_1998_HDR2000", "HDI_1998_HDR2000", "HDI_Baseline", "HDI_2024", "HDI_2050", "HDI_2050_Gain",
       "Population_2024", "Population_2050",
       "HDI_P10", "HDI_P90", "LifeExp_Baseline", "GNI_PPP_Baseline",
       "ExpSchool_Baseline", "MeanSchool_Baseline",
@@ -4185,7 +4313,7 @@
       "Contrib_Inequality", "Contrib_Climate", "Contrib_ShockRisk"
     ]);
     const tableColumns = [
-      "Compare", "Rank", "ISO3", "Country", "Population_2024", "Population_2050",
+      "Compare", "Rank", "ISO3", "Country", "Rank_1998_HDR2000", "HDI_1998_HDR2000", "Population_2024", "Population_2050",
       "HDI_Baseline", "HDI_2024", "HDI_2050", "HDI_2050_Gain",
       "HealthIndex_2025", "HealthIndex_2050", "EducationIndex_2025",
       "EducationIndex_2050", "IncomeIndex_2025", "IncomeIndex_2050",
@@ -4198,6 +4326,8 @@
     ];
     const labels = {
       Compare: "Compare",
+      Rank_1998_HDR2000: "1998 report rank",
+      HDI_1998_HDR2000: "HDR 2000: 1998 HDI",
       HDI_Baseline: "HDR 2025 HDI",
       HDI_2024: "Local 2024 est.",
       HDI_2050: "2050 HDI",
@@ -4231,6 +4361,8 @@
     };
     const glossaryDefinitions = {
       Scenario: "Scenario controls are exploratory client-side branches applied to the baseline 2050 projection. They do not overwrite the source CSV.",
+      HDI_1998_HDR2000: "HDI for data year 1998 exactly as published in Human Development Report 2000 Table 1. This report-vintage value is not a retrospectively revised historical series.",
+      Rank_1998_HDR2000: "Country rank in Human Development Report 2000 Table 1, based on data year 1998 and the report's contemporary methodology and coverage.",
       Backtesting: "Validation view summarizes the existing backtest output from the model pipeline when available. It should be treated as a model audit aid, not a formal UN validation.",
       HDI_P10: "Low-end uncertainty estimate for the 2050 HDI scenario. It is a pessimistic bound, not an official UN confidence interval.",
       HDI_P90: "High-end uncertainty estimate for the 2050 HDI scenario. It is an optimistic bound, not an official UN confidence interval.",
@@ -4265,6 +4397,7 @@
 
     let allRows = [];
     let filteredRows = [];
+    let historicalHdiRows = [];
     let ethnicRows = [];
     let religionRows = [];
     let subdivisionRows = [];
@@ -4328,6 +4461,7 @@
     ];
 
     function fmt(value, digits = 3) {
+      if (value == null || value === "") return "--";
       const n = Number(value);
       if (!Number.isFinite(n)) return "--";
       return n.toFixed(digits);
@@ -4341,14 +4475,67 @@
       return n.toFixed(4).replace(/0+$/, "").replace(/\.$/, "");
     }
 
+    const metricAnimations = new WeakMap();
+    function setAnimatedText(element, value) {
+      if (!element) return;
+      const targetText = String(value);
+      const targetMatch = targetText.match(/^([+#]?)(-?\d+(?:\.\d+)?)(.*)$/);
+      const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      const priorAnimation = metricAnimations.get(element);
+      if (priorAnimation) {
+        cancelAnimationFrame(priorAnimation);
+        metricAnimations.delete(element);
+      }
+      if (!targetMatch || reduceMotion) {
+        element.textContent = targetText;
+        return;
+      }
+      const currentMatch = String(element.textContent || "").match(/^([+#]?)(-?\d+(?:\.\d+)?)(.*)$/);
+      const target = Number(targetMatch[2]);
+      const start = currentMatch && Number.isFinite(Number(currentMatch[2])) ? Number(currentMatch[2]) : 0;
+      const digits = (targetMatch[2].split(".")[1] || "").length;
+      const startedAt = performance.now();
+      const duration = 560;
+      const tick = now => {
+        const progress = Math.min(1, (now - startedAt) / duration);
+        const eased = 1 - Math.pow(1 - progress, 3);
+        const number = start + (target - start) * eased;
+        element.textContent = `${targetMatch[1]}${number.toFixed(digits)}${targetMatch[3]}`;
+        if (progress < 1) metricAnimations.set(element, requestAnimationFrame(tick));
+        else {
+          element.textContent = targetText;
+          metricAnimations.delete(element);
+        }
+      };
+      metricAnimations.set(element, requestAnimationFrame(tick));
+    }
+
+    function setAnimatedTextById(id, value) {
+      setAnimatedText(document.getElementById(id), value);
+    }
+
     const hdiDisplayColumns = new Set([
-      "HDI_Baseline", "HDI_2024", "HDI_2050", "HDI_2050_Gain",
+      "HDI_1998_HDR2000", "HDI_Baseline", "HDI_2024", "HDI_2050", "HDI_2050_Gain",
       "HealthIndex_2025", "HealthIndex_2050", "EducationIndex_2025", "EducationIndex_2050",
       "IncomeIndex_2025", "IncomeIndex_2050", "HDI_2050_Recomputed_From_Indices", "HDI_P10", "HDI_P90"
     ]);
 
     function formatTableValue(column, value) {
       return hdiDisplayColumns.has(column) ? fmt(value, 3) : fmtMaybe(value);
+    }
+
+    function historicalHdi(row) {
+      const raw = row?.HDI_1998_HDR2000;
+      if (raw == null || raw === "") return NaN;
+      const value = Number(raw);
+      return Number.isFinite(value) ? value : NaN;
+    }
+
+    function historicalRank(row) {
+      const raw = row?.Rank_1998_HDR2000;
+      if (raw == null || raw === "") return NaN;
+      const value = Number(raw);
+      return Number.isFinite(value) ? value : NaN;
     }
 
     function scenarioHdi(row) {
@@ -4630,6 +4817,7 @@
     }
 
     const mapSeries = [
+      {selector: "#map-1998", key: "HDI_1998_HDR2000", label: "HDR 2000 report: 1998 HDI"},
       {selector: "#map-2025", key: "HDI_Baseline", label: "HDR 2025 HDI"},
       {selector: "#map-2050", key: "Scenario_HDI_2050", label: "2050 HDI"},
       {selector: "#map-health-2025", key: "HealthIndex_2025", label: "2025 health index"},
@@ -4670,21 +4858,32 @@
       };
     }
 
+    function normalizeHistoricalHdiRow(row) {
+      const hdi = row.HDI_1998_HDR2000 === "" ? NaN : Number(row.HDI_1998_HDR2000);
+      const rank = row.Rank_1998_HDR2000 === "" ? NaN : Number(row.Rank_1998_HDR2000);
+      return {
+        ...row,
+        HDI_1998_HDR2000: Number.isFinite(hdi) ? hdi : null,
+        Rank_1998_HDR2000: Number.isFinite(rank) ? rank : null
+      };
+    }
+
     function updateStats() {
       const avg2050 = calibratedWorldHdi2050(allRows);
       const improving = allRows.filter(d => d.HDI_2050_Gain > 0).length;
       const improvingShare = allRows.length ? improving / allRows.length : 0;
       const hdiShift = avg2050 - officialWorldHdi2025;
       document.getElementById("dataset-count").textContent = `${allRows.length} countries`;
-      document.getElementById("avg-2025").textContent = fmt(officialWorldHdi2025, 3);
-      document.getElementById("avg-2050").textContent = fmt(avg2050, 3);
-      document.getElementById("improving-count").textContent = improving.toString();
+      setAnimatedTextById("avg-1998", fmt(officialWorldHdi1998, 3));
+      setAnimatedTextById("avg-2025", fmt(officialWorldHdi2025, 3));
+      setAnimatedTextById("avg-2050", fmt(avg2050, 3));
+      setAnimatedTextById("improving-count", improving.toString());
       document.getElementById("kpi-scenario").textContent = scenarios[activeScenario].label.replace(" scenario", "");
       document.getElementById("avg-2050-trend").textContent = `${hdiShift >= 0 ? "↑" : "↓"} ${hdiShift >= 0 ? "+" : ""}${fmt(hdiShift, 3)} from 2025`;
       document.getElementById("improving-trend").textContent = `↑ ${Math.round(improvingShare * 100)}% of countries`;
       const story = document.getElementById("overview-data-story");
       if (story) {
-        story.textContent = `Global human development is projected to move from ${fmt(officialWorldHdi2025, 3)} to ${fmt(avg2050, 3)} under the active scenario, a ${hdiShift >= 0 ? "+" : ""}${fmt(hdiShift, 3)} population-weighted shift. ${Math.round(improvingShare * 100)}% of countries register net gains by 2050.`;
+        story.textContent = `The HDR 2000 report placed world HDI at ${fmt(officialWorldHdi1998, 3)} for 1998. The current reference is ${fmt(officialWorldHdi2025, 3)}, and the active scenario reaches ${fmt(avg2050, 3)} by 2050, a ${hdiShift >= 0 ? "+" : ""}${fmt(hdiShift, 3)} population-weighted shift from 2025. ${Math.round(improvingShare * 100)}% of countries register net gains by 2050.`;
       }
       const scenarioSummary = document.getElementById("overview-scenario-summary");
       if (scenarioSummary) scenarioSummary.innerHTML = scenarioNarratives[activeScenario] || scenarioNarratives.baseline;
@@ -5084,6 +5283,13 @@
     function setScenario(scenario, updateUrl = true) {
       if (!scenarios[scenario]) return;
       activeScenario = scenario;
+      root.dataset.scenario = scenario;
+      if (!window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+        root.classList.remove("scenario-shift");
+        void root.offsetWidth;
+        root.classList.add("scenario-shift");
+        window.setTimeout(() => root.classList.remove("scenario-shift"), 560);
+      }
       document.getElementById("scenario-select").value = scenario;
       document.querySelectorAll("[data-scenario-map]").forEach(button => {
         const active = button.dataset.scenarioMap === scenario;
@@ -5092,6 +5298,8 @@
       });
       const note = document.getElementById("scenario-map-note");
       if (note) note.textContent = scenarios[scenario].label;
+      const timelineNote = document.getElementById("timeline-scenario-note");
+      if (timelineNote) timelineNote.textContent = `${scenarios[scenario].label} projection`;
       updateStats();
       if (activeCountry) setActiveCountry(activeCountry);
       else resetMapMetrics();
@@ -5334,7 +5542,11 @@
       layer.selectAll("path.country")
         .data(countries)
         .join("path")
-        .attr("class", f => getDatum(f) ? "country" : "country no-data")
+        .attr("class", f => {
+          const d = getDatum(f);
+          if (!d) return "country no-data";
+          return Number.isFinite(valueForSeries(d, series)) ? "country" : "country historical-gap";
+        })
         .attr("d", path)
         .attr("fill", f => {
           const d = getDatum(f);
@@ -5342,7 +5554,7 @@
         })
         .attr("tabindex", f => { const d=getDatum(f); return d&&filteredIso.has(d.ISO3)?0:-1; })
         .attr("role", f => getDatum(f)?"button":"img")
-        .attr("aria-label", f => { const d=getDatum(f); if(!d)return "Country with no HDI data"; const value=valueForSeries(d,series); return `${d.Country}, ${series.label}, ${fmt(value)}. 2025 rank ${d.UNDP_Rank_2023 || "not available"}; projected 2050 rank ${d.Rank || "not available"}. Activate to inspect country.`; })
+        .attr("aria-label", f => { const d=getDatum(f); if(!d)return "Country with no HDI data"; const value=valueForSeries(d,series); const valueLabel=Number.isFinite(value)?fmt(value):"not ranked in this report"; return `${d.Country}, ${series.label}, ${valueLabel}. 1998 report rank ${d.Rank_1998_HDR2000 || "not available"}; 2025 rank ${d.UNDP_Rank_2023 || "not available"}; projected 2050 rank ${d.Rank || "not available"}. Activate to inspect country.`; })
         .classed("active", f => {
           const d = getDatum(f);
           return d && activeCountry && d.ISO3 === activeCountry.ISO3;
@@ -5373,6 +5585,7 @@
 
     function valueForSeries(row, series) {
       if (!row || !series) return NaN;
+      if (series.key === "HDI_1998_HDR2000") return historicalHdi(row);
       if (series.key === "Scenario_HDI_2050") return scenarioHdi(row);
       if (scenarioDimensionKeys[series.key]) return scenarioDimensionValue(row, series.key);
       return Number(row[series.key]);
@@ -5536,6 +5749,9 @@
     }
 
     function applyMapView() {
+      document.querySelectorAll("#maps .map-section").forEach(section => {
+        section.hidden = activeView === "historical" && section.dataset.historicalSupported !== "true";
+      });
       document.querySelectorAll(".maps").forEach(group => {
         group.classList.toggle("single-map", activeView !== "both");
       });
@@ -5543,6 +5759,23 @@
         const show = activeView === "both" || panel.dataset.panel === activeView;
         panel.style.display = show ? "" : "none";
       });
+    }
+
+    function tooltipTimelineSvg(row) {
+      const milestones = [
+        {year:"1998", value:historicalHdi(row), x:18, color:"#ff557a"},
+        {year:"2025", value:Number(row.HDI_Baseline), x:96, color:"#f6ce6a"},
+        {year:"2050", value:Number(scenarioHdi(row)), x:174, color:"var(--scenario-accent)"}
+      ];
+      const available = milestones.filter(point => Number.isFinite(point.value));
+      if (available.length < 2) return "";
+      const extent = d3.extent(available, point => point.value);
+      const spread = Math.max(.015, (extent[1] - extent[0]) * .15);
+      const lower = Math.max(0, extent[0] - spread);
+      const upper = Math.min(1, extent[1] + spread);
+      const y = value => 35 - ((value - lower) / Math.max(.001, upper - lower)) * 25;
+      const pathData = available.map((point, index) => `${index ? "L" : "M"}${point.x},${y(point.value).toFixed(1)}`).join(" ");
+      return `<svg class="tooltip-timeline" viewBox="0 0 192 56" role="img" aria-label="HDI timeline from 1998 through 2050"><line class="timeline-guide" x1="18" x2="174" y1="35" y2="35"></line><path class="timeline-line" d="${pathData}"></path>${milestones.map(point => `<text x="${point.x}" y="53" text-anchor="middle">${point.year}</text>${Number.isFinite(point.value) ? `<circle cx="${point.x}" cy="${y(point.value).toFixed(1)}" r="4.2" fill="${point.color}"></circle>` : ""}`).join("")}</svg>`;
     }
 
     function showTooltip(event, d, series) {
@@ -5557,9 +5790,10 @@
         ["Education", scenario.education],
         ["Income", scenario.income]
       ];
-      tooltip.innerHTML = `<div class="tooltip-head"><div><strong>${d.Country}</strong><br><small>${d.ISO3} · ${seriesLabel} ${seriesValue}</small></div><div class="tooltip-ranks">2025 #${d.UNDP_Rank_2023 || "--"}<br>2050 #${d.Rank || "--"}</div></div><div>${scenarios[activeScenario].label}</div><div class="tooltip-shift">${fmt(d.HDI_Baseline)} → ${fmt(scenarioHdi(d))} (${hdiGain})</div>${dimensions.map(([label,index]) => `<div class="tooltip-dimension"><span>${label}</span><div class="tooltip-track"><div class="tooltip-fill" style="width:${Math.max(0,Math.min(100,Number(index)*100))}%"></div></div><strong>${fmt(index,3)}</strong></div>`).join("")}<div class="panel-note" style="margin-top:8px">Population 2050 ${fmtMaybe(d.Population_2050)}</div>`;
+      const historicalValue = Number.isFinite(historicalHdi(d)) ? fmt(historicalHdi(d)) : "No report value";
+      tooltip.innerHTML = `<div class="tooltip-head"><div><strong>${d.Country}</strong><br><small>${d.ISO3} &middot; ${seriesLabel} ${seriesValue}</small></div><div class="tooltip-ranks">1998 #${d.Rank_1998_HDR2000 || "--"}<br>2025 #${d.UNDP_Rank_2023 || "--"}<br>2050 #${d.Rank || "--"}</div></div><div>${scenarios[activeScenario].label}</div><div class="tooltip-shift">${historicalValue} &rarr; ${fmt(d.HDI_Baseline)} &rarr; ${fmt(scenarioHdi(d))}</div>${tooltipTimelineSvg(d)}${dimensions.map(([label,index]) => `<div class="tooltip-dimension"><span>${label}</span><div class="tooltip-track"><div class="tooltip-fill" style="width:${Math.max(0,Math.min(100,Number(index)*100))}%"></div></div><strong>${fmt(index,3)}</strong></div>`).join("")}<div class="panel-note" style="margin-top:8px">2025-2050 change ${hdiGain} &middot; Population 2050 ${fmtMaybe(d.Population_2050)}</div>`;
       tooltip.style.left = `${Math.max(8, Math.min(window.innerWidth - 345, event.clientX + 14))}px`;
-      tooltip.style.top = `${Math.max(8, Math.min(window.innerHeight - 250, event.clientY + 14))}px`;
+      tooltip.style.top = `${Math.max(8, Math.min(window.innerHeight - 340, event.clientY + 14))}px`;
       tooltip.style.opacity = "1";
     }
 
@@ -5569,7 +5803,7 @@
 
     function setMetric(name, value) {
       document.querySelectorAll(`[data-metric="${name}"]`).forEach(element => {
-        element.textContent = value;
+        setAnimatedText(element, value);
       });
     }
 
@@ -6504,6 +6738,8 @@
       const scenario = scenarioDimensions(row);
       return {
         country: row.Country, iso3: row.ISO3,
+        hdi_1998_report_vintage: Number.isFinite(historicalHdi(row)) ? historicalHdi(row) : null,
+        rank_1998_hdr2000: Number(row.Rank_1998_HDR2000) || null,
         hdi_2025: Number(row.HDI_Baseline), hdi_2050: scenarioHdi(row), hdi_gain: scenarioGain(row), scenario_rank_2050: scenarioRankFor(row),
         health: {index_2025: Number(row.HealthIndex_2025), index_2050: scenario.health},
         education: {index_2025: Number(row.EducationIndex_2025), index_2050: scenario.education},
@@ -6534,7 +6770,7 @@
       const lower = String(prompt).toLowerCase();
       const includeLeaders = /\b(top|highest|lowest|largest|smallest|gain|rank|benefit|leader|best|worst)\b/.test(lower);
       return {
-        data_status: "2025 values are baseline observations/estimates; 2050 values and P10-P90 bounds are modeled scenario projections, not certainties.",
+        data_status: "1998 values reproduce the report-vintage HDR 2000 table and are not retrospectively revised; 2025 values are baseline observations/estimates; 2050 values and P10-P90 bounds are modeled scenario projections, not certainties.",
         dashboard_state: hdiGptStatePayload(),
         relevant_country_records: unique.map(countryDataPacket),
         filtered_dataset_summary: {countries: filteredRows.length, total_countries: allRows.length, active_scenario: scenarios[activeScenario]?.label},
@@ -6605,7 +6841,8 @@
 
     function hdiSummaryLine(row) {
       const gain = scenarioGain(row);
-      return `<strong>${escapeHtml(row.Country)}</strong>: 2025 HDI ${fmt(row.HDI_Baseline)}, ${scenarios[activeScenario].label} 2050 HDI ${fmt(scenarioHdi(row))}, gain ${gain >= 0 ? "+" : ""}${fmt(gain)}, rank #${row.Rank}, trajectory ${escapeHtml(row.Trajectory || "n/a")}, momentum ${escapeHtml(row.DevelopmentMomentumTier || "n/a")}.`;
+      const historical = Number.isFinite(historicalHdi(row)) ? `HDR 2000 report-vintage 1998 HDI ${fmt(historicalHdi(row))}, ` : "";
+      return `<strong>${escapeHtml(row.Country)}</strong>: ${historical}2025 HDI ${fmt(row.HDI_Baseline)}, ${scenarios[activeScenario].label} 2050 HDI ${fmt(scenarioHdi(row))}, gain ${gain >= 0 ? "+" : ""}${fmt(gain)}, rank #${row.Rank}, trajectory ${escapeHtml(row.Trajectory || "n/a")}, momentum ${escapeHtml(row.DevelopmentMomentumTier || "n/a")}.`;
     }
 
     function rankRows(rows, metric, direction = "desc", limit = 6) {
@@ -6667,7 +6904,7 @@
     function executiveBriefCard(row) {
       if (!row) return "Select a country first, then generate the executive briefing.";
       const drivers = driverColumns.map(([label, key]) => ({label, value:Number(row[key]) || 0})).sort((a,b) => Math.abs(b.value)-Math.abs(a.value)).slice(0,6), max = Math.max(...driverColumns.map(([,key]) => Math.abs(Number(row[key]) || 0)), .001);
-      return `<strong>${escapeHtml(row.Country)} executive briefing</strong><p>${escapeHtml(qualitativeNote(row, drivers))}</p><div class="chat-data-card"><div class="card-title">Projection and uncertainty</div><table><tbody><tr><th>2025 HDI</th><td>${fmt(row.HDI_Baseline)}</td></tr><tr><th>2050 HDI</th><td>${fmt(scenarioHdi(row))}</td></tr><tr><th>Rank</th><td>#${row.Rank}</td></tr><tr><th>P10-P90</th><td>${fmt(row.HDI_P10)}-${fmt(row.HDI_P90)}</td></tr></tbody></table></div><div class="chat-data-card"><div class="card-title">Driver attribution</div><div style="padding:4px 10px 10px">${drivers.map(driver => `<div class="chat-driver"><span>${escapeHtml(driver.label)}</span><span class="chat-driver-track"><span class="chat-driver-fill${driver.value < 0 ? " negative" : ""}" style="display:block;width:${Math.max(3,Math.abs(driver.value)/max*100)}%"></span></span><strong>${formatSignedValue(driver.value)}</strong></div>`).join("")}</div></div>`;
+      return `<strong>${escapeHtml(row.Country)} executive briefing</strong><p>${escapeHtml(qualitativeNote(row, drivers))}</p><div class="chat-data-card"><div class="card-title">Projection and uncertainty</div><table><tbody><tr><th>1998 HDI (HDR 2000)</th><td>${fmt(historicalHdi(row))}</td></tr><tr><th>2025 HDI</th><td>${fmt(row.HDI_Baseline)}</td></tr><tr><th>2050 HDI</th><td>${fmt(scenarioHdi(row))}</td></tr><tr><th>Rank</th><td>#${row.Rank}</td></tr><tr><th>P10-P90</th><td>${fmt(row.HDI_P10)}-${fmt(row.HDI_P90)}</td></tr></tbody></table></div><div class="chat-data-card"><div class="card-title">Driver attribution</div><div style="padding:4px 10px 10px">${drivers.map(driver => `<div class="chat-driver"><span>${escapeHtml(driver.label)}</span><span class="chat-driver-track"><span class="chat-driver-fill${driver.value < 0 ? " negative" : ""}" style="display:block;width:${Math.max(3,Math.abs(driver.value)/max*100)}%"></span></span><strong>${formatSignedValue(driver.value)}</strong></div>`).join("")}</div></div>`;
     }
 
     function sensitivityCard(row) {
@@ -7713,6 +7950,10 @@ LIVE_EVIDENCE: ${JSON.stringify(hdiGptEvidencePayload(prompt))}`
       const avgHdi2025 = isGlobal ? officialWorldHdi2025 : weightedMean(rows, "HDI_Baseline", "Population_2024");
       const avgHdi2050 = isGlobal ? calibratedWorldHdi2050(rows) : weightedMeanScenario(rows, "Population_2050");
       const avgGain = avgHdi2050 - avgHdi2025;
+      const historicalRows = rows.filter(row => Number.isFinite(historicalHdi(row)));
+      const avgHdi1998 = isGlobal ? officialWorldHdi1998 : d3.mean(historicalRows, historicalHdi);
+      const comparable2025 = isGlobal ? officialWorldHdi2025 : d3.mean(historicalRows, row => row.HDI_Baseline);
+      const historicalGain = comparable2025 - avgHdi1998;
       const health2025 = weightedMean(rows, "HealthIndex_2025", "Population_2024");
       const rawHealth2050 = weightedMeanBy(rows, row => scenarioDimensions(row).health, "Population_2050");
       const education2025 = weightedMean(rows, "EducationIndex_2025", "Population_2024");
@@ -7722,6 +7963,9 @@ LIVE_EVIDENCE: ${JSON.stringify(hdiGptEvidencePayload(prompt))}`
       const reconciled = reconcileDimensionsToHdi([rawHealth2050, rawEducation2050, rawIncome2050], avgHdi2050);
       const displayed = roundedDimensionsForDisplay(reconciled, avgHdi2050);
       setMetric("country", label);
+      setMetric("hdi-1998", fmt(avgHdi1998));
+      setMetric("rank-1998", isGlobal ? "174 countries" : `${historicalRows.length} published values`);
+      setMetric("hdi-gain-1998-2025", Number.isFinite(historicalGain) ? `${historicalGain >= 0 ? "+" : ""}${fmt(historicalGain)}` : "--");
       setMetric("hdi-2025", fmt(avgHdi2025));
       setMetric("hdi-2050", fmt(avgHdi2050));
       setMetric("hdi-gain", avgGain >= 0 ? `+${fmt(avgGain)}` : fmt(avgGain));
@@ -7757,6 +8001,11 @@ LIVE_EVIDENCE: ${JSON.stringify(hdiGptEvidencePayload(prompt))}`
       const scenario = displayedScenarioDimensions(d);
       document.getElementById("country-jump").value = d.ISO3;
       setMetric("country", `${d.Country} (${d.ISO3})`);
+      const hdi1998 = historicalHdi(d);
+      const historicalGain = Number(d.HDI_Baseline) - hdi1998;
+      setMetric("hdi-1998", fmt(hdi1998));
+      setMetric("rank-1998", Number.isFinite(historicalRank(d)) ? `#${historicalRank(d)}` : "Not ranked");
+      setMetric("hdi-gain-1998-2025", Number.isFinite(historicalGain) ? `${historicalGain >= 0 ? "+" : ""}${fmt(historicalGain)}` : "--");
       setMetric("hdi-2025", fmt(d.HDI_Baseline));
       setMetric("hdi-2050", fmt(scenarioHdi(d)));
       const gain = scenarioGain(d);
@@ -7826,7 +8075,7 @@ LIVE_EVIDENCE: ${JSON.stringify(hdiGptEvidencePayload(prompt))}`
       }).join("")}</tr>`;
       tbody.innerHTML = rows.map(d => {
         const activeClass = activeCountry && activeCountry.ISO3 === d.ISO3 ? "row-active" : "";
-        return `<tr data-iso="${d.ISO3}" class="${activeClass}" tabindex="0" aria-label="Select ${escapeAttr(d.Country)}. 2025 HDI ${fmt(d.HDI_Baseline)}; projected 2050 HDI ${fmt(scenarioHdi(d))}; rank ${d.Rank || "not available"}.">
+        return `<tr data-iso="${d.ISO3}" class="${activeClass}" tabindex="0" aria-label="Select ${escapeAttr(d.Country)}. 1998 report-vintage HDI ${fmt(historicalHdi(d))}; 2025 HDI ${fmt(d.HDI_Baseline)}; projected 2050 HDI ${fmt(scenarioHdi(d))}; rank ${d.Rank || "not available"}.">
           ${tableColumns.map(col => {
             if (col === "Compare") {
               const checked = comparedIso.has(d.ISO3) ? "checked" : "";
@@ -8196,6 +8445,7 @@ LIVE_EVIDENCE: ${JSON.stringify(hdiGptEvidencePayload(prompt))}`
       document.getElementById("inspector-meta").textContent = `${row.ISO3} · ${row.Trajectory || "Unclassified"} · ${scenarios[activeScenario].label}`;
       document.getElementById("inspector-content").innerHTML = `
         <div class="inspector-kpis">
+          <div class="inspector-kpi"><span>HDR 2000: 1998 HDI</span><strong>${fmt(historicalHdi(row))}</strong></div>
           <div class="inspector-kpi"><span>HDR 2025 HDI</span><strong>${fmt(row.HDI_Baseline)}</strong></div>
           <div class="inspector-kpi"><span>Projected 2050 HDI</span><strong>${fmt(scenarioHdi(row))}</strong></div>
           <div class="inspector-kpi"><span>HDI change</span><strong class="${gain >= 0 ? "gain-pos" : "gain-neg"}">${gain >= 0 ? "+" : ""}${fmt(gain)}</strong></div>
@@ -8204,7 +8454,7 @@ LIVE_EVIDENCE: ${JSON.stringify(hdiGptEvidencePayload(prompt))}`
         <div class="inspector-section"><h3>Dimension trajectory</h3>${dimensions.map(([label,start,end]) => `<div class="inspector-dimension"><span>${label}</span><div class="inspector-track"><div class="inspector-fill" style="width:${Math.max(0,Math.min(100,Number(end)*100))}%"></div></div><strong>${fmt(start,3)} → ${fmt(end,3)}</strong></div>`).join("")}</div>
         <div class="inspector-section"><h3>Leading growth drivers</h3><ul class="inspector-driver-list">${positive.length ? positive.map(item => `<li><span>${escapeHtml(item.label)}</span><strong class="positive">+${fmt(item.value,4)}</strong></li>`).join("") : "<li>No positive attribution recorded.</li>"}</ul></div>
         <div class="inspector-section"><h3>Leading structural drags</h3><ul class="inspector-driver-list">${negative.length ? negative.map(item => `<li><span>${escapeHtml(item.label)}</span><strong class="negative">${fmt(item.value,4)}</strong></li>`).join("") : "<li>No negative attribution recorded.</li>"}</ul></div>
-        <div class="inspector-section"><div class="inspector-actions"><button type="button" id="inspector-world">Compare with world</button><button type="button" class="secondary" id="inspector-compare">Add to Comparison Lab</button></div><div class="inspector-world-note" id="inspector-world-note">World reference: 2025 HDI ${fmt(officialWorldHdi2025,3)}; projected 2050 HDI ${fmt(calibratedWorldHdi2050(allRows),3)}. ${row.Country} is ${scenarioHdi(row) >= calibratedWorldHdi2050(allRows) ? "above" : "below"} the projected population-weighted world aggregate.</div></div>`;
+        <div class="inspector-section"><div class="inspector-actions"><button type="button" id="inspector-world">Compare with world</button><button type="button" class="secondary" id="inspector-compare">Add to Comparison Lab</button></div><div class="inspector-world-note" id="inspector-world-note">World reference: HDR 2000 report-vintage 1998 HDI ${fmt(officialWorldHdi1998,3)}; 2025 HDI ${fmt(officialWorldHdi2025,3)}; projected 2050 HDI ${fmt(calibratedWorldHdi2050(allRows),3)}. ${row.Country} is ${scenarioHdi(row) >= calibratedWorldHdi2050(allRows) ? "above" : "below"} the projected population-weighted world aggregate.</div></div>`;
       document.getElementById("inspector-world").addEventListener("click", () => document.getElementById("inspector-world-note").classList.toggle("open"));
       document.getElementById("inspector-compare").addEventListener("click", () => {
         addCompareCountry(row.ISO3);
@@ -8721,6 +8971,18 @@ LIVE_EVIDENCE: ${JSON.stringify(hdiGptEvidencePayload(prompt))}`
     async function boot() {
       try {
         allRows = (await d3.csv(csvPath, normalize)).filter(d => d.ISO3 && d.Country);
+        try {
+          historicalHdiRows = (await d3.csv(historicalHdiCsvPath, normalizeHistoricalHdiRow)).filter(row => row.ISO3);
+          const historicalByIso3 = new Map(historicalHdiRows.map(row => [row.ISO3, row]));
+          allRows.forEach(row => {
+            const historical = historicalByIso3.get(row.ISO3);
+            row.HDI_1998_HDR2000 = historical?.HDI_1998_HDR2000 ?? null;
+            row.Rank_1998_HDR2000 = historical?.Rank_1998_HDR2000 ?? null;
+            row.HDI_1998_Coverage = historical?.Coverage_Status || "Not ranked in HDR 2000 Table 1";
+          });
+        } catch (historicalError) {
+          console.warn("HDR 2000 historical HDI data could not be loaded.", historicalError);
+        }
         subdivisionRows = (await d3.csv(subdivisionCsvPath, normalizeSubdivisionRow)).filter(d => d.ISO3 && d.Country && d.Subdivision);
         try {
           cityRows = (await d3.csv(cityCsvPath, normalizeCityRow)).filter(d => d.ISO3 && d.Country && d.City && Number.isFinite(d.City_HDI_2025) && Number.isFinite(d.City_HDI_2050));
