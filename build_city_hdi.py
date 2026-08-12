@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import csv
+import json
 import math
 import os
 import re
@@ -17,6 +18,7 @@ ROOT = Path(__file__).resolve().parent
 OUTPUT = ROOT / "data" / "output" / "city_hdi_2025_2050.csv"
 HDI_PATH = ROOT / "data" / "output" / "hdi_2050_rankings.csv"
 SUBDIVISION_PATH = ROOT / "data" / "output" / "subdivision_hdi_2025_2050.csv"
+ADM1_GEOJSON_PATH = ROOT / "web" / "assets" / "geo" / "adm1" / "world_subdivisions.geojson"
 GEONAMES_ZIP = Path(os.environ.get("TEMP", ".")) / "cities15000.zip"
 ADMIN1_PATH = Path(os.environ.get("TEMP", ".")) / "admin1CodesASCII.txt"
 
@@ -34,13 +36,17 @@ COUNTRY_ALPHA2_OVERRIDES = {
 SUBDIVISION_ALIASES = {
     "IND": {"delhi": "new delhi", "odisha": "orissa", "uttarakhand": "uttaranchal"},
     "NGA": {"fct": "abuja fct", "federal capital territory": "abuja fct", "abuja federal capital territory": "abuja fct", "nasarawa": "nassarawa"},
-    "FRA": {"ile de france": "ile de france", "provence alpes cote d azur": "provence alpes cote dazur"},
+    "FRA": {"ile de france": "ile de france", "provence alpes cote d azur": "provence alpes cote dazur", "auvergne rhone alpes": "rhone alpes"},
     "BRA": {"federal district": "distrito federal"},
     "AUS": {"act": "australian capital territory"},
     "PAK": {"islamabad": "islamabad ict"},
     "ETH": {"addis ababa": "addis"},
     "USA": {"district of columbia": "district of columbia", "dc": "district of columbia"},
     "GBR": {"england": ""},
+    "DEU": {"bavaria": "bayern", "north rhine westphalia": "nordrhein westfalen", "lower saxony": "niedersachsen"},
+    "MEX": {"mexico city": "distrito federal", "ciudad de mexico": "distrito federal"},
+    "IDN": {"jakarta": "dki jakarta", "yogyakarta": "di yogyakarta"},
+    "ESP": {"madrid": "comunidad de madrid", "valencia": "comunidad valenciana"},
 }
 
 COORDINATE_SUBDIVISION_OVERRIDES = {
@@ -50,6 +56,18 @@ COORDINATE_SUBDIVISION_OVERRIDES = {
     ("GBR", "Sheffield"): "Yorkshire and The Humber",
     ("GBR", "Glasgow"): "Scotland",
     ("GBR", "London"): "London",
+    ("FRA", "Toulouse"): "Midi-Pyrenees",
+}
+
+REGIONAL_SUBDIVISION_ALIASES = {
+    "KOR": {
+        "seoul": "Capital Region", "incheon": "Capital Region", "gyeonggi": "Capital Region",
+        "busan": "Gyeongnam Region", "ulsan": "Gyeongnam Region", "south gyeongsang": "Gyeongnam Region",
+        "daejeon": "Chungcheong Region", "sejong": "Chungcheong Region", "north chungcheong": "Chungcheong Region", "south chungcheong": "Chungcheong Region",
+        "gwangju": "Jeolla Region", "north jeolla": "Jeolla Region", "south jeolla": "Jeolla Region",
+        "gangwon": "Gangwon Region", "jeju": "Jeju",
+        "daegu": "Gyeongbuk Region", "north gyeongsang": "Gyeongbuk Region",
+    },
 }
 
 
@@ -92,10 +110,84 @@ def load_geonames() -> list[dict[str, str]]:
             return rows
 
 
-def subdivision_match(city: dict[str, str], iso3: str, admin_names: dict[tuple[str, str], str], subdivisions: list[dict[str, str]]) -> tuple[dict[str, str] | None, str]:
+def load_adm1_features() -> dict[str, list[dict[str, object]]]:
+    with ADM1_GEOJSON_PATH.open(encoding="utf-8") as handle:
+        features = json.load(handle)["features"]
+    by_iso: dict[str, list[dict[str, object]]] = {}
+    for feature in features:
+        iso3 = feature.get("properties", {}).get("adm0_a3")
+        if iso3:
+            by_iso.setdefault(str(iso3), []).append(feature)
+    return by_iso
+
+
+def point_in_ring(longitude: float, latitude: float, ring: list[list[float]]) -> bool:
+    if len(ring) < 3:
+        return False
+    longitudes = [point[0] for point in ring]
+    crosses_dateline = max(longitudes) - min(longitudes) > 180
+    x = longitude + 360 if crosses_dateline and longitude < 0 else longitude
+    inside = False
+    previous = ring[-1]
+    previous_x = previous[0] + 360 if crosses_dateline and previous[0] < 0 else previous[0]
+    previous_y = previous[1]
+    for current in ring:
+        current_x = current[0] + 360 if crosses_dateline and current[0] < 0 else current[0]
+        current_y = current[1]
+        if (current_y > latitude) != (previous_y > latitude):
+            crossing_x = (previous_x - current_x) * (latitude - current_y) / (previous_y - current_y) + current_x
+            if x < crossing_x:
+                inside = not inside
+        previous_x, previous_y = current_x, current_y
+    return inside
+
+
+def point_in_polygon(longitude: float, latitude: float, polygon: list[list[list[float]]]) -> bool:
+    return bool(polygon and point_in_ring(longitude, latitude, polygon[0]) and not any(
+        point_in_ring(longitude, latitude, hole) for hole in polygon[1:]
+    ))
+
+
+def geometry_contains(geometry: dict[str, object], longitude: float, latitude: float) -> bool:
+    coordinates = geometry.get("coordinates", [])
+    if geometry.get("type") == "Polygon":
+        return point_in_polygon(longitude, latitude, coordinates)
+    if geometry.get("type") == "MultiPolygon":
+        return any(point_in_polygon(longitude, latitude, polygon) for polygon in coordinates)
+    return False
+
+
+def locate_adm1(city: dict[str, str], iso3: str, adm1_features: dict[str, list[dict[str, object]]]) -> dict[str, object] | None:
+    longitude = float(city["longitude"])
+    latitude = float(city["latitude"])
+    return next((
+        feature for feature in adm1_features.get(iso3, [])
+        if geometry_contains(feature.get("geometry", {}), longitude, latitude)
+    ), None)
+
+
+def feature_names(feature: dict[str, object] | None) -> list[str]:
+    if not feature:
+        return []
+    properties = feature.get("properties", {})
+    values = [properties.get("name"), properties.get("name_en")]
+    values.extend(str(properties.get("name_alt") or "").split("|"))
+    return [str(value) for value in values if value]
+
+
+def subdivision_match(
+    city: dict[str, str],
+    iso3: str,
+    admin_names: dict[tuple[str, str], str],
+    subdivisions: list[dict[str, str]],
+    adm1_features: dict[str, list[dict[str, object]]],
+) -> tuple[dict[str, str] | None, str, str]:
     alpha2 = city["country_alpha2"]
     admin_name = admin_names.get((alpha2, city["admin1_code"]), "")
-    candidates = {normalize(admin_name)}
+    located_feature = locate_adm1(city, iso3, adm1_features)
+    located_names = feature_names(located_feature)
+    geospatial_name = located_names[0] if located_names else admin_name
+    candidates = {normalize(admin_name), *(normalize(name) for name in located_names)}
     aliases = SUBDIVISION_ALIASES.get(iso3, {})
     candidates |= {aliases.get(candidate, candidate) for candidate in list(candidates)}
     city_name = normalize(city["ascii_name"] or city["name"])
@@ -103,7 +195,15 @@ def subdivision_match(city: dict[str, str], iso3: str, admin_names: dict[tuple[s
     if override:
         exact = next((row for row in subdivisions if normalize(row["Subdivision"]) == normalize(override)), None)
         if exact:
-            return exact, "matched_subdivision"
+            return exact, "manual_subdivision_override", geospatial_name
+
+    regional_aliases = REGIONAL_SUBDIVISION_ALIASES.get(iso3, {})
+    for candidate in list(candidates):
+        regional_name = regional_aliases.get(candidate)
+        if regional_name:
+            exact = next((row for row in subdivisions if normalize(row["Subdivision"]) == normalize(regional_name)), None)
+            if exact:
+                return exact, "geospatial_regional_match", geospatial_name
     candidates.add(aliases.get(city_name, city_name))
 
     best: tuple[float, dict[str, str]] | None = None
@@ -126,16 +226,50 @@ def subdivision_match(city: dict[str, str], iso3: str, admin_names: dict[tuple[s
         if score >= 0.50 and (best is None or score > best[0]):
             best = (score, row)
     if best:
-        return best[1], "matched_subdivision"
-    return None, "national_fallback"
+        method = "geospatial_subdivision_match" if located_feature else "admin_subdivision_match"
+        return best[1], method, geospatial_name
+    return None, "national_fallback", geospatial_name
 
 
-def city_adjustment(city: dict[str, str], selected_rank: int, is_capital: bool, national_hdi: float) -> float:
+def city_adjustment(
+    city: dict[str, str],
+    selected_rank: int,
+    is_capital: bool,
+    anchor_hdi: float,
+    national_hdi: float,
+    projection_year: int,
+) -> float:
     population = max(0, int(city["population"] or 0))
     size_signal = max(0.0, min(1.0, math.log10(max(50_000, population) / 50_000) / math.log10(200)))
-    role_signal = 1.0 if is_capital else max(0.15, 0.75 - 0.12 * selected_rank)
-    development_room = max(0.20, min(1.0, (0.93 - national_hdi) / 0.43))
-    return (0.004 + 0.011 * size_signal + 0.006 * role_signal) * development_room
+    rank_signal = max(0.0, min(1.0, 1.0 - (selected_rank - 1) / 6))
+    development_gap = max(0.0, min(1.0, (0.88 - national_hdi) / 0.48))
+    raw_premium = 0.007 + 0.012 * size_signal + 0.009 * float(is_capital) + 0.004 * rank_signal + 0.009 * development_gap
+    if projection_year == 2050:
+        raw_premium *= 0.72 + 0.08 * development_gap
+    headroom = max(0.001, 0.992 - anchor_hdi)
+    return headroom * (1 - math.exp(-raw_premium / headroom))
+
+
+def city_hdi_from_anchor(
+    city: dict[str, str],
+    selected_rank: int,
+    is_capital: bool,
+    anchor_hdi: float,
+    national_hdi: float,
+    projection_year: int,
+) -> tuple[float, float]:
+    premium = city_adjustment(city, selected_rank, is_capital, anchor_hdi, national_hdi, projection_year)
+    population = max(0, int(city["population"] or 0))
+    size_signal = max(0.0, min(1.0, math.log10(max(50_000, population) / 50_000) / math.log10(200)))
+    development_gap = max(0.0, min(1.0, (0.88 - national_hdi) / 0.48))
+    floor_gap = 0.005 + 0.007 * size_signal + 0.006 * float(is_capital) + 0.003 * development_gap
+    if projection_year == 2050:
+        floor_gap *= 0.76
+    metropolitan_floor = national_hdi + floor_gap
+    maximum_regional_uplift = 0.052 + 0.014 * float(is_capital) + 0.008 * size_signal
+    city_hdi = max(anchor_hdi + premium, min(metropolitan_floor, anchor_hdi + maximum_regional_uplift))
+    city_hdi = min(0.992, max(0.350, city_hdi))
+    return city_hdi, city_hdi - anchor_hdi
 
 
 def main() -> None:
@@ -145,6 +279,7 @@ def main() -> None:
     national_rows = load_csv(HDI_PATH)
     subdivision_rows = load_csv(SUBDIVISION_PATH)
     admin_names = load_admin_names()
+    adm1_features = load_adm1_features()
     geonames_rows = load_geonames()
     geonames_by_country: dict[str, list[dict[str, str]]] = {}
     for row in geonames_rows:
@@ -180,7 +315,7 @@ def main() -> None:
         country_subdivisions = subdivisions_by_iso.get(iso3, [])
         for city_rank, city in enumerate(selected, start=1):
             is_capital = city in capitals
-            subdivision, source_method = subdivision_match(city, iso3, admin_names, country_subdivisions)
+            subdivision, source_method, geospatial_adm1 = subdivision_match(city, iso3, admin_names, country_subdivisions, adm1_features)
             if subdivision:
                 base_2025 = float(subdivision["Subdivision_HDI_2025_Reconciled"])
                 base_2050 = float(subdivision["Subdivision_HDI_2050_Projected"])
@@ -190,11 +325,9 @@ def main() -> None:
                 base_2050 = national_2050
                 subdivision_name = admin_names.get((alpha2, city["admin1_code"]), "")
 
-            adjustment_2025 = city_adjustment(city, city_rank, is_capital, national_2025)
-            adjustment_2050 = adjustment_2025 * (0.64 if national_2050 >= national_2025 else 0.82)
-            city_2025 = min(0.990, max(0.350, base_2025 + adjustment_2025))
-            city_2050 = min(0.990, max(0.350, base_2050 + adjustment_2050))
-            confidence = "higher" if subdivision else "modeled"
+            city_2025, adjustment_2025 = city_hdi_from_anchor(city, city_rank, is_capital, base_2025, national_2025, 2025)
+            city_2050, adjustment_2050 = city_hdi_from_anchor(city, city_rank, is_capital, base_2050, national_2050, 2050)
+            confidence = "higher" if source_method.startswith(("geospatial", "manual")) else "moderate" if subdivision else "modeled"
             if not int(city["population"] or 0):
                 confidence = "lower"
 
@@ -210,6 +343,9 @@ def main() -> None:
                 "Is_Capital": is_capital,
                 "City_Rank_In_Selected_Country": city_rank,
                 "Matched_Subdivision": subdivision_name,
+                "Geospatial_ADM1": geospatial_adm1,
+                "Subdivision_HDI_2025_Anchor": round(base_2025, 6),
+                "Subdivision_HDI_2050_Anchor": round(base_2050, 6),
                 "City_HDI_2025": round(city_2025, 6),
                 "City_HDI_2050": round(city_2050, 6),
                 "City_HDI_Change": round(city_2050 - city_2025, 6),
@@ -217,6 +353,8 @@ def main() -> None:
                 "National_HDI_2050": round(national_2050, 6),
                 "Urban_Premium_2025": round(city_2025 - base_2025, 6),
                 "Urban_Premium_2050": round(city_2050 - base_2050, 6),
+                "City_vs_National_2025": round(city_2025 - national_2025, 6),
+                "City_vs_National_2050": round(city_2050 - national_2050, 6),
                 "Projection_Method": source_method + "_plus_bounded_urban_premium",
                 "Confidence": confidence,
                 "Data_Status": "modeled_city_estimate_not_official_undp_city_hdi",
