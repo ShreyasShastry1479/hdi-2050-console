@@ -1605,6 +1605,52 @@
       max-height: 620px;
       scrollbar-color: rgba(88, 230, 255, 0.45) rgba(9, 17, 31, 0.8);
     }
+
+    .city-hero { display:grid; grid-template-columns:minmax(0,1.5fr) minmax(300px,.75fr); gap:18px; align-items:stretch; }
+    .city-hero-copy { padding:24px; }
+    .city-hero-copy h2 { margin:6px 0 10px; font-size:clamp(24px,3vw,38px); letter-spacing:0; }
+    .city-hero-copy p { max-width:78ch; color:var(--muted); line-height:1.7; }
+    .city-method-note { margin-top:16px; padding:12px 14px; border-left:3px solid var(--gold); background:rgba(246,206,106,.08); color:#dce8f5; }
+    .city-kpis { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:10px; padding:18px; }
+    .city-kpi { min-height:104px; padding:14px; border:1px solid var(--line); background:rgba(12,25,43,.74); }
+    .city-kpi span { display:block; color:var(--muted); font-size:11px; text-transform:uppercase; }
+    .city-kpi strong { display:block; margin-top:8px; font-size:25px; color:#fff; }
+    .city-controls { position:sticky; top:126px; z-index:12; display:flex; flex-wrap:wrap; gap:10px; align-items:end; margin-top:14px; padding:12px; backdrop-filter:blur(14px); }
+    .city-control { display:grid; gap:5px; min-width:155px; flex:1 1 170px; }
+    .city-control label { color:var(--muted); font-size:11px; text-transform:uppercase; }
+    .city-control input,.city-control select { width:100%; }
+    .city-visual-grid { display:grid; grid-template-columns:minmax(0,1.15fr) minmax(320px,.85fr); gap:14px; margin-top:14px; }
+    .city-map-shell,.city-chart-shell { padding:16px; overflow:hidden; }
+    .city-panel-head { display:flex; justify-content:space-between; gap:12px; align-items:flex-start; margin-bottom:8px; }
+    .city-panel-head h3 { margin:0; font-size:16px; }
+    .city-panel-head p { margin:4px 0 0; color:var(--muted); font-size:12px; }
+    .city-map { width:100%; min-height:420px; display:block; background:#07111e; border:1px solid rgba(164,198,244,.12); }
+    .city-map .sphere { fill:#091827; stroke:rgba(164,198,244,.2); }
+    .city-map .country { fill:#14283e; stroke:rgba(164,198,244,.12); stroke-width:.45px; }
+    .city-map .city-point { cursor:pointer; stroke:#06111e; stroke-width:1.3px; transition:r .15s ease,opacity .15s ease; }
+    .city-map .city-point:hover,.city-map .city-point:focus-visible { r:7px; stroke:#fff; stroke-width:2px; outline:none; }
+    .city-map .city-point.capital { stroke:#f6ce6a; stroke-width:2px; }
+    .city-map-legend { display:flex; flex-wrap:wrap; gap:10px; margin-top:9px; color:var(--muted); font-size:11px; }
+    .city-map-legend span { display:flex; align-items:center; gap:5px; }
+    .city-map-legend i { width:10px; height:10px; border-radius:50%; display:inline-block; }
+    .city-map-legend .capital-symbol { border-radius:2px; transform:rotate(45deg); background:var(--gold); }
+    .city-chart { width:100%; min-height:420px; display:block; }
+    .city-selected { margin-top:14px; padding:16px; }
+    .city-selected-grid { display:grid; grid-template-columns:minmax(180px,1.2fr) repeat(4,minmax(110px,.7fr)); gap:10px; }
+    .city-selected-grid > div { padding:12px; border-left:2px solid rgba(88,230,255,.42); background:rgba(10,22,38,.7); }
+    .city-selected-grid span { display:block; color:var(--muted); font-size:10px; text-transform:uppercase; }
+    .city-selected-grid strong { display:block; margin-top:5px; color:#fff; font-size:16px; overflow-wrap:anywhere; }
+    .city-table-wrap { max-height:620px; margin-top:14px; overflow:auto; border:1px solid var(--line); }
+    .city-data-table { width:100%; border-collapse:collapse; font-size:12px; }
+    .city-data-table caption { padding:12px; color:var(--muted); text-align:left; }
+    .city-data-table th { position:sticky; top:0; z-index:2; padding:10px; background:#0b1a2b; color:#fff; text-align:left; white-space:nowrap; }
+    .city-data-table td { padding:9px 10px; border-top:1px solid rgba(164,198,244,.1); white-space:nowrap; }
+    .city-data-table tbody tr { cursor:pointer; }
+    .city-data-table tbody tr:hover,.city-data-table tbody tr.selected { background:rgba(88,230,255,.08); }
+    .city-badge { display:inline-flex; align-items:center; min-height:24px; padding:3px 7px; border:1px solid var(--line); border-radius:4px; color:#dbe8f7; font-size:10px; }
+    .city-badge.capital { border-color:rgba(246,206,106,.45); color:var(--gold); }
+    @media (max-width:980px) { .city-hero,.city-visual-grid { grid-template-columns:1fr; } .city-controls { position:relative; top:auto; } }
+    @media (max-width:640px) { .city-kpis,.city-selected-grid { grid-template-columns:1fr 1fr; } .city-selected-grid > div:first-child { grid-column:1/-1; } .city-map,.city-chart { min-height:330px; } }
     .table-wrap::-webkit-scrollbar {
       height: 10px;
       width: 10px;
@@ -2357,6 +2403,7 @@
         <a href="#overview" data-nav-link="overview">Overview</a>
         <a href="#filters" data-nav-link="filters">Filters & Maps</a>
         <a href="#subdivisions" data-nav-link="subdivisions">Subdivisions</a>
+        <a href="#cities" data-nav-link="cities">Cities</a>
         <a href="#hdi-gpt" data-nav-link="hdi-gpt">HDI-GPT</a>
         <a href="#research" data-nav-link="research">Research</a>
         <div class="nav-more">
@@ -3194,6 +3241,64 @@
     </section>
     </section>
 
+    <section class="page-view" id="cities" data-page-title="Cities">
+      <section aria-label="Major-city and capital HDI projections">
+        <div class="city-hero">
+          <div class="panel city-hero-copy">
+            <div class="section-kicker">Urban human development</div>
+            <h2>Major Cities &amp; Capitals, 2025 to 2050</h2>
+            <p>Compare modeled HDI paths for national capitals and major population centres. Each estimate starts from the matched subdivision HDI where available, otherwise from the national projection, then applies a bounded urban-access premium that declines as development converges.</p>
+            <div class="city-method-note"><strong>Research boundary:</strong> UNDP does not publish a single official globally comparable city-HDI series. These are transparent scenario estimates for urban comparison, not official municipal HDI observations. City names, coordinates, capital status, and population context use GeoNames; HDI anchors come from this project's national and subdivision tables.</div>
+          </div>
+          <div class="panel city-kpis" aria-label="City projection summary">
+            <div class="city-kpi"><span>Urban records</span><strong id="city-kpi-count">--</strong></div>
+            <div class="city-kpi"><span>National capitals</span><strong id="city-kpi-capitals">--</strong></div>
+            <div class="city-kpi"><span>Median 2025 HDI</span><strong id="city-kpi-2025">--</strong></div>
+            <div class="city-kpi"><span>Median 2050 HDI</span><strong id="city-kpi-2050">--</strong></div>
+          </div>
+        </div>
+
+        <div class="panel city-controls" aria-label="City projection filters">
+          <div class="city-control"><label for="city-search">Search city or country</label><input id="city-search" type="search" placeholder="e.g. Lagos or India"></div>
+          <div class="city-control"><label for="city-continent">Region</label><select id="city-continent"><option value="">All regions</option></select></div>
+          <div class="city-control"><label for="city-type">Urban set</label><select id="city-type"><option value="all">Capitals and major cities</option><option value="capital">Capitals only</option><option value="major">Major cities only</option></select></div>
+          <div class="city-control"><label for="city-year">Map year</label><select id="city-year"><option value="2050">2050 projection</option><option value="2025">2025 estimate</option><option value="change">HDI change</option></select></div>
+          <div class="city-control"><label for="city-sort">Chart ranking</label><select id="city-sort"><option value="hdi2050">Highest 2050 HDI</option><option value="gain">Largest gain</option><option value="population">Largest cities</option></select></div>
+          <button type="button" id="city-reset" class="secondary">Reset</button>
+        </div>
+
+        <div class="city-visual-grid">
+          <div class="panel city-map-shell">
+            <div class="city-panel-head"><div><h3>Global urban HDI map</h3><p id="city-map-summary">Point color follows HDI; gold outlines identify national capitals.</p></div><strong id="city-visible-count">--</strong></div>
+            <svg id="city-map" class="city-map" viewBox="0 0 960 480" role="img" aria-labelledby="city-map-title city-map-desc"><title id="city-map-title">World map of projected city HDI</title><desc id="city-map-desc">Keyboard-operable points compare modeled human development across national capitals and major cities.</desc></svg>
+            <div class="city-map-legend" aria-label="City map legend"><span><i style="background:#5c0011"></i>Lower HDI</span><span><i style="background:#d5e5f5"></i>Near 0.82</span><span><i style="background:#002b5b"></i>Higher HDI</span><span><i class="capital-symbol"></i>Capital</span></div>
+          </div>
+          <div class="panel city-chart-shell">
+            <div class="city-panel-head"><div><h3>2025–2050 contrast</h3><p>Top visible cities under the selected ranking.</p></div><span class="city-badge">○ 2025 &nbsp; ● 2050</span></div>
+            <svg id="city-dumbbell" class="city-chart" viewBox="0 0 620 480" role="img" aria-labelledby="city-chart-title city-chart-desc"><title id="city-chart-title">City HDI dumbbell comparison</title><desc id="city-chart-desc">Lines connect each city's 2025 estimate to its 2050 projection.</desc></svg>
+          </div>
+        </div>
+
+        <div class="panel city-selected" aria-live="polite">
+          <div class="city-selected-grid">
+            <div><span>Selected city</span><strong id="city-selected-name">Select a map point or table row</strong></div>
+            <div><span>2025 HDI</span><strong id="city-selected-2025">--</strong></div>
+            <div><span>2050 HDI</span><strong id="city-selected-2050">--</strong></div>
+            <div><span>Change</span><strong id="city-selected-change">--</strong></div>
+            <div><span>Projection anchor</span><strong id="city-selected-method">--</strong></div>
+          </div>
+        </div>
+
+        <div class="city-table-wrap" tabindex="0" aria-label="Scrollable city HDI data table">
+          <table class="city-data-table" id="city-data-table">
+            <caption id="city-table-caption">Modeled city HDI estimates. Select a row to inspect it on the map.</caption>
+            <thead><tr><th scope="col">City</th><th scope="col">Country</th><th scope="col">Type</th><th scope="col">Subdivision anchor</th><th scope="col">2025 HDI</th><th scope="col">2050 HDI</th><th scope="col">Change</th><th scope="col">Population context</th><th scope="col">Confidence</th></tr></thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </section>
+    </section>
+
     <section class="page-view" id="ethnic-mosaic" data-page-title="Demographic Context">
     <section class="mosaic-shell" aria-label="Population and identity context for 2050">
       <div class="panel mosaic-brief">
@@ -4003,6 +4108,7 @@
     const tooltip = document.getElementById("tooltip");
     const csvPath = "../data/output/hdi_2050_rankings.csv";
     const subdivisionCsvPath = "../data/output/subdivision_hdi_2025_2050.csv?v=20260809-hdi-gpt";
+    const cityCsvPath = "../data/output/city_hdi_2025_2050.csv?v=20260811-cities";
     const ethnicCsvPath = "../data/output/demographic_context_2050.csv?v=20260810-ethics-review";
     const religionCsvPath = "../data/output/religious_composition_2050_model.csv?v=20260809-hindu-2025-baseline";
     const povertyCsvPath = "../data/output/extreme_poverty_regional_1990_2040.csv?v=20260811";
@@ -4161,6 +4267,9 @@
     let ethnicRows = [];
     let religionRows = [];
     let subdivisionRows = [];
+    let cityRows = [];
+    let filteredCityRows = [];
+    let selectedCity = null;
     let povertyRows = [];
     let selectedSubdivisionContext = null;
     let activeCountry = null;
@@ -4625,6 +4734,12 @@
       return row;
     }
 
+    function normalizeCityRow(row) {
+      ["Latitude", "Longitude", "GeoNames_Population", "City_Rank_In_Selected_Country", "City_HDI_2025", "City_HDI_2050", "City_HDI_Change", "National_HDI_2025", "National_HDI_2050", "Urban_Premium_2025", "Urban_Premium_2050"].forEach(key => row[key] = Number(row[key]));
+      row.Is_Capital = String(row.Is_Capital).toLowerCase() === "true";
+      return row;
+    }
+
     function pearsonR(rows, xKey, yKey) {
       const pairs = rows
         .map(d => [Number(d[xKey]), Number(d[yKey])])
@@ -4983,6 +5098,7 @@
       redrawMaps();
       renderCharts();
       renderTable();
+      renderCityWorkspace();
       if (updateUrl) syncUrlState();
       updateHdiGptContext();
     }
@@ -5016,6 +5132,159 @@
       americas: {center: [-77, 8], scale: 1.45},
       europe: {center: [15, 51], scale: 2.35}
     };
+
+    const cityProjection = d3.geoNaturalEarth1().fitExtent([[12, 12], [948, 468]], {type: "Sphere"});
+    const cityPath = d3.geoPath(cityProjection);
+
+    function scenarioCityHdi(row) {
+      const country = allRows.find(item => item.ISO3 === row.ISO3);
+      if (!country) return row.City_HDI_2050;
+      const nationalShift = scenarioHdi(country) - Number(country.HDI_2050);
+      return Math.max(0.35, Math.min(0.99, row.City_HDI_2050 + nationalShift));
+    }
+
+    function scenarioCityGain(row) {
+      return scenarioCityHdi(row) - row.City_HDI_2025;
+    }
+
+    function cityMetric(row) {
+      const mode = document.getElementById("city-year")?.value || "2050";
+      if (mode === "2025") return row.City_HDI_2025;
+      if (mode === "change") return scenarioCityGain(row);
+      return scenarioCityHdi(row);
+    }
+
+    function cityColor(row) {
+      const mode = document.getElementById("city-year")?.value || "2050";
+      if (mode === "change") return d3.scaleDiverging([-0.03, 0, 0.20], ["#8a1538", "#d5e5f5", "#007f6d"])(scenarioCityGain(row));
+      return colorForHDI(cityMetric(row));
+    }
+
+    function cityPopulation(value) {
+      const n = Number(value);
+      if (!Number.isFinite(n) || n <= 0) return "Not reported";
+      if (n >= 1e6) return `${(n / 1e6).toFixed(n >= 10e6 ? 1 : 2)}M`;
+      return `${Math.round(n / 1e3)}K`;
+    }
+
+    function cityMethodLabel(row) {
+      return row.Projection_Method.startsWith("matched_subdivision") ? row.Matched_Subdivision || "Subdivision matched" : "National fallback";
+    }
+
+    function renderSelectedCity() {
+      const row = selectedCity;
+      if (!row) return;
+      document.getElementById("city-selected-name").textContent = `${row.City}, ${row.Country}${row.Is_Capital ? " · capital" : ""}`;
+      document.getElementById("city-selected-2025").textContent = fmt(row.City_HDI_2025, 3);
+      const hdi2050 = scenarioCityHdi(row);
+      const gain = scenarioCityGain(row);
+      document.getElementById("city-selected-2050").textContent = fmt(hdi2050, 3);
+      document.getElementById("city-selected-change").textContent = `${gain >= 0 ? "+" : ""}${fmt(gain, 3)}`;
+      document.getElementById("city-selected-method").textContent = cityMethodLabel(row);
+    }
+
+    function setSelectedCity(row, moveFocus = false) {
+      if (!row) return;
+      selectedCity = row;
+      renderSelectedCity();
+      renderCityMap();
+      renderCityTable();
+      announce(`${row.City}, ${row.Country} selected. 2025 HDI ${fmt(row.City_HDI_2025,3)}; 2050 HDI ${fmt(hdi2050,3)}.`);
+      if (moveFocus) document.getElementById("city-selected-name").focus?.();
+    }
+
+    function applyCityFilters() {
+      const query = (document.getElementById("city-search")?.value || "").trim().toLowerCase();
+      const continent = document.getElementById("city-continent")?.value || "";
+      const type = document.getElementById("city-type")?.value || "all";
+      filteredCityRows = cityRows.filter(row => {
+        const queryMatch = !query || `${row.City} ${row.Country} ${row.ISO3} ${row.Matched_Subdivision}`.toLowerCase().includes(query);
+        const regionMatch = !continent || row.Continent === continent;
+        const typeMatch = type === "all" || (type === "capital" ? row.Is_Capital : !row.Is_Capital);
+        return queryMatch && regionMatch && typeMatch;
+      });
+      renderCityWorkspace();
+    }
+
+    function renderCityMap() {
+      const svg = d3.select("#city-map");
+      if (!svg.size()) return;
+      svg.selectAll("*").remove();
+      svg.append("title").attr("id", "city-map-title").text("World map of projected city HDI");
+      svg.append("desc").attr("id", "city-map-desc").text(`${filteredCityRows.length} visible urban estimates. Use Tab to inspect cities and Enter to select one.`);
+      svg.append("path").attr("class", "sphere").attr("d", cityPath({type:"Sphere"}));
+      svg.append("g").selectAll("path").data(countries).join("path").attr("class", "country").attr("d", cityPath);
+      const populationExtent = d3.extent(filteredCityRows, row => Math.max(1, row.GeoNames_Population));
+      const radius = d3.scaleSqrt().domain(populationExtent[0] === populationExtent[1] ? [1, Math.max(2,populationExtent[1])] : populationExtent).range([2.4, 8]);
+      svg.append("g").selectAll("circle").data([...filteredCityRows].sort((a,b)=>b.GeoNames_Population-a.GeoNames_Population)).join("circle")
+        .attr("class", row => `city-point${row.Is_Capital ? " capital" : ""}`)
+        .attr("cx", row => cityProjection([row.Longitude,row.Latitude])?.[0])
+        .attr("cy", row => cityProjection([row.Longitude,row.Latitude])?.[1])
+        .attr("r", row => selectedCity?.GeoNames_ID === row.GeoNames_ID ? 8 : radius(Math.max(1,row.GeoNames_Population)))
+        .attr("fill", cityColor)
+        .attr("opacity", row => selectedCity && selectedCity.GeoNames_ID !== row.GeoNames_ID ? .62 : .92)
+        .attr("tabindex", 0).attr("role", "button")
+        .attr("aria-label", row => `${row.City}, ${row.Country}${row.Is_Capital ? ", national capital" : ""}. 2025 HDI ${fmt(row.City_HDI_2025,3)}; projected 2050 HDI ${fmt(scenarioCityHdi(row),3)}; change ${scenarioCityGain(row) >= 0 ? "+" : ""}${fmt(scenarioCityGain(row),3)}. Activate to inspect.`)
+        .on("mouseenter mousemove", (event,row) => {
+          tooltip.innerHTML = `<strong>${escapeHtml(row.City)}, ${escapeHtml(row.Country)}</strong><br>${row.Is_Capital ? "National capital" : "Major city"} · ${escapeHtml(cityMethodLabel(row))}<br>2025 ${fmt(row.City_HDI_2025,3)} → 2050 ${fmt(scenarioCityHdi(row),3)}<br>Change ${scenarioCityGain(row)>=0?"+":""}${fmt(scenarioCityGain(row),3)} · population context ${cityPopulation(row.GeoNames_Population)}<br>${escapeHtml(scenarios[activeScenario].label)}`;
+          tooltip.style.left = `${Math.max(8,Math.min(window.innerWidth-340,event.clientX+14))}px`;
+          tooltip.style.top = `${Math.max(8,Math.min(window.innerHeight-180,event.clientY+14))}px`;
+          tooltip.style.opacity = "1";
+        }).on("mouseleave blur", hideTooltip)
+        .on("click", (event,row) => setSelectedCity(row))
+        .on("keydown", (event,row) => { if (["Enter"," "].includes(event.key)) { event.preventDefault(); setSelectedCity(row); } });
+      document.getElementById("city-visible-count").textContent = `${filteredCityRows.length} cities`;
+      const mode = document.getElementById("city-year")?.value || "2050";
+      document.getElementById("city-map-summary").textContent = mode === "change" ? "Color shows modeled 2025–2050 HDI change; gold outlines identify capitals." : `Color shows ${mode} HDI; point size reflects GeoNames population context.`;
+    }
+
+    function renderCityDumbbell() {
+      const svg = d3.select("#city-dumbbell");
+      if (!svg.size()) return;
+      svg.selectAll("*").remove();
+      const width=620,height=480,margin={top:14,right:30,bottom:42,left:138};
+      const sort = document.getElementById("city-sort")?.value || "hdi2050";
+      const accessor = sort === "gain" ? scenarioCityGain : sort === "population" ? row=>row.GeoNames_Population : scenarioCityHdi;
+      const shown=[...filteredCityRows].sort((a,b)=>accessor(b)-accessor(a)).slice(0,14);
+      if (!shown.length) { renderEmptyChart(svg,width,height,"No cities match the active filters"); return; }
+      const x=d3.scaleLinear().domain([Math.max(.35,d3.min(shown,row=>Math.min(row.City_HDI_2025,scenarioCityHdi(row)))-.025),Math.min(1,d3.max(shown,row=>Math.max(row.City_HDI_2025,scenarioCityHdi(row)))+.02)]).range([margin.left,width-margin.right]);
+      const y=d3.scaleBand().domain(shown.map(row=>row.GeoNames_ID)).range([margin.top,height-margin.bottom]).padding(.38);
+      svg.append("g").attr("transform",`translate(0,${height-margin.bottom})`).call(d3.axisBottom(x).ticks(6).tickFormat(d3.format(".3f"))).call(g=>g.selectAll("text").attr("fill","#8fa6bf")).call(g=>g.selectAll("line,path").attr("stroke","rgba(164,198,244,.2)"));
+      svg.append("g").attr("transform",`translate(${margin.left},0)`).call(d3.axisLeft(y).tickFormat(id=>{const row=shown.find(item=>item.GeoNames_ID===id);return row?`${row.City}${row.Is_Capital?" ★":""}`:""})).call(g=>g.selectAll("text").attr("fill","#dbe8f7").attr("font-size",10)).call(g=>g.select("path").remove()).call(g=>g.selectAll("line").remove());
+      svg.append("g").selectAll("line.city-link").data(shown).join("line").attr("class","city-link").attr("x1",row=>x(row.City_HDI_2025)).attr("x2",row=>x(scenarioCityHdi(row))).attr("y1",row=>y(row.GeoNames_ID)+y.bandwidth()/2).attr("y2",row=>y(row.GeoNames_ID)+y.bandwidth()/2).attr("stroke",row=>scenarioCityGain(row)>=0?"#63e6ba":"#e65b78").attr("stroke-width",3).attr("opacity",.7);
+      svg.append("g").selectAll("circle.city-start").data(shown).join("circle").attr("cx",row=>x(row.City_HDI_2025)).attr("cy",row=>y(row.GeoNames_ID)+y.bandwidth()/2).attr("r",4).attr("fill","#07111e").attr("stroke","#a9bfd5").attr("stroke-width",2);
+      svg.append("g").selectAll("circle.city-end").data(shown).join("circle").attr("cx",row=>x(scenarioCityHdi(row))).attr("cy",row=>y(row.GeoNames_ID)+y.bandwidth()/2).attr("r",5).attr("fill",cityColor).attr("stroke","#fff").attr("stroke-width",1).attr("tabindex",0).attr("role","button").attr("aria-label",row=>`${row.City}, ${row.Country}: 2025 ${fmt(row.City_HDI_2025,3)}, 2050 ${fmt(scenarioCityHdi(row),3)}`).on("click",(event,row)=>setSelectedCity(row)).on("keydown",(event,row)=>{if(["Enter"," "].includes(event.key)){event.preventDefault();setSelectedCity(row)}});
+      svg.append("text").attr("x",(margin.left+width-margin.right)/2).attr("y",height-7).attr("text-anchor","middle").attr("fill","#8fa6bf").attr("font-size",11).text("Human Development Index");
+    }
+
+    function renderCityTable() {
+      const body=document.querySelector("#city-data-table tbody");
+      if (!body) return;
+      const rows=[...filteredCityRows].sort((a,b)=>scenarioCityHdi(b)-scenarioCityHdi(a));
+      body.innerHTML=rows.map(row=>{const hdi2050=scenarioCityHdi(row),gain=scenarioCityGain(row);return `<tr tabindex="0" data-city-id="${row.GeoNames_ID}" class="${selectedCity?.GeoNames_ID===row.GeoNames_ID?"selected":""}" aria-label="Select ${escapeAttr(row.City)}, ${escapeAttr(row.Country)}"><td><strong>${escapeHtml(row.City)}</strong></td><td>${escapeHtml(row.Country)}</td><td><span class="city-badge ${row.Is_Capital?"capital":""}">${row.Is_Capital?"Capital":"Major city"}</span></td><td>${escapeHtml(cityMethodLabel(row))}</td><td>${fmt(row.City_HDI_2025,3)}</td><td>${fmt(hdi2050,3)}</td><td class="${gain>=0?"gain-pos":"gain-neg"}">${gain>=0?"+":""}${fmt(gain,3)}</td><td>${cityPopulation(row.GeoNames_Population)}</td><td>${escapeHtml(row.Confidence)}</td></tr>`}).join("");
+      body.querySelectorAll("tr").forEach(tr=>{const select=()=>setSelectedCity(cityRows.find(row=>row.GeoNames_ID===tr.dataset.cityId));tr.addEventListener("click",select);tr.addEventListener("keydown",event=>{if(["Enter"," "].includes(event.key)){event.preventDefault();select()}})});
+      document.getElementById("city-table-caption").textContent=`${rows.length} modeled urban estimates. Values are scenario estimates, not official municipal HDI observations.`;
+    }
+
+    function renderCityWorkspace() {
+      if (!cityRows.length) return;
+      const visible=filteredCityRows.length?filteredCityRows:[];
+      document.getElementById("city-kpi-count").textContent=cityRows.length.toLocaleString();
+      document.getElementById("city-kpi-capitals").textContent=cityRows.filter(row=>row.Is_Capital).length.toLocaleString();
+      document.getElementById("city-kpi-2025").textContent=fmt(d3.median(cityRows,row=>row.City_HDI_2025),3);
+      document.getElementById("city-kpi-2050").textContent=fmt(d3.median(cityRows,scenarioCityHdi),3);
+      renderSelectedCity(); renderCityMap(); renderCityDumbbell(); renderCityTable();
+    }
+
+    function setupCityWorkspace() {
+      const select=document.getElementById("city-continent");
+      [...new Set(cityRows.map(row=>row.Continent).filter(Boolean))].sort().forEach(value=>select.insertAdjacentHTML("beforeend",`<option value="${escapeAttr(value)}">${escapeHtml(value)}</option>`));
+      ["city-search","city-continent","city-type","city-year","city-sort"].forEach(id=>document.getElementById(id)?.addEventListener(id==="city-search"?"input":"change",applyCityFilters));
+      document.getElementById("city-reset")?.addEventListener("click",()=>{document.getElementById("city-search").value="";document.getElementById("city-continent").value="";document.getElementById("city-type").value="all";document.getElementById("city-year").value="2050";document.getElementById("city-sort").value="hdi2050";selectedCity=null;applyCityFilters()});
+      filteredCityRows=[...cityRows];
+      selectedCity=cityRows.find(row=>row.Is_Capital&&row.ISO3==="IND")||cityRows[0];
+      renderCityWorkspace(); setSelectedCity(selectedCity);
+    }
 
     function mapViewportTransform() {
       const preset = mapRegionPresets[activeMapRegion] || mapRegionPresets.world;
@@ -7966,13 +8235,14 @@ LIVE_EVIDENCE: ${JSON.stringify(hdiGptEvidencePayload(prompt))}`
 
     function commandEntries(query = "") {
       const pages = [
-        ["Overview","overview"],["Filters & Maps","filters"],["Subdivisions","subdivisions"],["HDI-GPT","hdi-gpt"],["Research","research"],["Comparison Maps","comparison-maps"],["Tuning & Charts","tuning"],["Demographic Context","ethnic-mosaic"],["Validation","validation"],["Explorer","explorer"],["Data Table","table"]
+        ["Overview","overview"],["Filters & Maps","filters"],["Subdivisions","subdivisions"],["Cities","cities"],["HDI-GPT","hdi-gpt"],["Research","research"],["Comparison Maps","comparison-maps"],["Tuning & Charts","tuning"],["Demographic Context","ethnic-mosaic"],["Validation","validation"],["Explorer","explorer"],["Data Table","table"]
       ].map(([label,value]) => ({type:"Page",label,value,meta:"Open workspace"}));
       const scenarioItems = Object.entries(scenarios).map(([value,item]) => ({type:"Scenario",label:item.label,value,meta:"Switch scenario"}));
       const countryItems = allRows.map(row => ({type:"Country",label:row.Country,value:row.ISO3,meta:`${row.ISO3} · 2025 HDI ${fmt(row.HDI_Baseline,3)}`}));
       const subdivisionItems = subdivisionRows.map(row => ({type:"Subdivision",label:row.Subdivision,value:`${row.ISO3}|${row.Subdivision}`,meta:`${row.Country} · 2050 ${fmt(row.Subdivision_HDI_2050_Projected,3)}`}));
+      const cityItems = cityRows.map(row => ({type:"City",label:row.City,value:row.GeoNames_ID,meta:`${row.Country} · 2050 HDI ${fmt(scenarioCityHdi(row),3)}`}));
       const value = query.trim().toLowerCase();
-      const all = [...pages,...scenarioItems,...countryItems,...subdivisionItems];
+      const all = [...pages,...scenarioItems,...countryItems,...subdivisionItems,...cityItems];
       return (value ? all.filter(item => `${item.label} ${item.meta} ${item.type}`.toLowerCase().includes(value)) : [...pages,...scenarioItems]).slice(0, 12);
     }
 
@@ -7999,6 +8269,15 @@ LIVE_EVIDENCE: ${JSON.stringify(hdiGptEvidencePayload(prompt))}`
         const frame = document.getElementById("subdivision-explorer-frame");
         if (country && frame) frame.src = `subnational-hdi-infographic.html?country=${encodeURIComponent(country.Country)}&subdivision=${encodeURIComponent(subdivision)}`;
         showPage("subdivisions", true);
+      }
+      if (item.type === "City") {
+        const row = cityRows.find(city => city.GeoNames_ID === item.value);
+        if (row) {
+          document.getElementById("city-search").value = row.City;
+          applyCityFilters();
+          setSelectedCity(row);
+          showPage("cities", true);
+        }
       }
       setCommandPaletteOpen(false);
     }
@@ -8356,7 +8635,7 @@ LIVE_EVIDENCE: ${JSON.stringify(hdiGptEvidencePayload(prompt))}`
     }
 
     function setupKeyboardShortcuts() {
-      const navOrder = ["overview", "filters", "comparison-maps", "tuning", "research", "subdivisions", "ethnic-mosaic", "hdi-gpt", "validation"];
+      const navOrder = ["overview", "filters", "comparison-maps", "tuning", "research", "subdivisions", "cities", "ethnic-mosaic", "hdi-gpt", "validation"];
       document.addEventListener("keydown", event => {
         const target = event.target;
         const typing = target && ["INPUT", "SELECT", "TEXTAREA"].includes(target.tagName);
@@ -8422,6 +8701,7 @@ LIVE_EVIDENCE: ${JSON.stringify(hdiGptEvidencePayload(prompt))}`
       redrawMaps();
       renderCharts();
       renderTable();
+      if (id === "cities") renderCityWorkspace();
       updateHdiGptContext();
       announce(`${page.dataset.pageTitle || id} page opened.`);
     }
@@ -8430,6 +8710,13 @@ LIVE_EVIDENCE: ${JSON.stringify(hdiGptEvidencePayload(prompt))}`
       try {
         allRows = (await d3.csv(csvPath, normalize)).filter(d => d.ISO3 && d.Country);
         subdivisionRows = (await d3.csv(subdivisionCsvPath, normalizeSubdivisionRow)).filter(d => d.ISO3 && d.Country && d.Subdivision);
+        try {
+          cityRows = (await d3.csv(cityCsvPath, normalizeCityRow)).filter(d => d.ISO3 && d.Country && d.City && Number.isFinite(d.City_HDI_2025) && Number.isFinite(d.City_HDI_2050));
+          setupCityWorkspace();
+        } catch (cityError) {
+          console.warn("City HDI estimates could not be loaded.", cityError);
+          document.getElementById("city-kpi-count").textContent = "Unavailable";
+        }
         try {
           povertyRows = (await d3.csv(povertyCsvPath, normalizePovertyRow)).filter(d => d.Code && Number.isFinite(d.Year) && Number.isFinite(d.People));
         } catch (povertyError) {
