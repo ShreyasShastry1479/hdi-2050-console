@@ -349,6 +349,7 @@
       z-index: 8;
       backdrop-filter: blur(18px);
     }
+    .controls[hidden] { display: none !important; }
     .control-group {
       display: flex;
       flex-wrap: wrap;
@@ -2521,7 +2522,7 @@
       </div>
     </nav>
 
-    <section class="controls" aria-label="Persistent research controls">
+    <section class="controls" aria-label="Filters and map controls" hidden>
       <div class="control-group primary-controls">
         <div class="search-shell">
           <input id="search" type="search" placeholder="Search country or ISO3" aria-label="Search country or ISO3" autocomplete="off" aria-autocomplete="list" aria-controls="search-suggestions" aria-expanded="false">
@@ -2536,8 +2537,8 @@
           <option value="stagnation">Stagnation stress test</option>
         </select>
         <div class="view-segment" role="group" aria-label="Map year view">
-          <button type="button" class="active" data-view="both" aria-label="Show 1998, 2025, and 2050 maps"><span>All years</span></button>
-          <button type="button" data-view="historical" aria-label="Show 1998 HDI map only"><span>1998</span></button>
+          <button type="button" class="active" data-view="both" aria-label="Show HDR 2000, 2025, and 2050 maps"><span>All years</span></button>
+          <button type="button" data-view="historical" aria-label="Show HDR 2000 historical HDI map only"><span>2000</span></button>
           <button type="button" data-view="baseline" aria-label="Show 2025 map only"><span>2025</span></button>
           <button type="button" data-view="projection" aria-label="Show 2050 map only"><span>2050</span></button>
         </div>
@@ -8948,6 +8949,9 @@ LIVE_EVIDENCE: ${JSON.stringify(hdiGptEvidencePayload(prompt))}`
     function showPage(id, updateUrl = true) {
       const page = document.getElementById(id);
       if (!page || !page.classList.contains("page-view")) return;
+      const mapControls = document.querySelector(".controls");
+      const showsMapControls = id === "filters" || page.dataset.pageGroup === "filters";
+      if (mapControls) mapControls.toggleAttribute("hidden", !showsMapControls);
       document.querySelectorAll(".page-view").forEach(section => {
         const samePage = section.id === id || section.dataset.pageGroup === id;
         section.classList.toggle("active-page", samePage);
