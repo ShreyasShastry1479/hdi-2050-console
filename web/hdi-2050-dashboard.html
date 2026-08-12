@@ -4233,7 +4233,8 @@
 
     const hdiDisplayColumns = new Set([
       "HDI_Baseline", "HDI_2024", "HDI_2050", "HDI_2050_Gain",
-      "HDI_2050_Recomputed_From_Indices", "HDI_P10", "HDI_P90"
+      "HealthIndex_2025", "HealthIndex_2050", "EducationIndex_2025", "EducationIndex_2050",
+      "IncomeIndex_2025", "IncomeIndex_2050", "HDI_2050_Recomputed_From_Indices", "HDI_P10", "HDI_P90"
     ]);
 
     function formatTableValue(column, value) {
@@ -4322,6 +4323,113 @@
         identityAccessLift +
         inclusionLift;
       return Math.max(0.35, Math.min(0.98, value + tuningLift - exclusionDrag - climateMigrationDrag));
+    }
+
+    const scenarioDimensionKeys = {
+      HealthIndex_2050: "health",
+      EducationIndex_2050: "education",
+      IncomeIndex_2050: "income"
+    };
+
+    function reconcileDimensionsToHdi(values, targetHdi) {
+      const floor = 0.001;
+      const target = Math.max(floor, Math.min(1, Number(targetHdi)));
+      const logs = values.map(value => Math.log(Math.max(floor, Math.min(1, Number(value) || floor))));
+      const targetLogSum = 3 * Math.log(target);
+      const floorLog = Math.log(floor);
+      let free = [0, 1, 2];
+
+      for (let iteration = 0; iteration < 4 && free.length; iteration += 1) {
+        const currentLogSum = logs.reduce((sum, value) => sum + value, 0);
+        const shift = (targetLogSum - currentLogSum) / free.length;
+        const nextFree = [];
+        let clamped = false;
+        free.forEach(index => {
+          const proposed = logs[index] + shift;
+          if (proposed > 0) {
+            logs[index] = 0;
+            clamped = true;
+          } else if (proposed < floorLog) {
+            logs[index] = floorLog;
+            clamped = true;
+          } else {
+            logs[index] = proposed;
+            nextFree.push(index);
+          }
+        });
+        if (!clamped) break;
+        free = nextFree;
+      }
+
+      const remaining = targetLogSum - logs.reduce((sum, value) => sum + value, 0);
+      if (Math.abs(remaining) > 1e-12) {
+        const adjustable = free.length ? free[free.length - 1] : logs.findIndex(value => value < -1e-12 && value > floorLog + 1e-12);
+        if (adjustable >= 0) logs[adjustable] = Math.max(floorLog, Math.min(0, logs[adjustable] + remaining));
+      }
+      return logs.map(Math.exp);
+    }
+
+    function scenarioDimensions(row) {
+      if (!row) return {health: NaN, education: NaN, income: NaN, hdi: NaN};
+      const target = scenarioHdi(row);
+      const values = reconcileDimensionsToHdi([
+        row.HealthIndex_2050,
+        row.EducationIndex_2050,
+        row.IncomeIndex_2050
+      ], target);
+      const hdi = Math.pow(values[0] * values[1] * values[2], 1 / 3);
+      return {health: values[0], education: values[1], income: values[2], hdi};
+    }
+
+    function roundedDimensionsForDisplay(exactValues, targetHdi) {
+      const target = Number(Number(targetHdi).toFixed(3));
+      const base = exactValues.map(value => Number(value.toFixed(3)));
+      let best = null;
+
+      function consider(values) {
+        if (values.some(value => value < 0.001 || value > 1)) return;
+        const hdi = Math.pow(values[0] * values[1] * values[2], 1 / 3);
+        if (Number(hdi.toFixed(3)) !== target) return;
+        const distance = values.reduce((sum, value, index) => sum + Math.pow(value - exactValues[index], 2), 0);
+        if (!best || distance < best.distance) best = {values: [...values], hdi, distance};
+      }
+
+      consider(base);
+      for (let adjustable = 0; adjustable < 3; adjustable += 1) {
+        const otherProduct = base.reduce((product, value, index) => index === adjustable ? product : product * value, 1);
+        const ideal = otherProduct > 0 ? Math.pow(target, 3) / otherProduct : exactValues[adjustable];
+        const center = Math.round(ideal * 1000);
+        for (let offset = -4; offset <= 4; offset += 1) {
+          const candidate = [...base];
+          candidate[adjustable] = (center + offset) / 1000;
+          consider(candidate);
+        }
+      }
+
+      const values = best?.values || base;
+      const hdi = Math.pow(values[0] * values[1] * values[2], 1 / 3);
+      return {health: values[0], education: values[1], income: values[2], hdi};
+    }
+
+    function displayedScenarioDimensions(row) {
+      const exact = scenarioDimensions(row);
+      return roundedDimensionsForDisplay([exact.health, exact.education, exact.income], scenarioHdi(row));
+    }
+
+    function scenarioDimensionValue(row, key) {
+      const name = scenarioDimensionKeys[key];
+      return name ? displayedScenarioDimensions(row)[name] : Number(row?.[key]);
+    }
+
+    function scenarioTableValue(row, column) {
+      if (column === "HDI_2050") return scenarioHdi(row);
+      if (column === "HDI_2050_Gain") return scenarioGain(row);
+      const displayed = scenarioDimensionKeys[column] || column === "HDI_2050_Recomputed_From_Indices"
+        ? displayedScenarioDimensions(row)
+        : null;
+      if (column === "HDI_2050_Recomputed_From_Indices") return displayed.hdi;
+      if (scenarioDimensionKeys[column]) return displayed[scenarioDimensionKeys[column]];
+      return row?.[column];
     }
 
     function scenarioGain(row) {
@@ -4949,11 +5057,11 @@
         .attr("d", path)
         .attr("fill", f => {
           const d = getDatum(f);
-          return d ? colorForHDI(series.key === "Scenario_HDI_2050" ? scenarioHdi(d) : d[series.key]) : null;
+          return d ? colorForHDI(valueForSeries(d, series)) : null;
         })
         .attr("tabindex", f => { const d=getDatum(f); return d&&filteredIso.has(d.ISO3)?0:-1; })
         .attr("role", f => getDatum(f)?"button":"img")
-        .attr("aria-label", f => { const d=getDatum(f); if(!d)return "Country with no HDI data"; const value=series.key==="Scenario_HDI_2050"?scenarioHdi(d):d[series.key]; return `${d.Country}, ${series.label}, ${fmt(value)}. 2025 rank ${d.UNDP_Rank_2023 || "not available"}; projected 2050 rank ${d.Rank || "not available"}. Activate to inspect country.`; })
+        .attr("aria-label", f => { const d=getDatum(f); if(!d)return "Country with no HDI data"; const value=valueForSeries(d,series); return `${d.Country}, ${series.label}, ${fmt(value)}. 2025 rank ${d.UNDP_Rank_2023 || "not available"}; projected 2050 rank ${d.Rank || "not available"}. Activate to inspect country.`; })
         .classed("active", f => {
           const d = getDatum(f);
           return d && activeCountry && d.ISO3 === activeCountry.ISO3;
@@ -4985,6 +5093,7 @@
     function valueForSeries(row, series) {
       if (!row || !series) return NaN;
       if (series.key === "Scenario_HDI_2050") return scenarioHdi(row);
+      if (scenarioDimensionKeys[series.key]) return scenarioDimensionValue(row, series.key);
       return Number(row[series.key]);
     }
 
@@ -5157,14 +5266,15 @@
 
     function showTooltip(event, d, series) {
       const seriesLabel = series?.label || "HDI";
-      const value = series?.key === "Scenario_HDI_2050" ? scenarioHdi(d) : d[series?.key];
+      const value = series ? valueForSeries(d, series) : scenarioHdi(d);
       const seriesValue = series ? fmt(value) : fmt(scenarioHdi(d));
       const gain = scenarioGain(d);
       const hdiGain = gain >= 0 ? `+${fmt(gain)}` : fmt(gain);
+      const scenario = displayedScenarioDimensions(d);
       const dimensions = [
-        ["Health", d.HealthIndex_2050],
-        ["Education", d.EducationIndex_2050],
-        ["Income", d.IncomeIndex_2050]
+        ["Health", scenario.health],
+        ["Education", scenario.education],
+        ["Income", scenario.income]
       ];
       tooltip.innerHTML = `<div class="tooltip-head"><div><strong>${d.Country}</strong><br><small>${d.ISO3} · ${seriesLabel} ${seriesValue}</small></div><div class="tooltip-ranks">2025 #${d.UNDP_Rank_2023 || "--"}<br>2050 #${d.Rank || "--"}</div></div><div>${scenarios[activeScenario].label}</div><div class="tooltip-shift">${fmt(d.HDI_Baseline)} → ${fmt(scenarioHdi(d))} (${hdiGain})</div>${dimensions.map(([label,index]) => `<div class="tooltip-dimension"><span>${label}</span><div class="tooltip-track"><div class="tooltip-fill" style="width:${Math.max(0,Math.min(100,Number(index)*100))}%"></div></div><strong>${fmt(index,3)}</strong></div>`).join("")}<div class="panel-note" style="margin-top:8px">Population 2050 ${fmtMaybe(d.Population_2050)}</div>`;
       tooltip.style.left = `${Math.max(8, Math.min(window.innerWidth - 345, event.clientX + 14))}px`;
@@ -5202,6 +5312,20 @@
         }
       }
       return weightTotal > 0 ? weightedTotal / weightTotal : avg(rows, key);
+    }
+
+    function weightedMeanBy(rows, accessor, weightKey) {
+      let weightedTotal = 0;
+      let weightTotal = 0;
+      for (const row of rows) {
+        const value = Number(accessor(row));
+        const weight = Number(row[weightKey]);
+        if (Number.isFinite(value) && Number.isFinite(weight) && weight > 0) {
+          weightedTotal += value * weight;
+          weightTotal += weight;
+        }
+      }
+      return weightTotal > 0 ? weightedTotal / weightTotal : d3.mean(rows, accessor);
     }
 
     function weightedMeanScenario(rows, weightKey) {
@@ -5464,7 +5588,8 @@
       const rows = ["CHN","IND","PHL","NGA"].map(iso=>allRows.find(row=>row.ISO3===iso)).filter(Boolean);
       container.innerHTML = rows.map(row=>{
         const workforceChange = Number(row.WorkforceChangePP_2024_to_2050);
-        return `<article class="mobility-case" style="--case-color:${colors[row.ISO3]}"><h4>${escapeHtml(row.Country)} <span>${escapeHtml(row.ISO3)} / ${escapeHtml(row.DevelopmentMomentumTier || "scenario")}</span></h4><p>${escapeHtml(mobilityCaseNarrative(row))}</p><div class="mobility-case-metrics"><div class="mobility-case-metric"><span>HDI path</span><strong>${fmt(row.HDI_Baseline,3)} &rarr; ${fmt(scenarioHdi(row),3)}</strong></div><div class="mobility-case-metric"><span>UN fertility 2023</span><strong>${fmt(unFertility2023[row.ISO3],2)}</strong></div><div class="mobility-case-metric"><span>Workforce share</span><strong>${fmt(row.WorkingAgePct_2024,1)}% &rarr; ${fmt(row.WorkingAgePct_2050,1)}%</strong></div><div class="mobility-case-metric"><span>Workforce shift</span><strong>${workforceChange>=0?"+":""}${fmt(workforceChange,1)} pp</strong></div><div class="mobility-case-metric"><span>Education path</span><strong>${fmt(row.EducationIndex_2025,3)} &rarr; ${fmt(row.EducationIndex_2050,3)}</strong></div><div class="mobility-case-metric"><span>Median age 2050</span><strong>${fmt(row.MedianAge_2050,1)}</strong></div><div class="mobility-case-metric"><span>Human-capital absorption</span><strong>${fmt(row.HumanCapitalAbsorption,3)}</strong></div><div class="mobility-case-metric"><span>Demographic dividend</span><strong>${fmt(row.DemographicDividend,3)}</strong></div></div></article>`;
+        const scenario = displayedScenarioDimensions(row);
+        return `<article class="mobility-case" style="--case-color:${colors[row.ISO3]}"><h4>${escapeHtml(row.Country)} <span>${escapeHtml(row.ISO3)} / ${escapeHtml(row.DevelopmentMomentumTier || "scenario")}</span></h4><p>${escapeHtml(mobilityCaseNarrative(row))}</p><div class="mobility-case-metrics"><div class="mobility-case-metric"><span>HDI path</span><strong>${fmt(row.HDI_Baseline,3)} &rarr; ${fmt(scenarioHdi(row),3)}</strong></div><div class="mobility-case-metric"><span>UN fertility 2023</span><strong>${fmt(unFertility2023[row.ISO3],2)}</strong></div><div class="mobility-case-metric"><span>Workforce share</span><strong>${fmt(row.WorkingAgePct_2024,1)}% &rarr; ${fmt(row.WorkingAgePct_2050,1)}%</strong></div><div class="mobility-case-metric"><span>Workforce shift</span><strong>${workforceChange>=0?"+":""}${fmt(workforceChange,1)} pp</strong></div><div class="mobility-case-metric"><span>Education path</span><strong>${fmt(row.EducationIndex_2025,3)} &rarr; ${fmt(scenario.education,3)}</strong></div><div class="mobility-case-metric"><span>Median age 2050</span><strong>${fmt(row.MedianAge_2050,1)}</strong></div><div class="mobility-case-metric"><span>Human-capital absorption</span><strong>${fmt(row.HumanCapitalAbsorption,3)}</strong></div><div class="mobility-case-metric"><span>Demographic dividend</span><strong>${fmt(row.DemographicDividend,3)}</strong></div></div></article>`;
       }).join("");
     }
 
@@ -5577,7 +5702,10 @@
         NGA:{color:"#65f0bd",label:"Decisive future test"}
       };
       const rows = ["CHN","IND","NGA"].map(iso=>allRows.find(row=>row.ISO3===iso)).filter(Boolean);
-      container.innerHTML = rows.map(row=>`<article class="poverty-country" style="--country-color:${meta[row.ISO3].color}"><h4>${escapeHtml(row.Country)} <span>${meta[row.ISO3].label}</span></h4><p>${escapeHtml(povertyCountryNarrative(row))}</p><div class="poverty-country-metrics"><div><span>HDI path</span><strong>${fmt(row.HDI_Baseline,3)} &rarr; ${fmt(scenarioHdi(row),3)}</strong></div><div><span>Education path</span><strong>${fmt(row.EducationIndex_2025,3)} &rarr; ${fmt(row.EducationIndex_2050,3)}</strong></div><div><span>2050 working age</span><strong>${fmt(row.WorkingAgePct_2050,1)}%</strong></div><div><span>Digital infrastructure</span><strong>${fmt(row.DigitalInfraDevelopment,3)}</strong></div></div></article>`).join("");
+      container.innerHTML = rows.map(row=>{
+        const scenario = displayedScenarioDimensions(row);
+        return `<article class="poverty-country" style="--country-color:${meta[row.ISO3].color}"><h4>${escapeHtml(row.Country)} <span>${meta[row.ISO3].label}</span></h4><p>${escapeHtml(povertyCountryNarrative(row))}</p><div class="poverty-country-metrics"><div><span>HDI path</span><strong>${fmt(row.HDI_Baseline,3)} &rarr; ${fmt(scenarioHdi(row),3)}</strong></div><div><span>Education path</span><strong>${fmt(row.EducationIndex_2025,3)} &rarr; ${fmt(scenario.education,3)}</strong></div><div><span>2050 working age</span><strong>${fmt(row.WorkingAgePct_2050,1)}%</strong></div><div><span>Digital infrastructure</span><strong>${fmt(row.DigitalInfraDevelopment,3)}</strong></div></div></article>`;
+      }).join("");
     }
 
     function renderAfricaOpportunityTable() {
@@ -5847,11 +5975,11 @@
         ["Human capital", "HumanCapitalAbsorption"],
         ["HDI", "Scenario_HDI"]
       ];
-      const global = Object.fromEntries(axes.map(([, key]) => [key, key === "Scenario_HDI" ? calibratedWorldHdi2050(rows) : weightedMean(rows, key, "Population_2050")]));
+      const global = Object.fromEntries(axes.map(([, key]) => [key, key === "Scenario_HDI" ? calibratedWorldHdi2050(rows) : scenarioDimensionKeys[key] ? weightedMeanBy(rows, row => scenarioDimensionValue(row, key), "Population_2050") : weightedMean(rows, key, "Population_2050")]));
       const baselineSelected = selected ? {...selected} : null;
       const pointsFor = source => axes.map(([, key], i) => {
         const angle = -Math.PI / 2 + i * Math.PI * 2 / axes.length;
-        const value = key === "Scenario_HDI" ? scenarioHdi(source) : Number(source[key]);
+        const value = metricValue(source, key);
         return [cx + Math.cos(angle) * radius * Math.max(0, Math.min(1, value)), cy + Math.sin(angle) * radius * Math.max(0, Math.min(1, value)), value];
       });
       const globalPoints = axes.map(([, key], i) => {
@@ -5928,10 +6056,11 @@
     function policyFlagsFor(row) {
       if (!row) return [];
       const flags = [];
+      const scenario = scenarioDimensions(row);
       const dimensions = [
-        {label: "health", value: Number(row.HealthIndex_2050)},
-        {label: "education", value: Number(row.EducationIndex_2050)},
-        {label: "income", value: Number(row.IncomeIndex_2050)}
+        {label: "health", value: scenario.health},
+        {label: "education", value: scenario.education},
+        {label: "income", value: scenario.income}
       ].filter(item => Number.isFinite(item.value)).sort((a, b) => a.value - b.value);
       if (dimensions.length) {
         const weakest = dimensions[0];
@@ -6091,12 +6220,13 @@
     function countryDataPacket(row) {
       if (!row) return null;
       const drivers = driverColumns.map(([label, key]) => ({label, value: Number(row[key]) || 0})).sort((a, b) => Math.abs(b.value) - Math.abs(a.value));
+      const scenario = scenarioDimensions(row);
       return {
         country: row.Country, iso3: row.ISO3,
         hdi_2025: Number(row.HDI_Baseline), hdi_2050: scenarioHdi(row), hdi_gain: scenarioGain(row), scenario_rank_2050: scenarioRankFor(row),
-        health: {index_2025: Number(row.HealthIndex_2025), index_2050: Number(row.HealthIndex_2050)},
-        education: {index_2025: Number(row.EducationIndex_2025), index_2050: Number(row.EducationIndex_2050)},
-        income: {index_2025: Number(row.IncomeIndex_2025), index_2050: Number(row.IncomeIndex_2050)},
+        health: {index_2025: Number(row.HealthIndex_2025), index_2050: scenario.health},
+        education: {index_2025: Number(row.EducationIndex_2025), index_2050: scenario.education},
+        income: {index_2025: Number(row.IncomeIndex_2025), index_2050: scenario.income},
         uncertainty: {p10: Number(row.HDI_P10), p50: Number(row.HDI_P50), p90: Number(row.HDI_P90)},
         profile: {trajectory: row.Trajectory, momentum_tier: row.DevelopmentMomentumTier, population_2050: Number(row.Population_2050)},
         demographics: {median_age_2050: Number(row.MedianAge_2050), working_age_pct_2050: Number(row.WorkingAgePct_2050), demographic_dividend: Number(row.DemographicDividend), human_capital_absorption: Number(row.HumanCapitalAbsorption), dependency_pressure: Number(row.DependencyPressure)},
@@ -6233,7 +6363,8 @@
           .map(([label, key]) => ({label, value: Number(row[key]) || 0}))
           .sort((a, b) => Math.abs(b.value) - Math.abs(a.value))
           .slice(0, 3);
-        return `${hdiSummaryLine(row)}<ul>${drivers.map(driver => `<li>${escapeHtml(driver.label)} contribution: ${driver.value >= 0 ? "+" : ""}${fmt(driver.value, 4)}</li>`).join("")}<li>2050 indices: health ${fmt(row.HealthIndex_2050)}, education ${fmt(row.EducationIndex_2050)}, income ${fmt(row.IncomeIndex_2050)}</li><li>P10-P90: ${fmt(row.HDI_P10)} - ${fmt(row.HDI_P90)}</li></ul>`;
+        const scenario = displayedScenarioDimensions(row);
+        return `${hdiSummaryLine(row)}<ul>${drivers.map(driver => `<li>${escapeHtml(driver.label)} contribution: ${driver.value >= 0 ? "+" : ""}${fmt(driver.value, 4)}</li>`).join("")}<li>2050 indices: health ${fmt(scenario.health)}, education ${fmt(scenario.education)}, income ${fmt(scenario.income)}</li><li>P10-P90: ${fmt(row.HDI_P10)} - ${fmt(row.HDI_P90)}</li></ul>`;
       }).join("");
     }
 
@@ -6305,14 +6436,15 @@
       const showEducation = lower.includes("education") || lower.includes("school") || !lower.includes("health") && !lower.includes("income");
       const showIncome = lower.includes("income") || lower.includes("gni") || !lower.includes("health") && !lower.includes("education");
       return rows.slice(0, 3).map(row => {
+        const scenario = displayedScenarioDimensions(row);
         const bits = [];
-        if (showHealth) bits.push(`health ${fmt(row.HealthIndex_2050)} (${fmt(pctDelta(row.HealthIndex_2025, row.HealthIndex_2050), 2)}% from 2025)`);
-        if (showEducation) bits.push(`education ${fmt(row.EducationIndex_2050)} (${fmt(pctDelta(row.EducationIndex_2025, row.EducationIndex_2050), 2)}% from 2025)`);
-        if (showIncome) bits.push(`income ${fmt(row.IncomeIndex_2050)} (${fmt(pctDelta(row.IncomeIndex_2025, row.IncomeIndex_2050), 2)}% from 2025)`);
+        if (showHealth) bits.push(`health ${fmt(scenario.health)} (${fmt(pctDelta(row.HealthIndex_2025, scenario.health), 2)}% from 2025)`);
+        if (showEducation) bits.push(`education ${fmt(scenario.education)} (${fmt(pctDelta(row.EducationIndex_2025, scenario.education), 2)}% from 2025)`);
+        if (showIncome) bits.push(`income ${fmt(scenario.income)} (${fmt(pctDelta(row.IncomeIndex_2025, scenario.income), 2)}% from 2025)`);
         const strongest = [
-          ["health", row.HealthIndex_2050],
-          ["education", row.EducationIndex_2050],
-          ["income", row.IncomeIndex_2050]
+          ["health", scenario.health],
+          ["education", scenario.education],
+          ["income", scenario.income]
         ].sort((a, b) => b[1] - a[1])[0];
         return `<strong>${escapeHtml(row.Country)}</strong>: ${bits.join("; ")}. Its strongest 2050 component is ${strongest[0]} at ${fmt(strongest[1])}.`;
       }).join("<br>");
@@ -6849,17 +6981,19 @@ LIVE_EVIDENCE: ${JSON.stringify(hdiGptEvidencePayload(prompt))}`
     function renderComparePanel() {
       const rows = compareRows();
       renderComparisonChart(rows);
-      document.getElementById("compare-list").innerHTML = rows.length ? rows.map((row, index) => `
+      document.getElementById("compare-list").innerHTML = rows.length ? rows.map((row, index) => {
+        const scenario = displayedScenarioDimensions(row);
+        return `
         <div class="compare-row">
           <div class="compare-color" style="background:${compareColors[index % compareColors.length]}"></div>
           <div><strong>${row.Country}</strong><br><span class="panel-note">${row.ISO3}</span></div>
           <div>2025<br><strong>${fmt(row.HDI_Baseline)}</strong></div>
           <div>2050<br><strong>${fmt(scenarioHdi(row))}</strong></div>
-          <div>Health<br><strong>${fmt(row.HealthIndex_2050)}</strong></div>
+          <div>Health<br><strong>${fmt(scenario.health)}</strong></div>
           <div>Digital<br><strong>${fmt(row.DigitalInfraDevelopment)}</strong></div>
           <button type="button" class="secondary icon-button" data-remove-compare="${row.ISO3}" aria-label="Remove ${escapeAttr(row.Country)} from comparison">x</button>
-        </div>
-      `).join("") : `<div class="panel-note">Check countries in the table to compare trajectories and model factors.</div>`;
+        </div>`;
+      }).join("") : `<div class="panel-note">Check countries in the table to compare trajectories and model factors.</div>`;
       document.querySelectorAll("[data-remove-compare]").forEach(button => {
         button.addEventListener("click", () => {
           comparedIso.delete(button.dataset.removeCompare);
@@ -6889,7 +7023,9 @@ LIVE_EVIDENCE: ${JSON.stringify(hdiGptEvidencePayload(prompt))}`
         ["Income %", "Delta_Income"],
         ["HDI %", "Delta_HDI"]
       ]);
-      grid.innerHTML = rows.map((row, index) => `
+      grid.innerHTML = rows.map((row, index) => {
+        const scenario = scenarioDimensions(row);
+        return `
         <div class="compare-country-card">
           <div class="country-line">
             <span>${escapeAttr(row.Country)}</span>
@@ -6900,13 +7036,13 @@ LIVE_EVIDENCE: ${JSON.stringify(hdiGptEvidencePayload(prompt))}`
             <div>2050 HDI<strong>${fmt(scenarioHdi(row))}</strong></div>
             <div>Interval<strong>${fmt(row.HDI_P10)} - ${fmt(row.HDI_P90)}</strong></div>
             <div>Rank range<strong>#${row.Rank_Best_P90} to #${row.Rank_Worst_P10}</strong></div>
-            <div>Health velocity<strong>${fmt(pctDelta(row.HealthIndex_2025, row.HealthIndex_2050), 2)}%</strong></div>
-            <div>Education velocity<strong>${fmt(pctDelta(row.EducationIndex_2025, row.EducationIndex_2050), 2)}%</strong></div>
-            <div>Income velocity<strong>${fmt(pctDelta(row.IncomeIndex_2025, row.IncomeIndex_2050), 2)}%</strong></div>
+            <div>Health velocity<strong>${fmt(pctDelta(row.HealthIndex_2025, scenario.health), 2)}%</strong></div>
+            <div>Education velocity<strong>${fmt(pctDelta(row.EducationIndex_2025, scenario.education), 2)}%</strong></div>
+            <div>Income velocity<strong>${fmt(pctDelta(row.IncomeIndex_2025, scenario.income), 2)}%</strong></div>
             <div>Future readiness<strong>${fmt(row.FutureReadiness)}</strong></div>
           </div>
-        </div>
-      `).join("");
+        </div>`;
+      }).join("");
     }
 
     async function loadBacktest() {
@@ -7148,9 +7284,10 @@ LIVE_EVIDENCE: ${JSON.stringify(hdiGptEvidencePayload(prompt))}`
     function metricValue(row, key) {
       if (key === "Scenario_HDI") return scenarioHdi(row);
       if (key === "Scenario_Gain") return scenarioGain(row);
-      if (key === "Delta_Health") return pctDelta(row.HealthIndex_2025, row.HealthIndex_2050);
-      if (key === "Delta_Education") return pctDelta(row.EducationIndex_2025, row.EducationIndex_2050);
-      if (key === "Delta_Income") return pctDelta(row.IncomeIndex_2025, row.IncomeIndex_2050);
+      if (scenarioDimensionKeys[key]) return scenarioDimensionValue(row, key);
+      if (key === "Delta_Health") return pctDelta(row.HealthIndex_2025, scenarioDimensions(row).health);
+      if (key === "Delta_Education") return pctDelta(row.EducationIndex_2025, scenarioDimensions(row).education);
+      if (key === "Delta_Income") return pctDelta(row.IncomeIndex_2025, scenarioDimensions(row).income);
       if (key === "Delta_HDI") return pctDelta(row.HDI_Baseline, scenarioHdi(row));
       if (key === "Mosaic_EF") return mosaicCountryFeatures.get(row.ISO3)?.CompositionDiversityIndex;
       if (key === "Mosaic_RQ") return mosaicCountryFeatures.get(row.ISO3)?.CompositionConcentrationIndex;
@@ -7296,12 +7433,13 @@ LIVE_EVIDENCE: ${JSON.stringify(hdiGptEvidencePayload(prompt))}`
       const avgHdi2050 = isGlobal ? calibratedWorldHdi2050(rows) : weightedMeanScenario(rows, "Population_2050");
       const avgGain = avgHdi2050 - avgHdi2025;
       const health2025 = weightedMean(rows, "HealthIndex_2025", "Population_2024");
-      const health2050 = weightedMean(rows, "HealthIndex_2050", "Population_2050");
+      const rawHealth2050 = weightedMeanBy(rows, row => scenarioDimensions(row).health, "Population_2050");
       const education2025 = weightedMean(rows, "EducationIndex_2025", "Population_2024");
-      const education2050 = weightedMean(rows, "EducationIndex_2050", "Population_2050");
+      const rawEducation2050 = weightedMeanBy(rows, row => scenarioDimensions(row).education, "Population_2050");
       const income2025 = weightedMean(rows, "IncomeIndex_2025", "Population_2024");
-      const income2050 = weightedMean(rows, "IncomeIndex_2050", "Population_2050");
-      const hdiFromAverageIndices = Math.pow(health2050 * education2050 * income2050, 1 / 3);
+      const rawIncome2050 = weightedMeanBy(rows, row => scenarioDimensions(row).income, "Population_2050");
+      const reconciled = reconcileDimensionsToHdi([rawHealth2050, rawEducation2050, rawIncome2050], avgHdi2050);
+      const displayed = roundedDimensionsForDisplay(reconciled, avgHdi2050);
       setMetric("country", label);
       setMetric("hdi-2025", fmt(avgHdi2025));
       setMetric("hdi-2050", fmt(avgHdi2050));
@@ -7309,12 +7447,12 @@ LIVE_EVIDENCE: ${JSON.stringify(hdiGptEvidencePayload(prompt))}`
       setMetric("rank-2050", `${rows.length} countries`);
       setMetric("trajectory", rows.length === 1 ? (rows[0].Trajectory || "Mixed") : "Mixed");
       setMetric("health-2025", fmt(health2025));
-      setMetric("health-2050", fmt(health2050));
+      setMetric("health-2050", fmt(displayed.health));
       setMetric("education-2025", fmt(education2025));
-      setMetric("education-2050", fmt(education2050));
+      setMetric("education-2050", fmt(displayed.education));
       setMetric("income-2025", fmt(income2025));
-      setMetric("income-2050", fmt(income2050));
-      setMetric("hdi-from-indices", fmt(hdiFromAverageIndices, 3));
+      setMetric("income-2050", fmt(displayed.income));
+      setMetric("hdi-from-indices", fmt(displayed.hdi, 3));
       renderResearchBrief(activeCountry);
     }
 
@@ -7335,6 +7473,7 @@ LIVE_EVIDENCE: ${JSON.stringify(hdiGptEvidencePayload(prompt))}`
     function setActiveCountry(d) {
       activeCountry = d;
       hideTooltip();
+      const scenario = displayedScenarioDimensions(d);
       document.getElementById("country-jump").value = d.ISO3;
       setMetric("country", `${d.Country} (${d.ISO3})`);
       setMetric("hdi-2025", fmt(d.HDI_Baseline));
@@ -7344,12 +7483,12 @@ LIVE_EVIDENCE: ${JSON.stringify(hdiGptEvidencePayload(prompt))}`
       setMetric("rank-2050", `#${d.Rank}`);
       setMetric("trajectory", d.Trajectory || "--");
       setMetric("health-2025", fmt(d.HealthIndex_2025));
-      setMetric("health-2050", fmt(d.HealthIndex_2050));
+      setMetric("health-2050", fmt(scenario.health));
       setMetric("education-2025", fmt(d.EducationIndex_2025));
-      setMetric("education-2050", fmt(d.EducationIndex_2050));
+      setMetric("education-2050", fmt(scenario.education));
       setMetric("income-2025", fmt(d.IncomeIndex_2025));
-      setMetric("income-2050", fmt(d.IncomeIndex_2050));
-      setMetric("hdi-from-indices", fmt(d.HDI_2050_Recomputed_From_Indices, 3));
+      setMetric("income-2050", fmt(scenario.income));
+      setMetric("hdi-from-indices", fmt(scenario.hdi, 3));
       renderResearchBrief(d);
       renderMosaicSelectedContext();
       renderMosaicOverlayChart();
@@ -7412,7 +7551,7 @@ LIVE_EVIDENCE: ${JSON.stringify(hdiGptEvidencePayload(prompt))}`
               const checked = comparedIso.has(d.ISO3) ? "checked" : "";
               return `<td><label class="compare-cell" data-compare-cell="${d.ISO3}"><input class="compare-toggle" type="checkbox" aria-label="Compare ${escapeAttr(d.Country)}" data-compare="${d.ISO3}" ${checked}><span>Compare</span></label></td>`;
             }
-            const raw = d[col];
+            const raw = scenarioTableValue(d, col);
             let cls = "";
             if (col === "HDI_2050_Gain") cls = Number(raw) >= 0 ? "gain-pos" : "gain-neg";
             if (col === "DevelopmentMomentumTier") return `<td><span class="pill">${raw || ""}</span></td>`;
@@ -7466,8 +7605,8 @@ LIVE_EVIDENCE: ${JSON.stringify(hdiGptEvidencePayload(prompt))}`
     function currentSortedRows() {
       return [...filteredRows].sort((a, b) => {
         const col = sortState.column;
-        const av = a[col];
-        const bv = b[col];
+        const av = scenarioTableValue(a, col);
+        const bv = scenarioTableValue(b, col);
         if (typeof av === "number" && typeof bv === "number") return (av - bv) * sortState.direction;
         return String(av ?? "").localeCompare(String(bv ?? "")) * sortState.direction;
       });
@@ -7494,7 +7633,10 @@ LIVE_EVIDENCE: ${JSON.stringify(hdiGptEvidencePayload(prompt))}`
       const stateUrl = `${window.location.origin}${window.location.pathname}${window.location.search}${window.location.hash}`;
       const csv = [
         [...exportColumns.map(col => labels[col] || col), "Export scenario", "Export generated at", "Export state URL"].map(csvEscape).join(","),
-        ...rows.map(row => [...exportColumns.map(col => hdiDisplayColumns.has(col) ? fmt(row[col], 3) : row[col]), scenarios[activeScenario].label, generatedAt, stateUrl].map(csvEscape).join(",")),
+        ...rows.map(row => [...exportColumns.map(col => {
+          const value = scenarioTableValue(row, col);
+          return hdiDisplayColumns.has(col) ? fmt(value, 3) : value;
+        }), scenarios[activeScenario].label, generatedAt, stateUrl].map(csvEscape).join(",")),
       ].join("\n");
       const blob = new Blob([csv], {type: "text/csv;charset=utf-8"});
       const url = URL.createObjectURL(blob);
@@ -7511,7 +7653,7 @@ LIVE_EVIDENCE: ${JSON.stringify(hdiGptEvidencePayload(prompt))}`
       syncUrlState();
       const rows = currentSortedRows();
       const exportColumns = tableColumns.filter(col => col !== "Compare");
-      const jsonRows = rows.map(row => Object.fromEntries(exportColumns.map(col => [col, row[col] ?? null])));
+      const jsonRows = rows.map(row => Object.fromEntries(exportColumns.map(col => [col, scenarioTableValue(row, col) ?? null])));
       const payload = {
         metadata: {
           generatedAt: new Date().toISOString(),
@@ -7577,6 +7719,7 @@ LIVE_EVIDENCE: ${JSON.stringify(hdiGptEvidencePayload(prompt))}`
       const selectedSubs = [...subs.slice(0, 4), ...subs.slice(-4)].filter((item, index, array) => array.findIndex(other => other.Subdivision === item.Subdivision) === index);
       const summary = qualitativeNote(row, drivers);
       const generated = new Date().toLocaleDateString(undefined, {year: "numeric", month: "long", day: "numeric"});
+      const scenario = displayedScenarioDimensions(row);
       container.innerHTML = `
         <header><div>HDI 2050 Projection Console | Country Intelligence Brief | Version 1.2</div><h1>${escapeAttr(row.Country)}</h1><p>${scenarios[activeScenario].label} | Generated ${generated}</p></header>
         <h2>Executive summary</h2><p>${escapeAttr(summary)}</p>
@@ -7585,9 +7728,9 @@ LIVE_EVIDENCE: ${JSON.stringify(hdiGptEvidencePayload(prompt))}`
           <div class="print-stat"><span>Scenario 2050 HDI</span><strong>${fmt(scenarioHdi(row))}</strong></div>
           <div class="print-stat"><span>Baseline rank / 2050 rank</span><strong>#${row.UNDP_Rank_2023} / #${row.Rank}</strong></div>
           <div class="print-stat"><span>Heuristic P10-P90</span><strong>${fmt(row.HDI_P10)}-${fmt(row.HDI_P90)}</strong></div>
-          <div class="print-stat"><span>Health 2025-2050</span><strong>${fmt(row.HealthIndex_2025)}-${fmt(row.HealthIndex_2050)}</strong></div>
-          <div class="print-stat"><span>Education 2025-2050</span><strong>${fmt(row.EducationIndex_2025)}-${fmt(row.EducationIndex_2050)}</strong></div>
-          <div class="print-stat"><span>Income 2025-2050</span><strong>${fmt(row.IncomeIndex_2025)}-${fmt(row.IncomeIndex_2050)}</strong></div>
+          <div class="print-stat"><span>Health 2025-2050</span><strong>${fmt(row.HealthIndex_2025)}-${fmt(scenario.health)}</strong></div>
+          <div class="print-stat"><span>Education 2025-2050</span><strong>${fmt(row.EducationIndex_2025)}-${fmt(scenario.education)}</strong></div>
+          <div class="print-stat"><span>Income 2025-2050</span><strong>${fmt(row.IncomeIndex_2025)}-${fmt(scenario.income)}</strong></div>
           <div class="print-stat"><span>Working-age share 2050</span><strong>${fmt(row.WorkingAgePct_2050, 1)}%</strong></div>
         </div>
         <h2>Driver attribution</h2>
@@ -7597,7 +7740,7 @@ LIVE_EVIDENCE: ${JSON.stringify(hdiGptEvidencePayload(prompt))}`
         <h2>Subnational distribution</h2>
         ${selectedSubs.length ? `<table><thead><tr><th>Subdivision</th><th>2025 HDI</th><th>2050 HDI</th><th>Change</th><th>2050 population weight</th></tr></thead><tbody>${selectedSubs.map(item => `<tr><td>${escapeAttr(item.Subdivision)}</td><td>${fmt(item.Subdivision_HDI_2025_Reconciled)}</td><td>${fmt(item.Subdivision_HDI_2050_Projected)}</td><td>${Number(item.Subdivision_HDI_Change_2025_to_2050) >= 0 ? "+" : ""}${fmt(item.Subdivision_HDI_Change_2025_to_2050)}</td><td>${fmt(Number(item.Subdivision_Weight_2050) * 100, 2)}%</td></tr>`).join("")}</tbody></table>` : "<p>No subnational records are available for this country.</p>"}
         <h2>Method and limitations</h2><p>Independent conditional scenario projection, not a UNDP forecast. The HDR 2025 release baseline primarily contains 2023 observations. P10/P90 values are heuristic stress bounds, not calibrated probability intervals. Subnational population weights are modeled proxies where official projections are unavailable. Historical backtesting measures short-horizon fit and does not validate the full 2050 horizon.</p>
-        <p><strong>HDI reconciliation:</strong> (Health x Education x Income)^(1/3) = ${fmt(row.HDI_2050_Recomputed_From_Indices, 3)}.</p>
+        <p><strong>HDI reconciliation:</strong> (${fmt(scenario.health)} x ${fmt(scenario.education)} x ${fmt(scenario.income)})^(1/3) = ${fmt(scenario.hdi, 3)}.</p>
         <h2>Citation</h2><p>${escapeAttr(citationText(`${row.Country} (${row.ISO3})`))}</p>
         <p>Methodology: ${window.location.origin}/METHODOLOGY.md</p>`;
     }
@@ -7757,15 +7900,16 @@ LIVE_EVIDENCE: ${JSON.stringify(hdiGptEvidencePayload(prompt))}`
     function renderCountryInspector(row) {
       if (!row) return;
       const gain = scenarioGain(row);
+      const scenario = displayedScenarioDimensions(row);
       const drivers = driverColumns
         .map(([label, key]) => ({label, value: Number(row[key]) || 0}))
         .sort((a, b) => b.value - a.value);
       const positive = drivers.filter(item => item.value > 0).slice(0, 3);
       const negative = [...drivers].sort((a, b) => a.value - b.value).filter(item => item.value < 0).slice(0, 3);
       const dimensions = [
-        ["Health", row.HealthIndex_2025, row.HealthIndex_2050],
-        ["Education", row.EducationIndex_2025, row.EducationIndex_2050],
-        ["Income", row.IncomeIndex_2025, row.IncomeIndex_2050]
+        ["Health", row.HealthIndex_2025, scenario.health],
+        ["Education", row.EducationIndex_2025, scenario.education],
+        ["Income", row.IncomeIndex_2025, scenario.income]
       ];
       document.getElementById("inspector-country").textContent = row.Country;
       document.getElementById("inspector-meta").textContent = `${row.ISO3} · ${row.Trajectory || "Unclassified"} · ${scenarios[activeScenario].label}`;
