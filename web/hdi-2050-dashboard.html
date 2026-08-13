@@ -2148,6 +2148,79 @@
       color: #ffd8df;
       padding: 14px;
     }
+    .ml-lab-shell { display:grid; gap:14px; }
+    .ml-lab-hero {
+      display:grid;
+      grid-template-columns:minmax(0,1.25fr) minmax(280px,.75fr);
+      gap:18px;
+      align-items:end;
+      padding:20px;
+      border:1px solid rgba(88,230,255,.22);
+      border-radius:8px;
+      background:rgba(13,25,43,.86);
+      box-shadow:var(--shadow), inset 0 1px 0 rgba(255,255,255,.06);
+    }
+    .ml-lab-hero h2 { margin:5px 0 9px; font-size:clamp(26px,3.4vw,46px); line-height:1.04; }
+    .ml-lab-hero p { margin:0; color:#c7d7eb; line-height:1.65; max-width:920px; }
+    .ml-scope-note {
+      padding:13px 14px;
+      border-left:3px solid var(--gold);
+      background:rgba(246,206,106,.07);
+      color:#e9dfbd;
+      line-height:1.5;
+      font-size:13px;
+    }
+    .ml-kpis { display:grid; grid-template-columns:repeat(5,minmax(0,1fr)); gap:10px; }
+    .ml-kpi { min-width:0; padding:13px 14px; border-block:1px solid rgba(151,188,236,.16); background:rgba(7,15,28,.52); }
+    .ml-kpi .k { color:var(--muted); font-size:11px; font-weight:750; text-transform:uppercase; letter-spacing:.08em; }
+    .ml-kpi .v { margin-top:6px; color:#f7fbff; font-size:22px; font-weight:780; }
+    .ml-grid { display:grid; grid-template-columns:minmax(0,1.08fr) minmax(0,.92fr); gap:14px; align-items:start; }
+    .ml-panel-head { display:flex; justify-content:space-between; align-items:flex-start; gap:12px; margin-bottom:12px; }
+    .ml-panel-head select { min-width:min(280px,100%); }
+    .ml-control-list { display:grid; gap:12px; margin-top:12px; }
+    .ml-control-row { display:grid; grid-template-columns:minmax(160px,.7fr) minmax(180px,1fr) 86px; gap:12px; align-items:center; }
+    .ml-control-row label { min-width:0; color:#dfeaf8; font-size:13px; font-weight:680; }
+    .ml-control-row input[type="range"] { width:100%; min-width:0; padding:0; accent-color:var(--cyan); }
+    .ml-control-value { text-align:right; color:#f7fbff; font-variant-numeric:tabular-nums; font-weight:760; }
+    .ml-output-strip { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:0; margin-top:15px; border-block:1px solid rgba(151,188,236,.16); }
+    .ml-output { padding:12px; border-right:1px solid rgba(151,188,236,.12); }
+    .ml-output:last-child { border-right:0; }
+    .ml-output .k { color:var(--muted); font-size:11px; text-transform:uppercase; letter-spacing:.06em; }
+    .ml-output .v { margin-top:5px; font-size:21px; color:#f7fbff; font-weight:780; }
+    .ml-output .v.positive { color:#72edc4; }
+    .ml-output .v.negative { color:#ffac78; }
+    .ml-chart { display:block; width:100%; min-height:300px; margin-top:10px; overflow:visible; }
+    .ml-chart text { font-family:inherit; }
+    .ml-chart-summary { color:var(--muted); font-size:12px; line-height:1.5; }
+    .ml-delta-list { display:flex; flex-wrap:wrap; gap:7px; margin-top:8px; }
+    .ml-delta-chip { padding:6px 8px; border:1px solid rgba(151,188,236,.16); border-radius:6px; background:rgba(7,15,28,.6); font-size:11px; color:#c9d9ed; }
+    .ml-delta-chip strong { color:#f7fbff; }
+    .ml-anomaly-banner { padding:13px 14px; border-left:3px solid var(--cyan); background:rgba(88,230,255,.06); line-height:1.5; }
+    .ml-anomaly-banner.flagged { border-left-color:#ffac78; background:rgba(255,172,120,.07); }
+    .ml-anomaly-list { display:grid; gap:4px; margin-top:10px; }
+    .ml-anomaly-row,.ml-twin-row { display:grid; grid-template-columns:minmax(0,1fr) 78px 80px; gap:10px; align-items:center; padding:9px 2px; border-bottom:1px solid rgba(151,188,236,.12); }
+    .ml-anomaly-row button,.ml-twin-row button { min-width:0; padding:0; border:0; background:none; text-align:left; color:#e9f4ff; }
+    .ml-anomaly-row button:hover,.ml-twin-row button:hover { transform:none; box-shadow:none; color:var(--cyan); }
+    .ml-anomaly-row span,.ml-twin-row span { color:var(--muted); font-size:12px; font-variant-numeric:tabular-nums; text-align:right; }
+    .ml-twin-controls { display:grid; grid-template-columns:minmax(160px,.8fr) minmax(190px,1.2fr) auto; gap:9px; margin-bottom:12px; }
+    .ml-cluster-profile { margin:10px 0; padding:11px 0; border-block:1px solid rgba(151,188,236,.14); color:#cbd9eb; line-height:1.5; }
+    .ml-methodology { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:10px; }
+    .ml-methodology details { border:1px solid rgba(151,188,236,.16); border-radius:8px; padding:12px 13px; background:rgba(7,15,28,.56); }
+    .ml-methodology summary { cursor:pointer; color:#f1f7ff; font-weight:720; }
+    .ml-methodology p { color:var(--muted); line-height:1.6; font-size:13px; }
+    @media (max-width:980px) {
+      .ml-lab-hero,.ml-grid { grid-template-columns:1fr; }
+      .ml-kpis { grid-template-columns:repeat(3,minmax(0,1fr)); }
+      .ml-methodology { grid-template-columns:1fr; }
+    }
+    @media (max-width:640px) {
+      .ml-kpis,.ml-output-strip { grid-template-columns:repeat(2,minmax(0,1fr)); }
+      .ml-control-row { grid-template-columns:1fr; gap:6px; }
+      .ml-control-value { text-align:left; }
+      .ml-twin-controls { grid-template-columns:1fr; }
+      .ml-panel-head { flex-direction:column; }
+      .ml-panel-head select { width:100%; }
+    }
     @media (max-width: 1280px) {
       .maps.hdi-period-maps { grid-template-columns:repeat(2,minmax(0,1fr)); }
       .maps.hdi-period-maps .map-panel[data-panel="projection"] { grid-column:1 / -1; }
@@ -2554,6 +2627,7 @@
         <div class="nav-more">
           <button type="button" class="nav-menu-button secondary" id="nav-more-toggle" aria-expanded="false" aria-controls="nav-more-menu">More</button>
           <div class="nav-more-menu" id="nav-more-menu">
+            <a href="#ml-lab" data-nav-link="ml-lab">ML Lab</a>
             <a href="#comparison-maps" data-nav-link="comparison-maps">Comparison Maps</a>
             <a href="#tuning" data-nav-link="tuning">Tuning & Charts</a>
             <a href="#ethnic-mosaic" data-nav-link="ethnic-mosaic">Demographic Context</a>
@@ -3924,6 +3998,108 @@
     </section>
     </section>
 
+    <section class="page-view" id="ml-lab" data-page-title="ML Lab">
+      <section class="ml-lab-shell" aria-labelledby="ml-lab-title">
+        <header class="ml-lab-hero">
+          <div>
+            <div class="section-kicker">Machine-learning research workspace</div>
+            <h2 id="ml-lab-title">Inference, attribution, anomaly detection, and regional twins</h2>
+            <p>Test policy counterfactuals against the published 2050 baseline, inspect TreeSHAP driver attribution, surface statistically unusual country and subdivision profiles, and find structurally similar regions across borders.</p>
+          </div>
+          <div class="ml-scope-note" id="ml-scope-note"><strong>Model boundary.</strong> Loading the audited ML artifact. The counterfactual engine emulates the console's baseline scenario; it does not replace the historical backtest or constitute an official UNDP forecast.</div>
+        </header>
+
+        <div class="ml-kpis" aria-label="ML artifact summary">
+          <div class="ml-kpi"><div class="k">Surrogate CV R2</div><div class="v" id="ml-kpi-r2">--</div></div>
+          <div class="ml-kpi"><div class="k">CV MAE</div><div class="v" id="ml-kpi-mae">--</div></div>
+          <div class="ml-kpi"><div class="k">National profiles</div><div class="v" id="ml-kpi-national">--</div></div>
+          <div class="ml-kpi"><div class="k">Subdivision profiles</div><div class="v" id="ml-kpi-subdivisions">--</div></div>
+          <div class="ml-kpi"><div class="k">Peer clusters</div><div class="v" id="ml-kpi-clusters">--</div></div>
+        </div>
+
+        <div class="ml-grid">
+          <section class="panel" aria-labelledby="ml-inference-title">
+            <div class="ml-panel-head">
+              <div>
+                <div class="section-kicker">Counterfactual engine</div>
+                <div class="panel-title" id="ml-inference-title">Inference Playground</div>
+                <div class="panel-note">Move policy proxies and compare the inferred endpoint with the published baseline.</div>
+              </div>
+              <label class="sr-only" for="ml-country-select">Country for counterfactual analysis</label>
+              <select id="ml-country-select" aria-label="Country for counterfactual analysis"><option>Loading countries</option></select>
+            </div>
+            <div class="ml-control-list" id="ml-control-list"></div>
+            <div class="control-group" style="margin-top:12px">
+              <button type="button" class="secondary" id="ml-reset-controls">Reset to country baseline</button>
+              <button type="button" class="secondary" id="ml-open-country">Open country in Filters &amp; Maps</button>
+            </div>
+            <div class="ml-output-strip" aria-live="polite">
+              <div class="ml-output"><div class="k">2025 HDI</div><div class="v" id="ml-out-2025">--</div></div>
+              <div class="ml-output"><div class="k">Published 2050</div><div class="v" id="ml-out-baseline">--</div></div>
+              <div class="ml-output"><div class="k">Counterfactual 2050</div><div class="v" id="ml-out-counterfactual">--</div></div>
+              <div class="ml-output"><div class="k">Inferred delta</div><div class="v" id="ml-out-delta">--</div></div>
+            </div>
+            <svg id="ml-trajectory-chart" class="ml-chart" viewBox="0 0 820 320" role="img" aria-labelledby="ml-trajectory-title ml-trajectory-summary">
+              <title id="ml-trajectory-title">Published and counterfactual HDI trajectory</title>
+            </svg>
+            <p class="ml-chart-summary" id="ml-trajectory-summary">Choose a country and adjust a control to generate a sensitivity trajectory.</p>
+          </section>
+
+          <section class="panel" aria-labelledby="ml-attribution-title">
+            <div class="section-kicker">Explainable AI</div>
+            <div class="panel-title" id="ml-attribution-title">TreeSHAP Driver Waterfall</div>
+            <div class="panel-note">Baseline feature attribution to the surrogate's modeled HDI gain. Attribution is descriptive of the model, not proof of causality.</div>
+            <svg id="ml-shap-chart" class="ml-chart" viewBox="0 0 820 360" role="img" aria-labelledby="ml-shap-title ml-shap-summary">
+              <title id="ml-shap-title">TreeSHAP contribution waterfall</title>
+            </svg>
+            <p class="ml-chart-summary" id="ml-shap-summary">TreeSHAP values will appear after the artifact loads.</p>
+            <div class="panel-note" style="margin-top:12px">One-at-a-time sensitivity of the current controls</div>
+            <div class="ml-delta-list" id="ml-policy-deltas"></div>
+          </section>
+        </div>
+
+        <div class="ml-grid">
+          <section class="panel" aria-labelledby="ml-anomaly-title">
+            <div class="section-kicker">Unsupervised diagnostics</div>
+            <div class="panel-title" id="ml-anomaly-title">Model Insights &amp; Anomalies</div>
+            <div class="panel-note">Isolation Forest flags unusual multivariate profiles. A flag is a review prompt, not evidence that a row is wrong.</div>
+            <div class="ml-anomaly-banner" id="ml-selected-anomaly">Select a country to inspect its profile divergence.</div>
+            <div class="ml-anomaly-list" id="ml-anomaly-list" aria-label="Highest national anomaly scores"></div>
+          </section>
+
+          <section class="panel" aria-labelledby="ml-twins-title">
+            <div class="section-kicker">Subnational similarity</div>
+            <div class="panel-title" id="ml-twins-title">Find Twin Regions</div>
+            <div class="panel-note">K-means clusters and standardized nearest neighbors compare development profiles rather than geographic proximity.</div>
+            <div class="ml-twin-controls">
+              <label class="sr-only" for="ml-twin-country">Country containing the reference subdivision</label>
+              <select id="ml-twin-country" aria-label="Country containing the reference subdivision"><option>Loading countries</option></select>
+              <label class="sr-only" for="ml-twin-subdivision">Reference subdivision</label>
+              <select id="ml-twin-subdivision" aria-label="Reference subdivision"><option>Loading subdivisions</option></select>
+              <button type="button" id="ml-find-twins">Find twins</button>
+            </div>
+            <div class="ml-cluster-profile" id="ml-cluster-profile">Select a subdivision to inspect its cluster.</div>
+            <div id="ml-twin-list" aria-live="polite"></div>
+          </section>
+        </div>
+
+        <div class="ml-methodology" aria-label="ML methodology and limitations">
+          <details>
+            <summary>How counterfactual inference works</summary>
+            <p>An Extra Trees regressor is trained offline to reproduce each country's 2025-to-2050 HDI gain from 27 economic, health, education, technology, demographic, institutional, inequality, climate, volatility, catch-up, and trajectory fields. Each policy lever is perturbed separately; the local model-response magnitude is retained while its direction is constrained so raising an explicitly beneficial input cannot lower HDI. The displayed counterfactual adds those effects to the published baseline.</p>
+          </details>
+          <details>
+            <summary>Validation and leakage boundary</summary>
+            <p>The visible R2, MAE, and RMSE come from five-fold cross-validation against the current scenario output. They measure surrogate fidelity, not true 2050 accuracy. The model never labels scenario emulation as an observed forecast backtest, and direct HDI-component anchors remain fixed unless a clearly labeled policy proxy transforms them.</p>
+          </details>
+          <details>
+            <summary>Clusters, twins, and anomaly flags</summary>
+            <p>Subdivision vectors combine HDI levels, gain, relative national position, population growth, size, digital infrastructure, demographics, human-capital absorption, resource drag, momentum, and future readiness. Similarity is standardized Euclidean distance. Isolation Forest and within-cluster gain z-scores highlight profiles requiring review.</p>
+          </details>
+        </div>
+      </section>
+    </section>
+
     <section class="page-view" id="hdi-gpt" data-page-title="HDI-GPT">
     <section class="hdi-gpt-layout">
       <div class="panel hdi-gpt-chat">
@@ -3942,6 +4118,8 @@
           <button type="button" class="prompt-chip" data-hdi-prompt="Generate an executive briefing for the selected country">Executive briefing</button>
           <button type="button" class="prompt-chip" data-hdi-prompt="Audit scenario sensitivity for the selected country">Sensitivity audit</button>
           <button type="button" class="prompt-chip" data-hdi-prompt="List the top 5 subdivisions by projected HDI gain">Top subdivisions</button>
+          <button type="button" class="prompt-chip" data-hdi-prompt="Run a counterfactual for India with AI adoption readiness set to 0.80 and explain the model attribution">ML counterfactual</button>
+          <button type="button" class="prompt-chip" data-hdi-prompt="Find twin regions for Lagos, Nigeria">Twin regions</button>
         </div>
         <div id="hdi-gpt-feed" class="hdi-gpt-feed" aria-live="polite"></div>
         <div class="chat-composer">
@@ -3980,6 +4158,9 @@
             <div class="assistant-action"><strong>query_subdivisions</strong>Try: list the top five South American subdivisions by projected gain.</div>
             <div class="assistant-action"><strong>set_tuning</strong>Try: increase AI adoption and human-capital support for India.</div>
             <div class="assistant-action"><strong>generate_executive_brief</strong>Build a compact driver, risk, and uncertainty briefing for the active country.</div>
+            <div class="assistant-action"><strong>run_counterfactual</strong>Set policy proxies and return the model-implied HDI change against the published baseline.</div>
+            <div class="assistant-action"><strong>find_twin_regions</strong>Retrieve globally similar subdivisions from the ML peer model.</div>
+            <div class="assistant-action"><strong>list_ml_anomalies</strong>Inspect unusual national or subnational profiles that merit audit.</div>
           </div>
         </div>
       </div>
@@ -4401,6 +4582,7 @@
     const ethnicCsvPath = "../data/output/demographic_context_2050.csv?v=20260810-ethics-review";
     const religionCsvPath = "../data/output/religious_composition_2050_model.csv?v=20260809-hindu-2025-baseline";
     const povertyCsvPath = "../data/output/extreme_poverty_regional_1990_2040.csv?v=20260811";
+    const mlArtifactPath = "../data/output/ml_research_artifacts.json?v=20260812-ml-lab";
     const officialWorldHdi1998 = 0.712;
     const officialWorldHdi2025 = 0.756;
     const officialWorldHdi2050 = 0.794;
@@ -4566,6 +4748,15 @@
     let filteredCityRows = [];
     let selectedCity = null;
     let povertyRows = [];
+    let mlArtifacts = null;
+    let mlArtifactPromise = null;
+    let mlLabInitialized = false;
+    let mlSelectedIso3 = "IND";
+    let mlSelectedSubdivisionKey = null;
+    let mlControlValues = {};
+    let lastMlCounterfactual = null;
+    let lastMlTwinRows = [];
+    let lastMlAnomalyRows = [];
     let selectedSubdivisionContext = null;
     let activeCountry = null;
     let sortState = {column: "Rank", direction: 1};
@@ -7112,6 +7303,7 @@
       if (unique.length > 1) buttons.push(`<button type="button" data-hdi-chat-action="compare" data-countries="${escapeAttr(unique.map(row => row.ISO3).join(","))}">Open comparison</button>`);
       if (calls.some(call => call.name === "set_scenario")) buttons.push(`<button type="button" data-hdi-chat-action="maps">View scenario maps</button>`);
       if (calls.some(call => call.name === "highlight_variable_explorer")) buttons.push(`<button type="button" data-hdi-chat-action="explorer">Open Explorer</button>`);
+      if (calls.some(call => ["run_counterfactual","find_twin_regions","list_ml_anomalies"].includes(call.name))) buttons.push(`<button type="button" data-hdi-chat-action="ml-lab">Open ML Lab</button>`);
       return buttons.length ? `<div class="chat-response-actions">${buttons.join("")}</div>` : "";
     }
 
@@ -7284,6 +7476,375 @@
       }).join("<br>");
     }
 
+    async function ensureMlArtifacts() {
+      if (mlArtifacts) return mlArtifacts;
+      if (!mlArtifactPromise) {
+        mlArtifactPromise = fetch(mlArtifactPath)
+          .then(response => {
+            if (!response.ok) throw new Error(`ML artifact request failed (${response.status})`);
+            return response.json();
+          })
+          .then(artifact => {
+            mlArtifacts = artifact;
+            setupMlLab();
+            renderMlLab();
+            return artifact;
+          })
+          .catch(error => {
+            mlArtifactPromise = null;
+            const note = document.getElementById("ml-scope-note");
+            if (note) note.innerHTML = `<strong>ML artifact unavailable.</strong> ${escapeHtml(error.message)}. Run <code>python build_ml_research_artifacts.py</code> from the project root.`;
+            throw error;
+          });
+      }
+      return mlArtifactPromise;
+    }
+
+    function evaluateMlTree(tree, values) {
+      let node = 0;
+      while (tree.left[node] !== -1) {
+        const featureIndex = tree.feature[node];
+        node = Number(values[featureIndex]) <= tree.threshold[node] ? tree.left[node] : tree.right[node];
+      }
+      return Number(tree.value[node]);
+    }
+
+    function evaluateMlForest(featureObject) {
+      if (!mlArtifacts) return NaN;
+      const surrogate = mlArtifacts.surrogate;
+      const values = surrogate.feature_order.map(feature => {
+        const value = Number(featureObject[feature]);
+        return Number.isFinite(value) ? value : Number(surrogate.feature_medians[feature]);
+      });
+      return d3.mean(surrogate.trees, tree => evaluateMlTree(tree, values));
+    }
+
+    function mlControlDisplay(control, value) {
+      if (control.id === "education") return `+${Number(value).toFixed(1)} pp`;
+      if (control.unit === "% GDP") return `${Number(value).toFixed(1)}%`;
+      return Number(value).toFixed(2);
+    }
+
+    function formatMlDelta(value) {
+      const number = Number(value);
+      if (!Number.isFinite(number) || Math.abs(number) < 0.0005) return "0.000";
+      return `${number > 0 ? "+" : ""}${fmt(number)}`;
+    }
+
+    function mlBaseControlValue(control, record) {
+      if (control.id === "education") return 0;
+      return Number(record.features[control.feature] ?? 0);
+    }
+
+    function mlFeatureVector(record, overrides = mlControlValues) {
+      const features = {...record.features};
+      mlArtifacts.surrogate.policy_controls.forEach(control => {
+        const value = Number(overrides[control.id]);
+        if (!Number.isFinite(value)) return;
+        if (control.id === "education") {
+          features[control.feature] = Math.min(1, Number(record.features[control.feature]) + value * 0.012);
+        } else {
+          features[control.feature] = value;
+        }
+      });
+      return features;
+    }
+
+    function resetMlControls(render = true) {
+      const record = mlArtifacts?.national?.[mlSelectedIso3];
+      if (!record) return;
+      mlControlValues = Object.fromEntries(mlArtifacts.surrogate.policy_controls.map(control => [control.id, mlBaseControlValue(control, record)]));
+      document.querySelectorAll("[data-ml-control]").forEach(input => {
+        const value = mlControlValues[input.dataset.mlControl];
+        input.value = value;
+        const output = document.getElementById(`ml-control-value-${input.dataset.mlControl}`);
+        const control = mlArtifacts.surrogate.policy_controls.find(item => item.id === input.dataset.mlControl);
+        if (output && control) output.textContent = mlControlDisplay(control, value);
+      });
+      if (render) renderMlLab();
+    }
+
+    function setupMlLab() {
+      if (!mlArtifacts || mlLabInitialized) return;
+      mlLabInitialized = true;
+      const validation = mlArtifacts.surrogate.validation;
+      document.getElementById("ml-kpi-r2").textContent = fmt(validation.r2, 3);
+      document.getElementById("ml-kpi-mae").textContent = fmt(validation.mae, 3);
+      document.getElementById("ml-kpi-national").textContent = Number(mlArtifacts.meta.national_rows).toLocaleString();
+      document.getElementById("ml-kpi-subdivisions").textContent = Number(mlArtifacts.meta.subdivision_rows).toLocaleString();
+      document.getElementById("ml-kpi-clusters").textContent = Number(mlArtifacts.subdivision_model.cluster_count).toLocaleString();
+      document.getElementById("ml-scope-note").innerHTML = `<strong>Model boundary.</strong> ${escapeHtml(mlArtifacts.meta.scope_note)} Cross-validation measures surrogate fidelity: R2 ${fmt(validation.r2)}, MAE ${fmt(validation.mae)}, RMSE ${fmt(validation.rmse)}.`;
+
+      const countrySelect = document.getElementById("ml-country-select");
+      const countries = Object.entries(mlArtifacts.national).sort((a, b) => a[1].country.localeCompare(b[1].country));
+      countrySelect.innerHTML = countries.map(([iso3, record]) => `<option value="${iso3}">${escapeHtml(record.country)} (${iso3})</option>`).join("");
+      mlSelectedIso3 = mlArtifacts.national[activeCountry?.ISO3] ? activeCountry.ISO3 : (mlArtifacts.national.IND ? "IND" : countries[0][0]);
+      countrySelect.value = mlSelectedIso3;
+
+      const controls = document.getElementById("ml-control-list");
+      controls.innerHTML = mlArtifacts.surrogate.policy_controls.map(control => `
+        <div class="ml-control-row">
+          <label for="ml-control-${control.id}">${escapeHtml(control.label)}</label>
+          <input id="ml-control-${control.id}" type="range" min="${control.min}" max="${control.max}" step="${control.step}" data-ml-control="${control.id}" aria-describedby="ml-control-help-${control.id}">
+          <output class="ml-control-value" id="ml-control-value-${control.id}" for="ml-control-${control.id}">--</output>
+          <span class="sr-only" id="ml-control-help-${control.id}">${escapeHtml(control.transform || `${control.unit} policy proxy`)}</span>
+        </div>`).join("");
+      controls.querySelectorAll("[data-ml-control]").forEach(input => {
+        input.addEventListener("input", event => {
+          const control = mlArtifacts.surrogate.policy_controls.find(item => item.id === event.target.dataset.mlControl);
+          mlControlValues[control.id] = Number(event.target.value);
+          document.getElementById(`ml-control-value-${control.id}`).textContent = mlControlDisplay(control, event.target.value);
+          renderMlCounterfactual();
+        });
+      });
+      countrySelect.addEventListener("change", event => selectMlCountry(event.target.value));
+      document.getElementById("ml-reset-controls").addEventListener("click", () => resetMlControls());
+      document.getElementById("ml-open-country").addEventListener("click", () => {
+        const row = allRows.find(item => item.ISO3 === mlSelectedIso3);
+        if (row) { setActiveCountry(row); showPage("filters", true); }
+      });
+
+      const twinCountry = document.getElementById("ml-twin-country");
+      const subdivisionCountries = [...new Map(Object.values(mlArtifacts.subdivisions).map(record => [record.iso3, record.country])).entries()]
+        .sort((a, b) => a[1].localeCompare(b[1]));
+      twinCountry.innerHTML = subdivisionCountries.map(([iso3, country]) => `<option value="${iso3}">${escapeHtml(country)} (${iso3})</option>`).join("");
+      twinCountry.value = subdivisionsForMlCountry("IND").length ? "IND" : subdivisionCountries[0][0];
+      populateMlSubdivisionSelect();
+      twinCountry.addEventListener("change", () => { populateMlSubdivisionSelect(); renderMlTwins(); });
+      document.getElementById("ml-twin-subdivision").addEventListener("change", event => { mlSelectedSubdivisionKey = event.target.value; renderMlTwins(); });
+      document.getElementById("ml-find-twins").addEventListener("click", () => renderMlTwins(true));
+      resetMlControls(false);
+    }
+
+    function selectMlCountry(iso3, reset = true) {
+      if (!mlArtifacts?.national?.[iso3]) return;
+      mlSelectedIso3 = iso3;
+      const select = document.getElementById("ml-country-select");
+      if (select) select.value = iso3;
+      if (reset) resetMlControls(false);
+      renderMlCounterfactual();
+      renderMlAnomalies();
+    }
+
+    function currentMlCounterfactual() {
+      const record = mlArtifacts?.national?.[mlSelectedIso3];
+      if (!record) return null;
+      const counterfactualFeatures = mlFeatureVector(record);
+      const counterfactualGain = evaluateMlForest(counterfactualFeatures);
+      const controlDeltas = Object.fromEntries(mlArtifacts.surrogate.policy_controls.map(control => [control.id, mlMonotonicControlDelta(control, record, Number(mlControlValues[control.id]))]));
+      const delta = Math.max(-0.08, Math.min(0.08, d3.sum(Object.values(controlDeltas))));
+      const counterfactualHdi = Math.max(0, Math.min(0.995, Number(record.projected_hdi) + delta));
+      return {iso3: mlSelectedIso3, record, counterfactualFeatures, counterfactualGain, controlDeltas, delta, counterfactualHdi};
+    }
+
+    function mlMonotonicControlDelta(control, record, currentValue) {
+      const baselineValue = mlBaseControlValue(control, record);
+      if (!Number.isFinite(currentValue) || Math.abs(currentValue - baselineValue) < 1e-9) return 0;
+      const baselineControls = Object.fromEntries(mlArtifacts.surrogate.policy_controls.map(item => [item.id, mlBaseControlValue(item, record)]));
+      const oneAtATime = {...baselineControls, [control.id]:currentValue};
+      const rawDelta = evaluateMlForest(mlFeatureVector(record, oneAtATime)) - Number(record.surrogate_gain);
+      return Math.sign(currentValue - baselineValue) * Math.abs(rawDelta);
+    }
+
+    function renderMlTrajectory(result) {
+      const svg = d3.select("#ml-trajectory-chart");
+      svg.selectAll("*:not(title)").remove();
+      const width = 820, height = 320, margin = {top:38, right:92, bottom:42, left:58};
+      const years = [2025, 2030, 2035, 2040, 2045, 2050];
+      const start = Number(result.record.baseline_hdi);
+      const series = [
+        {name:"Published baseline", dash:null, color:"#58e6ff", end:Number(result.record.projected_hdi)},
+        {name:"ML counterfactual", dash:"8 6", color:"#f6ce6a", end:Number(result.counterfactualHdi)}
+      ].map(item => ({...item, values:years.map(year => {
+        const progress = Math.pow((year - 2025) / 25, .9);
+        return {year, value:start + (item.end - start) * progress};
+      })}));
+      const extent = d3.extent(series.flatMap(item => item.values.map(point => point.value)));
+      const padding = Math.max(.012, (extent[1] - extent[0]) * .35);
+      const x = d3.scaleLinear().domain([2025, 2050]).range([margin.left, width - margin.right]);
+      const y = d3.scaleLinear().domain([Math.max(0, extent[0] - padding), Math.min(1, extent[1] + padding)]).nice().range([height - margin.bottom, margin.top]);
+      svg.append("g").attr("class","chart-axis").attr("transform",`translate(0,${height - margin.bottom})`).call(d3.axisBottom(x).tickValues(years).tickFormat(d3.format("d")));
+      svg.append("g").attr("class","chart-axis").attr("transform",`translate(${margin.left},0)`).call(d3.axisLeft(y).ticks(6).tickFormat(d3.format(".3f")));
+      svg.append("g").selectAll("line").data(y.ticks(6)).join("line").attr("x1",margin.left).attr("x2",width-margin.right).attr("y1",d=>y(d)).attr("y2",d=>y(d)).attr("stroke","rgba(151,188,236,.11)");
+      const line = d3.line().x(point => x(point.year)).y(point => y(point.value)).curve(d3.curveMonotoneX);
+      series.forEach(item => {
+        svg.append("path").datum(item.values).attr("fill","none").attr("stroke",item.color).attr("stroke-width",3).attr("stroke-dasharray",item.dash).attr("d",line);
+        svg.selectAll(`.ml-point-${item.name.replace(/\W/g,"")}`).data(item.values.filter((_, index) => index === 0 || index === item.values.length - 1)).join("circle")
+          .attr("cx",point=>x(point.year)).attr("cy",point=>y(point.value)).attr("r",5).attr("fill",item.dash ? "#0a1220" : item.color).attr("stroke",item.color).attr("stroke-width",2)
+          .attr("tabindex",0).attr("role","graphics-symbol").attr("aria-label",point=>`${item.name}, ${point.year}, HDI ${fmt(point.value)}`)
+          .append("title").text(point=>`${item.name}: ${point.year} HDI ${fmt(point.value)}`);
+        const endPoint = item.values[item.values.length - 1];
+        svg.append("text").attr("x",x(2050)+10).attr("y",y(endPoint.value)+4).attr("fill",item.color).attr("font-size",12).attr("font-weight",700).text(fmt(endPoint.value));
+      });
+      const legend = svg.append("g").attr("transform",`translate(${margin.left},15)`);
+      series.forEach((item, index) => {
+        const group = legend.append("g").attr("transform",`translate(${index * 190},0)`);
+        group.append("line").attr("x2",26).attr("y1",5).attr("y2",5).attr("stroke",item.color).attr("stroke-width",3).attr("stroke-dasharray",item.dash);
+        group.append("text").attr("x",34).attr("y",9).attr("fill","#cbd9eb").attr("font-size",11).text(item.name);
+      });
+      document.getElementById("ml-trajectory-summary").textContent = `${result.record.country} begins at ${fmt(start)} in 2025. The published 2050 endpoint is ${fmt(result.record.projected_hdi)}; the current counterfactual endpoint is ${fmt(result.counterfactualHdi)}, a model-implied difference of ${formatMlDelta(result.delta)}. Intermediate years are endpoint interpolation, not independently estimated annual observations.`;
+    }
+
+    function renderMlShap(result) {
+      const svg = d3.select("#ml-shap-chart");
+      svg.selectAll("*:not(title)").remove();
+      const labels = mlArtifacts.surrogate.feature_labels;
+      const values = Object.entries(result.record.shap).map(([feature, value]) => ({feature, label:labels[feature] || feature, value:Number(value)})).sort((a,b)=>Math.abs(b.value)-Math.abs(a.value));
+      const selected = values.slice(0, 7);
+      const other = d3.sum(values.slice(7), item => item.value);
+      if (Math.abs(other) > 1e-8) selected.push({feature:"other",label:"Other features",value:other});
+      let running = Number(mlArtifacts.surrogate.expected_gain);
+      const steps = [{label:"Expected gain",start:0,end:running,value:running,anchor:true}];
+      selected.forEach(item => { const start = running; running += item.value; steps.push({...item,start,end:running}); });
+      steps.push({label:"Model gain",start:0,end:Number(result.record.surrogate_gain),value:Number(result.record.surrogate_gain),anchor:true});
+      const width=820,height=360,margin={top:32,right:22,bottom:92,left:54};
+      const x=d3.scaleBand().domain(d3.range(steps.length)).range([margin.left,width-margin.right]).padding(.23);
+      const yExtent=d3.extent(steps.flatMap(step=>[step.start,step.end,0]));
+      const y=d3.scaleLinear().domain([Math.min(0,yExtent[0]-.01),Math.max(.01,yExtent[1]+.01)]).nice().range([height-margin.bottom,margin.top]);
+      svg.append("g").attr("class","chart-axis").attr("transform",`translate(${margin.left},0)`).call(d3.axisLeft(y).ticks(6).tickFormat(d3.format("+.3f")));
+      svg.append("line").attr("x1",margin.left).attr("x2",width-margin.right).attr("y1",y(0)).attr("y2",y(0)).attr("stroke","rgba(205,220,240,.36)");
+      steps.slice(0,-1).forEach((step,index)=>svg.append("line").attr("x1",x(index)+x.bandwidth()).attr("x2",x(index+1)).attr("y1",y(step.end)).attr("y2",y(step.end)).attr("stroke","rgba(151,188,236,.3)").attr("stroke-dasharray","3 3"));
+      const groups=svg.selectAll(".ml-shap-step").data(steps).join("g").attr("class","ml-shap-step").attr("transform",(_,index)=>`translate(${x(index)},0)`).attr("tabindex",0).attr("role","graphics-symbol").attr("aria-label",step=>`${step.label}: ${step.anchor ? fmt(step.end) : `${step.value>=0?"plus":"minus"} ${fmt(Math.abs(step.value))}`}`);
+      groups.append("rect").attr("x",0).attr("width",x.bandwidth()).attr("y",step=>y(Math.max(step.start,step.end))).attr("height",step=>Math.max(2,Math.abs(y(step.start)-y(step.end)))).attr("rx",2)
+        .attr("fill",step=>step.anchor ? "#607896" : step.value>=0 ? "#58e6ff" : "#ffac78").attr("fill-opacity",step=>step.anchor ? .72 : .82);
+      groups.append("text").attr("x",x.bandwidth()/2).attr("y",step=>y(Math.max(step.start,step.end))-6).attr("text-anchor","middle").attr("fill","#eaf4ff").attr("font-size",10).attr("font-weight",700).text(step=>step.anchor?fmt(step.end):`${step.value>=0?"+":""}${fmt(step.value)}`);
+      groups.append("text").attr("transform",`translate(${x.bandwidth()/2},${height-margin.bottom+12}) rotate(-48)`).attr("text-anchor","end").attr("fill","#aebfd4").attr("font-size",10).text(step=>step.label.length>23?`${step.label.slice(0,21)}...`:step.label);
+      const topPositive=values.filter(item=>item.value>0).sort((a,b)=>b.value-a.value)[0];
+      const topNegative=values.filter(item=>item.value<0).sort((a,b)=>a.value-b.value)[0];
+      document.getElementById("ml-shap-summary").textContent = `${result.record.country}'s surrogate gain is ${fmt(result.record.surrogate_gain)}, compared with an expected gain of ${fmt(mlArtifacts.surrogate.expected_gain)}. The strongest positive attribution is ${topPositive?.label || "none"} (${topPositive?`${topPositive.value>=0?"+":""}${fmt(topPositive.value)}`:"--"}); the strongest negative attribution is ${topNegative?.label || "none"} (${topNegative?fmt(topNegative.value):"--"}).`;
+
+      const deltaList=document.getElementById("ml-policy-deltas");
+      deltaList.innerHTML=mlArtifacts.surrogate.policy_controls.map(control=>{
+        const baselineValue=mlBaseControlValue(control,result.record);
+        const currentValue=Number(mlControlValues[control.id]);
+        const delta=mlMonotonicControlDelta(control,result.record,currentValue);
+        const changed=Math.abs(currentValue-baselineValue)>1e-9;
+        return `<span class="ml-delta-chip"><strong>${escapeHtml(control.label)}</strong> ${changed?(delta>=0?"+":"")+fmt(delta):"unchanged"}</span>`;
+      }).join("");
+    }
+
+    function renderMlCounterfactual() {
+      if (!mlArtifacts) return;
+      const result=currentMlCounterfactual();
+      if (!result) return;
+      lastMlCounterfactual=result;
+      document.getElementById("ml-out-2025").textContent=fmt(result.record.baseline_hdi);
+      document.getElementById("ml-out-baseline").textContent=fmt(result.record.projected_hdi);
+      document.getElementById("ml-out-counterfactual").textContent=fmt(result.counterfactualHdi);
+      const deltaEl=document.getElementById("ml-out-delta");
+      deltaEl.textContent=formatMlDelta(result.delta);
+      deltaEl.classList.toggle("positive",result.delta>0.0005);
+      deltaEl.classList.toggle("negative",result.delta<-0.0005);
+      renderMlTrajectory(result);
+      renderMlShap(result);
+    }
+
+    function renderMlAnomalies() {
+      if (!mlArtifacts) return;
+      const record=mlArtifacts.national[mlSelectedIso3];
+      if (!record) return;
+      const percentile=Math.round(Number(record.anomaly_percentile)*100);
+      const banner=document.getElementById("ml-selected-anomaly");
+      banner.classList.toggle("flagged",record.anomaly_flag);
+      banner.innerHTML=`<strong>${escapeHtml(record.country)}:</strong> profile divergence is at the ${percentile}th percentile.${record.anomaly_flag?" This combination of level, gain, demographics, technology, governance, volatility, and structural constraints merits manual review.":" It is not in the primary audit-flag band."}`;
+      lastMlAnomalyRows=Object.entries(mlArtifacts.national).map(([iso3,item])=>({iso3,...item})).sort((a,b)=>b.anomaly_percentile-a.anomaly_percentile).slice(0,10);
+      document.getElementById("ml-anomaly-list").innerHTML=lastMlAnomalyRows.map(item=>`<div class="ml-anomaly-row"><button type="button" data-ml-anomaly-country="${item.iso3}">${escapeHtml(item.country)}</button><span>${Math.round(item.anomaly_percentile*100)}th pct.</span><span>${item.published_gain>=0?"+":""}${fmt(item.published_gain)}</span></div>`).join("");
+      document.querySelectorAll("[data-ml-anomaly-country]").forEach(button=>button.addEventListener("click",()=>selectMlCountry(button.dataset.mlAnomalyCountry)));
+    }
+
+    function subdivisionsForMlCountry(iso3) {
+      if (!mlArtifacts) return [];
+      return Object.entries(mlArtifacts.subdivisions).filter(([,record])=>record.iso3===iso3).sort((a,b)=>a[1].subdivision.localeCompare(b[1].subdivision));
+    }
+
+    function populateMlSubdivisionSelect(preferredKey=null) {
+      const country=document.getElementById("ml-twin-country")?.value;
+      const select=document.getElementById("ml-twin-subdivision");
+      if (!country||!select) return;
+      const rows=subdivisionsForMlCountry(country);
+      select.innerHTML=rows.map(([key,record])=>`<option value="${escapeAttr(key)}">${escapeHtml(record.subdivision)}</option>`).join("");
+      const goa=rows.find(([,record])=>record.subdivision.toLowerCase()==="goa")?.[0];
+      mlSelectedSubdivisionKey=preferredKey&&mlArtifacts.subdivisions[preferredKey]?preferredKey:(goa||rows[0]?.[0]||null);
+      select.value=mlSelectedSubdivisionKey||"";
+    }
+
+    function resolveMlSubdivision(subdivision, country=null) {
+      if (!mlArtifacts||!subdivision) return null;
+      const needle=String(subdivision).toLowerCase().trim();
+      const countryRow=country?resolveCountry(country):null;
+      const entries=Object.entries(mlArtifacts.subdivisions);
+      return entries.find(([,record])=>(!countryRow||record.iso3===countryRow.ISO3)&&record.subdivision.toLowerCase()===needle)
+        || entries.find(([,record])=>(!countryRow||record.iso3===countryRow.ISO3)&&record.subdivision.toLowerCase().includes(needle))
+        || null;
+    }
+
+    function renderMlTwins(announceResult=false) {
+      if (!mlArtifacts) return;
+      const select=document.getElementById("ml-twin-subdivision");
+      mlSelectedSubdivisionKey=select?.value||mlSelectedSubdivisionKey;
+      const source=mlArtifacts.subdivisions[mlSelectedSubdivisionKey];
+      if (!source) return;
+      const cluster=mlArtifacts.subdivision_model.clusters.find(item=>item.id===source.cluster);
+      lastMlTwinRows=source.twins.map(key=>({key,...mlArtifacts.subdivisions[key]})).filter(item=>item.iso3);
+      document.getElementById("ml-cluster-profile").innerHTML=`<strong>${escapeHtml(source.subdivision)}, ${escapeHtml(source.country)}</strong> belongs to <strong>${escapeHtml(cluster?.label||`Cluster ${source.cluster}`)}</strong>. Reference HDI: ${fmt(source.hdi_2025)} in 2025 to ${fmt(source.hdi_2050)} in 2050 (${source.gain>=0?"+":""}${fmt(source.gain)}). Peer-gain divergence: ${source.peer_gain_z>=0?"+":""}${fmt(source.peer_gain_z,2)} sigma; anomaly percentile: ${Math.round(source.anomaly_percentile*100)}.`;
+      document.getElementById("ml-twin-list").innerHTML=lastMlTwinRows.map(item=>`<div class="ml-twin-row"><button type="button" data-ml-twin-key="${escapeAttr(item.key)}"><strong>${escapeHtml(item.subdivision)}</strong><br><span style="text-align:left">${escapeHtml(item.country)} / ${escapeHtml(mlArtifacts.subdivision_model.clusters.find(clusterItem=>clusterItem.id===item.cluster)?.label||`Cluster ${item.cluster}`)}</span></button><span>${fmt(item.hdi_2050)}</span><span>${item.gain>=0?"+":""}${fmt(item.gain)}</span></div>`).join("");
+      document.querySelectorAll("[data-ml-twin-key]").forEach(button=>button.addEventListener("click",()=>{
+        const next=mlArtifacts.subdivisions[button.dataset.mlTwinKey];
+        document.getElementById("ml-twin-country").value=next.iso3;
+        populateMlSubdivisionSelect(button.dataset.mlTwinKey);
+        renderMlTwins(true);
+      }));
+      if (announceResult) announce(`Found ${lastMlTwinRows.length} twin regions for ${source.subdivision}, ${source.country}.`);
+    }
+
+    function renderMlLab() {
+      if (!mlArtifacts||!mlLabInitialized) return;
+      renderMlCounterfactual();
+      renderMlAnomalies();
+      renderMlTwins();
+    }
+
+    function applyMlCounterfactualTool(args={}) {
+      const country=resolveCountry(args.country_name)||activeCountry||allRows.find(row=>row.ISO3==="IND");
+      if (country&&mlArtifacts.national[country.ISO3]) selectMlCountry(country.ISO3,false);
+      const mappings={ai:"ai",digital:"digital",green:"green",education_budget_uplift:"education",health_spend:"health",demographic_dividend:"demographic"};
+      Object.entries(mappings).forEach(([argument,controlId])=>{
+        if (!Number.isFinite(Number(args[argument]))) return;
+        const control=mlArtifacts.surrogate.policy_controls.find(item=>item.id===controlId);
+        mlControlValues[controlId]=Math.max(control.min,Math.min(control.max,Number(args[argument])));
+        const input=document.getElementById(`ml-control-${controlId}`);
+        if (input) input.value=mlControlValues[controlId];
+        const output=document.getElementById(`ml-control-value-${controlId}`);
+        if (output) output.textContent=mlControlDisplay(control,mlControlValues[controlId]);
+      });
+      renderMlCounterfactual();
+      showPage("ml-lab",true);
+      return lastMlCounterfactual;
+    }
+
+    function applyMlTwinTool(args={}) {
+      const found=resolveMlSubdivision(args.subdivision,args.country);
+      if (!found) return null;
+      const [key,record]=found;
+      document.getElementById("ml-twin-country").value=record.iso3;
+      populateMlSubdivisionSelect(key);
+      renderMlTwins();
+      showPage("ml-lab",true);
+      return {source:{key,...record},twins:lastMlTwinRows};
+    }
+
+    function queryMlAnomalies(args={}) {
+      const limit=Math.max(1,Math.min(20,Number(args.limit)||8));
+      if (args.scope==="subdivision") {
+        const country=args.country?resolveCountry(args.country):null;
+        lastMlAnomalyRows=Object.entries(mlArtifacts.subdivisions).map(([key,item])=>({key,...item})).filter(item=>!country||item.iso3===country.ISO3).sort((a,b)=>b.anomaly_percentile-a.anomaly_percentile).slice(0,limit);
+      } else {
+        lastMlAnomalyRows=Object.entries(mlArtifacts.national).map(([iso3,item])=>({iso3,...item})).sort((a,b)=>b.anomaly_percentile-a.anomaly_percentile).slice(0,limit);
+      }
+      showPage("ml-lab",true);
+      return lastMlAnomalyRows;
+    }
+
     function compareCountriesFromPrompt(rows) {
       if (!rows.length) return `I can open the Comparison Lab, but I need at least two countries. Try “Compare Brazil and Argentina” or “India vs China vs Nigeria.”`;
       comparedIso.clear();
@@ -7368,7 +7929,10 @@
       {name: "query_subdivisions", description: "Query and rank the structured subdivision dataset.", parameters: {continent: "Optional continent", country: "Optional country", limit: "1-20", sort: "gain | hdi_2025 | hdi_2050 | population_2050", direction: "desc | asc"}},
       {name: "set_tuning", description: "Adjust live scenario tuning sliders.", parameters: {ai: "-1 to 1", cloud: "-1 to 1", resource: "-1 to 1", human: "-1 to 1"}},
       {name: "generate_executive_brief", description: "Generate a rich executive briefing for a country.", parameters: {country_name: "Optional country name or ISO3"}},
-      {name: "audit_scenario_sensitivity", description: "Compare a country across every scenario.", parameters: {country_name: "Optional country name or ISO3"}}
+      {name: "audit_scenario_sensitivity", description: "Compare a country across every scenario.", parameters: {country_name: "Optional country name or ISO3"}},
+      {name: "run_counterfactual", description: "Run the audited ML surrogate with policy controls and open the Inference Playground.", parameters: {country_name: "Country name or ISO3", ai: "0-1", digital: "0-1", green: "0-1", education_budget_uplift: "0-5 percentage points of GDP", health_spend: "2-15 percent of GDP", demographic_dividend: "0-1"}},
+      {name: "find_twin_regions", description: "Find structurally similar subdivisions using the ML peer-region model.", parameters: {subdivision: "Subdivision name", country: "Optional country name or ISO3"}},
+      {name: "list_ml_anomalies", description: "List country or subdivision profiles with the highest Isolation Forest anomaly scores.", parameters: {scope: "country | subdivision", country: "Optional country filter for subdivisions", limit: "1-20"}}
     ];
 
     const openAiHdiGptTools = hdiGptTools.map(tool => {
@@ -7408,7 +7972,10 @@
         query_subdivisions: {type:"object", properties:{continent:{type:"string"}, country:{type:"string"}, limit:{type:"integer",minimum:1,maximum:20}, sort:{type:"string",enum:["gain","hdi_2025","hdi_2050","population_2050"]}, direction:{type:"string",enum:["desc","asc"]}}},
         set_tuning: {type:"object", properties:{ai:{type:"number",minimum:-1,maximum:1},cloud:{type:"number",minimum:-1,maximum:1},resource:{type:"number",minimum:-1,maximum:1},human:{type:"number",minimum:-1,maximum:1}}},
         generate_executive_brief: {type:"object",properties:{country_name:{type:"string"}}},
-        audit_scenario_sensitivity: {type:"object",properties:{country_name:{type:"string"}}}
+        audit_scenario_sensitivity: {type:"object",properties:{country_name:{type:"string"}}},
+        run_counterfactual: {type:"object",properties:{country_name:{type:"string"},ai:{type:"number",minimum:0,maximum:1},digital:{type:"number",minimum:0,maximum:1},green:{type:"number",minimum:0,maximum:1},education_budget_uplift:{type:"number",minimum:0,maximum:5},health_spend:{type:"number",minimum:2,maximum:15},demographic_dividend:{type:"number",minimum:0,maximum:1}},required:["country_name"]},
+        find_twin_regions: {type:"object",properties:{subdivision:{type:"string"},country:{type:"string"}},required:["subdivision"]},
+        list_ml_anomalies: {type:"object",properties:{scope:{type:"string",enum:["country","subdivision"]},country:{type:"string"},limit:{type:"integer",minimum:1,maximum:20}},required:["scope"]}
       };
       return {
         type: "function",
@@ -7435,6 +8002,12 @@
         activePage: location.hash.replace("#", "") || "overview",
         tuning: {...tuning},
         loadedSubdivisionRows: subdivisionRows.length,
+        mlLab: mlArtifacts ? {
+          loaded: true,
+          selectedCountry: mlArtifacts.national[mlSelectedIso3]?.country || null,
+          latestCounterfactual: lastMlCounterfactual ? {country:lastMlCounterfactual.record.country, published2050:lastMlCounterfactual.record.projected_hdi, counterfactual2050:lastMlCounterfactual.counterfactualHdi, delta:lastMlCounterfactual.delta} : null,
+          surrogateValidation: mlArtifacts.surrogate.validation
+        } : {loaded:false},
         comparedCountries: compareRows().map(row => ({country: row.Country, iso3: row.ISO3})),
         rememberedCountries: rememberedCountries().map(row => ({country: row.Country, iso3: row.ISO3}))
       };
@@ -7449,7 +8022,9 @@ CONVERSATION: Speak naturally and remember prior turns. Resolve pronouns such as
 
 DATA DISCIPLINE: Use only values in LIVE_EVIDENCE or returned by tools. Never fabricate a country value, rank, causal estimate, source, or projection. Explicitly distinguish 2025 baseline observations/estimates from modeled 2050 scenario projections. Describe driver contributions as model attribution, not proven causality. State uncertainty where relevant.
 
-TOOLS: Use tools whenever the user asks to select, compare, rank, query subdivisions, change a scenario, tune assumptions, or build a chart. Tool results will be returned to you; after receiving them, write a complete analytical answer rather than merely saying the action succeeded.
+TOOLS: Use tools whenever the user asks to select, compare, rank, query subdivisions, change a scenario, tune assumptions, build a chart, run a policy counterfactual, inspect anomalies, or find similar regions. For counterfactuals, never invent slider values: use values the user states and leave unspecified controls at their country baseline. Tool results will be returned to you; after receiving them, write a complete analytical answer rather than merely saying the action succeeded.
+
+ML DISCIPLINE: The randomized-tree ensemble is a sensitivity surrogate trained to reproduce the current 2050 scenario output. Its cross-validation metrics measure scenario fidelity, not observed forecasting accuracy. TreeSHAP explains the surrogate and is not causal. Isolation Forest flags unusual profiles for review and does not prove a data error. K-means and nearest-neighbor twins indicate structural similarity, not policy equivalence.
 
 ANSWER STYLE: For a country analysis, use: (1) a 1-2 sentence executive summary, (2) a compact 2025 versus 2050 Markdown table, (3) primary modeled drivers and structural drags, and (4) one useful next analytical step. For comparisons, explain the substantive differences rather than only listing values. Keep routine answers concise and research answers detailed enough to be useful.
 
@@ -7475,6 +8050,9 @@ LIVE_EVIDENCE: ${JSON.stringify(hdiGptEvidencePayload(prompt))}`
 
     function classifyHdiAgentIntent(text, mentioned) {
       const lower = text.toLowerCase();
+      if (/\b(twin regions?|peer regions?|similar subdivisions?|regions? like)\b/.test(lower)) return "ml-twins";
+      if (/\b(anomal(?:y|ies)|outliers?|divergence detection|unusual profiles?)\b/.test(lower)) return "ml-anomalies";
+      if (/\b(counterfactual|inference playground|what[- ]if model|ml prediction|policy simulation)\b/.test(lower)) return "ml-counterfactual";
       if (/\b(executive briefing|executive brief|policy brief)\b/.test(lower)) return "executive-brief";
       if (/\b(sensitivity audit|scenario sensitivity|across all scenarios|best and worst case)\b/.test(lower)) return "sensitivity";
       if (/\b(tuning|slider|set ai|increase ai|boost ai|human capital boost|resource relief|cloud boost)\b/.test(lower)) return "tuning";
@@ -7497,8 +8075,27 @@ LIVE_EVIDENCE: ${JSON.stringify(hdiGptEvidencePayload(prompt))}`
       const intent = classifyHdiAgentIntent(text, mentioned);
       const toolCalls = [];
       const scenario = scenarioFromText(text);
-      if (scenario) toolCalls.push({name: "set_scenario", arguments: {scenario}});
-      if (intent === "tuning") {
+      if (scenario && !intent.startsWith("ml-")) toolCalls.push({name: "set_scenario", arguments: {scenario}});
+      if (intent === "ml-counterfactual") {
+        const numberAfter = expression => Number(lower.match(new RegExp(`${expression}[^0-9]*(0(?:\\.\\d+)?|1(?:\\.0+)?|\\d+(?:\\.\\d+)?)`))?.[1]);
+        const args = {country_name:rows[0]?.Country || activeCountry?.Country || "India"};
+        const candidates = {
+          ai:numberAfter("ai(?: adoption| readiness)?"),
+          digital:numberAfter("digital(?: infrastructure)?"),
+          green:numberAfter("green(?: investment)?"),
+          education_budget_uplift:numberAfter("education(?: budget| spending| uplift)?"),
+          health_spend:numberAfter("health(?: expenditure| spending)?"),
+          demographic_dividend:numberAfter("demographic(?: dividend)?")
+        };
+        Object.entries(candidates).forEach(([key,value])=>{ if(Number.isFinite(value)) args[key]=value; });
+        toolCalls.push({name:"run_counterfactual",arguments:args});
+      } else if (intent === "ml-twins") {
+        const match=text.match(/(?:for|like|similar to)\s+([^,]+)(?:,\s*([^?]+))?/i);
+        toolCalls.push({name:"find_twin_regions",arguments:{subdivision:match?.[1]?.trim() || selectedSubdivisionContext?.subdivision || "Goa",country:match?.[2]?.trim() || rows[0]?.Country || selectedSubdivisionContext?.country || "India"}});
+      } else if (intent === "ml-anomalies") {
+        const limit=Number(lower.match(/\b(?:top|list)\s+(\d+)/)?.[1]||8);
+        toolCalls.push({name:"list_ml_anomalies",arguments:{scope:/\b(subdivision|subnational|province|state)\b/.test(lower)?"subdivision":"country",country:rows[0]?.Country||"",limit}});
+      } else if (intent === "tuning") {
         const valueFor = name => Number(lower.match(new RegExp(`${name}[^0-9-]*(-?\\d+(?:\\.\\d+)?)`))?.[1]);
         const args = {}, defaults = {ai:.5,cloud:.4,resource:.5,human:.5};
         for (const key of Object.keys(defaults)) { const value=valueFor(key === "resource" ? "resource(?: drag)?(?: relief)?" : key === "human" ? "human(?: capital)?" : key); if (Number.isFinite(value)) args[key]=value; else if (lower.includes(key)) args[key]=defaults[key]; }
@@ -7542,6 +8139,9 @@ LIVE_EVIDENCE: ${JSON.stringify(hdiGptEvidencePayload(prompt))}`
         return {name: call.function?.name, arguments: args};
       }).filter(call => call.name);
       const intent = toolCalls.some(call => call.name === "open_comparison_lab") ? "compare"
+        : toolCalls.some(call => call.name === "run_counterfactual") ? "ml-counterfactual"
+        : toolCalls.some(call => call.name === "find_twin_regions") ? "ml-twins"
+        : toolCalls.some(call => call.name === "list_ml_anomalies") ? "ml-anomalies"
         : toolCalls.some(call => call.name === "query_subdivisions") ? "subdivision-query"
         : toolCalls.some(call => call.name === "generate_executive_brief") ? "executive-brief"
         : toolCalls.some(call => call.name === "audit_scenario_sensitivity") ? "sensitivity"
@@ -7551,6 +8151,7 @@ LIVE_EVIDENCE: ${JSON.stringify(hdiGptEvidencePayload(prompt))}`
       const countries = toolCalls.flatMap(call => {
         if (call.name === "open_comparison_lab") return call.arguments?.countries || [];
         if (call.name === "filter_country") return [call.arguments?.country_name];
+        if (call.name === "run_counterfactual") return [call.arguments?.country_name];
         return [];
       }).filter(Boolean);
       return {
@@ -7664,6 +8265,18 @@ LIVE_EVIDENCE: ${JSON.stringify(hdiGptEvidencePayload(prompt))}`
         const row = resolveCountry(args.country_name) || activeCountry || rememberedCountries()[0];
         if (row) { setActiveCountry(row); lastHdiGptCountries = [row]; return `${call.name === "generate_executive_brief" ? "Generated executive briefing" : "Audited scenario sensitivity"} for ${row.Country}.`; }
       }
+      if (call.name === "run_counterfactual" && mlArtifacts) {
+        const result = applyMlCounterfactualTool(args);
+        if (result) return `Ran the ML counterfactual for ${result.record.country}: published 2050 HDI ${fmt(result.record.projected_hdi)}, counterfactual ${fmt(result.counterfactualHdi)}, delta ${formatMlDelta(result.delta)}.`;
+      }
+      if (call.name === "find_twin_regions" && mlArtifacts) {
+        const result = applyMlTwinTool(args);
+        if (result) return `Found ${result.twins.length} structural twin regions for ${result.source.subdivision}, ${result.source.country}.`;
+      }
+      if (call.name === "list_ml_anomalies" && mlArtifacts) {
+        const result = queryMlAnomalies(args);
+        return `Listed ${result.length} ${args.scope === "subdivision" ? "subdivision" : "country"} profiles with the highest ML anomaly percentiles.`;
+      }
       return "";
     }
 
@@ -7690,6 +8303,24 @@ LIVE_EVIDENCE: ${JSON.stringify(hdiGptEvidencePayload(prompt))}`
         data = {tuning: {...tuning}, relevant_countries: rememberedCountries().map(countryDataPacket)};
       } else if (call.name === "highlight_variable_explorer") {
         data = {x: document.getElementById("matrix-x")?.value, y: document.getElementById("matrix-y")?.value};
+      } else if (call.name === "run_counterfactual" && lastMlCounterfactual) {
+        const result = lastMlCounterfactual;
+        data = {
+          country: result.record.country,
+          iso3: result.iso3,
+          hdi_2025: result.record.baseline_hdi,
+          published_hdi_2050: result.record.projected_hdi,
+          counterfactual_hdi_2050: result.counterfactualHdi,
+          inferred_delta: result.delta,
+          controls: {...mlControlValues},
+          surrogate_validation: mlArtifacts.surrogate.validation,
+          top_shap_attributions: Object.entries(result.record.shap).map(([feature,value])=>({feature,label:mlArtifacts.surrogate.feature_labels[feature]||feature,value})).sort((a,b)=>Math.abs(b.value)-Math.abs(a.value)).slice(0,8),
+          caveat: mlArtifacts.meta.scope_note
+        };
+      } else if (call.name === "find_twin_regions") {
+        data = lastMlTwinRows.map(item=>({country:item.country,iso3:item.iso3,subdivision:item.subdivision,hdi_2025:item.hdi_2025,hdi_2050:item.hdi_2050,gain:item.gain,cluster:item.cluster,anomaly_percentile:item.anomaly_percentile}));
+      } else if (call.name === "list_ml_anomalies") {
+        data = lastMlAnomalyRows.map(item=>({country:item.country,iso3:item.iso3,subdivision:item.subdivision||null,hdi_2050:item.projected_hdi??item.hdi_2050,gain:item.published_gain??item.gain,anomaly_percentile:item.anomaly_percentile,peer_gain_z:item.peer_gain_z??null}));
       }
       return {ok: Boolean(note), action: call.name, note: note || `The ${call.name} action could not be completed with the supplied arguments.`, exact_data: data};
     }
@@ -7719,6 +8350,9 @@ LIVE_EVIDENCE: ${JSON.stringify(hdiGptEvidencePayload(prompt))}`
       if (plan.intent === "subdivision-query") return scenarioNote + subdivisionResultCard(lastSubdivisionQueryRows, "Structured subdivision results");
       if (plan.intent === "executive-brief") return scenarioNote + executiveBriefCard(lastHdiGptCountries[0] || activeCountry);
       if (plan.intent === "sensitivity") return scenarioNote + sensitivityCard(lastHdiGptCountries[0] || activeCountry);
+      if (plan.intent === "ml-counterfactual" && lastMlCounterfactual) return `<strong>ML counterfactual for ${escapeHtml(lastMlCounterfactual.record.country)}</strong><p>Published 2050 HDI: ${fmt(lastMlCounterfactual.record.projected_hdi)}. Counterfactual: ${fmt(lastMlCounterfactual.counterfactualHdi)} (${formatMlDelta(lastMlCounterfactual.delta)}). The ML Lab is open with the exact controls and TreeSHAP attribution.</p><p class="panel-note">This is scenario-surrogate sensitivity, not observed forecast accuracy.</p>`;
+      if (plan.intent === "ml-twins") return `<strong>Structural twin regions</strong><ul>${lastMlTwinRows.map(item=>`<li>${escapeHtml(item.subdivision)}, ${escapeHtml(item.country)}: 2050 HDI ${fmt(item.hdi_2050)}, gain ${item.gain>=0?"+":""}${fmt(item.gain)}</li>`).join("")}</ul>`;
+      if (plan.intent === "ml-anomalies") return `<strong>Highest anomaly percentiles</strong><ul>${lastMlAnomalyRows.map(item=>`<li>${escapeHtml(item.subdivision?`${item.subdivision}, ${item.country}`:item.country)}: ${Math.round(item.anomaly_percentile*100)}th percentile</li>`).join("")}</ul><p class="panel-note">Anomaly flags identify profiles for review; they do not prove a data error.</p>`;
       if (/^\s*(hi|hello|hey|yo|good morning|good afternoon|good evening)[!. ]*$/i.test(plan.originalText || "")) {
         return `Hi, I am HDI-GPT. Ask me about a country, compare countries, switch scenarios, or ask what is driving a projected HDI change.`;
       }
@@ -7751,6 +8385,7 @@ LIVE_EVIDENCE: ${JSON.stringify(hdiGptEvidencePayload(prompt))}`
     async function routeHdiGptAgentAction(prompt) {
       const conversationalReply = handleConversationalIntent(prompt);
       if (conversationalReply && prompt.trim().length === 1) return {html: conversationalReply, text: conversationalReply.replace(/<[^>]+>/g, " ")};
+      await ensureMlArtifacts().catch(() => null);
 
       const messages = [hdiGptSystemMessage(prompt), ...chatHistory.slice(-12), {role: "user", content: prompt}];
       let raw = await requestHdiGptCompletion(messages);
@@ -7761,8 +8396,9 @@ LIVE_EVIDENCE: ${JSON.stringify(hdiGptEvidencePayload(prompt))}`
         const fallbackNotes = fallbackCalls.map(executeHdiToolCall).filter(Boolean);
         const fallbackHtml = responseFromAgentPlan(fallbackPlan, fallbackNotes);
         const fallbackRows = fallbackPlan.rows || rememberedCountries();
+        const fallbackGrounding = fallbackPlan.intent?.startsWith("ml-") ? "" : groundingCard(fallbackRows);
         return {
-          html: `${fallbackHtml}${groundingCard(fallbackRows)}${responseActionButtons(fallbackCalls, fallbackRows)}<p class="panel-note">API-backed analysis is unavailable, so this answer used the local deterministic fallback.</p>`,
+          html: `${fallbackHtml}${fallbackGrounding}${responseActionButtons(fallbackCalls, fallbackRows)}<p class="panel-note">API-backed analysis is unavailable, so this answer used the local deterministic fallback.</p>`,
           text: fallbackHtml.replace(/<[^>]+>/g, " ")
         };
       }
@@ -7792,10 +8428,12 @@ LIVE_EVIDENCE: ${JSON.stringify(hdiGptEvidencePayload(prompt))}`
       const actionRows = allCalls.flatMap(call => {
         if (call.name === "open_comparison_lab") return (call.arguments.countries || []).map(resolveCountry);
         if (["filter_country", "generate_executive_brief", "audit_scenario_sensitivity"].includes(call.name)) return [resolveCountry(call.arguments.country_name)];
+        if (call.name === "run_counterfactual") return [resolveCountry(call.arguments.country_name)];
         if (call.name === "answer_ranking") return lastHdiGptRankingRows;
         return [];
       }).filter(Boolean);
       const rows = [...new Map([...mentionedRows, ...actionRows, ...rememberedCountries()].map(row => [row.ISO3, row])).values()];
+      const hasMlEvidence = allCalls.some(call => ["run_counterfactual","find_twin_regions","list_ml_anomalies"].includes(call.name));
       let replyText = String(message.content || "").trim();
       if (!replyText) {
         const fallbackPlan = normalizeHdiGptPlan({tool_calls: allCalls, rows, intent: allCalls.some(call => call.name === "open_comparison_lab") ? "compare" : rows.length ? "summarize" : "fallback", originalText: prompt}, prompt);
@@ -7803,7 +8441,7 @@ LIVE_EVIDENCE: ${JSON.stringify(hdiGptEvidencePayload(prompt))}`
       }
       const actionSummary = actionNotes.length ? `<div class="chat-response-actions" aria-label="Completed dashboard actions"><span class="panel-note">${actionNotes.map(escapeHtml).join(" ")}</span></div>` : "";
       return {
-        html: `${markdownToSafeHtml(replyText)}${groundingCard(rows)}${actionSummary}${responseActionButtons(allCalls, rows)}`,
+        html: `${markdownToSafeHtml(replyText)}${hasMlEvidence ? "" : groundingCard(rows)}${actionSummary}${responseActionButtons(allCalls, rows)}`,
         text: replyText
       };
     }
@@ -8813,7 +9451,7 @@ LIVE_EVIDENCE: ${JSON.stringify(hdiGptEvidencePayload(prompt))}`
 
     function commandEntries(query = "") {
       const pages = [
-        ["Overview","overview"],["Filters & Maps","filters"],["Subdivisions","subdivisions"],["Cities","cities"],["HDI-GPT","hdi-gpt"],["Research","research"],["Comparison Maps","comparison-maps"],["Tuning & Charts","tuning"],["Demographic Context","ethnic-mosaic"],["Validation","validation"],["Explorer","explorer"],["Data Table","table"]
+        ["Overview","overview"],["Filters & Maps","filters"],["Subdivisions","subdivisions"],["Cities","cities"],["HDI-GPT","hdi-gpt"],["Research","research"],["ML Lab","ml-lab"],["Comparison Maps","comparison-maps"],["Tuning & Charts","tuning"],["Demographic Context","ethnic-mosaic"],["Validation","validation"],["Explorer","explorer"],["Data Table","table"]
       ].map(([label,value]) => ({type:"Page",label,value,meta:"Open workspace"}));
       const scenarioItems = Object.entries(scenarios).map(([value,item]) => ({type:"Scenario",label:item.label,value,meta:"Switch scenario"}));
       const countryItems = allRows.map(row => ({type:"Country",label:row.Country,value:row.ISO3,meta:`${row.ISO3} · 2025 HDI ${fmt(row.HDI_Baseline,3)}`}));
@@ -9082,6 +9720,8 @@ LIVE_EVIDENCE: ${JSON.stringify(hdiGptEvidencePayload(prompt))}`
           showPage("filters", true);
         } else if (button.dataset.hdiChatAction === "explorer") {
           showPage("explorer", true);
+        } else if (button.dataset.hdiChatAction === "ml-lab") {
+          showPage("ml-lab", true);
         }
         updateHdiGptContext();
       });
@@ -9213,7 +9853,7 @@ LIVE_EVIDENCE: ${JSON.stringify(hdiGptEvidencePayload(prompt))}`
     }
 
     function setupKeyboardShortcuts() {
-      const navOrder = ["overview", "filters", "comparison-maps", "tuning", "research", "subdivisions", "cities", "ethnic-mosaic", "hdi-gpt", "validation"];
+      const navOrder = ["overview", "filters", "comparison-maps", "tuning", "research", "subdivisions", "cities", "ml-lab", "hdi-gpt", "validation"];
       document.addEventListener("keydown", event => {
         const target = event.target;
         const typing = target && ["INPUT", "SELECT", "TEXTAREA"].includes(target.tagName);
@@ -9283,6 +9923,7 @@ LIVE_EVIDENCE: ${JSON.stringify(hdiGptEvidencePayload(prompt))}`
       renderCharts();
       renderTable();
       if (id === "cities") renderCityWorkspace();
+      if (id === "ml-lab") ensureMlArtifacts().then(renderMlLab).catch(() => null);
       updateHdiGptContext();
       announce(`${page.dataset.pageTitle || id} page opened.`);
     }
@@ -9349,6 +9990,7 @@ LIVE_EVIDENCE: ${JSON.stringify(hdiGptEvidencePayload(prompt))}`
         renderTable();
         updateHdiGptContext();
         appendHdiMessage("assistant", `<strong>HDI-GPT online.</strong> I can answer using the 193-country projection dataset, explain glossary metrics, and trigger scenario, country, comparison, or explorer actions.`);
+        ensureMlArtifacts().catch(error => console.warn("ML research artifacts could not be loaded.", error));
         loadBacktest();
       } catch (error) {
         document.querySelector(".shell").insertAdjacentHTML("afterbegin", `<div class="panel error">Could not load ${csvPath}. Start the local server from the project root so the CSV can be fetched.</div>`);

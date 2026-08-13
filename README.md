@@ -16,6 +16,7 @@ An open, interactive research system for exploring national and subnational huma
 - **193-country projection table:** baseline HDI, 2050 scenario HDI, component indices, P10/P90 heuristic bounds, ranks, demographics, readiness factors, and driver attribution.
 - **Subnational extension:** 1,775 subdivision records covering 164 countries, reconciled to each country's population-weighted national HDI target.
 - **Interactive console:** maps, tables, scenario tuning, comparison tools, country briefs, validation diagnostics, demographic mosaics, and HDI-GPT.
+- **ML research layer:** live policy counterfactuals, TreeSHAP attribution, Isolation Forest audit flags, and cross-border subdivision similarity search.
 - **Historical validation:** 2,170 held-out country-year observations from 2014-2023.
 - **Reproducible documentation:** exact equations, data provenance, assumptions, limitations, and literature framing in [METHODOLOGY.md](METHODOLOGY.md).
 - **Policy narrative:** research findings and appropriate interpretation in [RESEARCH_REPORT.md](RESEARCH_REPORT.md).
@@ -44,9 +45,12 @@ If `/api/hdi-gpt` returns HTTP `503`, the deployed function cannot see either `O
 ```powershell
 python run_2050.py
 python build_subdivision_hdi.py
+python build_ml_research_artifacts.py
 ```
 
 Core outputs are written to `data/output/`. The dashboard reads these files directly, so generated outputs and UI calculations can be audited independently.
+
+`build_ml_research_artifacts.py` exports a browser-readable Extra Trees surrogate and precomputed explainability, anomaly, cluster, and nearest-neighbor records to `data/output/ml_research_artifacts.json`. Its cross-validation measures fidelity to the existing scenario table, not observed 2050 forecast accuracy.
 
 ## Key Sources
 
