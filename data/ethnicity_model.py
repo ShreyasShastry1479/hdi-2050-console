@@ -25,8 +25,11 @@ This module replaces the crude fixed profile-deviation model in
      its already-born cohorts keep births elevated for ~2 decades even as
      TFR falls. Modelled as a decaying fraction of the 2024 fertility
      advantage.
-    - migration:                ``immigrant`` groups receive a net-inflow
-      deviation scaled by the country's migration intensity.
+    - migration:                migration-linked groups receive a net-inflow
+      deviation from an explicit origin-destination corridor model combining
+      source workforce supply, portable-skill readiness, climate pressure,
+      destination labor demand, policy openness, diaspora networks, bilateral
+      affinity, and long-run settlement retention.
     - convergence:              group TFR pulls toward national TFR over time
       (``fertility_convergence``), and national TFR moves toward the 2050
       target (demographic transition).
@@ -44,6 +47,15 @@ and ramps up over the projection window as the crisis deepens, capturing
 countries that liberalise immigration in response to aging workforces
 (e.g. Japan, South Korea, Southern/Eastern Europe). This replaces the purely
 static ``COUNTRY_MIGRATION_INTENSITY`` baseline.
+
+Migration-corridor scenarios
+----------------------------
+The 2050 projection does not treat migration as a generic uplift shared by all
+groups. Group labels are mapped to plausible source countries, and only groups
+with an explicit migration channel receive corridor growth. Low and high
+migration runs expose sensitivity to policy and shock uncertainty. The output
+is directional scenario analysis rather than an official bilateral flow
+forecast; native-majority groups are excluded from the corridor table.
 
 The engine returns shares that are renormalised to 100% each year, matching
 the ``ethnicity.py`` interface so ``run_ethnicity_2050*.py`` can swap models.
@@ -300,6 +312,175 @@ def skilled_migration_program_intensity(iso3: str) -> float:
 def late_skilled_migration_curve(progress: float) -> float:
     """Ramp from near-zero before the late 2030s to full strength in 2050."""
     return float(np.clip((progress - 0.55) / 0.45, 0.0, 1.0) ** 2)
+
+
+# Source-side migration capacity. The three components distinguish a large
+# youth cohort from the education/credential base needed for skilled mobility
+# and from displacement pressure. They are scenario inputs, not ethnic traits.
+SOURCE_MIGRATION_CAPACITY: dict[str, tuple[float, float, float]] = {
+    # ISO3: (working-age/youth supply, portable-skill readiness, climate stress)
+    "NGA": (0.96, 0.68, 0.58), "ETH": (0.92, 0.52, 0.76),
+    "GHA": (0.78, 0.75, 0.46), "KEN": (0.84, 0.78, 0.58),
+    "PAK": (0.88, 0.70, 0.74), "IND": (0.66, 0.90, 0.56),
+    "BGD": (0.80, 0.68, 0.84), "PHL": (0.70, 0.88, 0.64),
+    "VNM": (0.62, 0.84, 0.68), "IDN": (0.72, 0.78, 0.76),
+    "NPL": (0.74, 0.66, 0.74), "LKA": (0.54, 0.82, 0.54),
+    "EGY": (0.72, 0.72, 0.66), "MAR": (0.60, 0.70, 0.58),
+    "DZA": (0.62, 0.68, 0.60), "TUN": (0.48, 0.74, 0.52),
+    "AFG": (0.90, 0.42, 0.86), "IRQ": (0.74, 0.58, 0.70),
+    "SYR": (0.76, 0.60, 0.74), "UKR": (0.46, 0.82, 0.52),
+    "MEX": (0.48, 0.74, 0.56), "GTM": (0.68, 0.56, 0.70),
+    "HND": (0.66, 0.56, 0.72), "SLV": (0.56, 0.62, 0.66),
+    "VEN": (0.52, 0.78, 0.64), "COL": (0.52, 0.78, 0.60),
+    "BRA": (0.46, 0.82, 0.62), "HTI": (0.82, 0.48, 0.86),
+}
+
+# Destination demand is kept separate from policy openness. A country may
+# need workers but remain politically restrictive, or recruit temporary labor
+# without offering durable settlement.
+DESTINATION_LABOR_DEMAND: dict[str, float] = {
+    "CAN": 0.96, "AUS": 0.92, "NZL": 0.82, "USA": 0.86,
+    "GBR": 0.88, "DEU": 0.94, "FRA": 0.80, "NLD": 0.88,
+    "IRL": 0.90, "SWE": 0.78, "NOR": 0.80, "DNK": 0.78,
+    "ITA": 0.84, "ESP": 0.82, "PRT": 0.74, "GRC": 0.72,
+    "JPN": 0.94, "KOR": 0.96, "SGP": 0.92, "TWN": 0.90,
+    "ARE": 0.96, "QAT": 0.94, "KWT": 0.88, "SAU": 0.90,
+    "OMN": 0.82, "BHR": 0.84,
+}
+
+# Fraction of a corridor's gross inflow expected to remain in the destination
+# long enough to affect the 2050 resident composition. This prevents temporary
+# Gulf and circular-labor systems from being treated like settlement migration.
+DESTINATION_SETTLEMENT_RETENTION: dict[str, float] = {
+    "ARE": 0.46, "QAT": 0.42, "KWT": 0.48, "SAU": 0.44,
+    "OMN": 0.48, "BHR": 0.50, "SGP": 0.58,
+    "JPN": 0.68, "KOR": 0.66,
+    "CAN": 0.92, "AUS": 0.90, "NZL": 0.88, "USA": 0.88,
+    "GBR": 0.84, "DEU": 0.80, "FRA": 0.80,
+}
+
+# Existing networks, language, recruitment systems and travel costs. Missing
+# pairs remain possible at 1.0; values above one describe established or
+# institutionally favored corridors rather than deterministic flows.
+CORRIDOR_AFFINITY: dict[tuple[str, str], float] = {
+    ("CAN", "IND"): 1.35, ("CAN", "PAK"): 1.28, ("CAN", "PHL"): 1.28,
+    ("CAN", "NGA"): 1.22, ("CAN", "GHA"): 1.16, ("CAN", "CHN"): 1.14,
+    ("GBR", "IND"): 1.30, ("GBR", "PAK"): 1.32, ("GBR", "NGA"): 1.25,
+    ("GBR", "GHA"): 1.18, ("GBR", "BGD"): 1.22, ("GBR", "KEN"): 1.15,
+    ("USA", "MEX"): 1.36, ("USA", "GTM"): 1.24, ("USA", "HND"): 1.22,
+    ("USA", "IND"): 1.20, ("USA", "PHL"): 1.18, ("USA", "NGA"): 1.12,
+    ("AUS", "IND"): 1.28, ("AUS", "PHL"): 1.24, ("AUS", "VNM"): 1.18,
+    ("DEU", "UKR"): 1.24, ("DEU", "SYR"): 1.18, ("DEU", "TUR"): 1.18,
+    ("FRA", "DZA"): 1.30, ("FRA", "MAR"): 1.28, ("FRA", "TUN"): 1.22,
+    ("ESP", "MAR"): 1.24, ("ESP", "VEN"): 1.28, ("ESP", "COL"): 1.24,
+    ("ITA", "EGY"): 1.18, ("ITA", "BGD"): 1.16, ("ITA", "PAK"): 1.15,
+    ("JPN", "VNM"): 1.28, ("JPN", "PHL"): 1.20, ("JPN", "IDN"): 1.16,
+    ("KOR", "VNM"): 1.26, ("KOR", "PHL"): 1.18, ("KOR", "IDN"): 1.14,
+    ("ARE", "IND"): 1.34, ("ARE", "PAK"): 1.30, ("ARE", "BGD"): 1.26,
+    ("QAT", "IND"): 1.28, ("QAT", "PAK"): 1.26, ("SAU", "EGY"): 1.22,
+}
+
+MIGRATION_ORIGIN_RULES: list[tuple[re.Pattern, tuple[str, ...]]] = [
+    (re.compile(r"nigerian|west african|black african|african immigrant", re.I), ("NGA", "GHA", "KEN")),
+    (re.compile(r"ethiopian|eritrean|horn of africa", re.I), ("ETH",)),
+    (re.compile(r"somali", re.I), ("SOM", "ETH", "KEN")),
+    (re.compile(r"pakistani", re.I), ("PAK",)),
+    (re.compile(r"bangladeshi", re.I), ("BGD",)),
+    (re.compile(r"indian|south asian", re.I), ("IND", "PAK", "BGD", "LKA", "NPL")),
+    (re.compile(r"filipino", re.I), ("PHL",)),
+    (re.compile(r"vietnamese", re.I), ("VNM",)),
+    (re.compile(r"indonesian", re.I), ("IDN",)),
+    (re.compile(r"egyptian", re.I), ("EGY",)),
+    (re.compile(r"moroccan", re.I), ("MAR",)),
+    (re.compile(r"algerian", re.I), ("DZA",)),
+    (re.compile(r"tunisian", re.I), ("TUN",)),
+    (re.compile(r"syrian", re.I), ("SYR",)),
+    (re.compile(r"afghan", re.I), ("AFG",)),
+    (re.compile(r"iraqi", re.I), ("IRQ",)),
+    (re.compile(r"ukrainian", re.I), ("UKR",)),
+    (re.compile(r"mexican", re.I), ("MEX",)),
+    (re.compile(r"guatemalan", re.I), ("GTM",)),
+    (re.compile(r"honduran", re.I), ("HND",)),
+    (re.compile(r"salvadoran", re.I), ("SLV",)),
+    (re.compile(r"venezuelan", re.I), ("VEN",)),
+    (re.compile(r"colombian", re.I), ("COL",)),
+    (re.compile(r"haitian", re.I), ("HTI",)),
+    (re.compile(r"chinese", re.I), ("CHN",)),
+]
+
+
+def infer_migration_origins(group_name: str) -> tuple[str, ...]:
+    """Infer plausible origin countries from a destination-group label."""
+    for pattern, origins in MIGRATION_ORIGIN_RULES:
+        if pattern.search(group_name):
+            return origins
+    return ()
+
+
+def migration_corridor_diagnostics(
+    destination_iso3: str,
+    group_name: str,
+    profile: object,
+    baseline_share: float,
+    progress: float,
+    demographic_need: float = 0.0,
+) -> dict[str, float | str]:
+    """Return an auditable multiplier for one origin-destination corridor.
+
+    The result combines source demographic supply and skill readiness with
+    destination labor demand, policy openness, diaspora depth, bilateral
+    affinity and long-run settlement retention. It intentionally avoids using
+    ethnicity itself as a causal variable.
+    """
+    origins = infer_migration_origins(group_name)
+    late = late_skilled_migration_curve(progress)
+    if origins:
+        capacities = [SOURCE_MIGRATION_CAPACITY.get(origin, (0.50, 0.58, 0.45)) for origin in origins]
+        youth = float(np.mean([item[0] for item in capacities]))
+        skill = float(np.mean([item[1] for item in capacities]))
+        climate = float(np.mean([item[2] for item in capacities]))
+        affinity = float(np.mean([CORRIDOR_AFFINITY.get((destination_iso3, origin), 1.0) for origin in origins]))
+    else:
+        youth, skill, climate, affinity = (0.48, 0.56, 0.42, 1.0)
+
+    # Skill-selective movement becomes more important in the 2040s; climate
+    # stress raises regional/forced movement but is discounted for long-run
+    # settlement because much displacement remains internal or temporary.
+    source_supply = float(np.clip(
+        0.44 * youth + (0.30 + 0.14 * late) * skill +
+        (0.16 - 0.06 * late) * climate,
+        0.0, 1.0,
+    ))
+    openness = MIGRATION_POLICY_OPENNESS.get(destination_iso3, 1.0)
+    labor_demand = DESTINATION_LABOR_DEMAND.get(destination_iso3, 0.58)
+    destination_pull = float(np.clip(
+        0.38 * labor_demand + 0.34 * demographic_need +
+        0.28 * min(1.0, openness / 1.2),
+        0.0, 1.0,
+    ))
+    # Established diasporas reduce information, financing and credential-risk
+    # costs. Log scaling avoids making already-large groups self-perpetuating.
+    diaspora_network = float(np.clip(
+        0.82 + 0.12 * math.log1p(max(0.0, baseline_share) * 100.0),
+        0.82, 1.30,
+    ))
+    retention = DESTINATION_SETTLEMENT_RETENTION.get(destination_iso3, 0.78)
+    corridor_multiplier = float(np.clip(
+        0.55 + source_supply * destination_pull * affinity *
+        diaspora_network * (0.55 + 0.55 * retention),
+        0.55, 2.25,
+    ))
+    return {
+        "origins": ";".join(origins) if origins else "unspecified",
+        "source_supply": source_supply,
+        "skill_readiness": skill,
+        "climate_pressure": climate,
+        "destination_pull": destination_pull,
+        "diaspora_network": diaspora_network,
+        "corridor_affinity": affinity,
+        "settlement_retention": retention,
+        "corridor_multiplier": corridor_multiplier,
+    }
 
 # ---------------------------------------------------------------------------
 # Intermarriage / mixed-identity formation index.
@@ -923,10 +1104,18 @@ def project_ethnic_composition(
         dev_mig = np.zeros_like(shares)
         for i, e in enumerate(entries):
             coeff = GROUP_MIGRATION_INTENSITY.get((iso3, e[0]))
+            corridor = migration_corridor_diagnostics(
+                iso3, e[0], e[2], e[1] / 100.0, progress, pressure)
+            corridor_multiplier = float(corridor["corridor_multiplier"])
             if coeff is not None:
-                dev_mig[i] = coeff * mig_scale * mig_intensity
+                dev_mig[i] = (
+                    coeff * mig_scale * mig_intensity * corridor_multiplier
+                )
             elif e[2] == "immigrant":
-                dev_mig[i] = 0.0040 * mig_scale * mig_intensity
+                dev_mig[i] = (
+                    0.0040 * mig_scale * mig_intensity *
+                    corridor_multiplier
+                )
             elif (e[0] == "Other" and pressure > 0.30
                   and e[2] in ("assimilating", "majority")):
                 dev_mig[i] = 0.0040 * mig_scale * mig_intensity * 0.5
@@ -934,8 +1123,13 @@ def project_ethnic_composition(
             if skilled_coeff is not None:
                 dev_mig[i] += (
                     skilled_coeff * mig_scale * skilled_program *
-                    late_skilled
+                    late_skilled *
+                    (0.65 + 0.55 * float(corridor["skill_readiness"])) *
+                    float(corridor["settlement_retention"])
                 )
+            # Guard against a small baseline diaspora acquiring an implausible
+            # annual growth rate from several overlapping migration channels.
+            dev_mig[i] = float(np.clip(dev_mig[i], 0.0, 0.045))
 
         # 6) Intermarriage: a fraction of the non-mixed population forms new
         #    mixed-identity people each year (children of mixed unions are

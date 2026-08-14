@@ -1520,6 +1520,14 @@
       font-size: 22px;
       font-weight: 800;
     }
+    #mosaic-regime-cards { grid-template-columns: repeat(6, minmax(0, 1fr)); }
+    #mosaic-regime-cards > .mosaic-driver-card { grid-column: span 2; }
+    #mosaic-regime-cards > .mosaic-driver-card:nth-child(4) { grid-column: 2 / span 2; }
+    @media (max-width: 980px) {
+      #mosaic-regime-cards { grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); }
+      #mosaic-regime-cards > .mosaic-driver-card,
+      #mosaic-regime-cards > .mosaic-driver-card:nth-child(4) { grid-column: auto; }
+    }
     .mosaic-data-links {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
@@ -3790,6 +3798,58 @@
       <div class="panel">
         <div class="panel-head">
           <div>
+            <div class="panel-title">Five Demographic-Development Regimes</div>
+            <div class="panel-note">A 2026-2050 scenario comparison for the EU-27, Russia, the United States, China, and India. The 2026 values are interpolated scenario estimates from the model baseline, not separate observations.</div>
+          </div>
+        </div>
+        <div class="mosaic-driver-grid" id="mosaic-regime-cards" aria-live="polite"></div>
+        <div class="chart-panel">
+          <svg id="mosaic-regime-chart" class="chart-svg" viewBox="0 0 680 330" role="img" aria-label="Comparison of projected population change, HDI gain, and aging for five demographic regimes"></svg>
+          <div class="chart-caption">Horizontal position shows population change, vertical position shows HDI gain, and circle size represents the increase in median age. Hover or focus a point for exact values.</div>
+        </div>
+        <div class="table-wrap">
+          <table aria-describedby="mosaic-regime-category-note">
+            <caption>Largest or reference population category in each scenario</caption>
+            <thead><tr><th scope="col">Entity</th><th scope="col">Reference category</th><th scope="col">Estimated 2026</th><th scope="col">2050</th><th scope="col">Primary mechanism</th></tr></thead>
+            <tbody id="mosaic-regime-category-body"></tbody>
+          </table>
+        </div>
+        <div class="chart-caption" id="mosaic-regime-category-note">These categories come from different national statistical systems and are not directly equivalent. The EU value is a synthetic population-weighted largest-category measure; it is not a single European ethnicity.</div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-head">
+          <div>
+            <div class="panel-title">2050 Migration Corridor Outlook</div>
+            <div class="panel-note" id="migration-corridor-note">Highest-signal origin-destination pathways under the baseline demographic scenario.</div>
+          </div>
+        </div>
+        <div class="table-wrap">
+          <table aria-describedby="migration-corridor-note">
+            <caption class="sr-only">Projected migration-linked population channels through 2050</caption>
+            <thead>
+              <tr>
+                <th scope="col">Destination</th>
+                <th scope="col">Population group</th>
+                <th scope="col">Likely origins</th>
+                <th scope="col">2024 share</th>
+                <th scope="col">2050 share</th>
+                <th scope="col">Low-high range</th>
+                <th scope="col">Expansion signal</th>
+                <th scope="col">Interpretation</th>
+              </tr>
+            </thead>
+            <tbody id="migration-corridor-body">
+              <tr><td colspan="8">Loading migration corridor scenarios...</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="chart-caption">The corridor index combines source-country workforce supply, portable skills, climate pressure, destination labor shortages, policy openness, diaspora networks, bilateral affinity, and settlement retention. It is a directional scenario signal, not an official bilateral migration forecast.</div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-head">
+          <div>
             <div class="panel-title">How Demographic Composition Explains HDI Drivers</div>
             <div class="panel-note">Use these cards as an interpretation layer for the 2050 HDI projections.</div>
           </div>
@@ -3976,7 +4036,12 @@
           <div class="mosaic-data-link">
             <strong>Ethnic composition table</strong><br>
             <code>data/output/ethnic_composition_2050_ai_model.csv</code><br>
-            Contains group shares, population counts, fertility convergence, migration intensity, policy access, mixed-identity recognition, identity-category transitions, composition indices, urbanization, and HDI cross-links.
+            Contains group shares, population counts, fertility convergence, migration corridors, source supply, destination pull, settlement retention, policy access, mixed-identity recognition, identity-category transitions, composition indices, urbanization, and HDI cross-links.
+          </div>
+          <div class="mosaic-data-link">
+            <strong>Migration corridor scenarios</strong><br>
+            <code>data/output/migration_corridors_2050.csv</code><br>
+            Ranks emerging and established origin-destination pathways using demographic labor supply, portable-skill readiness, destination shortages, policy openness, diaspora networks, climate pressure, long-run retention, and low/high migration sensitivity. These are directional scenario indices, not official bilateral flow forecasts.
           </div>
           <div class="mosaic-data-link">
             <strong>Religious composition table</strong><br>
@@ -3993,7 +4058,7 @@
             <div class="panel-note">Treemap, bar chart, card grid, country drawer, and scenario controls generated from the ethnic and religious composition output tables.</div>
           </div>
         </div>
-        <iframe class="mosaic-frame" id="ethnic-mosaic-frame" title="The World's Demographic Mosaic in 2050" loading="lazy" src="../data/output/ethnic_demographics_2050.html?v=20260809-hindu-2025-baseline"></iframe>
+        <iframe class="mosaic-frame" id="ethnic-mosaic-frame" title="The World's Demographic Mosaic in 2050" loading="lazy" src="../data/output/ethnic_demographics_2050.html?v=20260814-corridor-model"></iframe>
       </div>
     </section>
     </section>
@@ -4579,7 +4644,8 @@
     const historicalHdiCsvPath = "../data/output/hdi_1998_hdr2000.csv?v=20260812-hdr2000";
     const subdivisionCsvPath = "../data/output/subdivision_hdi_2025_2050.csv?v=20260809-hdi-gpt";
     const cityCsvPath = "../data/output/city_hdi_2025_2050.csv?v=20260811-subdivision-anchors";
-    const ethnicCsvPath = "../data/output/demographic_context_2050.csv?v=20260810-ethics-review";
+    const ethnicCsvPath = "../data/output/demographic_context_2050.csv?v=20260814-corridor-model";
+    const migrationCorridorCsvPath = "../data/output/migration_corridors_2050.csv?v=20260814-corridor-model";
     const religionCsvPath = "../data/output/religious_composition_2050_model.csv?v=20260809-hindu-2025-baseline";
     const povertyCsvPath = "../data/output/extreme_poverty_regional_1990_2040.csv?v=20260811";
     const mlArtifactPath = "../data/output/ml_research_artifacts.json?v=20260812-ml-lab";
@@ -4742,6 +4808,7 @@
     let filteredRows = [];
     let historicalHdiRows = [];
     let ethnicRows = [];
+    let migrationCorridorRows = [];
     let religionRows = [];
     let subdivisionRows = [];
     let cityRows = [];
@@ -5247,6 +5314,13 @@
       for (const key of [
         "TFR_2024", "TFR_2050", "Nat_TFR_2024", "Nat_TFR_2050",
         "Share_2024_pct", "Share_2050_pct", "Change_pp",
+        "Share_2050_LowMigrationScenario_pct", "Share_2050_HighMigrationScenario_pct",
+        "Share_2050_Migration_P10_pct", "Share_2050_Migration_P90_pct",
+        "Migration_Uncertainty_Width_pp", "Migration_SourceSupply_2050",
+        "Migration_SkillReadiness_2050", "Migration_ClimatePressure_2050",
+        "Migration_DestinationPull_2050", "Migration_DiasporaNetwork_2050",
+        "Migration_CorridorAffinity_2050", "Migration_SettlementRetention_2050",
+        "Migration_CorridorMultiplier_2050",
         "Inclusive_Mobility_Share_2050_pct", "Inclusive_Mobility_Change_pp",
         "Inclusive_Mobility_Delta_vs_Baseline_pp", "Inclusive_Mobility_IdentityFormationMultiplier",
         "Inclusive_Mobility_MixedIdentityMultiplier", "Inclusive_Mobility_IdentityTransitionRate",
@@ -5269,6 +5343,26 @@
         const n = Number(out[key]);
         if (Number.isFinite(n)) out[key] = n;
       }
+      return out;
+    }
+
+    function normalizeMigrationCorridorRow(row) {
+      const out = {...row};
+      for (const key of [
+        "Share_2024_pct", "Share_2050_pct", "Change_pp",
+        "Share_2050_LowMigrationScenario_pct", "Share_2050_HighMigrationScenario_pct",
+        "Share_2050_Migration_P10_pct", "Share_2050_Migration_P90_pct",
+        "Migration_Uncertainty_Width_pp", "Migration_SourceSupply_2050",
+        "Migration_SkillReadiness_2050", "Migration_ClimatePressure_2050",
+        "Migration_DestinationPull_2050", "Migration_DiasporaNetwork_2050",
+        "Migration_CorridorAffinity_2050", "Migration_SettlementRetention_2050",
+        "Migration_CorridorMultiplier_2050", "Migration_Intensity_2050",
+        "Corridor_Expansion_Index_2050", "Projected_Group_Population_Change_pct"
+      ]) {
+        const n = Number(out[key]);
+        if (Number.isFinite(n)) out[key] = n;
+      }
+      out.Migration_Channel_Active = String(out.Migration_Channel_Active).toLowerCase() === "true";
       return out;
     }
 
@@ -5330,6 +5424,15 @@
           InclusiveServiceDeliveryGap: inclusiveServiceDeliveryGap,
           TopGroups: topGroups,
           Migration_Intensity_2050: weighted("Migration_Intensity_2050"),
+          Migration_SourceSupply_2050: weighted("Migration_SourceSupply_2050"),
+          Migration_SkillReadiness_2050: weighted("Migration_SkillReadiness_2050"),
+          Migration_ClimatePressure_2050: weighted("Migration_ClimatePressure_2050"),
+          Migration_DestinationPull_2050: weighted("Migration_DestinationPull_2050"),
+          Migration_DiasporaNetwork_2050: weighted("Migration_DiasporaNetwork_2050"),
+          Migration_CorridorAffinity_2050: weighted("Migration_CorridorAffinity_2050"),
+          Migration_SettlementRetention_2050: weighted("Migration_SettlementRetention_2050"),
+          Migration_CorridorMultiplier_2050: weighted("Migration_CorridorMultiplier_2050"),
+          Migration_Uncertainty_Width_pp: weighted("Migration_Uncertainty_Width_pp"),
           Skilled_Migration_SourcePressure_2050: weighted("Skilled_Migration_SourcePressure_2050"),
           Skilled_Migration_ProgramIntensity_2050: weighted("Skilled_Migration_ProgramIntensity_2050"),
           Inclusive_Mobility_Delta_vs_Baseline_pp: weighted("Inclusive_Mobility_Delta_vs_Baseline_pp"),
@@ -5391,6 +5494,10 @@
     function bestUnivariateSignal(rows, yKey) {
       const features = [
         ["Migration intensity", "Migration_Intensity_2050"],
+        ["Migration source supply", "Migration_SourceSupply_2050"],
+        ["Migration destination pull", "Migration_DestinationPull_2050"],
+        ["Migration corridor multiplier", "Migration_CorridorMultiplier_2050"],
+        ["Migration uncertainty width", "Migration_Uncertainty_Width_pp"],
         ["Skilled source pressure", "Skilled_Migration_SourcePressure_2050"],
         ["Skilled program intensity", "Skilled_Migration_ProgramIntensity_2050"],
         ["Mobility convergence", "Intergenerational_Mobility_Convergence_2050"],
@@ -5526,6 +5633,7 @@
       }
       renderMosaicSelectedContext();
       renderMosaicOverlayChart(countryFeatures);
+      renderMosaicRegimeResearch();
     }
 
     function renderMosaicSelectedContext() {
@@ -5546,6 +5654,7 @@
       const serviceGapEl = document.getElementById("mosaic-selected-service-gap");
       const serviceGapNote = document.getElementById("mosaic-selected-service-gap-note");
       if (!countryEl || !summaryEl || !efEl || !rqEl || !skilledSourceEl || !skilledProgramEl || !mobilityEl || !climateStressEl || !languageEl || !inclusiveMobilityEl || !serviceGapEl || !serviceGapNote) return;
+      renderMigrationCorridorOutlook();
       if (!feature) {
         countryEl.textContent = "World";
         summaryEl.textContent = "Select a country on any map, chart, or table to see its top groups and diversity context.";
@@ -5581,6 +5690,148 @@
       inclusiveMobilityEl.textContent = `${fmt(feature.Inclusive_Mobility_MeanAbsDelta_pp, 2)} pp`;
       serviceGapEl.textContent = fmt(feature.InclusiveServiceDeliveryGap, 3);
       serviceGapNote.textContent = `${feature.Country}'s gap is a scenario-screening estimate based on public-service and access conditions. It does not use identity composition as a penalty.`;
+    }
+
+    function renderMigrationCorridorOutlook() {
+      const body = document.getElementById("migration-corridor-body");
+      const note = document.getElementById("migration-corridor-note");
+      if (!body || !note) return;
+      if (!migrationCorridorRows.length) {
+        body.innerHTML = '<tr><td colspan="8">Migration corridor scenarios are unavailable.</td></tr>';
+        return;
+      }
+      const destinationRows = activeCountry
+        ? migrationCorridorRows.filter(row => row.Destination_ISO3 === activeCountry.ISO3)
+        : [];
+      const sourceRows = destinationRows.length ? destinationRows : migrationCorridorRows;
+      const strength = row => {
+        const tier = row.Expected_Presence_2050 === "strong expansion" ? 100
+          : row.Expected_Presence_2050 === "moderate expansion" ? 50 : 0;
+        return tier + Number(row.Corridor_Expansion_Index_2050 || 0) * Math.sqrt(Math.max(0.05, Math.abs(Number(row.Change_pp || 0))));
+      };
+      const visible = sourceRows.slice().sort((a, b) => strength(b) - strength(a)).slice(0, 12);
+      note.textContent = destinationRows.length
+        ? `Migration-linked population channels modeled for ${activeCountry.Country}; low-high values show migration sensitivity, not confidence limits.`
+        : "Highest-signal origin-destination pathways under the baseline demographic scenario; select a destination country to focus the table.";
+      body.innerHTML = visible.map(row => `<tr>
+        <th scope="row">${escapeHtml(row.Destination)}</th>
+        <td>${escapeHtml(row.Destination_Group)}</td>
+        <td>${escapeHtml(String(row.Origin_Candidates || "").replaceAll(";", ", "))}</td>
+        <td>${fmt(row.Share_2024_pct, 2)}%</td>
+        <td>${fmt(row.Share_2050_pct, 2)}%</td>
+        <td>${fmt(row.Share_2050_LowMigrationScenario_pct, 2)}-${fmt(row.Share_2050_HighMigrationScenario_pct, 2)}%</td>
+        <td>${fmt(row.Corridor_Expansion_Index_2050, 2)}x</td>
+        <td>${escapeHtml(row.Expected_Presence_2050)}</td>
+      </tr>`).join("");
+    }
+
+    function renderMosaicRegimeResearch() {
+      const regimes = [
+        {
+          entity: "EU-27", hdi2026: 0.909, hdi2050: 0.922,
+          pop2026: 448, pop2050: 421, age2026: 44.5, age2050: 49.2,
+          pressure: "Aging and labor replacement",
+          mechanism: "Migration becomes the principal demographic buffer as fertility remains below replacement.",
+          outlook: "Smaller, older and gradually more diverse, with outcomes depending on integration, housing, education and service capacity.",
+          category: "Population-weighted largest national category", category2026: 83.1, category2050: 78.5,
+          categoryMechanism: "Primarily migration; secondarily fertility and identity recognition."
+        },
+        {
+          entity: "Russia", hdi2026: 0.823, hdi2050: 0.840,
+          pop2026: 144.2, pop2050: 136.1, age2026: 40.1, age2050: 46.0,
+          pressure: "Aging and population decline",
+          mechanism: "Labor demand rises, but restrictive settlement conditions and weaker destination pull limit composition change.",
+          outlook: "The population remains overwhelmingly Russian while minority shares change gradually at the margin.",
+          category: "Russian", category2026: 80.8, category2050: 79.4,
+          categoryMechanism: "Moderate fertility differentials and limited net immigration."
+        },
+        {
+          entity: "United States", hdi2026: 0.928, hdi2050: 0.941,
+          pop2026: 348, pop2050: 381, age2026: 38.8, age2050: 42.0,
+          pressure: "Migration and identity transition",
+          mechanism: "Sustained immigration, established diaspora corridors and multiracial identification offset low fertility and aging.",
+          outlook: "Continued population growth and the largest compositional transition in this comparison, without implying uniform outcomes across groups.",
+          category: "White non-Hispanic", category2026: 56.1, category2050: 44.8,
+          categoryMechanism: "Migration, age structure and multiracial identity growth."
+        },
+        {
+          entity: "China", hdi2026: 0.795, hdi2050: 0.880,
+          pop2026: 1407, pop2050: 1260, age2026: 39.8, age2050: 50.0,
+          pressure: "Rapid aging and contraction",
+          mechanism: "Automation, later retirement and internal mobility remain stronger baseline responses than mass international migration.",
+          outlook: "Much higher HDI and a substantially older, smaller population, while ethnic composition changes comparatively little.",
+          category: "Han Chinese", category2026: 91.0, category2050: 89.8,
+          categoryMechanism: "Differential fertility with substantial convergence by 2050."
+        },
+        {
+          entity: "India", hdi2026: 0.659, hdi2050: 0.836,
+          pop2026: 1469, pop2050: 1680, age2026: 28.7, age2050: 35.0,
+          pressure: "Growth and fertility convergence",
+          mechanism: "Demographic momentum supports workforce growth while education and skilled-migration pathways expand.",
+          outlook: "Strong HDI catch-up with continued population growth; composition change remains more fertility-driven than immigration-driven.",
+          category: "Hindi-speaking North/Central Indo-Aryan", category2026: 43.65, category2050: 44.23,
+          categoryMechanism: "Natural demographic momentum and converging group fertility."
+        }
+      ].map(row => ({
+        ...row,
+        hdiGain: row.hdi2050 - row.hdi2026,
+        popChangePct: 100 * (row.pop2050 / row.pop2026 - 1),
+        ageGain: row.age2050 - row.age2026
+      }));
+
+      const cards = document.getElementById("mosaic-regime-cards");
+      const categoryBody = document.getElementById("mosaic-regime-category-body");
+      if (cards) cards.innerHTML = regimes.map(row => `<article class="mosaic-driver-card">
+        <span class="metric">${fmt(row.hdi2026, 3)} &rarr; ${fmt(row.hdi2050, 3)}</span>
+        <h3>${escapeHtml(row.entity)}: ${escapeHtml(row.pressure)}</h3>
+        <p><strong>Mechanism:</strong> ${escapeHtml(row.mechanism)}</p>
+        <p><strong>2050 outlook:</strong> ${escapeHtml(row.outlook)}</p>
+        <p class="panel-note">Population ${fmt(row.pop2026, 1)}m &rarr; ${fmt(row.pop2050, 1)}m; median age ${fmt(row.age2026, 1)} &rarr; ${fmt(row.age2050, 1)}.</p>
+      </article>`).join("");
+      if (categoryBody) categoryBody.innerHTML = regimes.map(row => `<tr>
+        <th scope="row">${escapeHtml(row.entity)}</th>
+        <td>${escapeHtml(row.category)}</td>
+        <td>${fmt(row.category2026, 2)}%</td>
+        <td>${fmt(row.category2050, 2)}%</td>
+        <td>${escapeHtml(row.categoryMechanism)}</td>
+      </tr>`).join("");
+
+      const svg = d3.select("#mosaic-regime-chart");
+      if (svg.empty()) return;
+      svg.selectAll("*").remove();
+      const width = 680, height = 330;
+      const margin = {top: 26, right: 36, bottom: 54, left: 60};
+      const x = d3.scaleLinear().domain([-13, 17]).range([margin.left, width - margin.right]);
+      const y = d3.scaleLinear().domain([0, 0.19]).range([height - margin.bottom, margin.top]);
+      const radius = d3.scaleSqrt().domain(d3.extent(regimes, d => d.ageGain)).range([8, 20]);
+      svg.append("g").attr("transform", `translate(0,${height - margin.bottom})`).call(d3.axisBottom(x).ticks(7).tickFormat(d => `${d > 0 ? "+" : ""}${d}%`)).call(styleAxis);
+      svg.append("g").attr("transform", `translate(${margin.left},0)`).call(d3.axisLeft(y).ticks(5).tickFormat(d3.format(".3f"))).call(styleAxis);
+      svg.append("line").attr("x1", x(0)).attr("x2", x(0)).attr("y1", margin.top).attr("y2", height - margin.bottom).attr("stroke", "rgba(246,206,106,0.58)").attr("stroke-dasharray", "5 5");
+      svg.append("text").attr("x", width / 2).attr("y", height - 12).attr("fill", "var(--muted)").attr("font-size", 12).attr("text-anchor", "middle").text("Population change, 2026-2050");
+      svg.append("text").attr("transform", "rotate(-90)").attr("x", -height / 2).attr("y", 16).attr("fill", "var(--muted)").attr("font-size", 12).attr("text-anchor", "middle").text("HDI gain, 2026-2050");
+      const colors = new Map([["EU-27", "#58e6ff"], ["Russia", "#ff7aa2"], ["United States", "#9a8cff"], ["China", "#f6ce6a"], ["India", "#66f3b3"]]);
+      const showTip = (event, row) => {
+        const rect = event.currentTarget.getBoundingClientRect();
+        tooltip.style.opacity = 1;
+        tooltip.innerHTML = `<strong>${escapeHtml(row.entity)}</strong><br>HDI: ${fmt(row.hdi2026, 3)} to ${fmt(row.hdi2050, 3)}<br>Population: ${fmt(row.pop2026, 1)}m to ${fmt(row.pop2050, 1)}m<br>Median age: ${fmt(row.age2026, 1)} to ${fmt(row.age2050, 1)}`;
+        tooltip.style.left = `${event.clientX || rect.right}px`;
+        tooltip.style.top = `${event.clientY || rect.top}px`;
+      };
+      svg.selectAll("circle.regime-point").data(regimes).join("circle")
+        .attr("class", "regime-point").attr("cx", d => x(d.popChangePct)).attr("cy", d => y(d.hdiGain)).attr("r", d => radius(d.ageGain))
+        .attr("fill", d => colors.get(d.entity)).attr("fill-opacity", 0.78).attr("stroke", "rgba(255,255,255,0.75)").attr("stroke-width", 1.2)
+        .attr("tabindex", 0).attr("role", "graphics-symbol")
+        .attr("aria-label", d => `${d.entity}: HDI gain ${fmt(d.hdiGain, 3)}, population change ${fmt(d.popChangePct, 1)} percent, median age increase ${fmt(d.ageGain, 1)} years`)
+        .on("mouseenter focus", showTip).on("mouseleave blur", () => { tooltip.style.opacity = 0; });
+      const labelOffset = new Map([
+        ["EU-27", {x: -24, y: -12}],
+        ["Russia", {x: 26, y: 2}]
+      ]);
+      svg.selectAll("text.regime-label").data(regimes).join("text")
+        .attr("class", "regime-label")
+        .attr("x", d => x(d.popChangePct) + (labelOffset.get(d.entity)?.x || 0))
+        .attr("y", d => y(d.hdiGain) - radius(d.ageGain) - 7 + (labelOffset.get(d.entity)?.y || 0))
+        .attr("text-anchor", "middle").attr("fill", "var(--text)").attr("font-size", 11).attr("font-weight", 700).text(d => d.entity);
     }
 
     function styleAxis(selection) {
@@ -9965,8 +10216,14 @@ LIVE_EVIDENCE: ${JSON.stringify(hdiGptEvidencePayload(prompt))}`
           updateHdiGptContext();
         });
         try {
-          ethnicRows = (await d3.csv(ethnicCsvPath, normalizeEthnicRow)).filter(d => d.ISO3 && d.Country && d.Group);
-          religionRows = (await d3.csv(religionCsvPath, normalizeReligionRow)).filter(d => d.ISO3 && d.Country && d.Group);
+          [ethnicRows, religionRows, migrationCorridorRows] = await Promise.all([
+            d3.csv(ethnicCsvPath, normalizeEthnicRow),
+            d3.csv(religionCsvPath, normalizeReligionRow),
+            d3.csv(migrationCorridorCsvPath, normalizeMigrationCorridorRow)
+          ]);
+          ethnicRows = ethnicRows.filter(d => d.ISO3 && d.Country && d.Group);
+          religionRows = religionRows.filter(d => d.ISO3 && d.Country && d.Group);
+          migrationCorridorRows = migrationCorridorRows.filter(d => d.Destination_ISO3 && d.Destination_Group && d.Migration_Channel_Active);
           updateEthnicMosaicStats();
         } catch (ethnicError) {
           const gainEl = document.getElementById("mosaic-largest-gain");

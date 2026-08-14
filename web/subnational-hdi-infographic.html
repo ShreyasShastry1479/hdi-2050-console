@@ -10,6 +10,7 @@
   </script>
   <title>Subnational HDI Explorer: 2025 to 2050</title>
   <script src="https://cdn.jsdelivr.net/npm/d3@7.9.0/dist/d3.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/topojson-client@3.1.0/dist/topojson-client.min.js"></script>
   <style>
     :root { color-scheme: dark; --bg:#080c13; --surface:#101722; --surface2:#151f2d; --line:#263347; --text:#edf4ff; --muted:#93a4b8; --cyan:#37d6d0; --blue:#4c83ff; --gold:#f4c95d; --positive:#6fe1aa; --negative:#ff807d; }
     * { box-sizing: border-box; }
@@ -41,9 +42,9 @@
     .map-panel { margin-bottom:12px; }
     .map-stage { position:relative; min-height:420px; padding:0 14px 12px; }
     #subdivision-map { display:block; width:100%; height:auto; min-height:400px; }
-    .map-land { stroke:transparent; stroke-width:0; cursor:pointer; transition:opacity .15s ease; }
-    .map-land:hover,.map-land:focus { stroke:transparent; stroke-width:0; opacity:.86; outline:none; }
-    .map-land.is-selected { stroke:transparent; stroke-width:0; }
+    .map-land { stroke:none !important; stroke-width:0 !important; cursor:pointer; transition:opacity .15s ease; }
+    .map-land:hover,.map-land:focus { stroke:none !important; stroke-width:0 !important; opacity:.86; outline:none; }
+    .map-land.is-selected { stroke:none !important; stroke-width:0 !important; }
     .map-land.is-imputed { opacity:.78; }
     .map-legend { display:flex; align-items:center; gap:9px; color:var(--muted); font-size:.72rem; }
     .map-gradient { width:150px; height:8px; background:linear-gradient(90deg,#310610 0%,#7c1d2c 30%,#c96b6b 47%,#e7edf3 70%,#477ca8 86%,#061a3d 100%); border:1px solid #52647e; }
@@ -57,12 +58,13 @@
     .world-map-card { min-width:0; padding:14px; background:#0d1520; }
     .world-map-card h3 { margin:0 0 4px; font-size:.9rem; }
     .world-map-card p { min-height:34px; margin:0 0 7px; color:var(--muted); font-size:.72rem; line-height:1.45; }
-    .world-map { display:block; width:100%; aspect-ratio:1.9/1; background:#0a1019; }
-    .world-land { stroke:transparent; stroke-width:0; cursor:pointer; }
-    .world-land:hover,.world-land:focus { stroke:transparent; stroke-width:0; opacity:.86; outline:none; }
-    .world-land.is-reference { stroke:transparent; stroke-width:0; }
+    .world-map { display:block; width:100%; aspect-ratio:1.9/1; background:#1a2a3c; }
+    .world-land { stroke:none !important; stroke-width:0 !important; cursor:pointer; }
+    .world-land:hover,.world-land:focus { stroke:none !important; stroke-width:0 !important; opacity:.86; outline:none; }
+    .world-land.is-reference { stroke:none !important; stroke-width:0 !important; }
+    .world-land.is-no-data { fill:#000000; stroke:none !important; stroke-width:0 !important; cursor:default; opacity:1; }
     .comparison-legend { display:flex; flex-wrap:wrap; gap:14px; align-items:center; color:var(--muted); font-size:.72rem; }
-    .comparison-legend i { width:12px; height:9px; display:inline-block; margin-right:5px; vertical-align:-1px; }
+    .comparison-legend i { width:12px; height:9px; display:inline-block; margin-right:5px; vertical-align:-1px; border:1px solid rgba(255,255,255,.22); }
     .panel { min-width:0; overflow:hidden; }
     .panel-head { display:flex; justify-content:space-between; gap:16px; align-items:start; padding:19px 20px 10px; }
     .panel-head h2 { margin:0; font-size:1rem; font-weight:650; }
@@ -165,8 +167,9 @@
     const DATA_URL="../data/output/subdivision_hdi_2025_2050.csv?v=20260809-world-subdivisions";
     const NATIONAL_DATA_URL="../data/output/hdi_2050_rankings.csv?v=20260809-world-subdivisions";
     const WORLD_GEO_URL="assets/geo/adm1/world_subdivisions.geojson?v=20260809-topology-preserved";
+    const WORLD_COUNTRY_GEO_URL="https://cdn.jsdelivr.net/npm/world-atlas@2.0.2/countries-110m.json";
     const formatHdi=d3.format(".3f"),formatSigned=d3.format("+.3f"),formatPopulation=d3.format(".3~s");
-    const state={rows:[],nationalRows:[],country:"",selected:"",search:"",sort:"hdi2050",mapYear:"2050",geometryCache:new Map(),mapRequest:0,worldGeometry:null,worldMapped:[],worldReference:null,worldThresholdValue:null};
+    const state={rows:[],nationalRows:[],country:"",selected:"",search:"",sort:"hdi2050",mapYear:"2050",geometryCache:new Map(),mapRequest:0,worldGeometry:null,worldCountryGeometry:null,worldMapped:[],worldReference:null,worldThresholdValue:null};
     const countrySelect=document.getElementById("country-select"),searchInput=document.getElementById("subdivision-search"),worldSubdivisionSelect=document.getElementById("world-subdivision-select"),tooltip=d3.select("#tooltip");
     const displayPopulation=value=>formatPopulation(value).replace("G","B");
     function displayParts(value){const match=String(value||"").match(/^\s*([^()]+?)\s*\((.+)\)\s*$/);return match?{primary:match[1].trim(),secondary:match[2].trim()}:{primary:String(value||""),secondary:""}}
@@ -178,16 +181,31 @@
     function assignFranceRegion(region,codes){codes.split(" ").forEach(code=>{franceLegacyRegionByDepartment[`fr ${code.toLowerCase()}`]=region})}
     assignFranceRegion("alsace","67 68");assignFranceRegion("aquitaine","24 33 40 47 64");assignFranceRegion("auvergne","03 15 43 63");assignFranceRegion("basse normandie","14 50 61");assignFranceRegion("bourgogne","21 58 71 89");assignFranceRegion("bretagne","22 29 35 56");assignFranceRegion("centre","18 28 36 37 41 45");assignFranceRegion("champagne ardenne","08 10 51 52");assignFranceRegion("corse","2a 2b");assignFranceRegion("franche comte","25 39 70 90");assignFranceRegion("haute normandie","27 76");assignFranceRegion("ile de france","75 77 78 91 92 93 94 95");assignFranceRegion("languedoc roussillon","11 30 34 48 66");assignFranceRegion("limousin","19 23 87");assignFranceRegion("lorraine","54 55 57 88");assignFranceRegion("midi pyrenees","09 12 31 32 46 65 81 82");assignFranceRegion("nord","59 62");assignFranceRegion("pays de la loire","44 49 53 72 85");assignFranceRegion("picardie","02 60 80");assignFranceRegion("poitou charentes","16 17 79 86");assignFranceRegion("provence alpes cote dazur","04 05 06 13 83 84");assignFranceRegion("rhone alpes","01 07 26 38 42 69 73 74");
     Object.assign(franceLegacyRegionByDepartment,{"fr gf":"french guyana","fr gp":"guadeloupe","fr mq":"martinique","fr re":"reunion","fr yt":"mayotte"});
+    const turkeyRegions={};
+    function assignTurkeyRegion(region,codes){codes.split(" ").forEach(code=>{turkeyRegions[`tr ${code}`]=region})}
+    assignTurkeyRegion("istanbul","34");
+    assignTurkeyRegion("west anatolia","06 42 70");
+    assignTurkeyRegion("east marmara","11 14 16 26 41 54 77 81");
+    assignTurkeyRegion("west marmara","10 17 22 39 59");
+    assignTurkeyRegion("aegean","03 09 20 35 43 45 48 64");
+    assignTurkeyRegion("mediterranean","01 07 15 31 32 33 46 80");
+    assignTurkeyRegion("central anatolia","38 40 50 51 58 66 68 71");
+    assignTurkeyRegion("east black sea","08 28 29 52 53 61");
+    assignTurkeyRegion("west black sea","05 18 19 37 55 57 60 67 74 78");
+    assignTurkeyRegion("north east anatolia","04 24 25 36 69 75 76");
+    assignTurkeyRegion("south east anatolia","02 21 27 47 56 63 72 73 79");
+    assignTurkeyRegion("central east anatolia","12 13 23 30 44 49 62 65");
     const countrySubdivisionSuccessors={
       KOR:{"seoul":"capital","incheon":"capital","gyeonggi":"capital","busan":"gyeongnam","ulsan":"gyeongnam","south gyeongsang":"gyeongnam","daejeon":"chungcheong","sejong":"chungcheong","north chungcheong":"chungcheong","south chungcheong":"chungcheong","gwangju":"jeolla","north jeolla":"jeolla","south jeolla":"jeolla","gangwon":"gangwon","jeju":"jeju","daegu":"gyeongbuk","north gyeongsang":"gyeongbuk"},
       USA:{"us dc":"district of columbia"},
-      FRA:franceLegacyRegionByDepartment
+      FRA:franceLegacyRegionByDepartment,
+      TUR:turkeyRegions
     };
     function featureNames(feature){const p=feature.properties||{};return [p.name_en,p.name,p.name_local,p.name_alt,p.region,p.region_sub,p.geonunit,p.iso_3166_2].filter(Boolean).flatMap(value=>String(value).split("|")).map(normalizeName).filter(Boolean)}
-    function matchFeatureToRow(feature,rows){const names=featureNames(feature),iso3=feature.properties?.adm0_a3,countrySuccessors=countrySubdivisionSuccessors[iso3]||{};let best=null,bestScore=0;rows.forEach(row=>{const parts=displayParts(row.Subdivision),primary=subdivisionAliases[normalizeName(parts.primary)]||normalizeName(parts.primary),secondary=normalizeName(parts.secondary),full=normalizeName(row.Subdivision);names.forEach(name=>{const forced=countrySuccessors[name],successor=subdivisionSuccessors[name];let score=0;if(forced&&(forced===primary||forced===full))score=6;else if(name===primary||name===full)score=5;else if(successor&&(successor===primary||successor===full))score=4.5;else if(secondary&&name.length>=4&&(` ${secondary} `).includes(` ${name} `))score=4;else if(name.length>=4&&(primary.includes(name)||name.includes(primary)))score=3;else if(name.length>=5&&(full.includes(name)||name.includes(full)))score=2;if(score>bestScore){best=row;bestScore=score}})});return bestScore>=2?best:null}
+    function matchFeatureToRow(feature,rows){const names=featureNames(feature),iso3=feature.properties?.adm0_a3,countrySuccessors=countrySubdivisionSuccessors[iso3]||{};let best=null,bestScore=0;rows.forEach(row=>{const parts=displayParts(row.Subdivision),primary=subdivisionAliases[normalizeName(parts.primary)]||normalizeName(parts.primary),secondary=normalizeName(parts.secondary),full=normalizeName(row.Subdivision);names.forEach(name=>{const forced=countrySuccessors[name],successor=subdivisionSuccessors[name];let score=0;if(forced&&(forced===primary||forced===full||primary.startsWith(`${forced} `)||full.startsWith(`${forced} `)))score=6;else if(name===primary||name===full)score=5;else if(successor&&(successor===primary||successor===full))score=4.5;else if(secondary&&name.length>=4&&(` ${secondary} `).includes(` ${name} `))score=4;else if(name.length>=4&&(primary.includes(name)||name.includes(primary)))score=3;else if(name.length>=5&&(full.includes(name)||name.includes(full)))score=2;if(score>bestScore){best=row;bestScore=score}})});return bestScore>=2?best:null}
     function stableSubdivisionSignal(value){let hash=2166136261;for(const character of String(value)){hash^=character.charCodeAt(0);hash=Math.imul(hash,16777619)}return ((hash>>>0)/4294967295)*2-1}
     function fallbackMapRow(feature,rows,national=null,featureCount=1){
-      const source=national||rows[0],name=feature.properties?.name_en||feature.properties?.name||"Unmatched subdivision",target2025=source.National_HDI_2025_Target,target2050=source.National_HDI_2050_Target,sourceSpread2025=d3.deviation(rows,d=>d.Subdivision_HDI_2025_Reconciled),sourceSpread2050=d3.deviation(rows,d=>d.Subdivision_HDI_2050_Projected),developmentGap=Math.max(0,Math.min(.12,.82-target2025)),spread2025=Math.max(.018,Math.min(.07,sourceSpread2025||(.025+developmentGap*.2))),spread2050=Math.max(.014,Math.min(.055,sourceSpread2050||spread2025*.72)),signal=stableSubdivisionSignal(`${source.ISO3}|${name}`),hdi2025=Math.max(.25,Math.min(.995,target2025+signal*spread2025)),hdi2050=Math.max(.3,Math.min(.997,target2050+signal*spread2050)),weight=1/Math.max(1,featureCount),population2050=Number(source.Population_2050)||0;
+      const source=national||rows[0],name=feature.properties?.name_en||feature.properties?.name||"Unmatched subdivision",target2025=source.National_HDI_2025_Target,target2050=source.National_HDI_2050_Target,sourceSpread2025=d3.deviation(rows,d=>d.Subdivision_HDI_2025_Reconciled),sourceSpread2050=d3.deviation(rows,d=>d.Subdivision_HDI_2050_Projected),developmentGap=Math.max(0,Math.min(.12,.82-target2025)),spread2025=Math.max(.018,Math.min(.07,sourceSpread2025||(.025+developmentGap*.2))),spread2050=Math.max(.014,Math.min(.055,sourceSpread2050||spread2025*.72)),lowFragmentation=new Set(["ALB","BIH","BGR","HRV","GRC","MKD","MNE","ROU","SRB","SVN","TUR"]).has(source.ISO3),signal=lowFragmentation?0:stableSubdivisionSignal(`${source.ISO3}|${name}`),hdi2025=Math.max(.25,Math.min(.995,target2025+signal*spread2025)),hdi2050=Math.max(.3,Math.min(.997,target2050+signal*spread2050)),weight=1/Math.max(1,featureCount),population2050=Number(source.Population_2050)||0;
       return {...source,Subdivision:name,Subdivision_HDI_2025_Source:NaN,Subdivision_HDI_2025_Reconciled:hdi2025,Subdivision_HDI_2050_Projected:hdi2050,Subdivision_HDI_Change_2025_to_2050:hdi2050-hdi2025,Subdivision_Population_2050_Est:population2050*weight,Subdivision_Weight_2050:weight,DevelopmentMomentumTier:source.DevelopmentMomentumTier||"modeled_adm1",Trajectory:source.Trajectory||"national_proxy",Data_Coverage:"modeled_adm1_estimate",_mapProxy:true}
     }
     const mapColor=d3.scaleLinear().domain([.4,.58,.72,.82,.9,1]).range(["#310610","#7c1d2c","#c96b6b","#e7edf3","#477ca8","#061a3d"]).clamp(true);
@@ -232,6 +250,7 @@
     function sameSubdivision(a,b){return a&&b&&a.ISO3===b.ISO3&&a.Subdivision===b.Subdivision}
     function worldFill(item,year){
       const numericReference=Number.isFinite(state.worldThresholdValue)?state.worldThresholdValue:null;
+      if(!item.row)return "#000000";
       if(!state.worldReference&&numericReference===null)return mapColor(worldValue(item.row,year));
       if(sameSubdivision(item.row,state.worldReference))return "#f4c95d";
       const target=worldValue(item.row,year),reference=state.worldReference?worldValue(state.worldReference,year):numericReference;
@@ -240,6 +259,7 @@
       return "#7d8795";
     }
     function worldTooltip(event,item,year){
+      if(!item.row){const name=item.feature.properties?.name_en||item.feature.properties?.name||"Territory";tooltip.style("opacity",1).html(`<strong>${name}</strong>No comparable HDI data is available for this territory.`);moveTooltip(event);return}
       const reference=state.worldReference,numericReference=Number.isFinite(state.worldThresholdValue)?state.worldThresholdValue:null;
       if(reference||numericReference!==null){
         if(sameSubdivision(item.row,reference)){
@@ -266,35 +286,36 @@
     function renderWorldSummary(year){
       const summary=document.getElementById(`world-summary-${year}`),reference=state.worldReference,numericReference=Number.isFinite(state.worldThresholdValue)?state.worldThresholdValue:null;
       if(!reference&&numericReference===null){summary.textContent=`Each subdivision is colored by its ${year==="2025"?"reconciled":"projected"} ${year} HDI.`;return}
-      const referenceHdi=reference?worldValue(reference,year):numericReference,uniqueSubdivisions=Array.from(new Map(state.worldMapped.map(item=>[`${item.row.ISO3}|${item.row.Subdivision}`,item.row])).values());
+      const referenceHdi=reference?worldValue(reference,year):numericReference,uniqueSubdivisions=Array.from(new Map(state.worldMapped.filter(item=>item.row).map(item=>[`${item.row.ISO3}|${item.row.Subdivision}`,item.row])).values());
       const higher=uniqueSubdivisions.filter(row=>worldValue(row,year)>referenceHdi+.0005).length,lower=uniqueSubdivisions.filter(row=>worldValue(row,year)<referenceHdi-.0005).length,equal=uniqueSubdivisions.length-higher-lower;
       summary.textContent=`${higher.toLocaleString()} subdivisions higher, ${lower.toLocaleString()} lower, ${equal.toLocaleString()} approximately equal to ${reference?`${reference.Subdivision} (${formatHdi(referenceHdi)})`:`HDI ${formatHdi(referenceHdi)}`}.`;
     }
     function relationTo(value,reference){return value>reference+.0005?"Higher":value<reference-.0005?"Lower":"Approximately equal"}
-    function renderWorldResults(){const body=document.getElementById("world-results-body"),caption=document.getElementById("world-results-caption"),reference=state.worldReference,numericReference=Number.isFinite(state.worldThresholdValue)?state.worldThresholdValue:null;if(!reference&&numericReference===null){body.innerHTML="";caption.textContent="Choose a subdivision or enter an HDI value to generate worldwide comparison results.";return}const unique=Array.from(new Map(state.worldMapped.map(item=>[`${item.row.ISO3}|${item.row.Subdivision}`,item.row])).values()).sort((a,b)=>d3.descending(worldValue(a,"2050"),worldValue(b,"2050"))||d3.ascending(a.Country,b.Country)),reference2025=reference?worldValue(reference,"2025"):numericReference,reference2050=reference?worldValue(reference,"2050"):numericReference,label=reference?`${reference.Subdivision}, ${reference.Country}`:`HDI ${formatHdi(numericReference)}`;caption.textContent=`All ${unique.length.toLocaleString()} mapped subdivisions compared with ${label}, sorted by projected 2050 HDI.`;body.innerHTML=unique.map(row=>`<tr><th scope="row">${row.Subdivision}</th><td>${row.Country}</td><td>${formatHdi(worldValue(row,"2025"))}</td><td>${relationTo(worldValue(row,"2025"),reference2025)}</td><td>${formatHdi(worldValue(row,"2050"))}</td><td>${relationTo(worldValue(row,"2050"),reference2050)}</td></tr>`).join("")}
+    function renderWorldResults(){const body=document.getElementById("world-results-body"),caption=document.getElementById("world-results-caption"),reference=state.worldReference,numericReference=Number.isFinite(state.worldThresholdValue)?state.worldThresholdValue:null;if(!reference&&numericReference===null){body.innerHTML="";caption.textContent="Choose a subdivision or enter an HDI value to generate worldwide comparison results.";return}const unique=Array.from(new Map(state.worldMapped.filter(item=>item.row).map(item=>[`${item.row.ISO3}|${item.row.Subdivision}`,item.row])).values()).sort((a,b)=>d3.descending(worldValue(a,"2050"),worldValue(b,"2050"))||d3.ascending(a.Country,b.Country)),reference2025=reference?worldValue(reference,"2025"):numericReference,reference2050=reference?worldValue(reference,"2050"):numericReference,label=reference?`${reference.Subdivision}, ${reference.Country}`:`HDI ${formatHdi(numericReference)}`;caption.textContent=`All ${unique.length.toLocaleString()} mapped subdivisions compared with ${label}, sorted by projected 2050 HDI.`;body.innerHTML=unique.map(row=>`<tr><th scope="row">${row.Subdivision}</th><td>${row.Country}</td><td>${formatHdi(worldValue(row,"2025"))}</td><td>${relationTo(worldValue(row,"2025"),reference2025)}</td><td>${formatHdi(worldValue(row,"2050"))}</td><td>${relationTo(worldValue(row,"2050"),reference2050)}</td></tr>`).join("")}
     function renderWorldMaps(){
       if(!state.worldMapped.length)return;
       const width=920,height=480,projection=d3.geoEqualEarth().fitExtent([[8,8],[width-8,height-8]],state.worldGeometry),path=d3.geoPath(projection);
       for(const year of ["2025","2050"]){
         const svg=d3.select(`#world-map-${year}`).attr("viewBox",`0 0 ${width} ${height}`);svg.selectAll("*").remove();
-        svg.append("g").selectAll("path").data(state.worldMapped).join("path").attr("class",d=>`world-land${sameSubdivision(d.row,state.worldReference)?" is-reference":""}`).attr("d",d=>path(d.feature)).attr("fill",d=>worldFill(d,year)).attr("opacity",d=>d.direct?1:.82).attr("tabindex",0).attr("role","button").attr("aria-label",d=>{const benchmark=state.worldReference?state.worldReference.Subdivision:Number.isFinite(state.worldThresholdValue)?`HDI ${formatHdi(state.worldThresholdValue)}`:null;return benchmark?`${d.row.Subdivision}, ${d.row.Country}, ${year} subdivision HDI ${formatHdi(worldValue(d.row,year))}, compared with ${benchmark}`:`${d.row.Subdivision}, ${d.row.Country}, ${year} HDI ${formatHdi(worldValue(d.row,year))}${d.row._mapProxy?", modeled estimate":""}`}).on("mouseenter",(event,d)=>worldTooltip(event,d,year)).on("mousemove",moveTooltip).on("mouseleave",hideTooltip).on("focus",(event,d)=>worldTooltip({clientX:window.innerWidth/2,clientY:150},d,year)).on("blur",hideTooltip).on("click",(_,d)=>selectWorldSubdivision(d.row)).on("keydown",(event,d)=>{if(event.key==="Enter"||event.key===" "){event.preventDefault();selectWorldSubdivision(d.row)}});
+        if(state.worldCountryGeometry){svg.append("g").attr("aria-label","Countries and territories without subdivision HDI data").selectAll("path").data(state.worldCountryGeometry.features).join("path").attr("class","world-land is-no-data").attr("d",path).attr("role","img").attr("aria-label",d=>`${d.properties?.name||"Territory"}, no comparable subdivision HDI data`).on("mouseenter",(event,d)=>{tooltip.style("opacity",1).html(`<strong>${d.properties?.name||"Territory"}</strong>No comparable subdivision HDI data is available.`);moveTooltip(event)}).on("mousemove",moveTooltip).on("mouseleave",hideTooltip)}
+        svg.append("g").selectAll("path").data(state.worldMapped).join("path").attr("class",d=>`world-land${!d.row?" is-no-data":""}${sameSubdivision(d.row,state.worldReference)?" is-reference":""}`).attr("d",d=>path(d.feature)).attr("fill",d=>worldFill(d,year)).attr("opacity",1).attr("tabindex",d=>d.row?0:null).attr("role",d=>d.row?"button":"img").attr("aria-label",d=>{const name=d.feature.properties?.name_en||d.feature.properties?.name||"Territory";if(!d.row)return `${name}, no comparable HDI data available`;const benchmark=state.worldReference?state.worldReference.Subdivision:Number.isFinite(state.worldThresholdValue)?`HDI ${formatHdi(state.worldThresholdValue)}`:null;return benchmark?`${d.row.Subdivision}, ${d.row.Country}, ${year} subdivision HDI ${formatHdi(worldValue(d.row,year))}, compared with ${benchmark}`:`${d.row.Subdivision}, ${d.row.Country}, ${year} HDI ${formatHdi(worldValue(d.row,year))}${d.row._mapProxy?", modeled estimate":""}`}).on("mouseenter",(event,d)=>worldTooltip(event,d,year)).on("mousemove",moveTooltip).on("mouseleave",hideTooltip).on("focus",(event,d)=>worldTooltip({clientX:window.innerWidth/2,clientY:150},d,year)).on("blur",hideTooltip).on("click",(_,d)=>{if(d.row)selectWorldSubdivision(d.row)}).on("keydown",(event,d)=>{if(d.row&&(event.key==="Enter"||event.key===" ")){event.preventDefault();selectWorldSubdivision(d.row)}});
         renderWorldSummary(year)
       }
       const reference=document.getElementById("world-reference"),legend=document.getElementById("world-legend");
-      if(state.worldReference){reference.innerHTML=`Reference: <strong>${state.worldReference.Subdivision}</strong><br>${state.worldReference.Country} · 2025 ${formatHdi(worldValue(state.worldReference,"2025"))} · 2050 ${formatHdi(worldValue(state.worldReference,"2050"))}`;legend.innerHTML='<span><i style="background:#7f1d2d"></i>Subdivision lower</span><span><i style="background:#f4c95d"></i>Reference subdivision</span><span><i style="background:#174f82"></i>Subdivision higher</span><span><i style="background:#7d8795"></i>Approximately equal</span>'}
-      else if(Number.isFinite(state.worldThresholdValue)){reference.innerHTML=`Numeric reference: <strong>HDI ${formatHdi(state.worldThresholdValue)}</strong><br>Applied independently to 2025 and 2050 subdivision values.`;worldSubdivisionSelect.value="";legend.innerHTML='<span><i style="background:#7f1d2d"></i>Subdivision lower</span><span><i style="background:#174f82"></i>Subdivision higher</span><span><i style="background:#7d8795"></i>Approximately equal</span>'}
-      else{reference.textContent="Click, choose a subdivision, or enter an HDI value to set a benchmark.";worldSubdivisionSelect.value="";legend.innerHTML='<span><i style="background:#310610"></i>Lower HDI</span><span><i style="background:#e7edf3"></i>0.82 midpoint</span><span><i style="background:#061a3d"></i>Higher HDI</span>'}
+      if(state.worldReference){reference.innerHTML=`Reference: <strong>${state.worldReference.Subdivision}</strong><br>${state.worldReference.Country} · 2025 ${formatHdi(worldValue(state.worldReference,"2025"))} · 2050 ${formatHdi(worldValue(state.worldReference,"2050"))}`;legend.innerHTML='<span><i style="background:#7f1d2d"></i>Subdivision lower</span><span><i style="background:#f4c95d"></i>Reference subdivision</span><span><i style="background:#174f82"></i>Subdivision higher</span><span><i style="background:#7d8795"></i>Approximately equal</span><span><i style="background:#000000"></i>No data</span>'}
+      else if(Number.isFinite(state.worldThresholdValue)){reference.innerHTML=`Numeric reference: <strong>HDI ${formatHdi(state.worldThresholdValue)}</strong><br>Applied independently to 2025 and 2050 subdivision values.`;worldSubdivisionSelect.value="";legend.innerHTML='<span><i style="background:#7f1d2d"></i>Subdivision lower</span><span><i style="background:#174f82"></i>Subdivision higher</span><span><i style="background:#7d8795"></i>Approximately equal</span><span><i style="background:#000000"></i>No data</span>'}
+      else{reference.textContent="Click, choose a subdivision, or enter an HDI value to set a benchmark.";worldSubdivisionSelect.value="";legend.innerHTML='<span><i style="background:#310610"></i>Lower HDI</span><span><i style="background:#e7edf3"></i>0.82 midpoint</span><span><i style="background:#061a3d"></i>Higher HDI</span><span><i style="background:#000000"></i>No data</span>'}
       renderWorldResults();
     }
     async function loadWorldMaps(){
       const status=document.getElementById("world-map-status");
       try{
-        const geometry=collectionForD3(await d3.json(WORLD_GEO_URL)),rowsByIso=d3.group(state.rows,d=>d.ISO3),nationalByIso=new Map(state.nationalRows.map(row=>[row.ISO3,row])),featureCountByIso=d3.rollup(geometry.features,features=>features.length,feature=>feature.properties?.adm0_a3);
-        state.worldGeometry=geometry;state.worldMapped=geometry.features.map(feature=>{const iso3=feature.properties?.adm0_a3,rows=rowsByIso.get(iso3)||[],national=nationalByIso.get(iso3);if(!national)return null;const directRow=rows.length?matchFeatureToRow(feature,rows):null;if(directRow&&directRow.ISO3===iso3)return {feature,row:directRow,direct:true};return {feature,row:fallbackMapRow(feature,rows,national,featureCountByIso.get(iso3)||1),direct:false}}).filter(Boolean);
-        const existingKeys=new Set(state.rows.map(row=>`${row.ISO3}|${row.Subdivision}`)),modeledRows=[];for(const item of state.worldMapped){const key=`${item.row.ISO3}|${item.row.Subdivision}`;if(!item.direct&&!existingKeys.has(key)){existingKeys.add(key);modeledRows.push(item.row)}}state.rows.push(...modeledRows);
+        const [rawGeometry,countryTopology]=await Promise.all([d3.json(WORLD_GEO_URL),d3.json(WORLD_COUNTRY_GEO_URL).catch(()=>null)]),geometry=collectionForD3(rawGeometry),rowsByIso=d3.group(state.rows,d=>d.ISO3),nationalByIso=new Map(state.nationalRows.map(row=>[row.ISO3,row])),featureCountByIso=d3.rollup(geometry.features,features=>features.length,feature=>feature.properties?.adm0_a3);
+        state.worldGeometry=geometry;state.worldCountryGeometry=countryTopology&&window.topojson?topojson.feature(countryTopology,countryTopology.objects.countries):null;state.worldMapped=geometry.features.map(feature=>{const iso3=feature.properties?.adm0_a3,rows=rowsByIso.get(iso3)||[],national=nationalByIso.get(iso3);if(!national)return {feature,row:null,direct:false,noData:true};const directRow=rows.length?matchFeatureToRow(feature,rows):null;if(directRow&&directRow.ISO3===iso3)return {feature,row:directRow,direct:true};return {feature,row:fallbackMapRow(feature,rows,national,featureCountByIso.get(iso3)||1),direct:false}});
+        const existingKeys=new Set(state.rows.map(row=>`${row.ISO3}|${row.Subdivision}`)),modeledRows=[];for(const item of state.worldMapped){if(!item.row)continue;const key=`${item.row.ISO3}|${item.row.Subdivision}`;if(!item.direct&&!existingKeys.has(key)){existingKeys.add(key);modeledRows.push(item.row)}}state.rows.push(...modeledRows);
         const activeCountry=state.country,countries=Array.from(new Set(state.rows.map(row=>row.Country))).sort(d3.ascending);countrySelect.replaceChildren(...countries.map(country=>new Option(country,country)));countrySelect.value=activeCountry;
         worldSubdivisionSelect.replaceChildren(new Option("HDI spectrum",""),...state.rows.slice().sort((a,b)=>d3.ascending(a.Country,b.Country)||d3.ascending(a.Subdivision,b.Subdivision)).map(row=>new Option(`${row.Country} — ${row.Subdivision}${row._mapProxy?" (modeled)":""}`,`${row.ISO3}|${row.Subdivision}`)));
-        const direct=state.worldMapped.filter(item=>item.direct).length,countryCount=new Set(state.worldMapped.map(item=>item.row.ISO3)).size;status.textContent=`${direct.toLocaleString()} sourced polygon matches and ${modeledRows.length.toLocaleString()} modeled ADM1 estimates across all ${countryCount} countries`;renderWorldMaps()
+        const direct=state.worldMapped.filter(item=>item.direct).length,countryCount=new Set(state.worldMapped.filter(item=>item.row).map(item=>item.row.ISO3)).size,noData=state.worldMapped.filter(item=>!item.row).length;status.textContent=`${direct.toLocaleString()} sourced polygon matches and ${modeledRows.length.toLocaleString()} modeled ADM1 estimates across ${countryCount} countries; unsupported territories remain visible in grey${noData?` (${noData.toLocaleString()} unmatched ADM1 polygons)`:""}`;renderWorldMaps()
       }catch(error){console.error(error);status.textContent="Worldwide subdivision geometry could not be loaded."}
     }
     function parseRow(d){["National_HDI_2025_Target","National_HDI_2050_Target","Subdivision_HDI_2025_Source","Subdivision_HDI_2025_Reconciled","Subdivision_HDI_2050_Projected","Subdivision_HDI_Change_2025_to_2050","Subdivision_Population_2050_Est","Population_2050","Subdivision_Weight_2050"].forEach(k=>d[k]=Number(d[k]));return d}

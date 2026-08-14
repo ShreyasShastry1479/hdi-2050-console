@@ -2,7 +2,7 @@
 
 Standalone runner built on ``data/ethnicity_model.py`` (the evidence-based
 demographic model: national TFR from UN WPP, per-group TFR estimation, age
-momentum, migration, fertility convergence, assimilation). Migration intake is
+momentum, corridor migration, fertility convergence, assimilation). Migration intake is
 **demographic-pressure-driven**: countries with below-replacement fertility and
 projected population decline (aging / shrinking workforces) need to import
 labour, so their inward-migration intensity rises over the projection window,
@@ -14,6 +14,8 @@ absolute group sizes, and writes:
     data/output/ethnic_composition_2050_ai_wide.csv (top groups per country)
     data/output/ethnic_composition_2050_ai_model.csv (model parameters per
         group: TFR 2024, TFR 2050, dev decomposition) -- full transparency.
+    data/output/migration_corridors_2050.csv (directional origin-destination
+        expansion signals with low/high migration sensitivity).
 
 The old profile-based runner (``run_ethnicity_2050.py``) is kept unchanged;
 this runner produces auditable evidence-based outputs in parallel.
@@ -96,6 +98,20 @@ def build_table(pop2024: dict, pop2050: dict, hdi_context: dict) -> pd.DataFrame
             iso3,
             migration_scenario=MIGRATION_SCENARIO,
             fertility_convergence=FERTILITY_CONVERGENCE,
+            pop_2024=pop2024.get(iso3),
+            pop_2050=pop2050.get(iso3),
+        )
+        low_migration_proj = model.project_ethnic_composition(
+            iso3,
+            migration_scale=0.70,
+            fertility_convergence=min(0.85, FERTILITY_CONVERGENCE + 0.05),
+            pop_2024=pop2024.get(iso3),
+            pop_2050=pop2050.get(iso3),
+        )
+        high_migration_proj = model.project_ethnic_composition(
+            iso3,
+            migration_scale=1.35,
+            fertility_convergence=max(0.35, FERTILITY_CONVERGENCE - 0.05),
             pop_2024=pop2024.get(iso3),
             pop_2050=pop2050.get(iso3),
         )
@@ -188,6 +204,23 @@ def build_table(pop2024: dict, pop2050: dict, hdi_context: dict) -> pd.DataFrame
                 1e-9, sum(float(v) * float(v) for v in proj.values()))
             structural_inequality_drag = structural_inequality_drag_base
             brazil_share2050 = brazil_proj.get(name, proj[name]) * 100.0
+            low_migration_share2050 = low_migration_proj.get(name, proj[name]) * 100.0
+            high_migration_share2050 = high_migration_proj.get(name, proj[name]) * 100.0
+            migration_low = min(low_migration_share2050, high_migration_share2050)
+            migration_high = max(low_migration_share2050, high_migration_share2050)
+            corridor = model.migration_corridor_diagnostics(
+                iso3,
+                name,
+                profile,
+                share2024 / 100.0,
+                1.0,
+                pressure,
+            )
+            migration_channel_active = bool(
+                (iso3, name) in model.GROUP_MIGRATION_INTENSITY or
+                (iso3, name) in model.GROUP_SKILLED_MIGRATION_SURGE or
+                profile == "immigrant"
+            )
             brazil_diversity_2050 = 1.0 - sum(float(v) * float(v) for v in brazil_proj.values())
             education_value = clamp01(
                 hdi_education
@@ -243,6 +276,11 @@ def build_table(pop2024: dict, pop2050: dict, hdi_context: dict) -> pd.DataFrame
                 "Share_2024_pct": round(share2024, 2),
                 "Share_2050_pct": round(share2050, 2),
                 "Change_pp": round(share2050 - share2024, 2),
+                "Share_2050_LowMigrationScenario_pct": round(low_migration_share2050, 2),
+                "Share_2050_HighMigrationScenario_pct": round(high_migration_share2050, 2),
+                "Share_2050_Migration_P10_pct": round(migration_low, 2),
+                "Share_2050_Migration_P90_pct": round(migration_high, 2),
+                "Migration_Uncertainty_Width_pp": round(migration_high - migration_low, 2),
                 "Brazilification_Share_2050_pct": round(brazil_share2050, 2),
                 "Brazilification_Change_pp": round(brazil_share2050 - share2024, 2),
                 "Brazilification_Delta_vs_Baseline_pp": round(brazil_share2050 - share2050, 2),
@@ -250,6 +288,16 @@ def build_table(pop2024: dict, pop2050: dict, hdi_context: dict) -> pd.DataFrame
                 "Pop_2050": None if pop_2050 is None else round(pop_2050),
                 "Demographic_Pressure": round(pressure, 3),
                 "Migration_Intensity_2050": round(mig_intensity_2050, 3),
+                "Migration_Origin_Candidates": corridor["origins"],
+                "Migration_Channel_Active": migration_channel_active,
+                "Migration_SourceSupply_2050": round(float(corridor["source_supply"]), 3),
+                "Migration_SkillReadiness_2050": round(float(corridor["skill_readiness"]), 3),
+                "Migration_ClimatePressure_2050": round(float(corridor["climate_pressure"]), 3),
+                "Migration_DestinationPull_2050": round(float(corridor["destination_pull"]), 3),
+                "Migration_DiasporaNetwork_2050": round(float(corridor["diaspora_network"]), 3),
+                "Migration_CorridorAffinity_2050": round(float(corridor["corridor_affinity"]), 3),
+                "Migration_SettlementRetention_2050": round(float(corridor["settlement_retention"]), 3),
+                "Migration_CorridorMultiplier_2050": round(float(corridor["corridor_multiplier"]), 3),
                 "Skilled_Migration_SourcePressure_2050": round(skilled_source_pressure, 3),
                 "Skilled_Migration_ProgramIntensity_2050": round(skilled_program_intensity, 3),
                 "Policy_Openness": round(policy_openness, 3),
@@ -380,6 +428,65 @@ def main():
     })
     public_table.to_csv(public_path, index=False)
 
+    # Corridor-level research output. This ranks destination-group pathways by
+    # future expansion conditions; it is a directional scenario index, not a
+    # forecast of exact migrant counts or a claim about individual behavior.
+    corridor_table = table.loc[
+        table["Migration_Origin_Candidates"].ne("unspecified") &
+        table["Migration_Channel_Active"],
+        [
+            "ISO3", "Country", "Group", "Migration_Origin_Candidates",
+            "Share_2024_pct", "Share_2050_pct", "Change_pp", "Pop_2024", "Pop_2050",
+            "Share_2050_LowMigrationScenario_pct",
+            "Share_2050_HighMigrationScenario_pct",
+            "Share_2050_Migration_P10_pct", "Share_2050_Migration_P90_pct",
+            "Migration_Uncertainty_Width_pp", "Migration_SourceSupply_2050",
+            "Migration_SkillReadiness_2050", "Migration_ClimatePressure_2050",
+            "Migration_DestinationPull_2050", "Migration_DiasporaNetwork_2050",
+            "Migration_CorridorAffinity_2050",
+            "Migration_SettlementRetention_2050",
+            "Migration_CorridorMultiplier_2050", "Migration_Intensity_2050",
+            "Migration_Channel_Active",
+        ],
+    ].copy()
+    corridor_table = corridor_table.rename(columns={
+        "ISO3": "Destination_ISO3",
+        "Country": "Destination",
+        "Group": "Destination_Group",
+        "Migration_Origin_Candidates": "Origin_Candidates",
+    })
+    corridor_table["Corridor_Expansion_Index_2050"] = (
+        corridor_table["Migration_CorridorMultiplier_2050"] *
+        corridor_table["Migration_Intensity_2050"] *
+        (0.55 + 0.45 * corridor_table["Migration_SkillReadiness_2050"])
+    ).clip(0.0, 5.0).round(3)
+    corridor_table["Projected_Group_Population_Change_pct"] = (
+        100.0 * (corridor_table["Pop_2050"] / corridor_table["Pop_2024"] - 1.0)
+    ).replace([float("inf"), float("-inf")], pd.NA).round(1)
+    corridor_table["Expected_Presence_2050"] = corridor_table.apply(
+        lambda row: (
+            "strong expansion" if row["Corridor_Expansion_Index_2050"] >= 1.65
+            and pd.notna(row["Projected_Group_Population_Change_pct"])
+            and row["Projected_Group_Population_Change_pct"] >= 25.0
+            else "moderate expansion" if row["Corridor_Expansion_Index_2050"] >= 1.15
+            and pd.notna(row["Projected_Group_Population_Change_pct"])
+            and row["Projected_Group_Population_Change_pct"] >= 5.0
+            else "established/gradual"
+        ),
+        axis=1,
+    )
+    corridor_table["Interpretation"] = (
+        "Directional corridor scenario based on source labor supply, skills, "
+        "destination demand, policy, diaspora networks, climate pressure and "
+        "settlement retention; not an official bilateral flow forecast."
+    )
+    corridor_table = corridor_table.sort_values(
+        ["Corridor_Expansion_Index_2050", "Migration_Uncertainty_Width_pp"],
+        ascending=False,
+    )
+    corridor_path = out_dir / "migration_corridors_2050.csv"
+    corridor_table.to_csv(corridor_path, index=False)
+
     # wide summary: top 5 groups per country by 2050 share
     wide_rows = []
     for iso3, grp in table.groupby("ISO3"):
@@ -396,6 +503,7 @@ def main():
     print(f"\n  Long-form table : {long_path}  ({len(table)} rows)")
     print(f"  Model detail    : {model_path}")
     print(f"  Public context  : {public_path}")
+    print(f"  Migration paths : {corridor_path}  ({len(corridor_table)} corridors)")
     print(f"  Wide summary    : {wide_path}  ({len(wide)} countries)")
 
     # ---- audit ------------------------------------------------------------
