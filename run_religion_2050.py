@@ -40,6 +40,7 @@ def load_hdi_context() -> dict:
             "Europe_Migration_Response_2050", "Migration_Intensity_2050",
             "Policy_Openness", "SSA_LateMigration_DestinationResponse_2050",
             "BroadLabor_Migration_ProgramIntensity_2050",
+            "SSA_SourcePoolTransition_2050", "SSA_SourcePoolCapacity_2050",
         ]
         migration = pd.read_csv(
             DEMOGRAPHIC_CONTEXT, usecols=lambda c: c in migration_cols)

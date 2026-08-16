@@ -377,6 +377,17 @@ def late_broad_labor_migration_curve(progress: float) -> float:
     return float(np.clip((progress - 0.46) / 0.54, 0.0, 1.0) ** 1.65)
 
 
+def late_ssa_source_pool_transition(progress: float) -> float:
+    """Late-horizon shift toward SSA in the global mobile-labor source pool.
+
+    The transition starts after 2037 and accelerates through the 2040s as
+    working-age growth slows across South and Southeast Asia. It is a
+    conditional scenario factor, not an assumed migration rate.
+    """
+    x = float(np.clip((progress - 0.50) / 0.50, 0.0, 1.0))
+    return x * x * (3.0 - 2.0 * x)
+
+
 # Source-side migration capacity. The three components distinguish a large
 # youth cohort from the education/credential base needed for skilled mobility
 # and from displacement pressure. They are scenario inputs, not ethnic traits.
@@ -413,6 +424,22 @@ SOURCE_MIGRATION_CAPACITY: dict[str, tuple[float, float, float]] = {
     "TGO": (0.84, 0.58, 0.70), "GMB": (0.84, 0.55, 0.72),
 }
 
+SSA_SOURCE_POOL_COUNTRIES: tuple[str, ...] = (
+    "NGA", "ETH", "GHA", "KEN", "UGA", "TZA", "RWA", "COD",
+    "CIV", "CMR", "SEN", "ZMB", "ZWE", "MOZ", "MWI", "AGO",
+    "SDN", "SOM", "ERI", "BFA", "NER", "MLI", "GIN", "SLE",
+    "LBR", "BEN", "TGO", "GMB",
+)
+
+
+def ssa_source_pool_capacity() -> float:
+    """Composite supply/skills/stress capacity for the SSA source pool."""
+    values = [SOURCE_MIGRATION_CAPACITY[iso3] for iso3 in SSA_SOURCE_POOL_COUNTRIES]
+    youth = float(np.mean([value[0] for value in values]))
+    skill = float(np.mean([value[1] for value in values]))
+    climate = float(np.mean([value[2] for value in values]))
+    return float(np.clip(0.54 * youth + 0.30 * skill + 0.16 * climate, 0.0, 1.0))
+
 # Late-period broad workforce pathways. This channel covers care, logistics,
 # construction, hospitality, agriculture, manufacturing and skilled trades as
 # well as formal professional recruitment. Values are annual share-growth
@@ -448,6 +475,40 @@ GROUP_BROAD_LABOR_MIGRATION_SURGE: dict[tuple[str, str], float] = {
     ("SAU", "Sudanese"): 0.0100, ("SAU", "Other foreign"): 0.0060,
 }
 
+# Incremental late-2040s rebalancing toward the world's last large growing
+# working-age pool. These coefficients act only on destination categories
+# that can plausibly record new SSA-origin residents. They are policy-,
+# demand-, skills- and retention-gated in the projection loop below.
+GROUP_SSA_SOURCE_POOL_SURGE: dict[tuple[str, str], float] = {
+    ("USA", "Black (African immigrant)"): 0.0025,
+    ("CAN", "Black (African)"): 0.0040,
+    ("GBR", "Black African"): 0.0025,
+    ("FRA", "Sub-Saharan African"): 0.0020,
+    ("DEU", "Other"): 0.0012,
+    ("ITA", "Nigerian"): 0.0018, ("ITA", "Other"): 0.0006,
+    ("ESP", "Other"): 0.0007,
+    ("NLD", "Somali"): 0.0015, ("NLD", "Other"): 0.0006,
+    ("BEL", "Sub-Saharan African"): 0.0018,
+    ("SWE", "Somalian"): 0.0014, ("SWE", "Eritrean"): 0.0012,
+    ("DNK", "Somali"): 0.0012, ("NOR", "Somali"): 0.0012,
+    ("FIN", "Somali"): 0.0010, ("CHE", "Eritrean"): 0.0010,
+    ("IRL", "Nigerian"): 0.0018, ("IRL", "African (other)"): 0.0016,
+    ("PRT", "African (PALOP - Angolan/Cape Verdean)"): 0.0014,
+    ("AUS", "Other"): 0.0015,
+    ("NZL", "MELAA (ME/LatAm/African)"): 0.0013,
+    ("JPN", "Other"): 0.0025,
+    ("KOR", "Other (incl. foreign workers)"): 0.0030,
+    ("HKG", "Other"): 0.0024,
+    ("SGP", "Other"): 0.0022,
+    ("MYS", "Other"): 0.0016,
+    ("BRN", "Other foreign workers"): 0.0016,
+    ("THA", "Other"): 0.0005,
+    ("MDV", "Other"): 0.0008,
+    ("ARE", "Other foreign"): 0.0015,
+    ("QAT", "Other foreign"): 0.0014,
+    ("SAU", "Sudanese"): 0.0015, ("SAU", "Other foreign"): 0.0010,
+}
+
 # Destination demand is kept separate from policy openness. A country may
 # need workers but remain politically restrictive, or recruit temporary labor
 # without offering durable settlement.
@@ -458,6 +519,8 @@ DESTINATION_LABOR_DEMAND: dict[str, float] = {
     "FIN": 0.82, "SWE": 0.78, "NOR": 0.80, "DNK": 0.78,
     "ITA": 0.84, "ESP": 0.82, "PRT": 0.74, "GRC": 0.72,
     "JPN": 0.94, "KOR": 0.96, "SGP": 0.92, "TWN": 0.90,
+    "HKG": 0.90, "THA": 0.82, "MYS": 0.78, "BRN": 0.80,
+    "MDV": 0.76,
     "ARE": 0.96, "QAT": 0.94, "KWT": 0.88, "SAU": 0.90,
     "OMN": 0.82, "BHR": 0.84,
 }
@@ -472,7 +535,8 @@ BROAD_LABOR_DESTINATION_OPENNESS: dict[str, float] = {
     "BEL": 0.96, "IRL": 1.04, "SWE": 0.94, "NOR": 0.92,
     "DNK": 0.86, "FIN": 0.88, "ITA": 1.00, "ESP": 0.98,
     "PRT": 0.92, "GRC": 0.82, "AUT": 0.88, "CHE": 0.92,
-    "JPN": 0.72, "KOR": 0.78, "SGP": 0.94,
+    "JPN": 0.72, "KOR": 0.78, "SGP": 0.94, "HKG": 0.86,
+    "THA": 0.70, "MYS": 0.82, "BRN": 0.88, "MDV": 0.84,
     "ARE": 1.12, "QAT": 1.08, "KWT": 0.98, "SAU": 1.00,
     "OMN": 0.94, "BHR": 0.96,
 }
@@ -486,7 +550,8 @@ SSA_LATE_MIGRATION_DESTINATION_EXPOSURE: dict[str, float] = {
     "BEL": 0.94, "IRL": 0.92, "SWE": 0.84, "NOR": 0.82,
     "DNK": 0.76, "FIN": 0.68, "AUT": 0.46, "CHE": 0.64,
     "PRT": 0.86, "GRC": 0.34, "AUS": 0.42, "NZL": 0.38,
-    "JPN": 0.20, "KOR": 0.24, "SGP": 0.32,
+    "JPN": 0.24, "KOR": 0.28, "SGP": 0.36, "HKG": 0.30,
+    "THA": 0.16, "MYS": 0.24, "BRN": 0.22, "MDV": 0.18,
     "ARE": 0.54, "QAT": 0.50, "KWT": 0.44, "SAU": 0.56,
     "OMN": 0.42, "BHR": 0.42,
 }
@@ -496,7 +561,8 @@ SSA_LATE_MIGRATION_DESTINATION_EXPOSURE: dict[str, float] = {
 # Gulf and circular-labor systems from being treated like settlement migration.
 DESTINATION_SETTLEMENT_RETENTION: dict[str, float] = {
     "ARE": 0.46, "QAT": 0.42, "KWT": 0.48, "SAU": 0.44,
-    "OMN": 0.48, "BHR": 0.50, "SGP": 0.58,
+    "OMN": 0.48, "BHR": 0.50, "SGP": 0.58, "HKG": 0.58,
+    "THA": 0.52, "MYS": 0.56, "BRN": 0.46, "MDV": 0.44,
     "JPN": 0.68, "KOR": 0.66,
     "CAN": 0.92, "AUS": 0.90, "NZL": 0.88, "USA": 0.88,
     "GBR": 0.84, "DEU": 0.80, "FRA": 0.80,
@@ -534,12 +600,18 @@ CORRIDOR_AFFINITY: dict[tuple[str, str], float] = {
     ("ARE", "ETH"): 1.12, ("ARE", "KEN"): 1.12,
     ("QAT", "KEN"): 1.10, ("SAU", "SDN"): 1.18,
     ("JPN", "KEN"): 1.04, ("KOR", "NGA"): 1.04,
+    ("HKG", "NGA"): 1.02, ("SGP", "KEN"): 1.05,
+    ("MYS", "NGA"): 1.02, ("BRN", "GHA"): 1.02,
+}
+
+GROUP_MIGRATION_ORIGIN_OVERRIDES: dict[tuple[str, str], tuple[str, ...]] = {
+    key: SSA_SOURCE_POOL_COUNTRIES for key in GROUP_SSA_SOURCE_POOL_SURGE
 }
 
 MIGRATION_ORIGIN_RULES: list[tuple[re.Pattern, tuple[str, ...]]] = [
     (re.compile(r"nigerian", re.I), ("NGA",)),
     (re.compile(r"west african", re.I), ("NGA", "GHA", "SEN", "CIV", "CMR")),
-    (re.compile(r"sub-saharan african|black african|african immigrant|african \(other\)", re.I),
+    (re.compile(r"sub-saharan african|black african|black \(african\)|african immigrant|african \(other\)", re.I),
      ("NGA", "GHA", "KEN", "UGA", "TZA", "ETH", "SEN", "CIV", "CMR", "COD")),
     (re.compile(r"palop|angolan|cape verdean", re.I), ("AGO", "CPV", "MOZ")),
     (re.compile(r"ethiopian|eritrean|horn of africa", re.I), ("ETH",)),
@@ -569,8 +641,15 @@ MIGRATION_ORIGIN_RULES: list[tuple[re.Pattern, tuple[str, ...]]] = [
 ]
 
 
-def infer_migration_origins(group_name: str) -> tuple[str, ...]:
+def infer_migration_origins(
+    group_name: str, destination_iso3: str | None = None
+) -> tuple[str, ...]:
     """Infer plausible origin countries from a destination-group label."""
+    if destination_iso3 is not None:
+        override = GROUP_MIGRATION_ORIGIN_OVERRIDES.get(
+            (destination_iso3, group_name))
+        if override:
+            return override
     for pattern, origins in MIGRATION_ORIGIN_RULES:
         if pattern.search(group_name):
             return origins
@@ -593,7 +672,7 @@ def migration_corridor_diagnostics(
     affinity and long-run settlement retention. It intentionally avoids using
     ethnicity itself as a causal variable.
     """
-    origins = infer_migration_origins(group_name)
+    origins = infer_migration_origins(group_name, destination_iso3)
     late = late_skilled_migration_curve(progress)
     if origins:
         capacities = [SOURCE_MIGRATION_CAPACITY.get(origin, (0.50, 0.58, 0.45)) for origin in origins]
@@ -1176,6 +1255,7 @@ def project_ethnic_composition(
     structural_inequality_drag: float = 0.0,
     pop_2024: Optional[float] = None,
     pop_2050: Optional[float] = None,
+    ssa_source_pool_scale: float = 1.0,
 ) -> dict[str, float]:
     """Evidence-based projection of ethnic shares for one country to end_year.
 
@@ -1234,6 +1314,10 @@ def project_ethnic_composition(
         UN medium-variant populations for the demographic-pressure (labour
         shortage) component of migration intensity. Optional; if omitted the
         pressure boost uses fertility shortfall alone.
+    ssa_source_pool_scale : float
+        Multiplier for the late-2030s/2040s shift toward Sub-Saharan Africa
+        in the global mobile-labor source pool. Zero provides an auditable
+        counterfactual while leaving all other migration channels active.
 
     Returns
     -------
@@ -1248,6 +1332,7 @@ def project_ethnic_composition(
         mig_scale = 1.0
     if migration_scale is not None:
         mig_scale = float(np.clip(migration_scale, 0.0, 3.0))
+    ssa_source_pool_scale = float(np.clip(ssa_source_pool_scale, 0.0, 2.0))
 
     # Normalise to 100% (adds an "Other" bucket if needed)
     entries = _normalised_entries(iso3)
@@ -1331,7 +1416,9 @@ def project_ethnic_composition(
         broad_labor_program = broad_labor_migration_program_intensity(iso3)
         late_skilled = late_skilled_migration_curve(progress)
         late_broad_labor = late_broad_labor_migration_curve(progress)
+        late_ssa_pool = late_ssa_source_pool_transition(progress)
         dev_mig = np.zeros_like(shares)
+        direct_ssa_inflow = np.zeros_like(shares)
         for i, e in enumerate(entries):
             coeff = GROUP_MIGRATION_INTENSITY.get((iso3, e[0]))
             corridor = migration_corridor_diagnostics(
@@ -1367,6 +1454,18 @@ def project_ethnic_composition(
                     (0.68 + 0.52 * float(corridor["broad_labor_mobility"])) *
                     float(corridor["settlement_retention"])
                 )
+            ssa_pool_coeff = GROUP_SSA_SOURCE_POOL_SURGE.get((iso3, e[0]))
+            if ssa_pool_coeff is not None:
+                # This is a resident-stock inflow, not a relative growth rate
+                # on the pre-existing diaspora. That distinction lets a new
+                # corridor emerge from a small baseline without exploding it.
+                direct_ssa_inflow[i] = (
+                    ssa_pool_coeff * ssa_source_pool_scale * mig_scale *
+                    ssa_late_migration_destination_response(iso3) *
+                    late_ssa_pool *
+                    (0.62 + 0.48 * ssa_source_pool_capacity()) *
+                    float(corridor["settlement_retention"]) * 0.35
+                )
             # Guard against a small baseline diaspora acquiring an implausible
             # annual growth rate from several overlapping migration channels.
             dev_mig[i] = float(np.clip(dev_mig[i], 0.0, 0.045))
@@ -1385,7 +1484,7 @@ def project_ethnic_composition(
 
         dev = dev_fert + momentum + dev_mig + dev_mixed
 
-        shares = shares * (1.0 + dev)
+        shares = shares * (1.0 + dev) + direct_ssa_inflow
 
         # 7) Assimilation: transfer a fraction of each minority to the anchor.
         if assimilation_rate > 0.0:

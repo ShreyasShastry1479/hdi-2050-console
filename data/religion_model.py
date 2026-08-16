@@ -693,18 +693,30 @@ def _apply_europe_migration_composition(
     }, weight)
 
 
+def _late_ssa_migration_composition_weight(
+    iso3: str, ctx: Mapping[str, float]
+) -> float:
+    """Resident-stock weight from the late SSA source-pool transition."""
+    response = _float_ctx(
+        ctx, "SSA_LateMigration_DestinationResponse_2050", default=0.0)
+    transition = _float_ctx(ctx, "SSA_SourcePoolTransition_2050", default=1.0)
+    capacity = _float_ctx(ctx, "SSA_SourcePoolCapacity_2050", default=0.75)
+    # Even a full modeled response remains small relative to total resident
+    # stock because policy restrictions, circular movement and return migration
+    # prevent labor demand from translating one-for-one into settlement.
+    return min(0.026, max(
+        0.0,
+        0.026 * response * transition * (0.70 + 0.30 * capacity),
+    ))
+
+
 def _apply_late_ssa_migration_composition(
     shares: Mapping[str, float], iso3: str, ctx: Mapping[str, float]
 ) -> tuple[dict[str, float], float]:
     """Add a capped late-period SSA corridor effect to destination shares."""
-    response = _float_ctx(
-        ctx, "SSA_LateMigration_DestinationResponse_2050", default=0.0)
-    if response <= 0.0:
+    weight = _late_ssa_migration_composition_weight(iso3, ctx)
+    if weight <= 0.0:
         return dict(shares), 0.0
-    # At full response, the incremental channel represents at most 2.2% of
-    # the destination's 2050 resident stock. This is deliberately conservative
-    # because much labor mobility is temporary, circular or return migration.
-    weight = min(0.022, max(0.0, 0.022 * response))
     religions = set(shares) | set(SSA_LATE_MIGRANT_RELIGION_MIX)
     blended = {
         religion: (1.0 - weight) * float(shares.get(religion, 0.0)) +
@@ -794,9 +806,8 @@ def build_religion_table(pop2024: Mapping[str, float], pop2050: Mapping[str, flo
         projected = project_religion_shares(iso3, hdi_context)
         ctx = hdi_context.get(iso3, {})
         migration_weight = _europe_migration_composition_weight(iso3, ctx)
-        ssa_migration_weight = min(0.022, max(
-            0.0, 0.022 * _float_ctx(
-                ctx, "SSA_LateMigration_DestinationResponse_2050")))
+        ssa_migration_weight = _late_ssa_migration_composition_weight(
+            iso3, ctx)
         without_response_ctx = dict(ctx)
         without_response_ctx["Europe_Migration_Response_2050"] = 0.0
         projected_without_response = project_religion_shares(

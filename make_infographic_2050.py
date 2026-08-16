@@ -363,6 +363,11 @@ def country_meta(df: pd.DataFrame) -> dict:
             "broadLaborSourcePressure": float(r.get("BroadLabor_Migration_SourcePressure_2050", 0.0)),
             "broadLaborProgramIntensity": float(r.get("BroadLabor_Migration_ProgramIntensity_2050", 0.0)),
             "ssaLateDestinationResponse": float(r.get("SSA_LateMigration_DestinationResponse_2050", 0.0)),
+            "ssaSourcePoolTransition": float(r.get("SSA_SourcePoolTransition_2050", 0.0)),
+            "ssaSourcePoolCapacity": float(r.get("SSA_SourcePoolCapacity_2050", 0.0)),
+            "ssaSourcePoolAttributedShift": float(
+                g["SSA_SourcePoolTransition_Attributed_Change_pp"].abs().mean()
+                if "SSA_SourcePoolTransition_Attributed_Change_pp" in g else 0.0),
             "openness": float(r.get("Policy_Openness", 1.0)),
             "policyFeedback": float(r.get("Policy_Feedback_2050", 1.0)),
             "pressure": float(r.get("Demographic_Pressure", 0.0)),
@@ -475,15 +480,19 @@ def story_cards(df: pd.DataFrame) -> str:
     # 2) Sub-Saharan Africa's boom
     ssaf = df[df["Region"] == "Sub-Saharan Africa"]
     if not ssaf.empty:
-        pop = ssaf.groupby("ISO3")["Pop_2050"].sum().sum()
-        top = ssaf.groupby("ISO3").first().sort_values("Pop_2050", ascending=False).iloc[0]
+        country_pop = ssaf.groupby("ISO3")["Pop_2050"].sum()
+        pop = country_pop.sum()
+        top_iso3 = country_pop.idxmax()
+        top_country = ssaf.loc[ssaf["ISO3"] == top_iso3, "Country"].iloc[0]
+        top_population = country_pop.loc[top_iso3]
         cards.append(
             '<div class="story"><h3>Sub-Saharan Africa\u2019s demographic boom</h3>'
             f'<div class="big">{pop/1e9:.2f} bn</div>'
-            f'<p>Projected 2050 population of the region \u2014 dominated by '
-            f'{top["Country"]} ({top["Pop_2050"]/1e6:.0f} m). Rapid natural '
-            'increase keeps the mosaic young, with growth concentrated in '
-            'higher-fertility population categories rather than migration.</p></div>')
+            f'<p>Projected 2050 population of the region \u2014 led by '
+            f'{top_country} ({top_population/1e6:.0f} m). Rapid natural '
+            'increase keeps the regional mosaic young. Most growth remains '
+            'within Africa, while a policy-gated share increasingly supplies '
+            'global skilled and broad-labor mobility in the 2040s.</p></div>')
 
     # 3) East Asia's changing face
     east = df[df["ISO3"].isin(["JPN", "KOR", "CHN", "HKG", "TWN", "SGP"])]
@@ -534,7 +543,27 @@ def story_cards(df: pd.DataFrame) -> str:
             'diaspora flows into African, South Asian, and expatriate-worker '
             'groups.</p></div>')
 
-    # 6) Mobility and integration screen
+    # 6) Late transition in the global mobile-labor source pool
+    if "SSA_SourcePoolTransition_Attributed_Change_pp" in df.columns:
+        affected = df[
+            df["SSA_SourcePoolTransition_Attributed_Change_pp"].abs() >= 0.01]
+        destination_count = affected["ISO3"].nunique()
+        avg_effect = (
+            affected.groupby("ISO3")[
+                "SSA_SourcePoolTransition_Attributed_Change_pp"].apply(
+                    lambda values: values.abs().mean()).mean()
+            if not affected.empty else 0.0)
+        cards.append(
+            '<div class="story"><h3>The final large working-age reservoir</h3>'
+            f'<div class="big">{destination_count}</div>'
+            '<p>Destination economies show a measurable late Sub-Saharan '
+            'source-pool effect as fertility and workforce growth slow across '
+            'Europe, North America, East Asia, South Asia and Southeast Asia. '
+            f'The affected-country mean composition shift is {avg_effect:.2f} pp; '
+            'skills, regular pathways, policy openness and settlement retention '
+            'still determine whether demographic potential becomes migration.</p></div>')
+
+    # 7) Mobility and integration screen
     if {"Intergenerational_Mobility_Convergence_2050", "Climate_Migration_Stress_2050"}.issubset(df.columns):
         country = df.groupby(["ISO3", "Country"], as_index=False).first()
         high_mobility = country.sort_values(
@@ -549,7 +578,7 @@ def story_cards(df: pd.DataFrame) -> str:
             'where demographic change is more or less likely to convert into education, income, and '
             'digital-adaptation gains.</p></div>')
 
-    # 7) Inclusive mobility and identity-recognition scenario
+    # 8) Inclusive mobility and identity-recognition scenario
     if "Inclusive_Mobility_Delta_vs_Baseline_pp" in df.columns:
         country = df.groupby(["ISO3", "Country"], as_index=False).agg({
             "Inclusive_Mobility_Delta_vs_Baseline_pp": lambda s: s.abs().mean(),
@@ -606,6 +635,13 @@ METHODOLOGY_HTML = """
       portable skills and climate pressure are combined with destination
       demand, policy access, diaspora affinity and settlement retention;
       demographic youth alone never guarantees migration.</li>
+      <li><b>Global source-pool transition</b> — after 2037, a smooth late-
+      horizon factor raises Sub-Saharan Africa's relative role in mobile labor
+      supply as fertility and working-age growth slow in South and Southeast
+      Asia. It applies only to destination categories with plausible pathways
+      and remains gated by demand, skills, policy openness, corridor affinity
+      and resident-stock retention. A counterfactual column reports 2050
+      shares with this factor disabled.</li>
       <li><b>Intergenerational mobility screen</b> \u2014 combines education,
       human-capital absorption, digital infrastructure, policy openness,
       dependency pressure, and the inclusive service-delivery gap to estimate whether
@@ -1398,6 +1434,9 @@ def build_html(treemap_data: dict, religion_data: dict, scen_json: str, meta_jso
       '<div class="chip">Broad labor source pressure<b>' + m.broadLaborSourcePressure.toFixed(2) + '</b></div>' +
       '<div class="chip">Broad labor program intensity<b>' + m.broadLaborProgramIntensity.toFixed(2) + '</b></div>' +
       '<div class="chip">Late SSA destination response<b>' + m.ssaLateDestinationResponse.toFixed(2) + '</b></div>' +
+      '<div class="chip">SSA source-pool transition<b>' + m.ssaSourcePoolTransition.toFixed(2) + '</b></div>' +
+      '<div class="chip">SSA source-pool capacity<b>' + m.ssaSourcePoolCapacity.toFixed(2) + '</b></div>' +
+      '<div class="chip">SSA transition-attributed shift<b>' + m.ssaSourcePoolAttributedShift.toFixed(2) + ' pp</b></div>' +
       '<div class="chip">Policy openness<b>' + m.openness.toFixed(1) + '</b></div>' +
       '<div class="chip">Policy feedback<b>' + m.policyFeedback.toFixed(2) + '</b></div>' +
       '<div class="chip">Demographic pressure<b>' + (m.pressure * 100).toFixed(0) + '%</b></div>' +
