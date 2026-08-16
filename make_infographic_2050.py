@@ -335,9 +335,18 @@ def compute_scenario_variants(df: pd.DataFrame,
             key = f"{mi}:{fi}"
             arr = [None] * (max(gpos_of.values()) + 1 if gpos_of else 0)
             for iso, cdf in df.groupby("ISO3"):
+                context_row = cdf.iloc[0]
                 proj = model.project_ethnic_composition(
                     iso, migration_scale=ms, fertility_convergence=fc,
-                    pop_2024=p24.get(iso), pop_2050=p50.get(iso))
+                    pop_2024=p24.get(iso), pop_2050=p50.get(iso),
+                    education_index=context_row.get("HDI_EducationIndex_2050_Link"),
+                    income_index=context_row.get("HDI_IncomeIndex_2050_Link"),
+                    youth_share_2024=context_row.get("AgeStructure_Youth014_2024"),
+                    youth_share_2050=context_row.get("AgeStructure_Youth014_2050"),
+                    working_age_share_2024=context_row.get("AgeStructure_WorkingAge_2024"),
+                    working_age_share_2050=context_row.get("AgeStructure_WorkingAge_2050"),
+                    elderly_share_2024=context_row.get("AgeStructure_Elderly65Plus_2024"),
+                    elderly_share_2050=context_row.get("AgeStructure_Elderly65Plus_2050"))
                 for gname, share in proj.items():
                     p = gpos_of.get((iso, gname))
                     if p is not None:
@@ -368,6 +377,16 @@ def country_meta(df: pd.DataFrame) -> dict:
             "ssaSourcePoolAttributedShift": float(
                 g["SSA_SourcePoolTransition_Attributed_Change_pp"].abs().mean()
                 if "SSA_SourcePoolTransition_Attributed_Change_pp" in g else 0.0),
+            "youth24": float(r.get("AgeStructure_Youth014_2024", 0.0)),
+            "youth50": float(r.get("AgeStructure_Youth014_2050", 0.0)),
+            "working24": float(r.get("AgeStructure_WorkingAge_2024", 0.0)),
+            "working50": float(r.get("AgeStructure_WorkingAge_2050", 0.0)),
+            "elderly24": float(r.get("AgeStructure_Elderly65Plus_2024", 0.0)),
+            "elderly50": float(r.get("AgeStructure_Elderly65Plus_2050", 0.0)),
+            "migrationSoftCap": float(r.get("Migration_Stock_SoftCap_2050", 0.0)),
+            "migrationAbsorption": float(r.get("Migration_Absorption_Capacity_2050", 0.0)),
+            "migrationResidentShare": float(r.get("Migration_Linked_ResidentShare_2050", 0.0)),
+            "migrationSaturation": float(r.get("Migration_Saturation_Factor_2050", 1.0)),
             "openness": float(r.get("Policy_Openness", 1.0)),
             "policyFeedback": float(r.get("Policy_Feedback_2050", 1.0)),
             "pressure": float(r.get("Demographic_Pressure", 0.0)),
@@ -612,10 +631,10 @@ METHODOLOGY_HTML = """
       <li><b>Fertility differential</b> \u2014 each group grows at
       ln(TFR<sub>g</sub>/TFR<sub>nat</sub>)/29 yr, converting its fertility
       relative to the national average into an intrinsic growth rate.</li>
-      <li><b>Age-structure momentum</b> \u2014 young high-fertility and
-      immigrant groups keep producing births for ~2 decades beyond what TFR
-      alone implies; per-group overrides capture documented cases (e.g. US
-      Black/African-American, Native American, GBR Pakistani/Bangladeshi).</li>
+      <li><b>Age-structure momentum</b> \u2014 groups are assigned explicit
+      0\u201314, 15\u201364 and 65+ proportions relative to each country's 2024 and
+      2050 age pyramid. These proportional gaps converge over time and
+      directly determine cohort momentum.</li>
       <li><b>Migration</b> \u2014 each country imports a specific mix of
       groups. Intensity = a static settlement baseline plus a
       demographic-pressure boost (below-replacement fertility + population
@@ -642,6 +661,15 @@ METHODOLOGY_HTML = """
       and remains gated by demand, skills, policy openness, corridor affinity
       and resident-stock retention. A counterfactual column reports 2050
       shares with this factor disabled.</li>
+      <li><b>Migration-stock saturation</b> \u2014 additional inflow slows as the
+      combined migration-linked resident share approaches a destination-
+      specific soft capacity. Education, income, policy access and settlement
+      retention determine how much recruitment becomes durable settlement.</li>
+      <li><b>Second-generation identity recording</b> \u2014 statistical-category
+      transition applies only to migration-linked or explicitly transitional
+      categories. Long-established minorities are not mechanically reassigned
+      toward the largest category; where a mixed category exists, part of the
+      modeled transition is recorded there instead.</li>
       <li><b>Intergenerational mobility screen</b> \u2014 combines education,
       human-capital absorption, digital infrastructure, policy openness,
       dependency pressure, and the inclusive service-delivery gap to estimate whether
@@ -950,7 +978,8 @@ def build_html(treemap_data: dict, religion_data: dict, scen_json: str, meta_jso
         <button data-layer="religion">Religious</button>
       </div>
       <div class="seg" id="colormode">
-        <button data-mode="dominance" class="active">Dominance</button>
+        <button data-mode="identity" class="active">Identity</button>
+        <button data-mode="dominance">Dominance</button>
         <button data-mode="change">Change</button>
         <button data-mode="driver">Driver</button>
       </div>
@@ -980,7 +1009,8 @@ def build_html(treemap_data: dict, religion_data: dict, scen_json: str, meta_jso
     <div id="cardgrid" class="country-grid"></div>
     <div id="matchinfo"></div>
     <div class="hint">
-      <b>Area</b> = population in 2050. <b>Colour</b>: Dominance = share held
+      <b>Area</b> = population in 2050. <b>Colour</b>: Identity assigns a
+      stable distinct hue to each population category; Dominance = share held
       by the largest group; Change = teal growing / red declining;
       Driver = immigration, fertility, mixed-identity recognition, identity-category transition, ageing, or religious composition.
       <b>Click a tile</b> to open the country breakdown. <b>Double-click</b>
@@ -1043,7 +1073,7 @@ def build_html(treemap_data: dict, religion_data: dict, scen_json: str, meta_jso
     'Other religions': '#ec4899'
   }};
 
-  const state = {{ layer: 'ethnic', region: 'all', q: '', colorMode: 'dominance', view: 'treemap', mig: 2, fert: 1 }};
+  const state = {{ layer: 'ethnic', region: 'all', q: '', colorMode: 'identity', view: 'treemap', mig: 2, fert: 1 }};
 
   const layout = {{
     margin: {{ l: 2, r: 2, t: 6, b: 2 }},
@@ -1086,6 +1116,27 @@ def build_html(treemap_data: dict, religion_data: dict, scen_json: str, meta_jso
   }}
   function religionColor(label) {{
     return RELIGION_COLORS[label] || '#94a3b8';
+  }}
+  function ethnicityColor(label) {{
+    let hash = 2166136261;
+    for (let i = 0; i < label.length; i++) {{
+      hash ^= label.charCodeAt(i);
+      hash = Math.imul(hash, 16777619);
+    }}
+    const hue = ((hash >>> 0) * 0.61803398875 * 360) % 360;
+    const saturation = 58 + ((hash >>> 8) % 18);
+    const lightness = 34 + ((hash >>> 16) % 12);
+    return 'hsl(' + hue.toFixed(1) + ' ' + saturation + '% ' + lightness + '%)';
+  }}
+  function dominantEthnicityForCountry(i) {{
+    const countryId = D.ids[i];
+    let bestLabel = null, bestShare = -1;
+    for (let j = 0; j < D.levels.length; j++) {{
+      if (D.levels[j] !== 3 || D.parents[j] !== countryId) continue;
+      const share = share50For(j);
+      if (share > bestShare) {{ bestShare = share; bestLabel = D.labels[j]; }}
+    }}
+    return bestLabel;
   }}
   function dominantReligionForCountry(i) {{
     const countryId = D.ids[i];
@@ -1141,6 +1192,13 @@ def build_html(treemap_data: dict, religion_data: dict, scen_json: str, meta_jso
       if (lv === 1) return dominanceColor(60);
       if (lv === 2) return dominanceColor(D.domShare[i]);
       return dominanceColor(share50For(i));
+    }}
+    if (state.colorMode === 'identity') {{
+      if (lv === 0) return '#13293d';
+      if (lv === 1) return '#b8c7d4';
+      if (lv === 2) return ethnicityColor(
+        dominantEthnicityForCountry(i) || D.labels[i]);
+      if (lv === 3) return ethnicityColor(D.labels[i]);
     }}
     if (state.colorMode === 'change') {{
       if (lv === 3) {{ const s = share50For(i); return changeColor(s - D.share24g[D.gpos[i]]); }}
@@ -1354,7 +1412,12 @@ def build_html(treemap_data: dict, religion_data: dict, scen_json: str, meta_jso
       type: 'bar', orientation: 'h',
       y: rows.map(r => r.country + ' · ' + r.group),
       x: rows.map(r => r.pop),
-      marker: {{ color: rows.map(r => state.layer === 'religion' && state.colorMode !== 'change' ? religionColor(r.group) : (r.change >= 0 ? '#2a9d8f' : '#e76f51')) }},
+      marker: {{ color: rows.map(r =>
+        state.layer === 'religion' && state.colorMode !== 'change'
+          ? religionColor(r.group)
+          : (state.layer === 'ethnic' && state.colorMode === 'identity'
+            ? ethnicityColor(r.group)
+            : (r.change >= 0 ? '#2a9d8f' : '#e76f51'))) }},
       customdata: rows.map(r => [r.country, r.group, r.s24, r.s50, r.change, r.driver]),
       hovertemplate: '<b>%{{customdata[0]}}</b><br>%{{customdata[1]}}<br>2050 population: %{{x:,.0f}}<br>Share: %{{customdata[2]:.1f}}% → %{{customdata[3]:.1f}}% (%{{customdata[4]:+.1f}} pp)<br>Driver: %{{customdata[5]}}<extra></extra>'
     }};
@@ -1380,7 +1443,11 @@ def build_html(treemap_data: dict, religion_data: dict, scen_json: str, meta_jso
     document.getElementById('cardgrid').innerHTML = rows.map(r => {{
       const cls = r.change >= 0 ? 'pos' : 'neg';
       const width = Math.max(4, Math.min(100, r.s50));
-      const fill = state.layer === 'religion' && state.colorMode !== 'change' ? religionColor(r.group) : (r.change >= 0 ? '#2a9d8f' : '#e76f51');
+      const fill = state.layer === 'religion' && state.colorMode !== 'change'
+        ? religionColor(r.group)
+        : (state.layer === 'ethnic' && state.colorMode === 'identity'
+          ? ethnicityColor(r.group)
+          : (r.change >= 0 ? '#2a9d8f' : '#e76f51'));
       return '<div class="country-card" data-iso="' + r.iso + '">' +
         '<div class="name">' + r.country + '</div>' +
         '<div class="meta">' + r.group + ' · ' + r.driver + '</div>' +
@@ -1437,6 +1504,13 @@ def build_html(treemap_data: dict, religion_data: dict, scen_json: str, meta_jso
       '<div class="chip">SSA source-pool transition<b>' + m.ssaSourcePoolTransition.toFixed(2) + '</b></div>' +
       '<div class="chip">SSA source-pool capacity<b>' + m.ssaSourcePoolCapacity.toFixed(2) + '</b></div>' +
       '<div class="chip">SSA transition-attributed shift<b>' + m.ssaSourcePoolAttributedShift.toFixed(2) + ' pp</b></div>' +
+      '<div class="chip">Youth 0–14, 2024 → 2050<b>' + m.youth24.toFixed(1) + '% → ' + m.youth50.toFixed(1) + '%</b></div>' +
+      '<div class="chip">Working age, 2024 → 2050<b>' + m.working24.toFixed(1) + '% → ' + m.working50.toFixed(1) + '%</b></div>' +
+      '<div class="chip">Age 65+, 2024 → 2050<b>' + m.elderly24.toFixed(1) + '% → ' + m.elderly50.toFixed(1) + '%</b></div>' +
+      '<div class="chip">Migration stock soft capacity<b>' + (m.migrationSoftCap * 100).toFixed(0) + '%</b></div>' +
+      '<div class="chip">Migration-linked resident share<b>' + (m.migrationResidentShare * 100).toFixed(1) + '%</b></div>' +
+      '<div class="chip">Remaining migration headroom<b>' + m.migrationSaturation.toFixed(2) + '</b></div>' +
+      '<div class="chip">Settlement absorption capacity<b>' + m.migrationAbsorption.toFixed(2) + '</b></div>' +
       '<div class="chip">Policy openness<b>' + m.openness.toFixed(1) + '</b></div>' +
       '<div class="chip">Policy feedback<b>' + m.policyFeedback.toFixed(2) + '</b></div>' +
       '<div class="chip">Demographic pressure<b>' + (m.pressure * 100).toFixed(0) + '%</b></div>' +
@@ -1551,7 +1625,7 @@ def build_html(treemap_data: dict, religion_data: dict, scen_json: str, meta_jso
       document.querySelectorAll('#layermode button').forEach(x => x.classList.remove('active'));
       b.classList.add('active');
       state.layer = b.dataset.layer;
-      if (state.layer === 'religion' && state.colorMode === 'dominance') {{
+      if (state.layer === 'religion' && (state.colorMode === 'dominance' || state.colorMode === 'identity')) {{
         state.colorMode = 'driver';
         document.querySelectorAll('#colormode button').forEach(x => {{
           x.classList.toggle('active', x.dataset.mode === 'driver');

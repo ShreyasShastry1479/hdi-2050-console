@@ -784,6 +784,79 @@ GROUP_YOUTH_BONUS: dict[tuple[str, str], float] = {
     ("FIN", "Somali"): 0.06,
 }
 
+# Age-structure deviations from each country's national pyramid. Values are
+# applied directly to the 0-14, 15-64 and 65+ shares, then renormalized. They
+# replace the older profile-growth shortcut with explicit proportional age
+# exposure. Group-specific youth overrides above refine the 0-14 component.
+PROFILE_AGE_STRUCTURE_DEVIATION: dict[object, tuple[float, float, float]] = {
+    "majority": (0.00, 0.00, 0.00),
+    "high_fertility": (0.085, -0.045, -0.040),
+    "low_fertility": (-0.045, -0.005, 0.050),
+    "immigrant": (0.015, 0.070, -0.085),
+    "assimilating": (0.025, 0.010, -0.035),
+}
+
+# Soft ceilings for the combined migration-linked resident stock. The model
+# does not impose a hard demographic cap: it progressively dampens additional
+# inflow as housing, infrastructure and integration systems become binding.
+MIGRATION_STOCK_SOFT_CAP: dict[str, float] = {
+    "CAN": 0.42, "AUS": 0.44, "NZL": 0.42, "USA": 0.36,
+    "GBR": 0.34, "DEU": 0.30, "FRA": 0.30, "NLD": 0.34,
+    "BEL": 0.32, "IRL": 0.38, "SWE": 0.34, "NOR": 0.32,
+    "DNK": 0.30, "FIN": 0.26, "ITA": 0.28, "ESP": 0.30,
+    "PRT": 0.28, "AUT": 0.29, "CHE": 0.36,
+    "JPN": 0.16, "KOR": 0.18, "HKG": 0.34, "SGP": 0.52,
+    "MYS": 0.28, "THA": 0.20, "BRN": 0.58, "MDV": 0.48,
+    "ARE": 0.86, "QAT": 0.88, "KWT": 0.82, "SAU": 0.58,
+    "OMN": 0.56, "BHR": 0.64,
+}
+
+
+def migration_stock_soft_cap(iso3: str) -> float:
+    """Return an auditable soft ceiling for migration-linked resident stock."""
+    if iso3 in MIGRATION_STOCK_SOFT_CAP:
+        return MIGRATION_STOCK_SOFT_CAP[iso3]
+    openness = MIGRATION_POLICY_OPENNESS.get(iso3, 1.0)
+    baseline = COUNTRY_MIGRATION_INTENSITY.get(iso3, 1.0)
+    return float(np.clip(
+        0.12 + 0.10 * min(1.0, openness / 1.2) +
+        0.12 * min(1.0, baseline / 2.5),
+        0.14, 0.38,
+    ))
+
+
+def migration_absorption_capacity(
+    iso3: str,
+    education_index: Optional[float] = None,
+    income_index: Optional[float] = None,
+) -> float:
+    """Capacity to convert recruitment into durable, integrated settlement."""
+    development = 0.58
+    if education_index is not None and income_index is not None:
+        development = float(np.clip(
+            (education_index + income_index) / 2.0, 0.0, 1.0))
+    openness = min(1.0, MIGRATION_POLICY_OPENNESS.get(iso3, 1.0) / 1.2)
+    retention = DESTINATION_SETTLEMENT_RETENTION.get(iso3, 0.78)
+    return float(np.clip(
+        0.30 + 0.32 * development + 0.18 * openness + 0.20 * retention,
+        0.35, 1.0,
+    ))
+
+
+def _share_fraction(value: Optional[float], fallback: float) -> float:
+    if value is None or not np.isfinite(value):
+        return fallback
+    numeric = float(value)
+    return float(np.clip(numeric / 100.0 if numeric > 1.0 else numeric, 0.0, 1.0))
+
+
+def _normalise_age_structure(
+    youth: float, working: float, elderly: float
+) -> tuple[float, float, float]:
+    values = np.maximum(np.array([youth, working, elderly], dtype=float), 0.005)
+    values /= values.sum()
+    return tuple(float(value) for value in values)
+
 
 def demographic_pressure(iso3: str, pop_2024: Optional[float] = None,
                          pop_2050: Optional[float] = None) -> float:
@@ -1256,6 +1329,12 @@ def project_ethnic_composition(
     pop_2024: Optional[float] = None,
     pop_2050: Optional[float] = None,
     ssa_source_pool_scale: float = 1.0,
+    youth_share_2024: Optional[float] = None,
+    youth_share_2050: Optional[float] = None,
+    working_age_share_2024: Optional[float] = None,
+    working_age_share_2050: Optional[float] = None,
+    elderly_share_2024: Optional[float] = None,
+    elderly_share_2050: Optional[float] = None,
 ) -> dict[str, float]:
     """Evidence-based projection of ethnic shares for one country to end_year.
 
@@ -1318,6 +1397,9 @@ def project_ethnic_composition(
         Multiplier for the late-2030s/2040s shift toward Sub-Saharan Africa
         in the global mobile-labor source pool. Zero provides an auditable
         counterfactual while leaving all other migration channels active.
+    youth_share_*, working_age_share_*, elderly_share_* : float | None
+        Country age-pyramid proportions for 2024 and 2050. Inputs may be
+        fractions or percentages. They directly scale group cohort momentum.
 
     Returns
     -------
@@ -1356,21 +1438,49 @@ def project_ethnic_composition(
     birth_replacement_pressure = europe_birth_replacement_pressure(
         iso3, pop_2024, pop_2050)
     mig_openness = MIGRATION_POLICY_OPENNESS.get(iso3, 1.0)
+    absorption_capacity = migration_absorption_capacity(
+        iso3, education_index, income_index)
+    migration_soft_cap = migration_stock_soft_cap(iso3)
 
     anchor = int(np.argmax(shares))
     years = end_year - start_year
 
-    # Profile -> age-structure "youth bonus" (fraction/year). Groups with a
-    # young age pyramid (high-fertility, recent immigrants) keep producing
-    # births above what their TFR alone implies for ~2 decades; aging groups
-    # (low-fertility, majority in East Asia/Europe) have the opposite drag.
-    # Documented per-group cases (US Black, Indigenous, Multiracial, key
-    # immigrant minorities) override the profile default.
-    youth_bonus = np.array([
-        GROUP_YOUTH_BONUS.get((iso3, e[0]),
-            {"high_fertility": 0.06, "immigrant": 0.06, "assimilating": 0.03,
-             "low_fertility": -0.03}.get(e[2], 0.0)) for e in entries
-    ], dtype=float)
+    fallback_youth_0 = float(np.clip(0.18 + 0.075 * (tfr_nat_0 - 1.6), 0.08, 0.46))
+    fallback_old_0 = float(np.clip(0.18 - 0.10 * (tfr_nat_0 - 1.6), 0.02, 0.34))
+    fallback_work_0 = 1.0 - fallback_youth_0 - fallback_old_0
+    fallback_youth_1 = float(np.clip(0.17 + 0.070 * (tfr_nat_1 - 1.6), 0.07, 0.42))
+    fallback_old_1 = float(np.clip(0.21 - 0.09 * (tfr_nat_1 - 1.6), 0.03, 0.38))
+    fallback_work_1 = 1.0 - fallback_youth_1 - fallback_old_1
+    national_age_0 = _normalise_age_structure(
+        _share_fraction(youth_share_2024, fallback_youth_0),
+        _share_fraction(working_age_share_2024, fallback_work_0),
+        _share_fraction(elderly_share_2024, fallback_old_0),
+    )
+    national_age_1 = _normalise_age_structure(
+        _share_fraction(youth_share_2050, fallback_youth_1),
+        _share_fraction(working_age_share_2050, fallback_work_1),
+        _share_fraction(elderly_share_2050, fallback_old_1),
+    )
+    group_age_0 = []
+    group_age_1 = []
+    for entry in entries:
+        dy, dw, do = PROFILE_AGE_STRUCTURE_DEVIATION.get(
+            entry[2], (0.0, 0.0, 0.0))
+        dy += GROUP_YOUTH_BONUS.get((iso3, entry[0]), 0.0) * 0.55
+        group_age_0.append(_normalise_age_structure(
+            national_age_0[0] + dy,
+            national_age_0[1] + dw,
+            national_age_0[2] + do,
+        ))
+        # Most age-structure gaps narrow as migrant-origin and minority
+        # populations age and fertility converges, but do not disappear.
+        group_age_1.append(_normalise_age_structure(
+            national_age_1[0] + 0.38 * dy,
+            national_age_1[1] + 0.38 * dw,
+            national_age_1[2] + 0.38 * do,
+        ))
+    group_age_0 = np.asarray(group_age_0, dtype=float)
+    group_age_1 = np.asarray(group_age_1, dtype=float)
 
     # Intermarriage-driven mixed-identity formation for this country.
     intermarriage = INTERMARRIAGE_INDEX.get(iso3, 0.0) * intermarriage_multiplier
@@ -1400,10 +1510,18 @@ def project_ethnic_composition(
         # 3) Intrinsic-growth differential from fertility (stable population).
         dev_fert = np.log(tfr_g / max(tfr_nat, 0.5)) / GENERATION_LENGTH
 
-        # 4) Age-structure momentum: already-born cohorts keep births up.
-        #    Decays over ~2 decades; boosted for young-profile groups and for
-        #    high-fertility groups (whose gap captures the young pyramid).
-        momentum = (0.16 * gap + youth_bonus) * np.exp(-progress * 2.0) / GENERATION_LENGTH
+        # 4) Explicit proportional age structure. Cohort momentum derives from
+        #    the group's 0-14, working-age and 65+ shares relative to the
+        #    national pyramid, rather than a categorical growth label.
+        national_age = np.asarray(national_age_0) + (
+            np.asarray(national_age_1) - np.asarray(national_age_0)) * progress
+        group_age = group_age_0 + (group_age_1 - group_age_0) * progress
+        age_exposure = (
+            0.78 * (group_age[:, 0] - national_age[0]) +
+            0.18 * (group_age[:, 1] - national_age[1]) -
+            0.22 * (group_age[:, 2] - national_age[2])
+        )
+        momentum = age_exposure * np.exp(-progress * 1.35) / GENERATION_LENGTH
 
         # 5) Migration inflow. Each country imports a specific *composition* of
         #    groups (GROUP_MIGRATION_INTENSITY); unlisted immigrant-profile
@@ -1419,6 +1537,12 @@ def project_ethnic_composition(
         late_ssa_pool = late_ssa_source_pool_transition(progress)
         dev_mig = np.zeros_like(shares)
         direct_ssa_inflow = np.zeros_like(shares)
+        migration_linked_share = float(sum(
+            shares[i] for i, entry in enumerate(entries)
+            if entry[2] == "immigrant"))
+        saturation_ratio = migration_linked_share / max(migration_soft_cap, 0.05)
+        migration_saturation = float(np.clip(
+            1.0 - 0.62 * saturation_ratio ** 1.6, 0.22, 1.0))
         for i, e in enumerate(entries):
             coeff = GROUP_MIGRATION_INTENSITY.get((iso3, e[0]))
             corridor = migration_corridor_diagnostics(
@@ -1468,32 +1592,53 @@ def project_ethnic_composition(
                 )
             # Guard against a small baseline diaspora acquiring an implausible
             # annual growth rate from several overlapping migration channels.
-            dev_mig[i] = float(np.clip(dev_mig[i], 0.0, 0.045))
+            dev_mig[i] = float(np.clip(
+                dev_mig[i] * migration_saturation * absorption_capacity,
+                0.0, 0.036))
+            direct_ssa_inflow[i] *= migration_saturation * absorption_capacity
 
         # 6) Intermarriage: a fraction of the non-mixed population forms new
         #    mixed-identity people each year (children of mixed unions are
         #    increasingly identified as multiracial). This is the engine
         #    behind the fast-growing Mixed/Multiracial buckets in the US,
         #    Canada, Australia, NZ, the UK and northern Europe.
-        dev_mixed = np.zeros_like(shares)
+        direct_mixed_inflow = np.zeros_like(shares)
         if intermarriage > 0.0 and mixed_mask.sum() > 0.0:
             mixed_share = float((shares * mixed_mask).sum())
             pool = 1.0 - mixed_share
-            inflow = intermarriage * 0.12 * pool * mixed_identity_multiplier
-            dev_mixed[mixed_mask > 0.0] = inflow
+            inflow = min(
+                pool * 0.008,
+                intermarriage * 0.006 * pool * mixed_identity_multiplier,
+            )
+            direct_mixed_inflow[mixed_mask > 0.0] = (
+                inflow / max(1.0, mixed_mask.sum()))
 
-        dev = dev_fert + momentum + dev_mig + dev_mixed
+        dev = dev_fert + momentum + dev_mig
 
         shares = shares * (1.0 + dev) + direct_ssa_inflow
+        if direct_mixed_inflow.sum() > 0.0:
+            transfer = float(direct_mixed_inflow.sum())
+            nonmixed = mixed_mask == 0.0
+            nonmixed_total = float(shares[nonmixed].sum())
+            if nonmixed_total > transfer:
+                shares[nonmixed] *= (nonmixed_total - transfer) / nonmixed_total
+                shares += direct_mixed_inflow
 
-        # 7) Assimilation: transfer a fraction of each minority to the anchor.
+        # 7) Identity transition applies only to migration-linked or explicitly
+        #    transitional statistical categories. Long-established minorities
+        #    are not mechanically transferred toward the largest category.
         if assimilation_rate > 0.0:
             for i in range(len(shares)):
-                if i == anchor:
+                if i == anchor or entries[i][2] not in ("immigrant", "assimilating"):
                     continue
                 transfer = shares[i] * assimilation_rate
                 shares[i] -= transfer
-                shares[anchor] += transfer
+                if mixed_mask.sum() > 0.0 and entries[i][2] == "immigrant":
+                    mixed_transfer = transfer * min(0.65, 0.25 + intermarriage)
+                    shares[mixed_mask > 0.0] += mixed_transfer / mixed_mask.sum()
+                    shares[anchor] += transfer - mixed_transfer
+                else:
+                    shares[anchor] += transfer
 
         shares = shares / shares.sum()
 

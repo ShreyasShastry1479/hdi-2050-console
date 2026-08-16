@@ -66,6 +66,8 @@ def load_hdi_context() -> dict:
         "ISO3", "HDI_2050_Gain", "HealthIndex_2050",
         "EducationIndex_2050", "IncomeIndex_2050", "Urbanization_2024",
         "WorkingAgePct_2050", "HumanCapitalAbsorption",
+        "Youth014Pct_2024", "Youth014Pct_2050", "WorkingAgePct_2024",
+        "Elderly65PlusPct_2024", "Elderly65PlusPct_2050",
         "DependencyPressure", "AgingPressure", "EducationIndex_2025",
         "DigitalInfraDevelopment", "ClimateRisk_2024", "ResourceDrag",
         "Contrib_Climate",
@@ -93,6 +95,17 @@ def build_table(pop2024: dict, pop2050: dict, hdi_context: dict) -> pd.DataFrame
         names = [e[0] for e in entries]
         shares_2024 = [e[1] for e in entries]
         shares_frac_2024 = [s / 100.0 for s in shares_2024]
+        ctx = hdi_context.get(iso3, {})
+        projection_age_context = {
+            "youth_share_2024": ctx.get("Youth014Pct_2024"),
+            "youth_share_2050": ctx.get("Youth014Pct_2050"),
+            "working_age_share_2024": ctx.get("WorkingAgePct_2024"),
+            "working_age_share_2050": ctx.get("WorkingAgePct_2050"),
+            "elderly_share_2024": ctx.get("Elderly65PlusPct_2024"),
+            "elderly_share_2050": ctx.get("Elderly65PlusPct_2050"),
+        }
+        education_context = ctx.get("EducationIndex_2050")
+        income_context = ctx.get("IncomeIndex_2050")
 
         proj = model.project_ethnic_composition(
             iso3,
@@ -100,6 +113,9 @@ def build_table(pop2024: dict, pop2050: dict, hdi_context: dict) -> pd.DataFrame
             fertility_convergence=FERTILITY_CONVERGENCE,
             pop_2024=pop2024.get(iso3),
             pop_2050=pop2050.get(iso3),
+            education_index=education_context,
+            income_index=income_context,
+            **projection_age_context,
         )
         closed_migration_proj = model.project_ethnic_composition(
             iso3,
@@ -107,6 +123,9 @@ def build_table(pop2024: dict, pop2050: dict, hdi_context: dict) -> pd.DataFrame
             fertility_convergence=FERTILITY_CONVERGENCE,
             pop_2024=pop2024.get(iso3),
             pop_2050=pop2050.get(iso3),
+            education_index=education_context,
+            income_index=income_context,
+            **projection_age_context,
         )
         low_migration_proj = model.project_ethnic_composition(
             iso3,
@@ -114,6 +133,9 @@ def build_table(pop2024: dict, pop2050: dict, hdi_context: dict) -> pd.DataFrame
             fertility_convergence=min(0.85, FERTILITY_CONVERGENCE + 0.05),
             pop_2024=pop2024.get(iso3),
             pop_2050=pop2050.get(iso3),
+            education_index=education_context,
+            income_index=income_context,
+            **projection_age_context,
         )
         high_migration_proj = model.project_ethnic_composition(
             iso3,
@@ -121,6 +143,9 @@ def build_table(pop2024: dict, pop2050: dict, hdi_context: dict) -> pd.DataFrame
             fertility_convergence=max(0.35, FERTILITY_CONVERGENCE - 0.05),
             pop_2024=pop2024.get(iso3),
             pop_2050=pop2050.get(iso3),
+            education_index=education_context,
+            income_index=income_context,
+            **projection_age_context,
         )
         without_ssa_source_pool_proj = model.project_ethnic_composition(
             iso3,
@@ -129,6 +154,9 @@ def build_table(pop2024: dict, pop2050: dict, hdi_context: dict) -> pd.DataFrame
             pop_2024=pop2024.get(iso3),
             pop_2050=pop2050.get(iso3),
             ssa_source_pool_scale=0.0,
+            education_index=education_context,
+            income_index=income_context,
+            **projection_age_context,
         )
 
         pressure = model.demographic_pressure(
@@ -148,7 +176,6 @@ def build_table(pop2024: dict, pop2050: dict, hdi_context: dict) -> pd.DataFrame
         intermarriage = model.INTERMARRIAGE_INDEX.get(iso3, 0.0)
         assimilation = model.COUNTRY_ASSIMILATION.get(
             iso3, model.DEFAULT_ASSIMILATION_RATE)
-        ctx = hdi_context.get(iso3, {})
         urbanization = ctx.get("Urbanization_2024")
         hdi_gain = ctx.get("HDI_2050_Gain")
         hdi_health = ctx.get("HealthIndex_2050")
@@ -171,6 +198,16 @@ def build_table(pop2024: dict, pop2050: dict, hdi_context: dict) -> pd.DataFrame
             if urbanization is not None and pd.notna(urbanization) else None
         )
         diversity_2050_base = 1.0 - sum(float(v) * float(v) for v in proj.values())
+        projected_migration_linked_share = sum(
+            float(proj.get(entry[0], 0.0)) for entry in entries
+            if entry[2] == "immigrant")
+        migration_soft_cap = model.migration_stock_soft_cap(iso3)
+        migration_saturation_factor = max(0.22, min(
+            1.0,
+            1.0 - 0.62 * (
+                projected_migration_linked_share /
+                max(migration_soft_cap, 0.05)) ** 1.6,
+        ))
         polarization_rq_2050_base = sum(
             4.0 * float(v) * ((1.0 - float(v)) ** 2)
             for v in proj.values()
@@ -213,6 +250,7 @@ def build_table(pop2024: dict, pop2050: dict, hdi_context: dict) -> pd.DataFrame
             structural_inequality_drag=structural_inequality_drag_base,
             pop_2024=pop2024.get(iso3),
             pop_2050=pop2050.get(iso3),
+            **projection_age_context,
         )
 
         # Parameter detail rows for the transparency file
@@ -350,6 +388,27 @@ def build_table(pop2024: dict, pop2050: dict, hdi_context: dict) -> pd.DataFrame
                     model.late_ssa_source_pool_transition(1.0), 3),
                 "SSA_SourcePoolCapacity_2050": round(
                     model.ssa_source_pool_capacity(), 3),
+                "AgeStructure_Youth014_2024": round(
+                    float(ctx.get("Youth014Pct_2024", 0.0) or 0.0), 3),
+                "AgeStructure_Youth014_2050": round(
+                    float(ctx.get("Youth014Pct_2050", 0.0) or 0.0), 3),
+                "AgeStructure_WorkingAge_2024": round(
+                    float(ctx.get("WorkingAgePct_2024", 0.0) or 0.0), 3),
+                "AgeStructure_WorkingAge_2050": round(
+                    float(ctx.get("WorkingAgePct_2050", 0.0) or 0.0), 3),
+                "AgeStructure_Elderly65Plus_2024": round(
+                    float(ctx.get("Elderly65PlusPct_2024", 0.0) or 0.0), 3),
+                "AgeStructure_Elderly65Plus_2050": round(
+                    float(ctx.get("Elderly65PlusPct_2050", 0.0) or 0.0), 3),
+                "Migration_Stock_SoftCap_2050": round(
+                    migration_soft_cap, 3),
+                "Migration_Linked_ResidentShare_2050": round(
+                    projected_migration_linked_share, 3),
+                "Migration_Saturation_Factor_2050": round(
+                    migration_saturation_factor, 3),
+                "Migration_Absorption_Capacity_2050": round(
+                    model.migration_absorption_capacity(
+                        iso3, education_context, income_context), 3),
                 "Policy_Openness": round(policy_openness, 3),
                 "Policy_Feedback_2050": round(policy_feedback, 3),
                 "Intermarriage_Coefficient": round(intermarriage, 3),
