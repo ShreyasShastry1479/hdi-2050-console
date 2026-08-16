@@ -2589,6 +2589,63 @@
       .hero { margin-bottom:6px; }
       .hero .subtitle { display:none; }
     }
+    .economy-hero { display:grid; grid-template-columns:minmax(0,1.5fr) minmax(300px,.8fr); gap:14px; margin-bottom:14px; }
+    .economy-hero-copy { padding:24px; background:linear-gradient(135deg,rgba(13,35,55,.96),rgba(10,20,35,.94)); border-left:3px solid #43e0a8; }
+    .economy-hero-copy h2 { margin:5px 0 10px; font-size:clamp(24px,3vw,40px); letter-spacing:0; }
+    .economy-hero-copy p { max-width:850px; margin:0; color:#c3d3e5; line-height:1.62; }
+    .economy-method-note { margin-top:14px; padding:12px 14px; border-left:2px solid #f6ce6a; background:rgba(246,206,106,.07); color:#dce8f5; font-size:12px; line-height:1.55; }
+    .economy-kpis { display:grid; grid-template-columns:1fr 1fr; gap:1px; overflow:hidden; padding:1px; background:rgba(136,177,218,.16); }
+    .economy-kpi { min-width:0; padding:15px; background:#0b1828; }
+    .economy-kpi span { display:block; color:#90a7c1; font-size:10px; text-transform:uppercase; font-weight:800; }
+    .economy-kpi strong { display:block; margin-top:7px; color:#fff; font-size:20px; letter-spacing:0; }
+    .economy-controls { position:sticky; top:70px; z-index:17; display:grid; grid-template-columns:1.2fr 1fr .75fr auto; gap:10px; align-items:end; padding:12px; margin-bottom:14px; background:rgba(8,18,31,.94); backdrop-filter:blur(14px); }
+    .economy-control { min-width:0; }
+    .economy-control label { display:block; margin:0 0 6px; color:#9bb1c9; font-size:10px; text-transform:uppercase; font-weight:800; }
+    .economy-control input,.economy-control select { width:100%; }
+    .economy-visual-grid { display:grid; grid-template-columns:minmax(0,1.55fr) minmax(350px,.8fr); gap:14px; }
+    .economy-map-shell,.economy-chart-shell { min-width:0; padding:16px; overflow:hidden; }
+    .economy-panel-head { display:flex; justify-content:space-between; align-items:flex-start; gap:12px; margin-bottom:8px; }
+    .economy-panel-head h3 { margin:0 0 3px; font-size:16px; }
+    .economy-panel-head p { margin:0; color:#8fa6bf; font-size:11px; }
+    .economy-map,.economy-chart { display:block; width:100%; height:auto; min-height:360px; background:#081321; }
+    .economy-map .economy-country { stroke:rgba(5,12,22,.42); stroke-width:.35; vector-effect:non-scaling-stroke; transition:opacity .15s ease,filter .15s ease; }
+    .economy-map .economy-country:hover,.economy-map .economy-country:focus-visible { filter:brightness(1.22); outline:none; stroke:#fff; stroke-width:1.2; }
+    .economy-map .economy-country.selected { stroke:#f6ce6a; stroke-width:2; }
+    .economy-legend { display:grid; grid-template-columns:auto 1fr auto; align-items:center; gap:9px; margin-top:9px; color:#91a8c1; font-size:10px; }
+    .economy-gradient { height:8px; background:linear-gradient(90deg,#5c0011,#d65f6f,#dbe9f4,#3c8ec7,#002b5b); }
+    .economy-selected { margin-top:14px; padding:16px; border-top:2px solid #58e6ff; }
+    .economy-selected-grid { display:grid; grid-template-columns:1.2fr repeat(5,minmax(110px,1fr)); gap:1px; background:rgba(136,177,218,.14); }
+    .economy-selected-grid > div { min-width:0; padding:12px; background:#0a1727; }
+    .economy-selected-grid span { display:block; color:#8fa6bf; font-size:9px; text-transform:uppercase; font-weight:800; }
+    .economy-selected-grid strong { display:block; margin-top:5px; overflow:hidden; color:#f5f9ff; font-size:14px; text-overflow:ellipsis; white-space:nowrap; }
+    .economy-selected-note { margin:12px 0 0; color:#b6c8db; font-size:11px; line-height:1.55; }
+    .economy-table-panel { margin-top:14px; overflow:hidden; }
+    .economy-table-head { display:flex; justify-content:space-between; gap:14px; align-items:center; padding:15px; }
+    .economy-table-wrap { max-height:610px; overflow:auto; }
+    .economy-table { width:100%; border-collapse:collapse; font-size:11px; }
+    .economy-table caption { padding:0 15px 12px; color:#91a8c1; text-align:left; }
+    .economy-table th { position:sticky; top:0; z-index:2; padding:10px 9px; border-bottom:1px solid rgba(164,198,244,.22); background:#0c1a2b; color:#fff; text-align:right; white-space:nowrap; }
+    .economy-table th:nth-child(2),.economy-table td:nth-child(2) { text-align:left; }
+    .economy-table th button { min-height:24px; padding:0; border:0; background:none; box-shadow:none; color:inherit; font:inherit; }
+    .economy-table td { padding:9px; border-top:1px solid rgba(164,198,244,.09); text-align:right; white-space:nowrap; }
+    .economy-table th:first-child { left:0; z-index:4; min-width:62px; box-shadow:1px 0 0 rgba(164,198,244,.2),8px 0 18px rgba(2,8,18,.3); }
+    .economy-table td:first-child { position:sticky; left:0; z-index:1; min-width:62px; background:#0b1726; box-shadow:1px 0 0 rgba(164,198,244,.12),8px 0 18px rgba(2,8,18,.22); }
+    .economy-table tbody tr:hover td:first-child,.economy-table tbody tr.selected td:first-child { background:#10283a; }
+    .economy-table tbody tr { cursor:pointer; }
+    .economy-table tbody tr:hover,.economy-table tbody tr.selected { background:rgba(88,230,255,.07); }
+    .economy-source-strip { display:flex; flex-wrap:wrap; gap:8px; margin-top:14px; }
+    .economy-source-strip span { padding:6px 8px; border:1px solid rgba(164,198,244,.15); color:#9fb4cb; font-size:10px; }
+    @media (max-width:1050px) {
+      .economy-hero,.economy-visual-grid { grid-template-columns:1fr; }
+      .economy-controls { grid-template-columns:1fr 1fr; top:62px; }
+      .economy-selected-grid { grid-template-columns:repeat(3,1fr); }
+    }
+    @media (max-width:620px) {
+      .economy-controls,.economy-kpis,.economy-selected-grid { grid-template-columns:1fr; }
+      .economy-controls { position:relative; top:auto; }
+      .economy-map,.economy-chart { min-height:280px; }
+      .economy-panel-head,.economy-table-head { align-items:flex-start; flex-direction:column; }
+    }
     @media print {
       body { background: #fff !important; color: #111827 !important; }
       .shell, .drawer-backdrop, .glossary-drawer, .compare-drawer, .skip-link { display: none !important; }
@@ -2630,6 +2687,7 @@
         <a href="#filters" data-nav-link="filters">Filters & Maps</a>
         <a href="#subdivisions" data-nav-link="subdivisions">Subdivisions</a>
         <a href="#cities" data-nav-link="cities">Cities</a>
+        <a href="#economy" data-nav-link="economy">Economy 2050</a>
         <a href="#hdi-gpt" data-nav-link="hdi-gpt">HDI-GPT</a>
         <a href="#research" data-nav-link="research">Research</a>
         <div class="nav-more">
@@ -3470,6 +3528,70 @@
     </section>
     </section>
 
+    <section class="page-view" id="economy" data-page-title="Economy 2050">
+      <section aria-labelledby="economy-title">
+        <div class="economy-hero">
+          <div class="panel economy-hero-copy">
+            <div class="section-kicker">Global economic outlook</div>
+            <h2 id="economy-title">GDP, purchasing power, and economic scale in 2050</h2>
+            <p>Explore GDP per capita at purchasing-power parity, GDP per capita at market exchange rates, and total economic strength for all 193 countries in the HDI model. The projection links observed World Bank GDP baselines to the console's growth prospects, industrialization, technology, human-capital absorption, demographic dividend, institutions, diversification, resource dependence, and volatility signals.</p>
+            <div class="economy-method-note"><strong>Dollar basis:</strong> The HDI income-index calculation remains anchored to constant 2021 PPP international dollars. The default 2050 maps, charts, and totals convert that real anchor into 2050-price dollars using observed 2021-2025 US CPI inflation and 2% annual inflation from 2026-2050. These inflated values describe future dollar scale; they do not increase real living standards or the HDI income index.</div>
+          </div>
+          <div class="panel economy-kpis" aria-label="Global economic projection summary">
+            <div class="economy-kpi"><span>Countries modeled</span><strong id="economy-kpi-count">--</strong></div>
+            <div class="economy-kpi"><span>2050 nominal output (2050 USD)</span><strong id="economy-kpi-nominal">--</strong></div>
+            <div class="economy-kpi"><span>2050 PPP output (2050 int'l $)</span><strong id="economy-kpi-ppp">--</strong></div>
+            <div class="economy-kpi"><span>Median real per-capita CAGR</span><strong id="economy-kpi-growth">--</strong></div>
+          </div>
+        </div>
+
+        <div class="panel economy-controls" aria-label="Economic outlook controls">
+          <div class="economy-control"><label for="economy-search">Search country or ISO3</label><input id="economy-search" type="search" placeholder="e.g. India or IND"></div>
+          <div class="economy-control"><label for="economy-metric">Economic measure</label><select id="economy-metric"><option value="nominal_total">Economic strength: total nominal GDP</option><option value="ppp_total">Total GDP at PPP</option><option value="ppp_pc">GDP per capita at PPP</option><option value="nominal_pc">GDP per capita, nominal</option></select></div>
+          <div class="economy-control"><label for="economy-year">Year</label><select id="economy-year"><option value="2050">2050 projection</option><option value="2025">2025 baseline estimate</option></select></div>
+          <button type="button" class="secondary" id="economy-export">Export economic CSV</button>
+        </div>
+
+        <div class="economy-visual-grid">
+          <div class="panel economy-map-shell">
+            <div class="economy-panel-head"><div><h3 id="economy-map-heading">2050 economic strength</h3><p id="economy-map-summary">Country fill follows projected total nominal GDP on a logarithmic scale.</p></div><strong id="economy-visible-count">193</strong></div>
+            <svg id="economy-map" class="economy-map" viewBox="0 0 960 480" role="img" aria-labelledby="economy-map-title economy-map-desc"><title id="economy-map-title">World economic outlook map</title><desc id="economy-map-desc">Keyboard-operable world map comparing GDP measures for 193 countries.</desc><g></g></svg>
+            <div class="economy-legend"><span id="economy-legend-low">Lower</span><div class="economy-gradient" aria-hidden="true"></div><span id="economy-legend-high">Higher</span></div>
+          </div>
+          <div class="panel economy-chart-shell">
+            <div class="economy-panel-head"><div><h3 id="economy-chart-heading">Largest projected economies</h3><p>Top 18 visible countries; select a bar to inspect it.</p></div><span class="city-badge" id="economy-chart-year">2050</span></div>
+            <svg id="economy-chart" class="economy-chart" viewBox="0 0 620 480" role="img" aria-labelledby="economy-chart-title economy-chart-desc"><title id="economy-chart-title">Ranked economic outlook</title><desc id="economy-chart-desc">Horizontal bars rank countries by the active economic metric.</desc></svg>
+          </div>
+        </div>
+
+        <div class="panel economy-selected" aria-live="polite">
+          <div class="economy-selected-grid">
+            <div><span>Selected country</span><strong id="economy-selected-country">Select a country</strong></div>
+            <div><span>PPP per capita (active year)</span><strong id="economy-selected-ppp">--</strong></div>
+            <div><span>2050 PPP pc (constant 2021 int'l $)</span><strong id="economy-selected-ppp-real">--</strong></div>
+            <div><span>Nominal per capita (active year)</span><strong id="economy-selected-nominal">--</strong></div>
+            <div><span>Total nominal GDP (active year)</span><strong id="economy-selected-total">--</strong></div>
+            <div><span>Economic strength rank</span><strong id="economy-selected-rank">--</strong></div>
+            <div><span>Real per-capita CAGR</span><strong id="economy-selected-growth">--</strong></div>
+            <div><span>2050 income index</span><strong id="economy-selected-income-index">--</strong></div>
+            <div><span>2021-2050 price factor</span><strong id="economy-selected-inflation">--</strong></div>
+          </div>
+          <p class="economy-selected-note" id="economy-selected-note">Select a map region, chart bar, or table row to inspect its economic path and baseline provenance.</p>
+        </div>
+
+        <div class="panel economy-table-panel">
+          <div class="economy-table-head"><div><div class="panel-title">193-country economic projection table</div><div class="panel-note">Activate a heading to sort. Default 2050 monetary values are in 2050-price dollars; the constant-2021 PPP column is the HDI audit anchor.</div></div><div class="panel-note" id="economy-row-count">-- rows</div></div>
+          <div class="economy-table-wrap">
+            <table class="economy-table" id="economy-table">
+              <caption>Country-level 2025 GDP baselines and independent 2050 projections, with uncertainty bounds and source flags.</caption>
+              <thead></thead><tbody></tbody>
+            </table>
+          </div>
+        </div>
+        <div class="economy-source-strip" aria-label="Economic data notes"><span>Observed baseline: World Bank API</span><span>Inflation: BLS CPI + 2% long-run path</span><span>Population: UN WPP-linked model</span><span>PPP and nominal values are distinct</span><span>2050 values are scenarios, not official forecasts</span></div>
+      </section>
+    </section>
+
     <section class="page-view" id="cities" data-page-title="Cities">
       <section aria-label="Major-city and capital HDI projections">
         <div class="city-hero">
@@ -3741,6 +3863,21 @@
             <p>Higher values indicate a destination country is modeled as more open to skilled-labor recruitment as ageing and labor shortages deepen.</p>
           </div>
           <div class="mosaic-driver-card">
+            <span class="metric" id="mosaic-selected-broad-labor">--</span>
+            <h3>Broader workforce mobility</h3>
+            <p>Source pressure and destination response for care, trades, logistics, construction, hospitality, manufacturing, agriculture, and other labor-shortage pathways.</p>
+          </div>
+          <div class="mosaic-driver-card">
+            <span class="metric" id="mosaic-selected-ssa-response">--</span>
+            <h3>Late Sub-Saharan African corridor</h3>
+            <p>Measures how strongly the selected destination or source participates in the modeled late-2030s and 2040s expansion of African migration corridors.</p>
+          </div>
+          <div class="mosaic-driver-card">
+            <span class="metric" id="mosaic-selected-birth-replacement">--</span>
+            <h3>Birth-cohort replacement pressure</h3>
+            <p>For European countries, this separates shrinking future birth cohorts from general ageing. The paired response value reflects whether labor demand is likely to translate into additional migration.</p>
+          </div>
+          <div class="mosaic-driver-card">
             <span class="metric" id="mosaic-selected-mobility">--</span>
             <h3>Intergenerational mobility</h3>
             <p>Scores whether education, human capital, policy openness, and digital infrastructure allow immigrant-origin and native-born groups to converge by 2050.</p>
@@ -3861,6 +3998,11 @@
             <p>Higher migration intensity can soften ageing, deepen the working-age base, and improve skilled-labor supply. In the HDI model, this mainly contextualizes income growth, human-capital absorption, and demographic-dividend assumptions.</p>
           </div>
           <div class="mosaic-driver-card">
+            <span class="metric" id="mosaic-europe-birth-response-avg">--</span>
+            <h3>European birth-replacement response</h3>
+            <p>Population-weighted EU and European scenario signal for additional migration as smaller birth cohorts reach working age. Political openness, housing, recruitment, and integration capacity constrain the response.</p>
+          </div>
+          <div class="mosaic-driver-card">
             <span class="metric" id="mosaic-skilled-source-avg">--</span>
             <h3>Skilled source pressure</h3>
             <p>High-demographic-dividend countries such as Nigeria, Ethiopia, Ghana, Kenya, and Pakistan are modeled as larger late-period sources of skilled labor migration into 2040s destination programs.</p>
@@ -3869,6 +4011,16 @@
             <span class="metric" id="mosaic-skilled-program-avg">--</span>
             <h3>Skilled migration programs</h3>
             <p>Destination economies with ageing workforces and formal recruitment systems receive a stronger 2040s skilled-labor channel, concentrated in existing diaspora and expatriate-worker groups.</p>
+          </div>
+          <div class="mosaic-driver-card">
+            <span class="metric" id="mosaic-broad-labor-avg">--</span>
+            <h3>Broader labor-migration pathways</h3>
+            <p>The model separately captures non-degree and mixed-skill recruitment in care, trades, logistics, construction, hospitality, agriculture, and manufacturing. Policy access and settlement retention constrain the effect.</p>
+          </div>
+          <div class="mosaic-driver-card">
+            <span class="metric" id="mosaic-ssa-response-avg">--</span>
+            <h3>Sub-Saharan African 2040s corridors</h3>
+            <p>Young workforces across Africa become larger potential sources for global mobility, with stronger pathways where diaspora networks, language, recruitment systems, rights, and destination labor shortages align.</p>
           </div>
           <div class="mosaic-driver-card">
             <span class="metric" id="mosaic-mobility-avg">--</span>
@@ -4058,7 +4210,7 @@
             <div class="panel-note">Treemap, bar chart, card grid, country drawer, and scenario controls generated from the ethnic and religious composition output tables.</div>
           </div>
         </div>
-        <iframe class="mosaic-frame" id="ethnic-mosaic-frame" title="The World's Demographic Mosaic in 2050" loading="lazy" src="../data/output/ethnic_demographics_2050.html?v=20260814-corridor-model"></iframe>
+        <iframe class="mosaic-frame" id="ethnic-mosaic-frame" title="The World's Demographic Mosaic in 2050" loading="lazy" src="../data/output/ethnic_demographics_2050.html?v=20260815-ssa-late-migration"></iframe>
       </div>
     </section>
     </section>
@@ -4644,9 +4796,10 @@
     const historicalHdiCsvPath = "../data/output/hdi_1998_hdr2000.csv?v=20260812-hdr2000";
     const subdivisionCsvPath = "../data/output/subdivision_hdi_2025_2050.csv?v=20260809-hdi-gpt";
     const cityCsvPath = "../data/output/city_hdi_2025_2050.csv?v=20260811-subdivision-anchors";
-    const ethnicCsvPath = "../data/output/demographic_context_2050.csv?v=20260814-corridor-model";
-    const migrationCorridorCsvPath = "../data/output/migration_corridors_2050.csv?v=20260814-corridor-model";
-    const religionCsvPath = "../data/output/religious_composition_2050_model.csv?v=20260809-hindu-2025-baseline";
+    const economicCsvPath = "../data/output/economic_outlook_2050.csv?v=20260815-economy";
+    const ethnicCsvPath = "../data/output/demographic_context_2050.csv?v=20260815-ssa-late-migration";
+    const migrationCorridorCsvPath = "../data/output/migration_corridors_2050.csv?v=20260815-ssa-late-migration";
+    const religionCsvPath = "../data/output/religious_composition_2050_model.csv?v=20260815-ssa-late-migration";
     const povertyCsvPath = "../data/output/extreme_poverty_regional_1990_2040.csv?v=20260811";
     const mlArtifactPath = "../data/output/ml_research_artifacts.json?v=20260812-ml-lab";
     const officialWorldHdi1998 = 0.712;
@@ -4814,6 +4967,11 @@
     let cityRows = [];
     let filteredCityRows = [];
     let selectedCity = null;
+    let economicRows = [];
+    let filteredEconomicRows = [];
+    let selectedEconomicRow = null;
+    let economicInitialized = false;
+    let economicSort = {column: "Rank_Economic_Strength_2050", direction: 1};
     let povertyRows = [];
     let mlArtifacts = null;
     let mlArtifactPromise = null;
@@ -5314,13 +5472,16 @@
       for (const key of [
         "TFR_2024", "TFR_2050", "Nat_TFR_2024", "Nat_TFR_2050",
         "Share_2024_pct", "Share_2050_pct", "Change_pp",
+        "Share_2050_WithoutMigrationResponse_pct", "Migration_Attributed_Change_pp",
         "Share_2050_LowMigrationScenario_pct", "Share_2050_HighMigrationScenario_pct",
         "Share_2050_Migration_P10_pct", "Share_2050_Migration_P90_pct",
         "Migration_Uncertainty_Width_pp", "Migration_SourceSupply_2050",
+        "Migration_BroadLaborMobility_2050",
         "Migration_SkillReadiness_2050", "Migration_ClimatePressure_2050",
         "Migration_DestinationPull_2050", "Migration_DiasporaNetwork_2050",
         "Migration_CorridorAffinity_2050", "Migration_SettlementRetention_2050",
-        "Migration_CorridorMultiplier_2050",
+        "Migration_CorridorMultiplier_2050", "Birth_Replacement_Pressure_2050",
+        "Europe_Migration_Response_2050",
         "Inclusive_Mobility_Share_2050_pct", "Inclusive_Mobility_Change_pp",
         "Inclusive_Mobility_Delta_vs_Baseline_pp", "Inclusive_Mobility_IdentityFormationMultiplier",
         "Inclusive_Mobility_MixedIdentityMultiplier", "Inclusive_Mobility_IdentityTransitionRate",
@@ -5328,6 +5489,9 @@
         "Pop_2024", "Pop_2050", "Demographic_Pressure",
         "Migration_Intensity_2050", "Policy_Openness", "Policy_Feedback_2050",
         "Skilled_Migration_SourcePressure_2050", "Skilled_Migration_ProgramIntensity_2050",
+        "BroadLabor_Migration_SourcePressure_2050",
+        "BroadLabor_Migration_ProgramIntensity_2050",
+        "SSA_LateMigration_DestinationResponse_2050",
         "Mixed_Identity_Recognition_Rate", "Identity_Category_Transition_Rate",
         "Composition_Diversity_Index_2050", "Composition_Concentration_Index_2050",
         "Inclusive_Service_Delivery_Gap_2050",
@@ -5368,7 +5532,16 @@
 
     function normalizeReligionRow(row) {
       const out = {...row};
-      for (const key of ["Share_2024_pct", "Share_2050_pct", "Change_pp", "Pop_2024", "Pop_2050"]) {
+      for (const key of [
+        "Share_2024_pct", "Share_2050_pct", "Change_pp", "Pop_2024", "Pop_2050",
+        "Share_2050_WithoutBirthReplacementMigration_pct",
+        "BirthReplacementMigration_Attributed_Change_pp",
+        "Birth_Replacement_Pressure_2050", "Europe_Migration_Response_2050",
+        "Migration_Composition_Weight_2050",
+        "SSA_LateMigration_CompositionWeight_2050",
+        "Share_2050_WithoutSSALateMigration_pct",
+        "SSA_LateMigration_Attributed_Change_pp"
+      ]) {
         const n = Number(out[key]);
         if (Number.isFinite(n)) out[key] = n;
       }
@@ -5384,6 +5557,20 @@
       ["Latitude", "Longitude", "GeoNames_Population", "City_Rank_In_Selected_Country", "Subdivision_HDI_2025_Anchor", "Subdivision_HDI_2050_Anchor", "City_HDI_2025", "City_HDI_2050", "City_HDI_Change", "National_HDI_2025", "National_HDI_2050", "Urban_Premium_2025", "Urban_Premium_2050", "City_vs_National_2025", "City_vs_National_2050"].forEach(key => row[key] = Number(row[key]));
       row.Is_Capital = String(row.Is_Capital).toLowerCase() === "true";
       return row;
+    }
+
+    function normalizeEconomicRow(row) {
+      const out = {...row};
+      Object.keys(out).forEach(key => {
+        if (key === "ISO3" || key === "Country" || key === "Trajectory" || key === "Baseline_Source" || key === "Projection_Type") return;
+        if (out[key] === "True" || out[key] === "False") {
+          out[key] = out[key] === "True";
+          return;
+        }
+        const value = Number(out[key]);
+        if (Number.isFinite(value)) out[key] = value;
+      });
+      return out;
     }
 
     function pearsonR(rows, xKey, yKey) {
@@ -5425,6 +5612,7 @@
           TopGroups: topGroups,
           Migration_Intensity_2050: weighted("Migration_Intensity_2050"),
           Migration_SourceSupply_2050: weighted("Migration_SourceSupply_2050"),
+          Migration_BroadLaborMobility_2050: weighted("Migration_BroadLaborMobility_2050"),
           Migration_SkillReadiness_2050: weighted("Migration_SkillReadiness_2050"),
           Migration_ClimatePressure_2050: weighted("Migration_ClimatePressure_2050"),
           Migration_DestinationPull_2050: weighted("Migration_DestinationPull_2050"),
@@ -5433,8 +5621,13 @@
           Migration_SettlementRetention_2050: weighted("Migration_SettlementRetention_2050"),
           Migration_CorridorMultiplier_2050: weighted("Migration_CorridorMultiplier_2050"),
           Migration_Uncertainty_Width_pp: weighted("Migration_Uncertainty_Width_pp"),
+          Birth_Replacement_Pressure_2050: weighted("Birth_Replacement_Pressure_2050"),
+          Europe_Migration_Response_2050: weighted("Europe_Migration_Response_2050"),
           Skilled_Migration_SourcePressure_2050: weighted("Skilled_Migration_SourcePressure_2050"),
           Skilled_Migration_ProgramIntensity_2050: weighted("Skilled_Migration_ProgramIntensity_2050"),
+          BroadLabor_Migration_SourcePressure_2050: weighted("BroadLabor_Migration_SourcePressure_2050"),
+          BroadLabor_Migration_ProgramIntensity_2050: weighted("BroadLabor_Migration_ProgramIntensity_2050"),
+          SSA_LateMigration_DestinationResponse_2050: weighted("SSA_LateMigration_DestinationResponse_2050"),
           Inclusive_Mobility_Delta_vs_Baseline_pp: weighted("Inclusive_Mobility_Delta_vs_Baseline_pp"),
           Inclusive_Mobility_MeanAbsDelta_pp: weightedAbs("Inclusive_Mobility_Delta_vs_Baseline_pp"),
           Inclusive_Mobility_IdentityFormationMultiplier: weighted("Inclusive_Mobility_IdentityFormationMultiplier"),
@@ -5487,6 +5680,10 @@
             change: largestShift.Change_pp,
             share2050: largestShift.Share_2050_pct,
           } : null,
+          BirthReplacementMigrationMeanAbsShift: d3.mean(
+            rows, d => Math.abs(Number(d.BirthReplacementMigration_Attributed_Change_pp) || 0)),
+          MigrationCompositionWeight: Number(first.Migration_Composition_Weight_2050) || 0,
+          SsaLateMigrationCompositionWeight: Number(first.SSA_LateMigration_CompositionWeight_2050) || 0,
         };
       }).filter(d => d.ISO3);
     }
@@ -5498,6 +5695,8 @@
         ["Migration destination pull", "Migration_DestinationPull_2050"],
         ["Migration corridor multiplier", "Migration_CorridorMultiplier_2050"],
         ["Migration uncertainty width", "Migration_Uncertainty_Width_pp"],
+        ["European birth replacement", "Birth_Replacement_Pressure_2050"],
+        ["European migration response", "Europe_Migration_Response_2050"],
         ["Skilled source pressure", "Skilled_Migration_SourcePressure_2050"],
         ["Skilled program intensity", "Skilled_Migration_ProgramIntensity_2050"],
         ["Mobility convergence", "Intergenerational_Mobility_Convergence_2050"],
@@ -5534,8 +5733,13 @@
         .filter(d => Number.isFinite(d.Change_pp))
         .reduce((best, row) => !best || row.Change_pp < best.Change_pp ? row : best, null);
       const weightedMigration = d3.sum(ethnicRows, d => (Number.isFinite(d.Migration_Intensity_2050) && Number.isFinite(d.Pop_2050)) ? d.Migration_Intensity_2050 * d.Pop_2050 : 0) / Math.max(1, listedPopulation);
+      const europeanBirthRows = ethnicRows.filter(d => Number(d.Birth_Replacement_Pressure_2050) > 0 && Number.isFinite(d.Pop_2050));
+      const europeanPopulation = d3.sum(europeanBirthRows, d => d.Pop_2050);
+      const weightedEuropeanBirthResponse = d3.sum(europeanBirthRows, d => d.Europe_Migration_Response_2050 * d.Pop_2050) / Math.max(1, europeanPopulation);
       const weightedSkilledSource = d3.sum(ethnicRows, d => (Number.isFinite(d.Skilled_Migration_SourcePressure_2050) && Number.isFinite(d.Pop_2050)) ? d.Skilled_Migration_SourcePressure_2050 * d.Pop_2050 : 0) / Math.max(1, listedPopulation);
       const weightedSkilledProgram = d3.sum(ethnicRows, d => (Number.isFinite(d.Skilled_Migration_ProgramIntensity_2050) && Number.isFinite(d.Pop_2050)) ? d.Skilled_Migration_ProgramIntensity_2050 * d.Pop_2050 : 0) / Math.max(1, listedPopulation);
+      const weightedBroadLabor = d3.sum(ethnicRows, d => (Number.isFinite(d.BroadLabor_Migration_ProgramIntensity_2050) && Number.isFinite(d.Pop_2050)) ? d.BroadLabor_Migration_ProgramIntensity_2050 * d.Pop_2050 : 0) / Math.max(1, listedPopulation);
+      const weightedSsaResponse = d3.sum(ethnicRows, d => (Number.isFinite(d.SSA_LateMigration_DestinationResponse_2050) && Number.isFinite(d.Pop_2050)) ? d.SSA_LateMigration_DestinationResponse_2050 * d.Pop_2050 : 0) / Math.max(1, listedPopulation);
       const weightedMobility = d3.sum(ethnicRows, d => (Number.isFinite(d.Intergenerational_Mobility_Convergence_2050) && Number.isFinite(d.Pop_2050)) ? d.Intergenerational_Mobility_Convergence_2050 * d.Pop_2050 : 0) / Math.max(1, listedPopulation);
       const weightedRegionalConcentration = d3.sum(ethnicRows, d => (Number.isFinite(d.Subnational_Regional_Concentration_2050) && Number.isFinite(d.Pop_2050)) ? d.Subnational_Regional_Concentration_2050 * d.Pop_2050 : 0) / Math.max(1, listedPopulation);
       const weightedClimateMigrationStress = d3.sum(ethnicRows, d => (Number.isFinite(d.Climate_Migration_Stress_2050) && Number.isFinite(d.Pop_2050)) ? d.Climate_Migration_Stress_2050 * d.Pop_2050 : 0) / Math.max(1, listedPopulation);
@@ -5593,8 +5797,11 @@
       const religiousPluralismEl = document.getElementById("mosaic-religion-fractionalization");
       if (religiousPluralismEl) religiousPluralismEl.textContent = fmt(meanReligionFeature("ReligiousFractionalization"), 3);
       document.getElementById("mosaic-migration-avg").textContent = fmt(weightedMigration, 2);
+      document.getElementById("mosaic-europe-birth-response-avg").textContent = fmt(weightedEuropeanBirthResponse, 2);
       document.getElementById("mosaic-skilled-source-avg").textContent = fmt(weightedSkilledSource, 2);
       document.getElementById("mosaic-skilled-program-avg").textContent = fmt(weightedSkilledProgram, 2);
+      document.getElementById("mosaic-broad-labor-avg").textContent = fmt(weightedBroadLabor, 2);
+      document.getElementById("mosaic-ssa-response-avg").textContent = fmt(weightedSsaResponse, 2);
       document.getElementById("mosaic-mobility-avg").textContent = fmt(weightedMobility, 2);
       document.getElementById("mosaic-regional-concentration-avg").textContent = fmt(weightedRegionalConcentration, 2);
       document.getElementById("mosaic-climate-stress-avg").textContent = fmt(weightedClimateMigrationStress, 2);
@@ -5647,13 +5854,16 @@
       const rqEl = document.getElementById("mosaic-selected-rq");
       const skilledSourceEl = document.getElementById("mosaic-selected-skilled-source");
       const skilledProgramEl = document.getElementById("mosaic-selected-skilled-program");
+      const broadLaborEl = document.getElementById("mosaic-selected-broad-labor");
+      const ssaResponseEl = document.getElementById("mosaic-selected-ssa-response");
+      const birthReplacementEl = document.getElementById("mosaic-selected-birth-replacement");
       const mobilityEl = document.getElementById("mosaic-selected-mobility");
       const climateStressEl = document.getElementById("mosaic-selected-climate-stress");
       const languageEl = document.getElementById("mosaic-selected-language");
       const inclusiveMobilityEl = document.getElementById("mosaic-selected-inclusive-mobility");
       const serviceGapEl = document.getElementById("mosaic-selected-service-gap");
       const serviceGapNote = document.getElementById("mosaic-selected-service-gap-note");
-      if (!countryEl || !summaryEl || !efEl || !rqEl || !skilledSourceEl || !skilledProgramEl || !mobilityEl || !climateStressEl || !languageEl || !inclusiveMobilityEl || !serviceGapEl || !serviceGapNote) return;
+      if (!countryEl || !summaryEl || !efEl || !rqEl || !skilledSourceEl || !skilledProgramEl || !broadLaborEl || !ssaResponseEl || !birthReplacementEl || !mobilityEl || !climateStressEl || !languageEl || !inclusiveMobilityEl || !serviceGapEl || !serviceGapNote) return;
       renderMigrationCorridorOutlook();
       if (!feature) {
         countryEl.textContent = "World";
@@ -5664,6 +5874,9 @@
         rqEl.textContent = "--";
         skilledSourceEl.textContent = "--";
         skilledProgramEl.textContent = "--";
+        broadLaborEl.textContent = "--";
+        ssaResponseEl.textContent = "--";
+        birthReplacementEl.textContent = "--";
         mobilityEl.textContent = "--";
         climateStressEl.textContent = "--";
         languageEl.textContent = "--";
@@ -5677,13 +5890,28 @@
       if (religionEl) religionEl.textContent = religionFeature ? fmt(religionFeature.ReligiousFractionalization, 3) : "--";
       if (religionSummaryEl) {
         religionSummaryEl.textContent = religionFeature
-          ? religionFeature.TopReligions.map(g => `${g.group} ${fmt(g.share, 1)}%`).join(" | ")
+          ? `${religionFeature.TopReligions.map(g => `${g.group} ${fmt(g.share, 1)}%`).join(" | ")}` +
+            (religionFeature.MigrationCompositionWeight > 0
+              ? ` | labor-replacement migration blend ${fmt(religionFeature.MigrationCompositionWeight * 100, 1)}%`
+              : "") +
+            (religionFeature.SsaLateMigrationCompositionWeight > 0
+              ? ` | late SSA corridor ${fmt(religionFeature.SsaLateMigrationCompositionWeight * 100, 1)}%`
+              : "")
           : "Religion composition unavailable for this country.";
       }
       efEl.textContent = fmt(feature.CompositionDiversityIndex, 3);
       rqEl.textContent = fmt(feature.CompositionConcentrationIndex, 3);
       skilledSourceEl.textContent = fmt(feature.Skilled_Migration_SourcePressure_2050, 2);
       skilledProgramEl.textContent = fmt(feature.Skilled_Migration_ProgramIntensity_2050, 2);
+      broadLaborEl.textContent = `${fmt(feature.BroadLabor_Migration_SourcePressure_2050, 2)} / ${fmt(feature.BroadLabor_Migration_ProgramIntensity_2050, 2)}`;
+      ssaResponseEl.textContent = feature.SSA_LateMigration_DestinationResponse_2050 > 0
+        ? fmt(feature.SSA_LateMigration_DestinationResponse_2050, 2)
+        : (feature.BroadLabor_Migration_SourcePressure_2050 > 0
+          ? `source ${fmt(feature.BroadLabor_Migration_SourcePressure_2050, 2)}`
+          : "Not active");
+      birthReplacementEl.textContent = feature.Birth_Replacement_Pressure_2050 > 0
+        ? `${fmt(feature.Birth_Replacement_Pressure_2050, 2)} / ${fmt(feature.Europe_Migration_Response_2050, 2)}`
+        : "Not active";
       mobilityEl.textContent = fmt(feature.Intergenerational_Mobility_Convergence_2050, 2);
       climateStressEl.textContent = fmt(feature.Climate_Migration_Stress_2050, 2);
       languageEl.textContent = `${fmt(feature.Language_Access_Capacity_2050, 2)} / ${fmt(feature.Language_Access_Gap_2050, 2)}`;
@@ -6262,6 +6490,270 @@
       filteredCityRows=[...cityRows];
       selectedCity=cityRows.find(row=>row.Is_Capital&&row.ISO3==="IND")||cityRows[0];
       renderCityWorkspace(); setSelectedCity(selectedCity);
+    }
+
+    const economicMetrics = {
+      nominal_total: {label: "Economic strength: total nominal GDP", short: "Total nominal GDP", stem: "GDP_Nominal_Total", format: "total"},
+      ppp_total: {label: "Total GDP at purchasing-power parity", short: "Total GDP at PPP", stem: "GDP_PPP_Total", format: "total"},
+      ppp_pc: {label: "GDP per capita at purchasing-power parity", short: "PPP per capita", stem: "GDP_PPP_PerCapita", format: "percapita"},
+      nominal_pc: {label: "GDP per capita at market exchange rates", short: "Nominal per capita", stem: "GDP_Nominal_PerCapita", format: "percapita"}
+    };
+
+    function economicMetricConfig() {
+      return economicMetrics[document.getElementById("economy-metric")?.value || "nominal_total"];
+    }
+
+    function economicClamp(value, low, high) {
+      return Math.max(low, Math.min(high, Number(value)));
+    }
+
+    function economicYear() {
+      return document.getElementById("economy-year")?.value || "2050";
+    }
+
+    function economicMetricKey() {
+      return `${economicMetricConfig().stem}_${economicYear()}`;
+    }
+
+    function formatEconomic(value, type = "percapita") {
+      const number = Number(value);
+      if (!Number.isFinite(number)) return "--";
+      if (type === "percent") return `${(number * 100).toFixed(2)}%`;
+      if (type === "total") {
+        if (Math.abs(number) >= 1e12) return `$${(number / 1e12).toFixed(2)}T`;
+        if (Math.abs(number) >= 1e9) return `$${(number / 1e9).toFixed(1)}B`;
+        if (Math.abs(number) >= 1e6) return `$${(number / 1e6).toFixed(1)}M`;
+      }
+      return `$${Math.round(number).toLocaleString("en-US")}`;
+    }
+
+    function economicValue(row) {
+      return Number(row?.[economicMetricKey()]);
+    }
+
+    function economicColorScale(rows) {
+      const values = rows.map(economicValue).filter(value => Number.isFinite(value) && value > 0).sort(d3.ascending);
+      const low = d3.quantile(values, 0.04) || 1;
+      const high = d3.quantile(values, 0.96) || low + 1;
+      const logLow = Math.log(Math.max(1, low));
+      const logHigh = Math.log(Math.max(low + 1, high));
+      return value => {
+        if (!Number.isFinite(value) || value <= 0) return "#24384b";
+        const t = economicClamp((Math.log(value) - logLow) / Math.max(1e-9, logHigh - logLow), 0, 1);
+        return d3.interpolateRgbBasis(["#5c0011", "#d65f6f", "#dbe9f4", "#3c8ec7", "#002b5b"])(t);
+      };
+    }
+
+    function setSelectedEconomicRow(row, announceSelection = true) {
+      if (!row) return;
+      selectedEconomicRow = row;
+      renderEconomicWorkspace();
+      if (announceSelection) announce(`${row.Country} selected in the economic outlook.`);
+    }
+
+    function showEconomicTooltip(event, row) {
+      const config = economicMetricConfig();
+      const value = economicValue(row);
+      const dollarBasis = economicYear() === "2050" ? "2050-price dollars" : "observed/current-year dollars";
+      tooltip.innerHTML = `<strong>${escapeHtml(row.Country)}</strong><br><span>${escapeHtml(config.short)} ${economicYear()}: ${formatEconomic(value, config.format)}</span><br><small>${dollarBasis} &middot; constant-2021 PPP pc ${formatEconomic(row.GDP_PPP_PerCapita_2050_2021_IntlDollar)} &middot; rank #${row.Rank_Economic_Strength_2050}</small>`;
+      tooltip.classList.add("visible");
+      const x = Math.min(window.innerWidth - 310, Math.max(12, Number(event.clientX || window.innerWidth / 2) + 14));
+      const y = Math.min(window.innerHeight - 145, Math.max(12, Number(event.clientY || 100) + 14));
+      tooltip.style.left = `${x}px`;
+      tooltip.style.top = `${y}px`;
+    }
+
+    function renderEconomicMap() {
+      const svg = d3.select("#economy-map");
+      if (svg.empty() || !economicRows.length) return;
+      const layer = svg.select("g");
+      const byIso = new Map(filteredEconomicRows.map(row => [row.ISO3, row]));
+      const allByIso = new Map(economicRows.map(row => [row.ISO3, row]));
+      const color = economicColorScale(filteredEconomicRows.length ? filteredEconomicRows : economicRows);
+      layer.selectAll("*").remove();
+      layer.append("path").attr("d", path({type:"Sphere"})).attr("fill", "#081321").attr("stroke", "rgba(137,177,218,.22)");
+      layer.selectAll("path.economy-country")
+        .data(countries)
+        .join("path")
+        .attr("class", featureRow => {
+          const iso = aliases.get(featureRow.properties.id) || featureRow.properties.id;
+          const row = allByIso.get(iso);
+          return `economy-country${row?.ISO3 === selectedEconomicRow?.ISO3 ? " selected" : ""}`;
+        })
+        .attr("d", path)
+        .attr("fill", featureRow => {
+          const iso = aliases.get(featureRow.properties.id) || featureRow.properties.id;
+          const row = byIso.get(iso);
+          return row ? color(economicValue(row)) : "#24384b";
+        })
+        .attr("opacity", featureRow => {
+          const iso = aliases.get(featureRow.properties.id) || featureRow.properties.id;
+          return byIso.has(iso) ? 1 : .42;
+        })
+        .attr("tabindex", featureRow => {
+          const iso = aliases.get(featureRow.properties.id) || featureRow.properties.id;
+          return byIso.has(iso) ? 0 : -1;
+        })
+        .attr("role", featureRow => {
+          const iso = aliases.get(featureRow.properties.id) || featureRow.properties.id;
+          return byIso.has(iso) ? "button" : "img";
+        })
+        .attr("aria-label", featureRow => {
+          const iso = aliases.get(featureRow.properties.id) || featureRow.properties.id;
+          const row = byIso.get(iso);
+          if (!row) return "Country outside the active economic filter";
+          const config = economicMetricConfig();
+          return `${row.Country}, ${economicYear()} ${config.label}, ${formatEconomic(economicValue(row), config.format)}. Activate to inspect.`;
+        })
+        .on("mouseenter mousemove", (event, featureRow) => {
+          const iso = aliases.get(featureRow.properties.id) || featureRow.properties.id;
+          const row = byIso.get(iso);
+          if (row) showEconomicTooltip(event, row);
+        })
+        .on("mouseleave blur", hideTooltip)
+        .on("focus", (event, featureRow) => {
+          const iso = aliases.get(featureRow.properties.id) || featureRow.properties.id;
+          const row = byIso.get(iso);
+          if (row) showEconomicTooltip({clientX:window.innerWidth / 2, clientY:110}, row);
+        })
+        .on("keydown", (event, featureRow) => {
+          if (!["Enter", " "].includes(event.key)) return;
+          event.preventDefault();
+          const iso = aliases.get(featureRow.properties.id) || featureRow.properties.id;
+          setSelectedEconomicRow(byIso.get(iso));
+        })
+        .on("click", (event, featureRow) => {
+          const iso = aliases.get(featureRow.properties.id) || featureRow.properties.id;
+          setSelectedEconomicRow(byIso.get(iso));
+        });
+
+      const values = filteredEconomicRows.map(economicValue).filter(value => Number.isFinite(value) && value > 0).sort(d3.ascending);
+      const config = economicMetricConfig();
+      document.getElementById("economy-legend-low").textContent = formatEconomic(d3.quantile(values,.04), config.format);
+      document.getElementById("economy-legend-high").textContent = formatEconomic(d3.quantile(values,.96), config.format);
+      document.getElementById("economy-map-heading").textContent = `${economicYear()} ${config.short}`;
+      document.getElementById("economy-map-summary").textContent = `${economicYear() === "2050" ? "Independent projection in inflation-adjusted 2050-price dollars" : "Latest-observation baseline estimate"}; logarithmic color scale preserves visibility across very different economy sizes.`;
+    }
+
+    function renderEconomicChart() {
+      const svg = d3.select("#economy-chart");
+      if (svg.empty()) return;
+      svg.selectAll("*").remove();
+      if (!filteredEconomicRows.length) {
+        svg.append("text").attr("x",310).attr("y",240).attr("text-anchor","middle").attr("fill","#9db1c8").attr("font-size",14).text("No countries match the active search");
+        return;
+      }
+      const width = 620, height = 480, margin = {top:12,right:76,bottom:28,left:118};
+      const rows = [...filteredEconomicRows].sort((a,b) => economicValue(b) - economicValue(a)).slice(0,18);
+      const x = (economicMetricConfig().format === "total" ? d3.scaleSqrt() : d3.scaleLinear()).domain([0,d3.max(rows,economicValue) || 1]).range([margin.left,width-margin.right]);
+      const y = d3.scaleBand().domain(rows.map(row=>row.ISO3)).range([margin.top,height-margin.bottom]).padding(.22);
+      const color = economicColorScale(filteredEconomicRows);
+      svg.append("g").attr("transform",`translate(0 ${height-margin.bottom})`).call(d3.axisBottom(x).ticks(4).tickFormat(value=>formatEconomic(value,economicMetricConfig().format))).call(g=>g.select(".domain").attr("stroke","rgba(164,198,244,.25)")).call(g=>g.selectAll("text").attr("fill","#93abc4").attr("font-size",9));
+      const groups = svg.append("g").selectAll("g").data(rows).join("g").attr("role","button").attr("tabindex",0).attr("aria-label",row=>`${row.Country}, ${formatEconomic(economicValue(row),economicMetricConfig().format)}`).style("cursor","pointer");
+      groups.append("text").attr("x",margin.left-8).attr("y",row=>y(row.ISO3)+y.bandwidth()/2+3).attr("text-anchor","end").attr("fill",row=>row.ISO3===selectedEconomicRow?.ISO3?"#f6ce6a":"#dce9f7").attr("font-size",10).text(row=>row.Country.length>16?`${row.Country.slice(0,15)}...`:row.Country);
+      groups.append("rect").attr("x",margin.left).attr("y",row=>y(row.ISO3)).attr("width",row=>Math.max(2,x(economicValue(row))-margin.left)).attr("height",y.bandwidth()).attr("fill",row=>color(economicValue(row))).attr("stroke",row=>row.ISO3===selectedEconomicRow?.ISO3?"#f6ce6a":"none").attr("stroke-width",2);
+      groups.append("text").attr("x",row=>Math.min(width-margin.right+4,x(economicValue(row))+5)).attr("y",row=>y(row.ISO3)+y.bandwidth()/2+3).attr("fill","#b9cbe0").attr("font-size",9).text(row=>formatEconomic(economicValue(row),economicMetricConfig().format));
+      groups.on("mouseenter",(event,row)=>showEconomicTooltip(event,row)).on("mouseleave blur",hideTooltip).on("focus",(event,row)=>showEconomicTooltip({clientX:window.innerWidth/2,clientY:110},row)).on("click",(event,row)=>setSelectedEconomicRow(row)).on("keydown",(event,row)=>{if(["Enter"," "].includes(event.key)){event.preventDefault();setSelectedEconomicRow(row)}});
+      document.getElementById("economy-chart-heading").textContent = economicMetricConfig().short;
+      document.getElementById("economy-chart-year").textContent = economicYear();
+    }
+
+    const economicTableColumns = [
+      ["Rank_Economic_Strength_2050","Rank"], ["Country","Country"],
+      ["GDP_PPP_PerCapita_2025","PPP pc 2025"], ["GDP_PPP_PerCapita_2050","PPP pc 2050 $"],
+      ["GDP_PPP_PerCapita_2050_2021_IntlDollar","PPP pc 2050 (2021 int'l $)"],
+      ["GDP_Nominal_PerCapita_2025","Nominal pc 2025"], ["GDP_Nominal_PerCapita_2050","Nominal pc 2050"],
+      ["GDP_Nominal_Total_2050","Nominal GDP 2050"], ["GDP_PPP_Total_2050","PPP GDP 2050"],
+      ["Income_Index_2050","Income index 2050"], ["Real_GDP_PerCapita_CAGR_2025_2050","Real pc CAGR"], ["GDP_Nominal_PerCapita_P10_2050","Nominal pc P10"],
+      ["GDP_Nominal_PerCapita_P90_2050","Nominal pc P90"], ["Baseline_Source","Baseline source"]
+    ];
+
+    function economicCell(value, key) {
+      if (key.includes("CAGR")) return formatEconomic(value,"percent");
+      if (key.includes("Income_Index")) return Number(value).toFixed(3);
+      if (key.includes("Total")) return formatEconomic(value,"total");
+      if (key.includes("PerCapita")) return formatEconomic(value,"percapita");
+      return value ?? "--";
+    }
+
+    function renderEconomicTable() {
+      const table = document.getElementById("economy-table");
+      if (!table || !economicRows.length) return;
+      const thead = table.querySelector("thead"), tbody = table.querySelector("tbody");
+      thead.innerHTML = `<tr>${economicTableColumns.map(([key,label])=>`<th scope="col" aria-sort="${economicSort.column===key?(economicSort.direction===1?"ascending":"descending"):"none"}"><button type="button" data-economic-sort="${key}">${escapeHtml(label)}${economicSort.column===key?(economicSort.direction===1?" &#9650;":" &#9660;"):""}</button></th>`).join("")}</tr>`;
+      const rows = [...filteredEconomicRows].sort((a,b)=>{
+        const av=a[economicSort.column],bv=b[economicSort.column];
+        if(typeof av==="number"&&typeof bv==="number") return economicSort.direction*(av-bv);
+        return economicSort.direction*String(av||"").localeCompare(String(bv||""));
+      });
+      tbody.innerHTML = rows.map(row=>`<tr tabindex="0" data-economic-country="${row.ISO3}" class="${row.ISO3===selectedEconomicRow?.ISO3?"selected":""}" aria-label="Inspect ${escapeAttr(row.Country)}">${economicTableColumns.map(([key])=>`<td>${escapeHtml(String(economicCell(row[key],key)))}</td>`).join("")}</tr>`).join("");
+      thead.querySelectorAll("[data-economic-sort]").forEach(button=>button.addEventListener("click",()=>{
+        const column=button.dataset.economicSort;
+        economicSort={column,direction:economicSort.column===column?-economicSort.direction:1};
+        renderEconomicTable();
+      }));
+      tbody.querySelectorAll("[data-economic-country]").forEach(item=>{
+        const select=()=>setSelectedEconomicRow(economicRows.find(row=>row.ISO3===item.dataset.economicCountry));
+        item.addEventListener("click",select);
+        item.addEventListener("keydown",event=>{if(["Enter"," "].includes(event.key)){event.preventDefault();select()}});
+      });
+      document.getElementById("economy-row-count").textContent=`${rows.length} rows`;
+    }
+
+    function renderEconomicSelected() {
+      const row=selectedEconomicRow;
+      if(!row)return;
+      const year=economicYear();
+      document.getElementById("economy-selected-country").textContent=`${row.Country} (${row.ISO3})`;
+      document.getElementById("economy-selected-ppp").textContent=formatEconomic(row[`GDP_PPP_PerCapita_${year}`]);
+      document.getElementById("economy-selected-ppp-real").textContent=formatEconomic(row.GDP_PPP_PerCapita_2050_2021_IntlDollar);
+      document.getElementById("economy-selected-nominal").textContent=formatEconomic(row[`GDP_Nominal_PerCapita_${year}`]);
+      document.getElementById("economy-selected-total").textContent=formatEconomic(row[`GDP_Nominal_Total_${year}`],"total");
+      document.getElementById("economy-selected-rank").textContent=year==="2050"?`#${row.Rank_Economic_Strength_2050} of 193`:"Baseline year";
+      document.getElementById("economy-selected-growth").textContent=formatEconomic(row.Real_GDP_PerCapita_CAGR_2025_2050,"percent");
+      document.getElementById("economy-selected-income-index").textContent=Number(row.Income_Index_2050).toFixed(3);
+      document.getElementById("economy-selected-inflation").textContent=`${Number(row.Inflation_Factor_2021_to_2050).toFixed(3)}x`;
+      const proxyNote=row.PPP_Baseline_Proxy||row.Nominal_Baseline_Proxy?"At least one baseline uses a model proxy because a comparable World Bank observation was unavailable.":"Both GDP baselines use World Bank observations.";
+      document.getElementById("economy-selected-note").textContent=`${row.Country}'s constant-2021 PPP per capita of ${formatEconomic(row.GDP_PPP_PerCapita_2050_2021_IntlDollar)} reproduces its ${Number(row.Income_Index_2050).toFixed(3)} income index. Applying the ${Number(row.Inflation_Factor_2021_to_2050).toFixed(3)}x central price factor produces ${formatEconomic(row.GDP_PPP_PerCapita_2050)} in 2050-price international dollars. The current-dollar nominal interval is ${formatEconomic(row.GDP_Nominal_PerCapita_P10_2050)} to ${formatEconomic(row.GDP_Nominal_PerCapita_P90_2050)}. ${proxyNote}`;
+    }
+
+    function renderEconomicWorkspace() {
+      if(!economicRows.length)return;
+      renderEconomicMap(); renderEconomicChart(); renderEconomicSelected(); renderEconomicTable();
+      document.getElementById("economy-visible-count").textContent=`${filteredEconomicRows.length} countries`;
+    }
+
+    function applyEconomicFilters() {
+      const query=(document.getElementById("economy-search")?.value||"").trim().toLowerCase();
+      filteredEconomicRows=economicRows.filter(row=>!query||row.Country.toLowerCase().includes(query)||row.ISO3.toLowerCase().includes(query));
+      if(!filteredEconomicRows.length) filteredEconomicRows=[];
+      renderEconomicWorkspace();
+    }
+
+    function exportEconomicCsv() {
+      const query=(document.getElementById("economy-search")?.value||"").trim();
+      const rows=query?filteredEconomicRows:economicRows;
+      const csv=d3.csvFormat(rows);
+      const link=document.createElement("a");
+      link.href=URL.createObjectURL(new Blob([csv],{type:"text/csv;charset=utf-8"}));
+      link.download=`economic-outlook-${economicYear()}-${document.getElementById("economy-metric").value}.csv`;
+      link.click(); URL.revokeObjectURL(link.href);
+    }
+
+    function setupEconomicWorkspace() {
+      if(economicInitialized)return;
+      economicInitialized=true;
+      filteredEconomicRows=[...economicRows];
+      selectedEconomicRow=economicRows.find(row=>row.ISO3==="IND")||economicRows[0];
+      document.getElementById("economy-search")?.addEventListener("input",applyEconomicFilters);
+      document.getElementById("economy-metric")?.addEventListener("change",renderEconomicWorkspace);
+      document.getElementById("economy-year")?.addEventListener("change",renderEconomicWorkspace);
+      document.getElementById("economy-export")?.addEventListener("click",exportEconomicCsv);
+      document.getElementById("economy-kpi-count").textContent=economicRows.length;
+      document.getElementById("economy-kpi-nominal").textContent=formatEconomic(d3.sum(economicRows,row=>row.GDP_Nominal_Total_2050),"total");
+      document.getElementById("economy-kpi-ppp").textContent=formatEconomic(d3.sum(economicRows,row=>row.GDP_PPP_Total_2050),"total");
+      document.getElementById("economy-kpi-growth").textContent=formatEconomic(d3.median(economicRows,row=>row.Real_GDP_PerCapita_CAGR_2025_2050),"percent");
+      renderEconomicWorkspace();
     }
 
     function mapViewportTransform() {
@@ -10104,7 +10596,7 @@ LIVE_EVIDENCE: ${JSON.stringify(hdiGptEvidencePayload(prompt))}`
     }
 
     function setupKeyboardShortcuts() {
-      const navOrder = ["overview", "filters", "comparison-maps", "tuning", "research", "subdivisions", "cities", "ml-lab", "hdi-gpt", "validation"];
+      const navOrder = ["overview", "filters", "comparison-maps", "tuning", "research", "subdivisions", "cities", "economy", "hdi-gpt"];
       document.addEventListener("keydown", event => {
         const target = event.target;
         const typing = target && ["INPUT", "SELECT", "TEXTAREA"].includes(target.tagName);
@@ -10174,6 +10666,7 @@ LIVE_EVIDENCE: ${JSON.stringify(hdiGptEvidencePayload(prompt))}`
       renderCharts();
       renderTable();
       if (id === "cities") renderCityWorkspace();
+      if (id === "economy") renderEconomicWorkspace();
       if (id === "ml-lab") ensureMlArtifacts().then(renderMlLab).catch(() => null);
       updateHdiGptContext();
       announce(`${page.dataset.pageTitle || id} page opened.`);
@@ -10201,6 +10694,13 @@ LIVE_EVIDENCE: ${JSON.stringify(hdiGptEvidencePayload(prompt))}`
         } catch (cityError) {
           console.warn("City HDI estimates could not be loaded.", cityError);
           document.getElementById("city-kpi-count").textContent = "Unavailable";
+        }
+        try {
+          economicRows = (await d3.csv(economicCsvPath, normalizeEconomicRow)).filter(row => row.ISO3 && row.Country && Number.isFinite(row.GDP_Nominal_Total_2050));
+          setupEconomicWorkspace();
+        } catch (economicError) {
+          console.warn("Economic outlook data could not be loaded.", economicError);
+          document.getElementById("economy-kpi-count").textContent = "Unavailable";
         }
         try {
           povertyRows = (await d3.csv(povertyCsvPath, normalizePovertyRow)).filter(d => d.Code && Number.isFinite(d.Year) && Number.isFinite(d.People));

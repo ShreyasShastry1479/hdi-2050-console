@@ -13,6 +13,7 @@ from data.undp_hdi import UNDP_HDI_COUNTRIES_193  # noqa: E402
 
 POP_WEIGHTS = Path("data/population_weights_2024_2050.csv")
 HDI_RANKINGS = Path("data/output/hdi_2050_rankings.csv")
+DEMOGRAPHIC_CONTEXT = Path("data/output/demographic_context_2050.csv")
 
 
 def load_population_maps() -> tuple[dict, dict]:
@@ -32,7 +33,20 @@ def load_hdi_context() -> dict:
         "Migration_Intensity_2050",
     ]
     df = pd.read_csv(HDI_RANKINGS, usecols=lambda c: c in cols)
-    return df.set_index("ISO3").to_dict("index")
+    context = df.set_index("ISO3").to_dict("index")
+    if DEMOGRAPHIC_CONTEXT.exists():
+        migration_cols = [
+            "ISO3", "Birth_Replacement_Pressure_2050",
+            "Europe_Migration_Response_2050", "Migration_Intensity_2050",
+            "Policy_Openness", "SSA_LateMigration_DestinationResponse_2050",
+            "BroadLabor_Migration_ProgramIntensity_2050",
+        ]
+        migration = pd.read_csv(
+            DEMOGRAPHIC_CONTEXT, usecols=lambda c: c in migration_cols)
+        migration = migration.drop_duplicates("ISO3").set_index("ISO3")
+        for iso3, values in migration.to_dict("index").items():
+            context.setdefault(iso3, {}).update(values)
+    return context
 
 
 def main():

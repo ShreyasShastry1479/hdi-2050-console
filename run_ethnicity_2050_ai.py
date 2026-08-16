@@ -101,6 +101,13 @@ def build_table(pop2024: dict, pop2050: dict, hdi_context: dict) -> pd.DataFrame
             pop_2024=pop2024.get(iso3),
             pop_2050=pop2050.get(iso3),
         )
+        closed_migration_proj = model.project_ethnic_composition(
+            iso3,
+            migration_scale=0.0,
+            fertility_convergence=FERTILITY_CONVERGENCE,
+            pop_2024=pop2024.get(iso3),
+            pop_2050=pop2050.get(iso3),
+        )
         low_migration_proj = model.project_ethnic_composition(
             iso3,
             migration_scale=0.70,
@@ -118,10 +125,17 @@ def build_table(pop2024: dict, pop2050: dict, hdi_context: dict) -> pd.DataFrame
 
         pressure = model.demographic_pressure(
             iso3, pop2024.get(iso3), pop2050.get(iso3))
+        birth_replacement_pressure = model.europe_birth_replacement_pressure(
+            iso3, pop2024.get(iso3), pop2050.get(iso3))
+        birth_replacement_response = model.europe_birth_replacement_migration_boost(
+            iso3, 1.0, pop2024.get(iso3), pop2050.get(iso3))
         mig_intensity_2050 = model.effective_migration_intensity(
             iso3, 1.0, pop2024.get(iso3), pop2050.get(iso3))
         skilled_source_pressure = model.skilled_migration_source_pressure(iso3)
         skilled_program_intensity = model.skilled_migration_program_intensity(iso3)
+        broad_labor_source_pressure = model.broad_labor_migration_source_pressure(iso3)
+        broad_labor_program_intensity = model.broad_labor_migration_program_intensity(iso3)
+        ssa_late_destination_response = model.ssa_late_migration_destination_response(iso3)
         policy_openness = model.MIGRATION_POLICY_OPENNESS.get(iso3, 1.0)
         intermarriage = model.INTERMARRIAGE_INDEX.get(iso3, 0.0)
         assimilation = model.COUNTRY_ASSIMILATION.get(
@@ -142,7 +156,8 @@ def build_table(pop2024: dict, pop2050: dict, hdi_context: dict) -> pd.DataFrame
         hdi_resource_drag = ctx.get("ResourceDrag")
         hdi_contrib_climate = ctx.get("Contrib_Climate")
         diversity_2024 = 1.0 - sum(s * s for s in shares_frac_2024)
-        policy_feedback = policy_openness * (1.0 + pressure * 0.35)
+        policy_feedback = policy_openness * (
+            1.0 + pressure * 0.35 + birth_replacement_response * 0.20)
         urban_absorption_pressure = (
             pressure * (1.0 - float(urbanization))
             if urbanization is not None and pd.notna(urbanization) else None
@@ -196,6 +211,7 @@ def build_table(pop2024: dict, pop2050: dict, hdi_context: dict) -> pd.DataFrame
         for name, share2024, profile, tfr2024 in entries:
             tfr2050 = model._group_tfr_2050(iso3, name, tfr2024)
             share2050 = proj[name] * 100.0
+            closed_migration_share2050 = closed_migration_proj.get(name, proj[name]) * 100.0
             pop_2024 = share2024 / 100.0 * pop2024[iso3] if iso3 in pop2024 else None
             pop_2050 = share2050 / 100.0 * pop2050[iso3] if iso3 in pop2050 else None
             diversity_2050 = diversity_2050_base
@@ -215,10 +231,12 @@ def build_table(pop2024: dict, pop2050: dict, hdi_context: dict) -> pd.DataFrame
                 share2024 / 100.0,
                 1.0,
                 pressure,
+                birth_replacement_pressure,
             )
             migration_channel_active = bool(
                 (iso3, name) in model.GROUP_MIGRATION_INTENSITY or
                 (iso3, name) in model.GROUP_SKILLED_MIGRATION_SURGE or
+                (iso3, name) in model.GROUP_BROAD_LABOR_MIGRATION_SURGE or
                 profile == "immigrant"
             )
             brazil_diversity_2050 = 1.0 - sum(float(v) * float(v) for v in brazil_proj.values())
@@ -276,6 +294,9 @@ def build_table(pop2024: dict, pop2050: dict, hdi_context: dict) -> pd.DataFrame
                 "Share_2024_pct": round(share2024, 2),
                 "Share_2050_pct": round(share2050, 2),
                 "Change_pp": round(share2050 - share2024, 2),
+                "Share_2050_WithoutMigrationResponse_pct": round(closed_migration_share2050, 2),
+                "Migration_Attributed_Change_pp": round(
+                    share2050 - closed_migration_share2050, 2),
                 "Share_2050_LowMigrationScenario_pct": round(low_migration_share2050, 2),
                 "Share_2050_HighMigrationScenario_pct": round(high_migration_share2050, 2),
                 "Share_2050_Migration_P10_pct": round(migration_low, 2),
@@ -287,10 +308,14 @@ def build_table(pop2024: dict, pop2050: dict, hdi_context: dict) -> pd.DataFrame
                 "Pop_2024": None if pop_2024 is None else round(pop_2024),
                 "Pop_2050": None if pop_2050 is None else round(pop_2050),
                 "Demographic_Pressure": round(pressure, 3),
+                "Birth_Replacement_Pressure_2050": round(birth_replacement_pressure, 3),
+                "Europe_Migration_Response_2050": round(birth_replacement_response, 3),
                 "Migration_Intensity_2050": round(mig_intensity_2050, 3),
                 "Migration_Origin_Candidates": corridor["origins"],
                 "Migration_Channel_Active": migration_channel_active,
                 "Migration_SourceSupply_2050": round(float(corridor["source_supply"]), 3),
+                "Migration_BroadLaborMobility_2050": round(
+                    float(corridor["broad_labor_mobility"]), 3),
                 "Migration_SkillReadiness_2050": round(float(corridor["skill_readiness"]), 3),
                 "Migration_ClimatePressure_2050": round(float(corridor["climate_pressure"]), 3),
                 "Migration_DestinationPull_2050": round(float(corridor["destination_pull"]), 3),
@@ -300,6 +325,12 @@ def build_table(pop2024: dict, pop2050: dict, hdi_context: dict) -> pd.DataFrame
                 "Migration_CorridorMultiplier_2050": round(float(corridor["corridor_multiplier"]), 3),
                 "Skilled_Migration_SourcePressure_2050": round(skilled_source_pressure, 3),
                 "Skilled_Migration_ProgramIntensity_2050": round(skilled_program_intensity, 3),
+                "BroadLabor_Migration_SourcePressure_2050": round(
+                    broad_labor_source_pressure, 3),
+                "BroadLabor_Migration_ProgramIntensity_2050": round(
+                    broad_labor_program_intensity, 3),
+                "SSA_LateMigration_DestinationResponse_2050": round(
+                    ssa_late_destination_response, 3),
                 "Policy_Openness": round(policy_openness, 3),
                 "Policy_Feedback_2050": round(policy_feedback, 3),
                 "Intermarriage_Coefficient": round(intermarriage, 3),
@@ -441,11 +472,16 @@ def main():
             "Share_2050_HighMigrationScenario_pct",
             "Share_2050_Migration_P10_pct", "Share_2050_Migration_P90_pct",
             "Migration_Uncertainty_Width_pp", "Migration_SourceSupply_2050",
+            "Migration_BroadLaborMobility_2050",
             "Migration_SkillReadiness_2050", "Migration_ClimatePressure_2050",
             "Migration_DestinationPull_2050", "Migration_DiasporaNetwork_2050",
             "Migration_CorridorAffinity_2050",
             "Migration_SettlementRetention_2050",
             "Migration_CorridorMultiplier_2050", "Migration_Intensity_2050",
+            "Birth_Replacement_Pressure_2050", "Europe_Migration_Response_2050",
+            "BroadLabor_Migration_SourcePressure_2050",
+            "BroadLabor_Migration_ProgramIntensity_2050",
+            "SSA_LateMigration_DestinationResponse_2050",
             "Migration_Channel_Active",
         ],
     ].copy()

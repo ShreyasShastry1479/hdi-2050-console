@@ -208,6 +208,55 @@ VAJRAYANA_COUNTRIES = {"BTN", "MNG", "NPL"}
 
 ALIASES = {"Jainism": "Other religions"}
 
+# Incremental religious composition of future migrant inflows into European
+# destinations. These are scenario mixes, not characteristics assigned to
+# individuals. They approximate the combined origin pattern visible in the
+# ethnic-corridor model: intra-European mobility, North/West/East African
+# links, South Asian skilled recruitment, and humanitarian channels.
+EUROPE_MIGRANT_RELIGION_MIX: dict[str, dict[str, float]] = {
+    "GBR": {"Christianity": 45, "Islam": 28, "Hinduism": 12, "Sikhism": 5, "Unaffiliated": 8, "Other religions": 2},
+    "FRA": {"Christianity": 43, "Islam": 39, "Unaffiliated": 11, "Hinduism": 2, "Buddhism": 2, "Other religions": 3},
+    "DEU": {"Christianity": 51, "Islam": 29, "Unaffiliated": 14, "Hinduism": 2, "Buddhism": 1, "Other religions": 3},
+    "ESP": {"Christianity": 68, "Islam": 18, "Unaffiliated": 10, "Hinduism": 1, "Buddhism": 1, "Other religions": 2},
+    "ITA": {"Christianity": 52, "Islam": 28, "Hinduism": 7, "Sikhism": 2, "Unaffiliated": 8, "Other religions": 3},
+    "NLD": {"Christianity": 45, "Islam": 29, "Unaffiliated": 18, "Hinduism": 3, "Buddhism": 2, "Other religions": 3},
+    "BEL": {"Christianity": 45, "Islam": 34, "Unaffiliated": 14, "Hinduism": 2, "Buddhism": 2, "Other religions": 3},
+    "SWE": {"Christianity": 42, "Islam": 35, "Unaffiliated": 16, "Hinduism": 2, "Buddhism": 2, "Other religions": 3},
+    "DNK": {"Christianity": 46, "Islam": 31, "Unaffiliated": 16, "Hinduism": 2, "Buddhism": 2, "Other religions": 3},
+    "AUT": {"Christianity": 48, "Islam": 34, "Unaffiliated": 12, "Hinduism": 2, "Buddhism": 1, "Other religions": 3},
+    "CHE": {"Christianity": 52, "Islam": 22, "Unaffiliated": 17, "Hinduism": 3, "Buddhism": 2, "Other religions": 4},
+    "IRL": {"Christianity": 57, "Islam": 17, "Hinduism": 7, "Unaffiliated": 14, "Other religions": 5},
+    "PRT": {"Christianity": 66, "Islam": 13, "Unaffiliated": 12, "Hinduism": 3, "Buddhism": 2, "Other religions": 4},
+    "GRC": {"Christianity": 57, "Islam": 27, "Unaffiliated": 10, "Hinduism": 1, "Other religions": 5},
+}
+
+DEFAULT_EUROPE_MIGRANT_RELIGION_MIX = {
+    "Christianity": 52.0,
+    "Islam": 25.0,
+    "Unaffiliated": 15.0,
+    "Hinduism": 2.5,
+    "Sikhism": 0.8,
+    "Buddhism": 1.7,
+    "Other religions": 3.0,
+}
+
+# Approximate aggregate religious mix of the additional Sub-Saharan African
+# late-period corridor. It is expressed directly in model denominations to
+# avoid assigning destination-country Christian sect splits to origin groups.
+# The mix is a regional scenario average; country corridors remain uncertain.
+SSA_LATE_MIGRANT_RELIGION_MIX = {
+    "Catholic Christianity": 19.0,
+    "Protestant Christianity": 27.0,
+    "Orthodox Christianity": 5.0,
+    "African Independent / Syncretic Christianity": 7.0,
+    "Other Christianity": 4.0,
+    "Sunni Islam": 30.0,
+    "Shia Islam": 0.5,
+    "Indigenous / Syncretic traditions": 3.0,
+    "Unaffiliated": 2.5,
+    "Other religions": 2.0,
+}
+
 
 @lru_cache(maxsize=1)
 def _muslim_reference_2025() -> dict[str, float]:
@@ -594,6 +643,82 @@ def _apply_development_irreligion_shift(shares: Mapping[str, float], iso3: str, 
     return {key: value / total * 100.0 for key, value in out.items() if value / total * 100.0 > 0.01}
 
 
+def _europe_migration_composition_weight(iso3: str, ctx: Mapping[str, float]) -> float:
+    """Incremental 2050 resident-stock weight from labor-replacement migration.
+
+    The response is deliberately capped. A shrinking birth cohort creates
+    demand for workers, but housing, policy, recruitment, return migration and
+    integration capacity determine how much of that demand becomes durable
+    settlement. The value is a scenario weight, not a forecast net-migration
+    rate.
+    """
+    if iso3 not in EUROPE:
+        return 0.0
+    pressure = _float_ctx(ctx, "Birth_Replacement_Pressure_2050", default=0.0)
+    response = _float_ctx(ctx, "Europe_Migration_Response_2050", default=0.0)
+    openness = _float_ctx(ctx, "Policy_Openness", default=0.75)
+    intensity = _float_ctx(ctx, "Migration_Intensity_2050", default=1.0)
+    if pressure <= 0.0 or response <= 0.0:
+        return 0.0
+    weight = (
+        0.035 * pressure +
+        0.070 * response +
+        0.008 * max(0.0, intensity - 1.0)
+    ) * (0.65 + 0.35 * max(0.0, min(1.25, openness)))
+    return min(0.065, max(0.0, weight))
+
+
+def _apply_europe_migration_composition(
+    shares: Mapping[str, float], iso3: str, ctx: Mapping[str, float]
+) -> tuple[dict[str, float], float]:
+    """Blend the central religion projection with destination inflow mix."""
+    weight = _europe_migration_composition_weight(iso3, ctx)
+    if weight <= 0.0:
+        return dict(shares), 0.0
+
+    broad_mix = EUROPE_MIGRANT_RELIGION_MIX.get(
+        iso3, DEFAULT_EUROPE_MIGRANT_RELIGION_MIX)
+    inflow_mix = _merge_aliases(broad_mix, iso3)
+    religions = set(shares) | set(inflow_mix)
+    blended = {
+        religion: (1.0 - weight) * float(shares.get(religion, 0.0)) +
+        weight * float(inflow_mix.get(religion, 0.0))
+        for religion in religions
+    }
+    total = sum(blended.values()) or 1.0
+    return ({
+        religion: value / total * 100.0
+        for religion, value in blended.items()
+        if value / total * 100.0 > 0.01
+    }, weight)
+
+
+def _apply_late_ssa_migration_composition(
+    shares: Mapping[str, float], iso3: str, ctx: Mapping[str, float]
+) -> tuple[dict[str, float], float]:
+    """Add a capped late-period SSA corridor effect to destination shares."""
+    response = _float_ctx(
+        ctx, "SSA_LateMigration_DestinationResponse_2050", default=0.0)
+    if response <= 0.0:
+        return dict(shares), 0.0
+    # At full response, the incremental channel represents at most 2.2% of
+    # the destination's 2050 resident stock. This is deliberately conservative
+    # because much labor mobility is temporary, circular or return migration.
+    weight = min(0.022, max(0.0, 0.022 * response))
+    religions = set(shares) | set(SSA_LATE_MIGRANT_RELIGION_MIX)
+    blended = {
+        religion: (1.0 - weight) * float(shares.get(religion, 0.0)) +
+        weight * float(SSA_LATE_MIGRANT_RELIGION_MIX.get(religion, 0.0))
+        for religion in religions
+    }
+    total = sum(blended.values()) or 1.0
+    return ({
+        religion: value / total * 100.0
+        for religion, value in blended.items()
+        if value / total * 100.0 > 0.01
+    }, weight)
+
+
 def _religion_growth_modifier(religion: str, iso3: str, ctx: Mapping[str, float]) -> float:
     education = float(ctx.get("EducationIndex_2050", ctx.get("EducationIndex_2025", 0.65)) or 0.65)
     income = float(ctx.get("IncomeIndex_2050", 0.65) or 0.65)
@@ -653,8 +778,13 @@ def project_religion_shares(iso3: str, hdi_context: Mapping[str, Mapping[str, fl
             for religion in religions
         }
         blended_total = sum(blended.values()) or 1.0
-        return _apply_development_irreligion_shift(blended, iso3, ctx)
-    return _apply_development_irreligion_shift(normalized, iso3, ctx)
+        central = _apply_development_irreligion_shift(blended, iso3, ctx)
+    else:
+        central = _apply_development_irreligion_shift(normalized, iso3, ctx)
+    european_adjusted = _apply_europe_migration_composition(
+        central, iso3, ctx)[0]
+    return _apply_late_ssa_migration_composition(
+        european_adjusted, iso3, ctx)[0]
 
 
 def build_religion_table(pop2024: Mapping[str, float], pop2050: Mapping[str, float], hdi_context: Mapping[str, Mapping[str, float]]) -> pd.DataFrame:
@@ -662,10 +792,25 @@ def build_religion_table(pop2024: Mapping[str, float], pop2050: Mapping[str, flo
     for iso3 in sorted(UNDP_HDI_COUNTRIES_193):
         base = baseline_for_country(iso3)
         projected = project_religion_shares(iso3, hdi_context)
+        ctx = hdi_context.get(iso3, {})
+        migration_weight = _europe_migration_composition_weight(iso3, ctx)
+        ssa_migration_weight = min(0.022, max(
+            0.0, 0.022 * _float_ctx(
+                ctx, "SSA_LateMigration_DestinationResponse_2050")))
+        without_response_ctx = dict(ctx)
+        without_response_ctx["Europe_Migration_Response_2050"] = 0.0
+        projected_without_response = project_religion_shares(
+            iso3, {iso3: without_response_ctx})
+        without_ssa_ctx = dict(ctx)
+        without_ssa_ctx["SSA_LateMigration_DestinationResponse_2050"] = 0.0
+        projected_without_ssa = project_religion_shares(
+            iso3, {iso3: without_ssa_ctx})
         country = COUNTRY_NAMES.get(iso3, iso3)
         for religion in sorted(set(base) | set(projected)):
             share_2024 = base.get(religion, 0.0)
             share_2050 = projected.get(religion, 0.0)
+            share_without_response = projected_without_response.get(religion, 0.0)
+            share_without_ssa = projected_without_ssa.get(religion, 0.0)
             if share_2024 < 0.01 and share_2050 < 0.01:
                 continue
             rows.append({
@@ -676,6 +821,21 @@ def build_religion_table(pop2024: Mapping[str, float], pop2050: Mapping[str, flo
                 "Share_2024_pct": round(share_2024, 2),
                 "Share_2050_pct": round(share_2050, 2),
                 "Change_pp": round(share_2050 - share_2024, 2),
+                "Share_2050_WithoutBirthReplacementMigration_pct": round(
+                    share_without_response, 2),
+                "BirthReplacementMigration_Attributed_Change_pp": round(
+                    share_2050 - share_without_response, 2),
+                "Birth_Replacement_Pressure_2050": round(
+                    _float_ctx(ctx, "Birth_Replacement_Pressure_2050"), 3),
+                "Europe_Migration_Response_2050": round(
+                    _float_ctx(ctx, "Europe_Migration_Response_2050"), 3),
+                "Migration_Composition_Weight_2050": round(migration_weight, 4),
+                "SSA_LateMigration_CompositionWeight_2050": round(
+                    ssa_migration_weight, 4),
+                "Share_2050_WithoutSSALateMigration_pct": round(
+                    share_without_ssa, 2),
+                "SSA_LateMigration_Attributed_Change_pp": round(
+                    share_2050 - share_without_ssa, 2),
                 "Pop_2024": round(share_2024 / 100.0 * pop2024[iso3]) if iso3 in pop2024 else None,
                 "Pop_2050": round(share_2050 / 100.0 * pop2050[iso3]) if iso3 in pop2050 else None,
             })

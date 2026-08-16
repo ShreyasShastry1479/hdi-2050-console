@@ -48,6 +48,11 @@ countries that liberalise immigration in response to aging workforces
 (e.g. Japan, South Korea, Southern/Eastern Europe). This replaces the purely
 static ``COUNTRY_MIGRATION_INTENSITY`` baseline.
 
+For Europe, a separate birth-cohort replacement term captures the fact that
+births can continue falling even when TFR partly recovers, because fewer women
+enter child-bearing ages. The resulting migration response is delayed and
+constrained by country-specific recruitment and integration capacity.
+
 Migration-corridor scenarios
 ----------------------------
 The 2050 projection does not treat migration as a generic uplift shared by all
@@ -103,6 +108,25 @@ MIGRATION_POLICY_OPENNESS: dict[str, float] = {
     "PRT": 1.0, "DEU": 1.0, "THA": 1.0, "CHN": 0.5, "RUS": 0.8,
     # Restrictive / conflict-adjacent regimes
     "IRN": 0.6, "PRK": 0.1, "CUB": 0.6, "ERI": 0.5, "BLR": 0.7,
+}
+
+# European capacity to translate worsening birth-cohort replacement into
+# additional labor migration. This is intentionally separate from demographic
+# need: labor shortages do not guarantee migration when politics, housing,
+# integration systems, or administrative capacity constrain recruitment.
+# Values are scenario multipliers, not observed migration rates.
+EUROPE_BIRTH_REPLACEMENT_RESPONSE: dict[str, float] = {
+    "AUT": 0.95, "BEL": 1.00, "BGR": 0.58, "HRV": 0.72,
+    "CYP": 0.82, "CZE": 0.82, "DNK": 0.92, "EST": 0.78,
+    "FIN": 0.92, "FRA": 1.00, "DEU": 1.12, "GRC": 0.72,
+    "HUN": 0.48, "IRL": 1.12, "ITA": 0.82, "LVA": 0.62,
+    "LTU": 0.66, "LUX": 1.10, "MLT": 0.92, "NLD": 1.08,
+    "POL": 0.58, "PRT": 0.88, "ROU": 0.58, "SVK": 0.58,
+    "SVN": 0.78, "ESP": 0.92, "SWE": 1.00,
+    # Other European labor markets included in the same regional mechanism.
+    "GBR": 1.06, "NOR": 0.96, "CHE": 1.05, "ISL": 0.88,
+    "ALB": 0.46, "BIH": 0.42, "MKD": 0.46, "MNE": 0.52,
+    "SRB": 0.48,
 }
 
 # ---------------------------------------------------------------------------
@@ -251,6 +275,8 @@ GROUP_MIGRATION_INTENSITY: dict[tuple[str, str], float] = {
 SKILLED_MIGRATION_SOURCE_PRESSURE: dict[str, float] = {
     "NGA": 1.00, "ETH": 0.88, "GHA": 0.74, "KEN": 0.78, "PAK": 0.86,
     "BGD": 0.74, "PHL": 0.72, "IND": 0.62, "EGY": 0.58, "VNM": 0.56,
+    "UGA": 0.70, "TZA": 0.68, "RWA": 0.66, "CIV": 0.62,
+    "CMR": 0.64, "SEN": 0.60, "ZMB": 0.58, "ZWE": 0.62,
 }
 
 SKILLED_MIGRATION_DESTINATION_OPENNESS: dict[str, float] = {
@@ -309,9 +335,46 @@ def skilled_migration_program_intensity(iso3: str) -> float:
     return SKILLED_MIGRATION_DESTINATION_OPENNESS.get(iso3, 0.0)
 
 
+def broad_labor_migration_source_pressure(iso3: str) -> float:
+    """Potential late-period workforce mobility from source demographics."""
+    youth, skill, climate = SOURCE_MIGRATION_CAPACITY.get(
+        iso3, (0.0, 0.0, 0.0))
+    return float(np.clip(
+        0.58 * youth + 0.18 * skill + 0.24 * climate,
+        0.0, 1.0,
+    ))
+
+
+def broad_labor_migration_program_intensity(iso3: str) -> float:
+    """Destination demand translated into policy-accessible labor pathways."""
+    demand = DESTINATION_LABOR_DEMAND.get(iso3, 0.0)
+    policy = BROAD_LABOR_DESTINATION_OPENNESS.get(iso3, 0.0)
+    openness = MIGRATION_POLICY_OPENNESS.get(iso3, 1.0)
+    retention = DESTINATION_SETTLEMENT_RETENTION.get(iso3, 0.78)
+    return float(np.clip(
+        demand * policy * min(1.0, openness / 1.15) *
+        (0.55 + 0.45 * retention),
+        0.0, 1.25,
+    ))
+
+
+def ssa_late_migration_destination_response(iso3: str) -> float:
+    """Destination exposure to expanded Sub-Saharan African corridors."""
+    return float(np.clip(
+        broad_labor_migration_program_intensity(iso3) *
+        SSA_LATE_MIGRATION_DESTINATION_EXPOSURE.get(iso3, 0.0),
+        0.0, 1.0,
+    ))
+
+
 def late_skilled_migration_curve(progress: float) -> float:
     """Ramp from near-zero before the late 2030s to full strength in 2050."""
     return float(np.clip((progress - 0.55) / 0.45, 0.0, 1.0) ** 2)
+
+
+def late_broad_labor_migration_curve(progress: float) -> float:
+    """Broader labor mobility ramp from the mid-2030s through the 2040s."""
+    return float(np.clip((progress - 0.46) / 0.54, 0.0, 1.0) ** 1.65)
 
 
 # Source-side migration capacity. The three components distinguish a large
@@ -333,6 +396,56 @@ SOURCE_MIGRATION_CAPACITY: dict[str, tuple[float, float, float]] = {
     "HND": (0.66, 0.56, 0.72), "SLV": (0.56, 0.62, 0.66),
     "VEN": (0.52, 0.78, 0.64), "COL": (0.52, 0.78, 0.60),
     "BRA": (0.46, 0.82, 0.62), "HTI": (0.82, 0.48, 0.86),
+    # Additional Sub-Saharan African sources. A large youth cohort does not
+    # imply automatic emigration: skill portability, financing, policy access,
+    # diaspora links and destination demand still constrain each corridor.
+    "UGA": (0.92, 0.60, 0.64), "TZA": (0.90, 0.62, 0.66),
+    "RWA": (0.78, 0.69, 0.58), "COD": (0.98, 0.42, 0.82),
+    "CIV": (0.86, 0.64, 0.68), "CMR": (0.86, 0.66, 0.70),
+    "SEN": (0.80, 0.67, 0.64), "ZMB": (0.86, 0.63, 0.66),
+    "ZWE": (0.70, 0.76, 0.62), "MOZ": (0.92, 0.50, 0.80),
+    "MWI": (0.94, 0.48, 0.76), "AGO": (0.88, 0.56, 0.72),
+    "SDN": (0.92, 0.46, 0.88), "SOM": (0.92, 0.40, 0.90),
+    "ERI": (0.82, 0.55, 0.80), "BFA": (0.94, 0.48, 0.80),
+    "NER": (1.00, 0.40, 0.86), "MLI": (0.96, 0.46, 0.82),
+    "GIN": (0.90, 0.52, 0.74), "SLE": (0.86, 0.54, 0.76),
+    "LBR": (0.84, 0.58, 0.74), "BEN": (0.86, 0.58, 0.70),
+    "TGO": (0.84, 0.58, 0.70), "GMB": (0.84, 0.55, 0.72),
+}
+
+# Late-period broad workforce pathways. This channel covers care, logistics,
+# construction, hospitality, agriculture, manufacturing and skilled trades as
+# well as formal professional recruitment. Values are annual share-growth
+# premiums on destination categories and remain subject to destination policy,
+# corridor affinity and settlement retention.
+GROUP_BROAD_LABOR_MIGRATION_SURGE: dict[tuple[str, str], float] = {
+    ("USA", "Black (African immigrant)"): 0.0080,
+    ("CAN", "Black (African)"): 0.0100,
+    ("GBR", "Black African"): 0.0120,
+    ("FRA", "Sub-Saharan African"): 0.0140,
+    ("DEU", "Other"): 0.0040,
+    ("ITA", "Nigerian"): 0.0160, ("ITA", "Other"): 0.0030,
+    ("ESP", "Other"): 0.0030,
+    ("NLD", "Somali"): 0.0100, ("NLD", "Other"): 0.0030,
+    ("BEL", "Sub-Saharan African"): 0.0140,
+    ("SWE", "Somalian"): 0.0100, ("SWE", "Eritrean"): 0.0100,
+    ("DNK", "Somali"): 0.0100,
+    ("DNK", "Other Middle Eastern/African/Asian"): 0.0040,
+    ("NOR", "Somali"): 0.0100, ("NOR", "Eritrean"): 0.0100,
+    ("FIN", "Somali"): 0.0090,
+    ("AUT", "Other"): 0.0030,
+    ("CHE", "Eritrean"): 0.0100, ("CHE", "Other"): 0.0030,
+    ("IRL", "Nigerian"): 0.0160, ("IRL", "African (other)"): 0.0140,
+    ("PRT", "African (PALOP - Angolan/Cape Verdean)"): 0.0130,
+    ("GRC", "Other"): 0.0025,
+    ("AUS", "Other"): 0.0035,
+    ("NZL", "MELAA (ME/LatAm/African)"): 0.0050,
+    ("JPN", "Other"): 0.0040,
+    ("KOR", "Other (incl. foreign workers)"): 0.0060,
+    ("SGP", "Other"): 0.0040,
+    ("ARE", "Other foreign"): 0.0090,
+    ("QAT", "Other foreign"): 0.0090,
+    ("SAU", "Sudanese"): 0.0100, ("SAU", "Other foreign"): 0.0060,
 }
 
 # Destination demand is kept separate from policy openness. A country may
@@ -341,11 +454,41 @@ SOURCE_MIGRATION_CAPACITY: dict[str, tuple[float, float, float]] = {
 DESTINATION_LABOR_DEMAND: dict[str, float] = {
     "CAN": 0.96, "AUS": 0.92, "NZL": 0.82, "USA": 0.86,
     "GBR": 0.88, "DEU": 0.94, "FRA": 0.80, "NLD": 0.88,
-    "IRL": 0.90, "SWE": 0.78, "NOR": 0.80, "DNK": 0.78,
+    "IRL": 0.90, "BEL": 0.84, "AUT": 0.84, "CHE": 0.86,
+    "FIN": 0.82, "SWE": 0.78, "NOR": 0.80, "DNK": 0.78,
     "ITA": 0.84, "ESP": 0.82, "PRT": 0.74, "GRC": 0.72,
     "JPN": 0.94, "KOR": 0.96, "SGP": 0.92, "TWN": 0.90,
     "ARE": 0.96, "QAT": 0.94, "KWT": 0.88, "SAU": 0.90,
     "OMN": 0.82, "BHR": 0.84,
+}
+
+# Policy willingness to use broader labor pathways, distinct from high-skill
+# points systems. Restrictive systems can have severe labor shortages while
+# admitting relatively few permanent workers; temporary-labor systems receive
+# lower settlement retention below.
+BROAD_LABOR_DESTINATION_OPENNESS: dict[str, float] = {
+    "CAN": 1.14, "AUS": 1.06, "NZL": 1.02, "USA": 0.90,
+    "GBR": 1.00, "DEU": 1.04, "FRA": 0.94, "NLD": 0.98,
+    "BEL": 0.96, "IRL": 1.04, "SWE": 0.94, "NOR": 0.92,
+    "DNK": 0.86, "FIN": 0.88, "ITA": 1.00, "ESP": 0.98,
+    "PRT": 0.92, "GRC": 0.82, "AUT": 0.88, "CHE": 0.92,
+    "JPN": 0.72, "KOR": 0.78, "SGP": 0.94,
+    "ARE": 1.12, "QAT": 1.08, "KWT": 0.98, "SAU": 1.00,
+    "OMN": 0.94, "BHR": 0.96,
+}
+
+# Share of the destination's late broad-labor response plausibly connected to
+# Sub-Saharan African source corridors. This is highest where language,
+# diaspora, recruitment or historical ties already lower movement costs.
+SSA_LATE_MIGRATION_DESTINATION_EXPOSURE: dict[str, float] = {
+    "CAN": 0.82, "USA": 0.68, "GBR": 0.96, "FRA": 1.00,
+    "DEU": 0.48, "ITA": 0.78, "ESP": 0.38, "NLD": 0.76,
+    "BEL": 0.94, "IRL": 0.92, "SWE": 0.84, "NOR": 0.82,
+    "DNK": 0.76, "FIN": 0.68, "AUT": 0.46, "CHE": 0.64,
+    "PRT": 0.86, "GRC": 0.34, "AUS": 0.42, "NZL": 0.38,
+    "JPN": 0.20, "KOR": 0.24, "SGP": 0.32,
+    "ARE": 0.54, "QAT": 0.50, "KWT": 0.44, "SAU": 0.56,
+    "OMN": 0.42, "BHR": 0.42,
 }
 
 # Fraction of a corridor's gross inflow expected to remain in the destination
@@ -378,10 +521,27 @@ CORRIDOR_AFFINITY: dict[tuple[str, str], float] = {
     ("KOR", "VNM"): 1.26, ("KOR", "PHL"): 1.18, ("KOR", "IDN"): 1.14,
     ("ARE", "IND"): 1.34, ("ARE", "PAK"): 1.30, ("ARE", "BGD"): 1.26,
     ("QAT", "IND"): 1.28, ("QAT", "PAK"): 1.26, ("SAU", "EGY"): 1.22,
+    ("FRA", "SEN"): 1.25, ("FRA", "CIV"): 1.22,
+    ("FRA", "CMR"): 1.20, ("FRA", "COD"): 1.16,
+    ("BEL", "COD"): 1.25, ("BEL", "CMR"): 1.15,
+    ("ITA", "NGA"): 1.18, ("PRT", "AGO"): 1.24,
+    ("IRL", "NGA"): 1.22, ("GBR", "UGA"): 1.12,
+    ("GBR", "ZWE"): 1.14, ("CAN", "KEN"): 1.15,
+    ("CAN", "ETH"): 1.12, ("USA", "GHA"): 1.10,
+    ("USA", "KEN"): 1.08, ("SWE", "SOM"): 1.20,
+    ("SWE", "ERI"): 1.18, ("NOR", "SOM"): 1.18,
+    ("DNK", "SOM"): 1.15, ("FIN", "SOM"): 1.14,
+    ("ARE", "ETH"): 1.12, ("ARE", "KEN"): 1.12,
+    ("QAT", "KEN"): 1.10, ("SAU", "SDN"): 1.18,
+    ("JPN", "KEN"): 1.04, ("KOR", "NGA"): 1.04,
 }
 
 MIGRATION_ORIGIN_RULES: list[tuple[re.Pattern, tuple[str, ...]]] = [
-    (re.compile(r"nigerian|west african|black african|african immigrant", re.I), ("NGA", "GHA", "KEN")),
+    (re.compile(r"nigerian", re.I), ("NGA",)),
+    (re.compile(r"west african", re.I), ("NGA", "GHA", "SEN", "CIV", "CMR")),
+    (re.compile(r"sub-saharan african|black african|african immigrant|african \(other\)", re.I),
+     ("NGA", "GHA", "KEN", "UGA", "TZA", "ETH", "SEN", "CIV", "CMR", "COD")),
+    (re.compile(r"palop|angolan|cape verdean", re.I), ("AGO", "CPV", "MOZ")),
     (re.compile(r"ethiopian|eritrean|horn of africa", re.I), ("ETH",)),
     (re.compile(r"somali", re.I), ("SOM", "ETH", "KEN")),
     (re.compile(r"pakistani", re.I), ("PAK",)),
@@ -424,6 +584,7 @@ def migration_corridor_diagnostics(
     baseline_share: float,
     progress: float,
     demographic_need: float = 0.0,
+    birth_replacement_need: float = 0.0,
 ) -> dict[str, float | str]:
     """Return an auditable multiplier for one origin-destination corridor.
 
@@ -451,10 +612,16 @@ def migration_corridor_diagnostics(
         (0.16 - 0.06 * late) * climate,
         0.0, 1.0,
     ))
+    broad_labor_mobility = float(np.clip(
+        0.58 * youth + 0.18 * skill + 0.24 * climate,
+        0.0, 1.0,
+    ))
     openness = MIGRATION_POLICY_OPENNESS.get(destination_iso3, 1.0)
     labor_demand = DESTINATION_LABOR_DEMAND.get(destination_iso3, 0.58)
+    combined_demographic_need = float(np.clip(
+        demographic_need + 0.45 * birth_replacement_need, 0.0, 1.0))
     destination_pull = float(np.clip(
-        0.38 * labor_demand + 0.34 * demographic_need +
+        0.38 * labor_demand + 0.34 * combined_demographic_need +
         0.28 * min(1.0, openness / 1.2),
         0.0, 1.0,
     ))
@@ -473,6 +640,7 @@ def migration_corridor_diagnostics(
     return {
         "origins": ";".join(origins) if origins else "unspecified",
         "source_supply": source_supply,
+        "broad_labor_mobility": broad_labor_mobility,
         "skill_readiness": skill,
         "climate_pressure": climate,
         "destination_pull": destination_pull,
@@ -577,6 +745,59 @@ def demographic_pressure(iso3: str, pop_2024: Optional[float] = None,
     return 0.6 * fert_shortfall + 0.4 * pop_decline
 
 
+def europe_birth_replacement_pressure(
+    iso3: str,
+    pop_2024: Optional[float] = None,
+    pop_2050: Optional[float] = None,
+) -> float:
+    """European labor-replacement pressure from smaller future birth cohorts.
+
+    A modest TFR recovery does not immediately restore births because the
+    number of women entering child-bearing ages can keep shrinking. The proxy
+    therefore combines the 2050 fertility gap with projected population
+    contraction. It is only active for countries listed in
+    ``EUROPE_BIRTH_REPLACEMENT_RESPONSE`` and remains a scenario mechanism,
+    not a forecast of exact births or migrant counts.
+    """
+    if iso3 not in EUROPE_BIRTH_REPLACEMENT_RESPONSE:
+        return 0.0
+    future_tfr = NATIONAL_TFR_2050.get(
+        iso3, NATIONAL_TFR_2024.get(iso3, REPLACEMENT_TFR))
+    future_gap = float(np.clip(
+        (REPLACEMENT_TFR - future_tfr) / (REPLACEMENT_TFR - 0.7),
+        0.0, 1.0,
+    ))
+    cohort_contraction = 0.0
+    if pop_2024 and pop_2050 and pop_2024 > 0:
+        total_change = max(0.0, 1.0 - pop_2050 / pop_2024)
+        cohort_contraction = float(np.clip(total_change / 0.22, 0.0, 1.0))
+    return float(np.clip(
+        0.68 * future_gap + 0.32 * cohort_contraction,
+        0.0, 1.0,
+    ))
+
+
+def europe_birth_replacement_migration_boost(
+    iso3: str,
+    progress: float,
+    pop_2024: Optional[float] = None,
+    pop_2050: Optional[float] = None,
+) -> float:
+    """Additional migration intensity as European birth cohorts thin.
+
+    The response is delayed and nonlinear because labor shortages, electoral
+    policy, recruitment systems, housing, and integration capacity adjust with
+    a lag. Country response multipliers prevent demographic need from being
+    treated as automatic migration.
+    """
+    response = EUROPE_BIRTH_REPLACEMENT_RESPONSE.get(iso3, 0.0)
+    if response <= 0.0:
+        return 0.0
+    pressure = europe_birth_replacement_pressure(iso3, pop_2024, pop_2050)
+    late_response = float(np.clip(progress, 0.0, 1.0) ** 1.45)
+    return 0.62 * pressure * response * late_response
+
+
 def effective_migration_intensity(iso3: str, progress: float,
                                   pop_2024: Optional[float] = None,
                                   pop_2050: Optional[float] = None) -> float:
@@ -586,6 +807,7 @@ def effective_migration_intensity(iso3: str, progress: float,
     (``COUNTRY_MIGRATION_INTENSITY``). On top of it, demographic pressure
     adds an inflow need that *ramps up* over the window (``progress`` in
     [0,1]) as aging and population loss deepen, scaled by policy openness.
+    European countries also receive a delayed birth-cohort replacement term.
 
     Parameters
     ----------
@@ -616,7 +838,11 @@ def effective_migration_intensity(iso3: str, progress: float,
     boost = 0.0
     if base < 1.5:
         boost = 2.5 * 0.5 * pressure * openness * progress
-    return (base + boost) * MIGRATION_IMPACT_MULTIPLIER
+    birth_replacement_boost = europe_birth_replacement_migration_boost(
+        iso3, progress, pop_2024, pop_2050)
+    return (
+        base + boost + birth_replacement_boost
+    ) * MIGRATION_IMPACT_MULTIPLIER
 
 
 
@@ -965,9 +1191,9 @@ def project_ethnic_composition(
        mix* of ethnic groups (``GROUP_MIGRATION_INTENSITY``), scaled by the
        country's migration intensity (static baseline + demographic-pressure
        boost). Unlisted immigrant-profile groups get the default coefficient.
-    4. **Late skilled-migration surge** -- from the late 2030s onward,
-       skilled-labor programs pull more migrants from demographic-dividend
-       source countries into destination-specific diaspora groups.
+    4. **Late migration surge** -- from the late 2030s onward, distinct
+       skilled and broader labor-shortage programs connect young source
+       regions to destination-specific diaspora or foreign-worker groups.
     5. **Intermarriage / mixed-identity formation** -- in high-intermarriage
        countries (``INTERMARRIAGE_INDEX``), a fraction of the non-mixed
        population forms new Mixed/Multiracial-identified people each year.
@@ -1042,6 +1268,8 @@ def project_ethnic_composition(
     structural_inequality_drag = float(np.clip(structural_inequality_drag, 0.0, 1.0))
     base_mig_intensity = COUNTRY_MIGRATION_INTENSITY.get(iso3, 1.0)
     pressure = demographic_pressure(iso3, pop_2024, pop_2050)
+    birth_replacement_pressure = europe_birth_replacement_pressure(
+        iso3, pop_2024, pop_2050)
     mig_openness = MIGRATION_POLICY_OPENNESS.get(iso3, 1.0)
 
     anchor = int(np.argmax(shares))
@@ -1100,12 +1328,15 @@ def project_ethnic_composition(
         mig_intensity = effective_migration_intensity(
             iso3, progress, pop_2024, pop_2050)
         skilled_program = skilled_migration_program_intensity(iso3)
+        broad_labor_program = broad_labor_migration_program_intensity(iso3)
         late_skilled = late_skilled_migration_curve(progress)
+        late_broad_labor = late_broad_labor_migration_curve(progress)
         dev_mig = np.zeros_like(shares)
         for i, e in enumerate(entries):
             coeff = GROUP_MIGRATION_INTENSITY.get((iso3, e[0]))
             corridor = migration_corridor_diagnostics(
-                iso3, e[0], e[2], e[1] / 100.0, progress, pressure)
+                iso3, e[0], e[2], e[1] / 100.0, progress, pressure,
+                birth_replacement_pressure)
             corridor_multiplier = float(corridor["corridor_multiplier"])
             if coeff is not None:
                 dev_mig[i] = (
@@ -1125,6 +1356,15 @@ def project_ethnic_composition(
                     skilled_coeff * mig_scale * skilled_program *
                     late_skilled *
                     (0.65 + 0.55 * float(corridor["skill_readiness"])) *
+                    float(corridor["settlement_retention"])
+                )
+            broad_labor_coeff = GROUP_BROAD_LABOR_MIGRATION_SURGE.get(
+                (iso3, e[0]))
+            if broad_labor_coeff is not None:
+                dev_mig[i] += (
+                    broad_labor_coeff * mig_scale * broad_labor_program *
+                    late_broad_labor *
+                    (0.68 + 0.52 * float(corridor["broad_labor_mobility"])) *
                     float(corridor["settlement_retention"])
                 )
             # Guard against a small baseline diaspora acquiring an implausible

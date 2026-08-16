@@ -244,7 +244,7 @@ def build_treemap_data(df: pd.DataFrame) -> dict:
     colors, driver = [], []
     profile_col = "Projection_Profile" if "Projection_Profile" in df.columns else "Profile"
     regions, levels, isos = [], [], []
-    gpos, share24g, pop24g, cpopg, share50g = [], [], [], [], []
+    gpos, share24g, pop24g, cpopg, share50g, migration_effect_g = [], [], [], [], [], []
     dom_share, dom_change, dom_driver = [], [], []
 
     world_pop = df.groupby("ISO3")["Pop_2050"].sum().sum()
@@ -252,7 +252,7 @@ def build_treemap_data(df: pd.DataFrame) -> dict:
     values.append(world_pop); colors.append(dominance_color(100))
     driver.append(None); regions.append(""); levels.append(0); isos.append("")
     gpos.append(-1); share24g.append(None); pop24g.append(None)
-    cpopg.append(None); share50g.append(None)
+    cpopg.append(None); share50g.append(None); migration_effect_g.append(None)
     dom_share.append(None); dom_change.append(None); dom_driver.append(None)
 
     for region in REGION_ORDER:
@@ -265,7 +265,7 @@ def build_treemap_data(df: pd.DataFrame) -> dict:
         colors.append(dominance_color(60)); driver.append(None)
         regions.append(region); levels.append(1); isos.append("")
         gpos.append(-1); share24g.append(None); pop24g.append(None)
-        cpopg.append(None); share50g.append(None)
+        cpopg.append(None); share50g.append(None); migration_effect_g.append(None)
         dom_share.append(None); dom_change.append(None); dom_driver.append(None)
 
         for iso, cdf in rdf.groupby("ISO3"):
@@ -278,7 +278,7 @@ def build_treemap_data(df: pd.DataFrame) -> dict:
             driver.append(None); regions.append(region); levels.append(2)
             isos.append(iso)
             gpos.append(-1); share24g.append(None); pop24g.append(None)
-            cpopg.append(None); share50g.append(None)
+            cpopg.append(None); share50g.append(None); migration_effect_g.append(None)
             dom_share.append(float(dom["Share_2050_pct"]))
             dom_change.append(float(dom["Change_pp"]))
             dom_driver.append(_driver(dom[profile_col], dom["Group"]))
@@ -295,13 +295,23 @@ def build_treemap_data(df: pd.DataFrame) -> dict:
                 pop24g.append(float(r["Pop_2024"]) if pd.notna(r["Pop_2024"]) else None)
                 cpopg.append(float(cpop))
                 share50g.append(float(r["Share_2050_pct"]))
+                if "Migration_Attributed_Change_pp" in r.index:
+                    migration_effect = r.get("Migration_Attributed_Change_pp", 0.0)
+                else:
+                    migration_effect = (
+                        float(r.get("BirthReplacementMigration_Attributed_Change_pp", 0.0) or 0.0) +
+                        float(r.get("SSA_LateMigration_Attributed_Change_pp", 0.0) or 0.0)
+                    )
+                migration_effect_g.append(
+                    float(migration_effect) if pd.notna(migration_effect) else 0.0)
                 dom_share.append(None); dom_change.append(None); dom_driver.append(None)
 
     return {
         "ids": ids, "parents": parents, "labels": labels, "values": values,
         "colors": colors, "regions": regions, "levels": levels, "isos": isos,
         "gpos": gpos, "share24g": share24g, "pop24g": pop24g,
-        "cpopg": cpopg, "share50g": share50g, "driver": driver,
+        "cpopg": cpopg, "share50g": share50g,
+        "migrationEffectG": migration_effect_g, "driver": driver,
         "domShare": dom_share, "domChange": dom_change, "domDriver": dom_driver,
     }
 
@@ -350,9 +360,17 @@ def country_meta(df: pd.DataFrame) -> dict:
             "migInt": float(r.get("Migration_Intensity_2050", 1.0)),
             "skilledSourcePressure": float(r.get("Skilled_Migration_SourcePressure_2050", 0.0)),
             "skilledProgramIntensity": float(r.get("Skilled_Migration_ProgramIntensity_2050", 0.0)),
+            "broadLaborSourcePressure": float(r.get("BroadLabor_Migration_SourcePressure_2050", 0.0)),
+            "broadLaborProgramIntensity": float(r.get("BroadLabor_Migration_ProgramIntensity_2050", 0.0)),
+            "ssaLateDestinationResponse": float(r.get("SSA_LateMigration_DestinationResponse_2050", 0.0)),
             "openness": float(r.get("Policy_Openness", 1.0)),
             "policyFeedback": float(r.get("Policy_Feedback_2050", 1.0)),
             "pressure": float(r.get("Demographic_Pressure", 0.0)),
+            "birthReplacementPressure": float(r.get("Birth_Replacement_Pressure_2050", 0.0)),
+            "europeMigrationResponse": float(r.get("Europe_Migration_Response_2050", 0.0)),
+            "migrationAttributedShift": float(
+                g["Migration_Attributed_Change_pp"].abs().mean()
+                if "Migration_Attributed_Change_pp" in g else 0.0),
             "identityRecognition": float(r.get("Mixed_Identity_Recognition_Rate", 0.0)),
             "identityTransition": float(r.get("Identity_Category_Transition_Rate", 0.0)),
             "diversity50": float(r.get("Diversity_Index_2050", 0.0)),
@@ -581,6 +599,13 @@ METHODOLOGY_HTML = """
       Pakistan, Bangladesh, India, the Philippines, Egypt and Vietnam. The
       effect is destination-group specific and ramps quadratically toward
       2050, so it mostly changes the 2040s rather than the near-term path.</li>
+      <li><b>Broader African workforce channel</b> \u2014 a separate mid-2030s
+      to 2040s pathway models care, trades, logistics, construction,
+      hospitality, agriculture, manufacturing and other labor-shortage
+      recruitment from young Sub-Saharan African workforces. Source youth,
+      portable skills and climate pressure are combined with destination
+      demand, policy access, diaspora affinity and settlement retention;
+      demographic youth alone never guarantees migration.</li>
       <li><b>Intergenerational mobility screen</b> \u2014 combines education,
       human-capital absorption, digital infrastructure, policy openness,
       dependency pressure, and the inclusive service-delivery gap to estimate whether
@@ -828,7 +853,7 @@ def build_html(treemap_data: dict, religion_data: dict, scen_json: str, meta_jso
       <div class="bridge-card">
         <span class="tag">HDI driver</span>
         <h3>Migration and skilled-labor supply</h3>
-        <p>Inward migration can soften ageing and support income growth, but only if education, institutions, and integration capacity convert it into productive human capital.</p>
+        <p>Inward migration can soften ageing and support income growth. The model separates professional recruitment from broader care, trades, logistics, construction, hospitality and manufacturing pathways, then constrains both through policy, rights, housing and integration capacity.</p>
       </div>
       <div class="bridge-card">
         <span class="tag">Scenario lens</span>
@@ -853,7 +878,7 @@ def build_html(treemap_data: dict, religion_data: dict, scen_json: str, meta_jso
       <div class="bridge-card">
         <span class="tag">Religious futures</span>
         <h3>Sub-Saharan Africa</h3>
-        <p>High fertility and young age structures make the region a core 2050 growth engine for both Christianity and Islam, while traditional/folk categories decline as identities consolidate.</p>
+        <p>Young age structures make the region a core 2050 growth engine for both Christianity and Islam and a larger potential source of global mobility in the 2040s. Actual corridors remain conditional on education, financing, recruitment policy, rights, networks and destination labor shortages.</p>
       </div>
       <div class="bridge-card">
         <span class="tag">Religious futures</span>
@@ -1354,7 +1379,7 @@ def build_html(treemap_data: dict, religion_data: dict, scen_json: str, meta_jso
       const iso = D.isos[i];
       if (!out[iso]) out[iso] = [];
       out[iso].push({{ name: D.labels[i], g: D.gpos[i], s24: D.share24g[D.gpos[i]],
-        driver: D.driver[i] }});
+        driver: D.driver[i], migrationEffect: D.migrationEffectG[D.gpos[i]] || 0 }});
     }}
     return out;
   }}
@@ -1370,9 +1395,15 @@ def build_html(treemap_data: dict, religion_data: dict, scen_json: str, meta_jso
       '<div class="chip">Migration intensity 2050<b>' + m.migInt.toFixed(2) + '</b></div>' +
       '<div class="chip">Skilled source pressure<b>' + m.skilledSourcePressure.toFixed(2) + '</b></div>' +
       '<div class="chip">Skilled program intensity<b>' + m.skilledProgramIntensity.toFixed(2) + '</b></div>' +
+      '<div class="chip">Broad labor source pressure<b>' + m.broadLaborSourcePressure.toFixed(2) + '</b></div>' +
+      '<div class="chip">Broad labor program intensity<b>' + m.broadLaborProgramIntensity.toFixed(2) + '</b></div>' +
+      '<div class="chip">Late SSA destination response<b>' + m.ssaLateDestinationResponse.toFixed(2) + '</b></div>' +
       '<div class="chip">Policy openness<b>' + m.openness.toFixed(1) + '</b></div>' +
       '<div class="chip">Policy feedback<b>' + m.policyFeedback.toFixed(2) + '</b></div>' +
       '<div class="chip">Demographic pressure<b>' + (m.pressure * 100).toFixed(0) + '%</b></div>' +
+      '<div class="chip">Birth-cohort replacement pressure<b>' + (m.birthReplacementPressure * 100).toFixed(0) + '%</b></div>' +
+      '<div class="chip">European migration response<b>' + m.europeMigrationResponse.toFixed(2) + '</b></div>' +
+      '<div class="chip">Average migration-attributed shift<b>' + m.migrationAttributedShift.toFixed(2) + ' pp</b></div>' +
       '<div class="chip">Mixed-identity recognition<b>' + m.identityRecognition.toFixed(3) + '</b></div>' +
       '<div class="chip">Identity-category transition<b>' + m.identityTransition.toFixed(4) + '</b></div>' +
       '<div class="chip">Composition diversity 2050<b>' + m.diversity50.toFixed(3) + '</b></div>' +
@@ -1407,7 +1438,9 @@ def build_html(treemap_data: dict, religion_data: dict, scen_json: str, meta_jso
             fill + '"></div>' +
           '<span class="t">' + e.s24.toFixed(1) + '% \u2192 ' + s50.toFixed(1) +
             '% <b class="' + cls + '">(' + (chg >= 0 ? '+' : '') + chg.toFixed(1) +
-            ' pp)</b></span>' +
+            ' pp)</b>' + (Math.abs(e.migrationEffect) >= 0.01
+              ? ' <em>migration ' + (e.migrationEffect >= 0 ? '+' : '') + e.migrationEffect.toFixed(2) + ' pp</em>'
+              : '') + '</span>' +
         '</div></div>';
     }});
     document.getElementById('dw-groups').innerHTML = rows.join('');

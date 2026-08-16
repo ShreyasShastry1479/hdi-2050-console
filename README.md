@@ -16,6 +16,7 @@ An open, interactive research system for exploring national and subnational huma
 - **193-country projection table:** baseline HDI, 2050 scenario HDI, component indices, P10/P90 heuristic bounds, ranks, demographics, readiness factors, and driver attribution.
 - **Subnational extension:** 1,775 subdivision records covering 164 countries, reconciled to each country's population-weighted national HDI target.
 - **Interactive console:** maps, tables, scenario tuning, comparison tools, country briefs, validation diagnostics, demographic mosaics, and HDI-GPT.
+- **Economic outlook:** 193-country 2050 projections for GDP per capita at PPP, GDP per capita at market exchange rates, total PPP GDP, and total nominal GDP, with constant-2021 HDI audit values, inflation-adjusted 2050-dollar views, source flags, and scenario bounds.
 - **ML research layer:** live policy counterfactuals, TreeSHAP attribution, Isolation Forest audit flags, and cross-border subdivision similarity search.
 - **Historical validation:** 2,170 held-out country-year observations from 2014-2023.
 - **Reproducible documentation:** exact equations, data provenance, assumptions, limitations, and literature framing in [METHODOLOGY.md](METHODOLOGY.md).
@@ -44,6 +45,7 @@ If `/api/hdi-gpt` returns HTTP `503`, the deployed function cannot see either `O
 
 ```powershell
 python run_2050.py
+python build_economic_outlook_2050.py
 python build_subdivision_hdi.py
 python build_ml_research_artifacts.py
 ```

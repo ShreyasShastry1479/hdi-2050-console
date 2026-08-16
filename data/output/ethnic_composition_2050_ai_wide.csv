@@ -1,24 +1,24 @@
 ISO3,Country,Top1,Top1_2050_pct,Top2,Top2_2050_pct,Top3,Top3_2050_pct,Top4,Top4_2050_pct,Top5,Top5_2050_pct
 AFG,Afghanistan,Pashtun,42.3,Tajik,25.6,Hazara,10.2,Uzbek,9.4,Aimaq,3.8
 AGO,Angola,Ovimbundu,38.6,Kimbundu,24.3,Other African,17.3,Bakongo,12.7,Chokwe,4.3
-ALB,Albania,Albanian (Gheg),55.3,Albanian (Tosk),26.5,Other,15.4,Romani / Egyptian,1.3,Greek,1.3
+ALB,Albania,Albanian (Gheg),55.2,Albanian (Tosk),26.4,Other,15.5,Romani / Egyptian,1.3,Greek,1.3
 AND,Andorra,Andorran,46.0,Spanish,25.6,Other,12.2,Portuguese,11.5,French,4.6
-ARE,UAE,Indian,28.0,Other foreign,19.5,Pakistani,11.8,Emirati,10.6,Bangladeshi,8.4
+ARE,UAE,Indian,27.9,Other foreign,19.8,Pakistani,11.8,Emirati,10.5,Bangladeshi,8.4
 ARG,Argentina,Italian descent,35.1,Spanish descent,27.6,Mestizo/Indigenous,18.6,Other European descent,17.5,East Asian,0.7
 ARM,Armenia,Armenian,97.9,Other,1.4,Yazidi (Kurdish),0.4,Russian,0.3,,
 ATG,Antigua & Barbuda,African descent,87.1,Mixed,4.6,Other,4.1,Hispanic,3.0,White,1.1
-AUS,Australia,English,25.0,Australian (European),17.9,Other,15.3,Other European descent,8.6,Chinese,6.4
-AUT,Austria,Austrian,77.2,Other,6.5,Turkish,3.2,Serbian,2.4,German,2.4
+AUS,Australia,English,24.9,Australian (European),17.9,Other,15.5,Other European descent,8.6,Chinese,6.4
+AUT,Austria,Austrian,76.7,Other,6.7,Turkish,3.2,Serbian,2.4,German,2.4
 AZE,Azerbaijan,Azerbaijani,91.1,Other,2.4,Lezgin,2.3,Talysh,1.5,Russian,1.0
 BDI,Burundi,Hutu,85.4,Tutsi,13.6,Twa,1.0,,,,
-BEL,Belgium,Flemish,48.8,Other,20.8,Walloon,15.7,Moroccan,3.3,Italian,2.7
+BEL,Belgium,Flemish,48.5,Other,21.1,Walloon,15.7,Moroccan,3.3,Italian,2.7
 BEN,Benin,Fon,39.4,Adja,14.5,Yoruba,11.5,Fulani (Peulh),9.6,Bariba,9.2
 BFA,Burkina Faso,Mossi,52.5,Other,12.6,Fulani,9.4,Gurma,6.7,Bobo,4.7
 BGD,Bangladesh,Bengali,97.9,Other,0.8,Chakma,0.5,Santal,0.3,Bihari (Urdu-speaking),0.3
-BGR,Bulgaria,Bulgarian,79.8,Turkish,11.0,Romani,6.7,Other,1.6,Russian,0.5
+BGR,Bulgaria,Bulgarian,79.8,Turkish,11.0,Romani,6.7,Other,1.6,Russian,0.6
 BHR,Bahrain,Bahraini,48.6,Indian,12.9,Other foreign,12.7,Bangladeshi,9.0,Pakistani,6.0
 BHS,Bahamas,Black,90.7,Other,5.4,Mixed,2.5,White,1.4,,
-BIH,Bosnia & Herzegovina,Bosniak (Muslim),55.5,Serb (Republika Srpska),26.7,Croat,13.3,Other,3.8,Roma,0.6
+BIH,Bosnia & Herzegovina,Bosniak (Muslim),55.5,Serb (Republika Srpska),26.7,Croat,13.3,Other,3.9,Roma,0.6
 BLR,Belarus,Belarusian,85.3,Russian,6.6,Other,3.7,Polish,2.5,Ukrainian,2.0
 BLZ,Belize,Mestizo,53.3,Creole,24.9,Maya: Q'eqchi',7.0,Garifuna,5.8,Maya: Yucatec/Mopan,5.5
 BOL,Bolivia,Mestizo (Cholo),54.0,Quechua,13.8,Aymara,11.7,Other,8.0,Other Indigenous (Mojeño/Chiquitano),6.1
@@ -28,8 +28,8 @@ BRN,Brunei,Malay,69.3,Other foreign workers,21.1,Chinese,6.7,Indigenous (Dusun/I
 BTN,Bhutan,Ngalop (Bhote),51.3,Lhotshampa (Nepali),34.1,Sharchop,12.7,Other,2.0,,
 BWA,Botswana,Tswana (Batswana),79.7,Kalanga,10.7,Basarwa (San),3.0,Other,2.0,Kgalagadi,1.9
 CAF,Central African Rep.,Baya,34.7,Banda,26.3,Mandjia,12.7,Sara,9.7,Mboum,6.8
-CAN,Canada,White (European),50.9,South Asian (Indian),11.9,Chinese,5.5,Filipino,5.0,Black (African),4.4
-CHE,Switzerland,Swiss,65.7,Other,6.0,German,4.3,Italian,3.2,Portuguese,2.9
+CAN,Canada,White (European),50.8,South Asian (Indian),11.9,Chinese,5.5,Filipino,5.0,Black (African),4.6
+CHE,Switzerland,Swiss,65.1,Other,6.1,German,4.3,Italian,3.3,Portuguese,3.0
 CHL,Chile,White (Spanish/European descent),53.3,Mestizo,32.0,Mapuche,11.9,Aymara,1.3,Other indigenous,1.1
 CHN,China,Han Chinese,89.8,Other,3.0,Zhuang,1.7,Miao/Hmong,0.9,Uyghur,0.9
 CIV,Cote d'Ivoire,Akan (Baoule/Agni),30.7,Other,21.2,Voltaique/Gur,15.7,Northern Mande (Malinke),14.1,Krou (Bete),8.3
@@ -41,49 +41,49 @@ COM,Comoros,Comorian (Antalote/Cafre/Makoa),97.0,Makua / Other,3.0,,,,,,
 CPV,Cape Verde,Creole (Mulatto),71.8,African,27.3,European,0.8,,,,
 CRI,Costa Rica,White or Mestizo,78.8,Nicaraguan migrant,7.2,Mulatto,6.4,Indigenous (Bribri/Cabecar),3.2,Other,1.7
 CUB,Cuba,White (Spanish descent),56.6,Mulatto (Mixed),31.9,Black,10.7,Chinese-Cuban,0.8,,
-CYP,Cyprus,Greek Cypriot,71.9,Turkish Cypriot,22.9,Foreign residents,5.2,,,,
-CZE,Czechia,Czech,74.1,Other,9.9,Moravian,4.7,Ukrainian,4.4,Slovak,2.5
-DEU,Germany,German,77.7,Other,4.1,Syrian,3.4,Turkish,3.0,Ukrainian,1.9
+CYP,Cyprus,Greek Cypriot,71.9,Turkish Cypriot,22.8,Foreign residents,5.3,,,,
+CZE,Czechia,Czech,73.9,Other,10.0,Moravian,4.7,Ukrainian,4.5,Slovak,2.5
+DEU,Germany,German,77.1,Other,4.2,Syrian,3.6,Turkish,3.0,Ukrainian,2.0
 DJI,Djibouti,Somali (Issa),63.0,Afar,32.2,Other (French/Ethiopian),2.8,Arab,2.0,,
 DMA,Dominica,Black,86.8,Mixed,9.0,Indigenous (Kalinago),2.8,Other,1.4,,
-DNK,Denmark,Danish,79.8,Other Nordic/European,4.1,Other,3.0,Syrian,2.0,Other Middle Eastern/African/Asian,1.9
+DNK,Denmark,Danish,79.6,Other Nordic/European,4.2,Other,3.0,Syrian,2.0,Other Middle Eastern/African/Asian,2.0
 DOM,Dominican Rep.,Mixed (Mulatto),72.4,Black,15.8,White,10.6,Haitian migrant,0.9,Other,0.3
 DZA,Algeria,Arab,56.2,Amazigh (Kabyle),22.4,Arab-Berber (mixed),9.8,Amazigh (Chaoui/Aurès),6.8,Mozabite/Tuareg,2.9
 ECU,Ecuador,Mestizo,71.1,Amerindian,9.1,Afroecuadorian,8.0,Montubio,7.0,White,4.5
 EGY,Egypt,Egyptian (Sunni Muslim),84.8,Egyptian (Coptic Christian),9.7,Other Arab,2.1,Nubian,1.0,Bedouin Arab,1.0
 ERI,Eritrea,Tigrinya,54.4,Tigre,31.4,Saho,3.8,Other,3.3,Kunama,1.9
-ESP,Spain,Spanish,72.6,Latin American,5.3,Moroccan,4.3,Venezuelan,3.0,Colombian,2.5
-EST,Estonia,Estonian,72.4,Russian,19.4,Other,4.9,Ukrainian,2.5,Belarusian,0.8
+ESP,Spain,Spanish,71.9,Latin American,5.3,Moroccan,4.5,Venezuelan,3.2,Colombian,2.6
+EST,Estonia,Estonian,72.3,Russian,19.4,Other,4.9,Ukrainian,2.5,Belarusian,0.8
 ETH,Ethiopia,Oromo,36.9,Amhara,23.1,Other,13.0,Somali,8.3,Tigray,5.5
-FIN,Finland,Finnish,85.9,Swedish-speaking,5.0,Other,4.5,Russian,1.7,Estonian,1.0
+FIN,Finland,Finnish,85.8,Swedish-speaking,5.0,Other,4.6,Russian,1.7,Estonian,1.0
 FJI,Fiji,iTaukei (indigenous Fijian),66.6,Fijian Indian,28.4,Other,4.0,Rotuman,1.0,,
-FRA,France,French (native),75.5,Sub-Saharan African,7.6,Algerian origin,4.3,Moroccan origin,4.1,Portuguese,1.4
+FRA,France,French (native),74.5,Sub-Saharan African,8.6,Algerian origin,4.3,Moroccan origin,4.1,Portuguese,1.4
 FSM,Micronesia,Chuukese,50.0,Pohnpeian,23.5,Other,15.3,Kosraean,6.0,Yapese,5.1
 GAB,Gabon,Other African,28.6,Fang,22.5,Shirazi-Punu,18.1,Nzabi,11.2,Mbamba,10.7
-GBR,UK,White British,66.0,Black African,5.1,Indian,4.7,Pakistani,4.6,Other,4.2
+GBR,UK,White British,65.5,Black African,5.3,Indian,4.8,Pakistani,4.7,Other,4.2
 GEO,Georgia,Georgian (Kartvelian),86.2,Azerbaijani,7.2,Armenian,3.6,Russian,1.2,Other,0.9
 GHA,Ghana,Akan,47.1,Mole-Dagbani,18.0,Ewe,12.5,Ga-Dangme,6.9,Gurma,6.2
 GIN,Guinea,Fulani (Peulh),38.8,Malinke,27.4,Susu,19.3,Guerze,7.2,Kissi,5.8
 GMB,Gambia,Mandinka,35.3,Fula,23.6,Wolof,11.7,Jola,10.2,Other,8.6
 GNB,Guinea-Bissau,Balanta,29.7,Fula,23.6,Manjaco,14.0,Other,10.6,Mandinga,8.7
 GNQ,Equatorial Guinea,Fang,85.9,Bubi,6.3,Ndowe,3.5,Annobon,1.6,Other,1.4
-GRC,Greece,Greek,90.4,Albanian,5.0,Other,3.1,Romanian,0.6,Pakistani,0.3
+GRC,Greece,Greek,90.3,Albanian,5.1,Other,3.1,Romanian,0.6,Pakistani,0.3
 GRD,Grenada,African descent,82.5,Mixed,13.1,Other,2.3,East Indian,2.1,,
 GTM,Guatemala,Ladino (Mestizo),54.2,Other Maya,10.8,Maya: K'iche',9.6,Maya: Q'eqchi',9.2,Maya: Kaqchikel,8.2
 GUY,Guyana,East Indian,39.9,African descent,27.5,Mixed,18.9,Amerindian (Arawak/Carib),13.3,Other,0.5
 HKG,Hong Kong,Chinese,83.8,Filipino,7.1,Indonesian,5.1,Other,1.7,White (Western expatriates),1.2
 HND,Honduras,Mestizo,88.5,Indigenous: Lenca,5.0,Indigenous: Miskito,2.5,Black (Garifuna),1.9,Other Indigenous,1.3
-HRV,Croatia,Croat,90.8,Other,3.8,Serb,3.5,Bosniak,1.0,Albanian,0.5
+HRV,Croatia,Croat,90.7,Other,3.9,Serb,3.5,Bosniak,1.0,Albanian,0.5
 HTI,Haiti,Black (African descent),93.1,Mixed (Mulatto),4.4,Other,1.8,Dominican migrant,0.4,White (French/Levantine descent),0.2
-HUN,Hungary,Hungarian,85.6,Other,6.8,Romani,4.6,Ukrainian,1.1,German,0.9
+HUN,Hungary,Hungarian,85.5,Other,6.9,Romani,4.6,Ukrainian,1.1,German,0.9
 IDN,Indonesia,Javanese,41.3,Sundanese,15.0,Other,14.7,Malay,4.1,Batak,3.5
 IND,India,Hindi-speaking (North/Central Indo-Aryan),44.2,Bengali,7.9,Marathi,6.6,Telugu (Dravidian),6.4,Urdu-speaking (Muslim),5.6
-IRL,Ireland,Irish,74.8,Other White British,10.7,Other EU (Romanian/Lithuanian),4.4,Polish,3.3,Asian (other),1.9
+IRL,Ireland,Irish,74.6,Other White British,10.8,Other EU (Romanian/Lithuanian),4.4,Polish,3.3,Asian (other),1.9
 IRN,Iran,Persian,57.6,Azeri,14.9,Kurd,12.5,Lur,5.6,Arab,2.5
 IRQ,Iraq,Arab (Shia),56.9,Arab (Sunni),17.8,Kurdish,17.8,Other,4.5,Turkmen,1.8
-ISL,Iceland,Icelandic,79.6,Other European,6.5,Polish,6.1,Other,5.2,Danish,1.1
+ISL,Iceland,Icelandic,79.5,Other European,6.6,Polish,6.1,Other,5.3,Danish,1.1
 ISR,Israel,Jewish (Non-Haredi),44.9,Jewish (Haredi/Orthodox),28.7,Arab Muslim (incl. Bedouin),16.9,Other (incl. migrant workers),7.0,Arab Christian,1.3
-ITA,Italy,Italian,83.7,Moroccan,2.6,Romanian,2.6,Other,2.4,Albanian,1.6
+ITA,Italy,Italian,83.2,Moroccan,2.7,Romanian,2.6,Other,2.5,Albanian,1.7
 JAM,Jamaica,Black (African descent),92.2,Mixed,6.0,Other,1.1,East Indian,0.8,,
 JOR,Jordan,Transjordanian Arab,43.4,Jordanian of Palestinian origin,27.5,Syrian,13.3,Egyptian,7.1,Palestinian,6.4
 JPN,Japan,Japanese,96.2,Chinese,1.1,Filipino,0.9,Vietnamese,0.7,Other,0.6
@@ -93,7 +93,7 @@ KGZ,Kyrgyzstan,Kyrgyz,75.8,Uzbek,14.7,Russian,4.6,Other,3.9,Dungan,1.0
 KHM,Cambodia,Khmer,91.2,Vietnamese,5.2,Cham (Muslim),2.6,Chinese (Khmer-Chen),0.5,Tampuan/Jarai (indigenous uplands),0.5
 KIR,Kiribati,I-Kiribati,95.9,Mixed / Other,4.1,,,,,,
 KNA,Saint Kitts & Nevis,African descent,92.9,Mixed,3.0,European,1.7,Indian,1.5,Other,1.0
-KOR,South Korea,Korean,93.4,Other (incl. foreign workers),3.7,Chinese (incl. Korean-Chinese),1.7,Vietnamese,0.5,Thai,0.3
+KOR,South Korea,Korean,93.4,Other (incl. foreign workers),3.8,Chinese (incl. Korean-Chinese),1.7,Vietnamese,0.5,Thai,0.3
 KWT,Kuwait,Kuwaiti,31.1,Other foreign,20.0,Indian,13.7,Egyptian,11.4,Bangladeshi,7.8
 LAO,Laos,Lao (Lao Lum),53.6,Other,15.0,Khmou,10.6,Hmong,10.1,Phouthay (Lao Tai),3.3
 LBN,Lebanon,Lebanese Arab (Shia Muslim),35.0,Lebanese Arab (Sunni Muslim),26.5,Lebanese Arab (Maronite Christian),20.4,Lebanese Arab (Orthodox/Greek Catholic Christian),8.7,Druze,4.9
@@ -103,18 +103,18 @@ LCA,Saint Lucia,Black/African descent,85.4,Mixed,10.7,East Indian,2.1,Other,1.8,
 LIE,Liechtenstein,Liechtensteiner,63.7,Other,10.8,Swiss,9.2,Austrian / German,8.2,Italian,4.1
 LKA,Sri Lanka,Sinhalese,74.3,Sri Lankan Moor (Muslim),12.4,Sri Lankan Tamil,9.1,Indian Tamil,3.4,Malay,0.5
 LSO,Lesotho,Sotho (Basotho),99.7,Other,0.3,,,,,,
-LTU,Lithuania,Lithuanian,86.6,Polish,5.2,Russian,4.0,Other,3.5,Belarusian,0.8
-LUX,Luxembourg,Luxembourger,50.1,Portuguese,16.9,Other,15.7,French,7.7,Italian,3.6
-LVA,Latvia,Latvian,66.4,Russian,20.0,Other,6.7,Ukrainian,2.7,Belarusian,2.5
+LTU,Lithuania,Lithuanian,86.5,Polish,5.2,Russian,4.0,Other,3.5,Belarusian,0.8
+LUX,Luxembourg,Luxembourger,49.9,Portuguese,17.0,Other,15.8,French,7.7,Italian,3.6
+LVA,Latvia,Latvian,66.3,Russian,20.0,Other,6.8,Ukrainian,2.7,Belarusian,2.5
 MAR,Morocco,Arab,46.2,Arabized Berber,24.2,Amazigh (Tachelhit),13.6,Amazigh (Tarifit),4.8,Amazigh (Tamazight),4.8
 MDA,Moldova,Moldovan / Romanian,76.9,Other,9.1,Ukrainian,5.4,Gagauz,3.8,Russian,3.4
 MDG,Madagascar,Merina,27.8,Other Malagasy,18.7,Betsimisaraka,14.6,Betsileo,11.7,Tsimihety,6.8
 MDV,Maldives,Maldivian,67.2,Bangladeshi expatriate,11.3,Other,7.7,Indian expatriate,6.7,Chinese expatriate,5.0
 MEX,Mexico,Mestizo (Euro/Amerindian mix),60.1,Amerindian: Nahua,9.2,Amerindian: Maya,8.1,White (Spanish/European descent),7.2,Other,5.1
 MHL,Marshall Islands,Marshallese,92.0,Mixed,5.8,Other,2.3,,,,
-MKD,North Macedonia,Macedonian,55.5,Albanian,26.3,Other,9.1,Turk,4.2,Romani,3.5
+MKD,North Macedonia,Macedonian,55.5,Albanian,26.3,Other,9.2,Turk,4.2,Romani,3.5
 MLI,Mali,Bambara,34.4,Fulani (Peulh),14.6,Sarakole,9.2,Senufo,9.2,Dogon,8.3
-MLT,Malta,Maltese,85.8,Other,6.8,Other European,5.6,North African,1.8,,
+MLT,Malta,Maltese,85.7,Other,6.9,Other European,5.7,North African,1.8,,
 MMR,Myanmar,Bamar,68.2,Shan,8.7,Karen,6.8,Rakhine,4.4,Chinese,3.1
 MNE,Montenegro,Montenegrin,47.0,Serb,23.4,Other,13.9,Bosniak,9.9,Albanian,5.7
 MNG,Mongolia,Khalkh,81.5,Other,4.3,Kazakh,4.1,Other Mongol groups,3.9,Dorvod,2.6
@@ -127,8 +127,8 @@ NAM,Namibia,Ovambo,51.5,Other,10.9,Kavangos,8.8,Damara,6.8,Herero,6.8
 NER,Niger,Hausa,56.0,Songhai,19.5,Fulani (Peulh),9.9,Tuareg,9.6,Kanuri (Manga),4.0
 NGA,Nigeria,Hausa,34.7,Other,19.0,Yoruba,14.2,Igbo,13.9,Fulani,6.4
 NIC,Nicaragua,Mestizo,71.1,White,13.4,Miskito (Amerindian),5.2,Black (Creole),5.0,Other,4.0
-NLD,Netherlands,Dutch,71.6,Other EU,6.8,Other,3.5,Moroccan,3.0,Turkish,2.9
-NOR,Norway,Norwegian,79.2,Other Nordic/European,6.2,Other,4.8,Polish,2.3,Syrian,1.4
+NLD,Netherlands,Dutch,71.3,Other EU,6.8,Other,3.5,Moroccan,3.0,Turkish,2.9
+NOR,Norway,Norwegian,79.1,Other Nordic/European,6.2,Other,4.9,Polish,2.3,Syrian,1.4
 NPL,Nepal,Other,21.4,Chhetri,15.6,Bahun,11.5,Tharu,7.2,Magar,6.7
 NRU,Nauru,Nauruan,87.0,Other Pacific Islander,8.9,Chinese / Asian,4.1,,,,
 NZL,New Zealand,European,50.7,Asian,19.0,Maori,17.8,Pacific peoples,8.8,Other,2.0
@@ -139,15 +139,15 @@ PER,Peru,Mestizo,59.1,Quechua,17.9,Other Amerindian (Amazonian),6.7,Aymara,4.3,W
 PHL,Philippines,Tagalog,29.8,Other,22.0,Cebuano,12.5,Ilocano,8.6,Hiligaynon (Ilonggo),7.2
 PLW,Palau,Palauan,63.7,Other,16.7,Filipino,14.0,Chinese,5.7,,
 PNG,Papua New Guinea,Papuan / Melanesian (highlands),48.9,Papuan / Melanesian (coastal & islands),34.8,Other,7.2,Polynesian (Bougainville/outer islands),5.8,Mixed (Euro-Pacific),2.9
-POL,Poland,Polish,94.8,Ukrainian,2.3,Silesian,1.1,Other,0.6,Belarusian,0.5
-PRT,Portugal,Portuguese,87.7,Brazilian,4.7,African (PALOP - Angolan/Cape Verdean),3.2,Other EU (UK/French/Italian),1.6,Other,1.6
+POL,Poland,Polish,94.7,Ukrainian,2.4,Silesian,1.1,Other,0.6,Belarusian,0.5
+PRT,Portugal,Portuguese,87.5,Brazilian,4.8,African (PALOP - Angolan/Cape Verdean),3.3,Other EU (UK/French/Italian),1.6,Other,1.6
 PRY,Paraguay,Mestizo (mestizo-criollo),91.1,Indigenous (Guarani/Guaiku),3.2,White (European descent),3.1,Brazilian (Brasiguayo),1.6,Other,1.0
 PSE,Palestine,Palestinian Arab (Sunni Muslim),97.3,Palestinian Christian,1.3,Other,0.9,Druze,0.5,,
-QAT,Qatar,Other foreign,24.5,Indian,17.1,Bangladeshi,13.2,Qatari,10.5,Egyptian,9.5
+QAT,Qatar,Other foreign,24.8,Indian,17.0,Bangladeshi,13.1,Qatari,10.5,Egyptian,9.5
 ROU,Romania,Romanian,88.1,Romani,4.9,Hungarian,4.8,Other,1.4,Ukrainian,0.6
 RUS,Russia,Russian,79.4,Other,12.0,Tatar,4.4,Bashkir,1.2,Chechen,1.1
 RWA,Rwanda,Hutu,85.4,Tutsi,13.6,Twa,1.0,,,,
-SAU,Saudi Arabia,Saudi Arab,61.1,Other foreign,15.2,Bangladeshi,4.4,Indian,4.0,Pakistani,3.6
+SAU,Saudi Arabia,Saudi Arab,61.0,Other foreign,15.3,Bangladeshi,4.4,Indian,4.0,Pakistani,3.6
 SDN,Sudan,Sudanese Arab,70.5,Beja,5.8,Other,4.9,Nubian,4.9,Fur,4.9
 SEN,Senegal,Wolof,41.2,Pular (Fula),26.8,Serer,15.6,Other,5.2,Mandinka,4.8
 SGP,Singapore,Chinese,70.7,Malay,16.3,Indian,8.9,Filipino,1.2,Other,0.8
@@ -160,9 +160,9 @@ SRB,Serbia,Serb,79.7,Other,10.8,Romani,2.9,Bosniak,2.6,Hungarian,2.2
 SSD,South Sudan,Dinka,40.3,Other (60+ groups),24.1,Nuer,16.4,Shilluk,5.0,Azande,4.1
 STP,Sao Tome & Principe,Mestico (Forros),46.1,Other African,19.6,Angolares,14.5,Tongas (mixed),9.8,Other,6.7
 SUR,Suriname,Hindustani (East Indian),27.9,Maroon (Ndyuka/Saramaka),23.1,Creole,14.5,Javanese,12.7,Mixed,12.3
-SVK,Slovakia,Slovak,80.6,Other,8.2,Hungarian,6.7,Romani,2.9,Rusyn / Ukrainian,1.0
-SVN,Slovenia,Slovene,81.5,Other,13.3,Serb,2.2,Croat,1.7,Bosniak,1.2
-SWE,Sweden,Swedish,73.4,Other Nordic/European,4.5,South/East Asian,3.5,Syrian,3.4,Other,3.4
+SVK,Slovakia,Slovak,80.5,Other,8.2,Hungarian,6.7,Romani,2.9,Rusyn / Ukrainian,1.0
+SVN,Slovenia,Slovene,81.4,Other,13.4,Serb,2.2,Croat,1.7,Bosniak,1.2
+SWE,Sweden,Swedish,73.1,Other Nordic/European,4.5,South/East Asian,3.5,Syrian,3.5,Other,3.4
 SWZ,Eswatini,Swazi (Emaswati),84.7,Zulu,9.6,Other,3.7,Tsonga,1.9,,
 SYC,Seychelles,Seychellois Creole (mixed),77.1,Other African,9.8,Indian,5.9,Other,4.0,French/Chinese,3.2
 SYR,Syria,Syrian Arab,82.1,Kurdish,9.4,Other,5.2,Turkmen,1.8,Armenian,0.7
