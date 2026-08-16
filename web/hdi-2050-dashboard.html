@@ -2633,6 +2633,10 @@
     .economy-table tbody tr:hover td:first-child,.economy-table tbody tr.selected td:first-child { background:#10283a; }
     .economy-table tbody tr { cursor:pointer; }
     .economy-table tbody tr:hover,.economy-table tbody tr.selected { background:rgba(88,230,255,.07); }
+    .economy-tooltip-grid { display:grid; grid-template-columns:1fr auto; gap:4px 16px; margin-top:9px; padding-top:8px; border-top:1px solid rgba(164,198,244,.16); }
+    .economy-tooltip-grid span { color:#9fb2ca; }
+    .economy-tooltip-grid strong { color:#f3f8ff; text-align:right; }
+    .economy-tooltip-range { margin-top:8px; color:#9fb2ca; font-size:10px; }
     .economy-source-strip { display:flex; flex-wrap:wrap; gap:8px; margin-top:14px; }
     .economy-source-strip span { padding:6px 8px; border:1px solid rgba(164,198,244,.15); color:#9fb4cb; font-size:10px; }
     @media (max-width:1050px) {
@@ -6555,10 +6559,10 @@
       const config = economicMetricConfig();
       const value = economicValue(row);
       const dollarBasis = economicYear() === "2050" ? "2050-price dollars" : "observed/current-year dollars";
-      tooltip.innerHTML = `<strong>${escapeHtml(row.Country)}</strong><br><span>${escapeHtml(config.short)} ${economicYear()}: ${formatEconomic(value, config.format)}</span><br><small>${dollarBasis} &middot; constant-2021 PPP pc ${formatEconomic(row.GDP_PPP_PerCapita_2050_2021_IntlDollar)} &middot; rank #${row.Rank_Economic_Strength_2050}</small>`;
-      tooltip.classList.add("visible");
-      const x = Math.min(window.innerWidth - 310, Math.max(12, Number(event.clientX || window.innerWidth / 2) + 14));
-      const y = Math.min(window.innerHeight - 145, Math.max(12, Number(event.clientY || 100) + 14));
+      tooltip.innerHTML = `<div class="tooltip-head"><div><strong>${escapeHtml(row.Country)}</strong><br><small>${escapeHtml(row.ISO3)} &middot; ${escapeHtml(dollarBasis)}</small></div><div class="tooltip-ranks">Economic strength<br>#${row.Rank_Economic_Strength_2050} of 193</div></div><div><strong>${escapeHtml(config.short)} ${economicYear()}</strong><br>${formatEconomic(value, config.format)}</div><div class="economy-tooltip-grid"><span>PPP per capita 2025</span><strong>${formatEconomic(row.GDP_PPP_PerCapita_2025)}</strong><span>PPP per capita 2050</span><strong>${formatEconomic(row.GDP_PPP_PerCapita_2050)}</strong><span>Nominal per capita 2050</span><strong>${formatEconomic(row.GDP_Nominal_PerCapita_2050)}</strong><span>Nominal GDP 2050</span><strong>${formatEconomic(row.GDP_Nominal_Total_2050,"total")}</strong><span>Income index 2050</span><strong>${Number(row.Income_Index_2050).toFixed(3)}</strong><span>Real per-capita CAGR</span><strong>${formatEconomic(row.Real_GDP_PerCapita_CAGR_2025_2050,"percent")}</strong></div><div class="economy-tooltip-range">Nominal per-capita P10-P90: ${formatEconomic(row.GDP_Nominal_PerCapita_P10_2050)} to ${formatEconomic(row.GDP_Nominal_PerCapita_P90_2050)}</div>`;
+      tooltip.style.opacity = "1";
+      const x = Math.min(window.innerWidth - 350, Math.max(12, Number(event.clientX || window.innerWidth / 2) + 14));
+      const y = Math.min(window.innerHeight - 330, Math.max(12, Number(event.clientY || 100) + 14));
       tooltip.style.left = `${x}px`;
       tooltip.style.top = `${y}px`;
     }
@@ -6686,15 +6690,21 @@
         if(typeof av==="number"&&typeof bv==="number") return economicSort.direction*(av-bv);
         return economicSort.direction*String(av||"").localeCompare(String(bv||""));
       });
-      tbody.innerHTML = rows.map(row=>`<tr tabindex="0" data-economic-country="${row.ISO3}" class="${row.ISO3===selectedEconomicRow?.ISO3?"selected":""}" aria-label="Inspect ${escapeAttr(row.Country)}">${economicTableColumns.map(([key])=>`<td>${escapeHtml(String(economicCell(row[key],key)))}</td>`).join("")}</tr>`).join("");
+      tbody.innerHTML = rows.map((row,rowIndex)=>`<tr tabindex="0" data-economic-country="${row.ISO3}" class="${row.ISO3===selectedEconomicRow?.ISO3?"selected":""}" aria-label="Rank ${rowIndex+1}, inspect ${escapeAttr(row.Country)}">${economicTableColumns.map(([key],columnIndex)=>`<td>${columnIndex===0?rowIndex+1:escapeHtml(String(economicCell(row[key],key)))}</td>`).join("")}</tr>`).join("");
       thead.querySelectorAll("[data-economic-sort]").forEach(button=>button.addEventListener("click",()=>{
         const column=button.dataset.economicSort;
         economicSort={column,direction:economicSort.column===column?-economicSort.direction:1};
         renderEconomicTable();
       }));
       tbody.querySelectorAll("[data-economic-country]").forEach(item=>{
-        const select=()=>setSelectedEconomicRow(economicRows.find(row=>row.ISO3===item.dataset.economicCountry));
+        const row=economicRows.find(candidate=>candidate.ISO3===item.dataset.economicCountry);
+        const select=()=>setSelectedEconomicRow(row);
         item.addEventListener("click",select);
+        item.addEventListener("mouseenter",event=>showEconomicTooltip(event,row));
+        item.addEventListener("mousemove",event=>showEconomicTooltip(event,row));
+        item.addEventListener("mouseleave",hideTooltip);
+        item.addEventListener("focus",()=>showEconomicTooltip({clientX:window.innerWidth/2,clientY:110},row));
+        item.addEventListener("blur",hideTooltip);
         item.addEventListener("keydown",event=>{if(["Enter"," "].includes(event.key)){event.preventDefault();select()}});
       });
       document.getElementById("economy-row-count").textContent=`${rows.length} rows`;
