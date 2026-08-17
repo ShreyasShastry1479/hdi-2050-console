@@ -1,0 +1,4 @@
+Method,Test_Type,Information_Timing,Observations,MAE,RMSE,Mean_Error
+Component ensemble,held_out_component_reconstruction,same_year_non_target_covariates,2170,0.0019891630000700793,0.002863458263021166,-9.257573389593713e-06
+Previous-year HDI,lag_only_forecast_baseline,information_available_at_t_minus_1,2170,0.007212868011415457,0.01185343752225398,-0.0032571743367344305
+Lagged five-year trend,lag_only_forecast_baseline,information_available_at_t_minus_1_and_t_minus_5,2170,0.007309269727762451,0.012974727063774219,-0.0003703596216968497

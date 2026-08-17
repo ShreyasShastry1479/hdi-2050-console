@@ -363,6 +363,9 @@ def country_meta(df: pd.DataFrame) -> dict:
         meta[iso] = {
             "name": r["Country"],
             "region": REGION_OF.get(iso, "Other"),
+            "baselineEvidence": str(r.get("Baseline_Evidence_Status", "compiled_baseline_source_review_required")),
+            "projectionEvidence": str(r.get("Projection_Evidence_Status", "scenario_not_official_forecast")),
+            "uncertaintyEvidence": str(r.get("Uncertainty_Evidence_Status", "scenario_range_not_calibrated_probability")),
             "pop2050": int(g["Pop_2050"].sum()),
             "tfr24": float(r.get("Nat_TFR_2024", 2.1)),
             "tfr50": float(r.get("Nat_TFR_2050", 2.1)),
@@ -1492,6 +1495,9 @@ def build_html(treemap_data: dict, religion_data: dict, scen_json: str, meta_jso
     document.getElementById('dw-name').textContent = m.name;
     document.getElementById('dw-sub').textContent = m.region;
     document.getElementById('dw-chips').innerHTML =
+      '<div class="chip">2024 evidence status<b>' + m.baselineEvidence.replaceAll('_', ' ') + '</b></div>' +
+      '<div class="chip">2050 evidence status<b>' + m.projectionEvidence.replaceAll('_', ' ') + '</b></div>' +
+      '<div class="chip">Range status<b>' + m.uncertaintyEvidence.replaceAll('_', ' ') + '</b></div>' +
       '<div class="chip">2050 population<b>' + fmtPop(m.pop2050) + '</b></div>' +
       '<div class="chip">TFR 2024 \u2192 2050<b>' + m.tfr24.toFixed(1) + ' \u2192 ' +
         m.tfr50.toFixed(1) + '</b></div>' +

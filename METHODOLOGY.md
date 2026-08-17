@@ -1,8 +1,8 @@
 # HDI 2050 Projection Console: Methodology
 
-**Version:** 1.2  
-**Research status:** independent, reproducible scenario projection  
-**Coverage:** 193 countries; 1,775 subdivisions in 164 countries  
+**Version:** 1.3
+**Research status:** independent, reproducible scenario projection
+**Coverage:** 193 countries; 1,775 subdivisions in 164 countries
 **Forecast horizon:** HDR 2025 release baseline to 2050
 
 ## 1. Research Design
@@ -110,9 +110,9 @@ Scenario outputs are comparative stress tests, not separately trained forecasts.
 
 ## 6. Uncertainty
 
-P10 and P90 values are heuristic structured bounds around the baseline scenario. Width depends on baseline development level, state capacity, inequality, climate exposure, political stability, fertility, and trajectory class. Conflict-recovery and frontier-jumper cases receive wider bounds; frontier countries receive narrow bounds because of mathematical saturation.
+P10 and P90 values are heuristic structured stress bounds around the baseline scenario. Width depends on baseline development level, state capacity, inequality, climate exposure, political stability, fertility, and trajectory class. Conflict-recovery and frontier-jumper cases receive wider bounds; frontier countries receive narrow bounds because of mathematical saturation.
 
-These bounds are useful for scenario comparison but are **not calibrated probabilistic intervals**. Their nominal coverage should not be interpreted as an 80% empirical guarantee.
+These bounds are useful for scenario comparison but are **not calibrated probabilistic intervals**. Their nominal coverage should not be interpreted as an 80% empirical guarantee. The interface therefore labels `HDI_2050` as the central scenario or P50 endpoint and labels `HDI_P10`-`HDI_P90` as a heuristic stress range.
 
 ## 7. Subnational Projection and Reconciliation
 
@@ -135,17 +135,19 @@ This procedure preserves relative internal ordering and assumes partial converge
 
 ## 8. Validation
 
-The included historical backtest contains 2,170 held-out country-year observations from 2014-2023:
+The included historical audit contains 2,170 country-year observations from 2014-2023 held out from a model trained through 2013. The component ensemble receives same-year non-target covariates such as demographic, technology, health-system, and institutional indicators. It is therefore a **held-out component-reconstruction audit**, not a recursive forecast from information available before each test year.
 
-| Metric | Result |
-|---|---:|
-| MAE | 0.00199 |
-| RMSE | 0.00286 |
-| Mean error | -0.00001 |
-| R-squared | 0.99958 |
-| 90th percentile absolute error | 0.00416 |
+The console compares the ensemble with two lag-only forecast-style baselines:
 
-This is a short-horizon panel backtest using lagged/current historical covariates. It demonstrates numerical fit for one-step historical prediction; it does **not** validate 25-year geopolitical, technological, demographic, or climate assumptions. Long-horizon credibility therefore depends on scenario sensitivity, transparent priors, and repeated model updates as new observations arrive.
+| Method | Information timing | MAE | RMSE | Mean error |
+|---|---|---:|---:|---:|
+| Component ensemble | Held-out years; same-year non-target covariates | 0.00199 | 0.00286 | -0.00001 |
+| Previous-year HDI | Lag-only forecast baseline | 0.00721 | 0.01185 | -0.00326 |
+| Lagged five-year trend | Lag-only forecast baseline | 0.00731 | 0.01298 | -0.00037 |
+
+The pooled ensemble residuals have a 5th-to-95th percentile range of approximately `-0.00452` to `+0.00392`. This range covers about 90% of the same residual sample by construction. It is a descriptive short-horizon calibration diagnostic, not an independently validated interval and not a scaling rule for 2050.
+
+The audit demonstrates that the ensemble reconstructs held-out component outcomes more accurately than simple lagged-HDI baselines when contemporaneous covariates are available. It does **not** validate the 25-year convergence equation or geopolitical, technological, demographic, climate, and institutional scenario assumptions. Long-horizon credibility therefore depends on sensitivity analysis, transparent priors, source updates, and future genuinely ex-ante forecast evaluations.
 
 ## 9. Population, Identity, and Religious Context
 
@@ -246,6 +248,7 @@ The dashboard generates transparent screening flags for low component scores, ag
 python run_2050.py
 python build_subdivision_hdi.py
 python build_ml_research_artifacts.py
+python build_validation_artifacts.py
 python hdi_gpt_server.py
 ```
 
@@ -254,6 +257,8 @@ Primary outputs:
 - `data/output/hdi_2050_rankings.csv`
 - `data/output/subdivision_hdi_2025_2050.csv`
 - `data/output/backtest_predictions.csv`
+- `data/output/backtest_benchmarks.csv`
+- `data/output/backtest_residual_calibration.csv`
 - `data/output/ethnic_composition_2050_ai_model.csv`
 - `data/output/religious_composition_2025_2050.csv`
 - `data/output/extreme_poverty_regional_1990_2040.csv`

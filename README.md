@@ -62,7 +62,7 @@ Core outputs are written to `data/output/`. The dashboard reads these files dire
 
 ## Citation
 
-HDI 2050 Projection Console. (2026). *Global and subnational human development scenario projections, version 1.2*. https://hdi-2050-console-f9gr.vercel.app/
+HDI 2050 Projection Console. (2026). *Global and subnational human development scenario projections, version 1.3*. https://hdi-2050-console-f9gr.vercel.app/
 
 ## Limitations
 
