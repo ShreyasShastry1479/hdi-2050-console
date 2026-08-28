@@ -15,12 +15,12 @@
     },
     {
       "source": "/demographic-context",
-      "destination": "/data/output/ethnic_demographics_2050.html",
+      "destination": "/web/hdi-2050-dashboard.html#ethnic-mosaic",
       "permanent": false
     },
     {
       "source": "/ethnic-mosaic",
-      "destination": "/data/output/ethnic_demographics_2050.html",
+      "destination": "/web/hdi-2050-dashboard.html#ethnic-mosaic",
       "permanent": false
     },
     {
@@ -35,6 +35,14 @@
     }
   ],
   "rewrites": [
+    {
+      "source": "/natalis",
+      "destination": "https://temporary-fleet-azure-8hx5bb8.vercel.app/"
+    },
+    {
+      "source": "/natalis/:path*",
+      "destination": "https://temporary-fleet-azure-8hx5bb8.vercel.app/:path*"
+    },
     {
       "source": "/",
       "destination": "/web/hdi-2050-dashboard.html"

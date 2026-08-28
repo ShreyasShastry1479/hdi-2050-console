@@ -356,6 +356,48 @@
       align-items: center;
       gap: 10px;
     }
+    .year-playback {
+      display: grid;
+      grid-template-columns: auto auto minmax(180px, 280px) auto;
+      align-items: center;
+      gap: 8px;
+      min-width: min(100%, 520px);
+      padding: 7px;
+      border: 1px solid rgba(var(--scenario-accent-rgb), 0.24);
+      border-radius: 8px;
+      background: rgba(6, 15, 28, 0.62);
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05);
+    }
+    .year-playback button {
+      min-width: 84px;
+    }
+    .year-playback button.playing {
+      border-color: rgba(101, 240, 189, 0.68);
+      background: rgba(101, 240, 189, 0.14);
+    }
+    .year-slider-label {
+      display: grid;
+      gap: 1px;
+      min-width: 64px;
+      color: var(--muted);
+      font-size: 10px;
+      font-weight: 800;
+      text-transform: uppercase;
+    }
+    .year-slider-label strong {
+      color: #fff;
+      font-size: 18px;
+      font-variant-numeric: tabular-nums;
+      line-height: 1;
+    }
+    #year-slider {
+      min-width: 180px;
+      padding-inline: 0;
+      accent-color: var(--scenario-accent);
+    }
+    #playback-speed {
+      min-width: 78px;
+    }
     input, select, button {
       color: var(--text);
       background: rgba(13, 24, 42, 0.9);
@@ -1343,14 +1385,14 @@
       margin-bottom: 16px;
     }
     .maps.hdi-period-maps {
-      grid-template-columns: repeat(3, minmax(0, 1fr));
+      grid-template-columns: repeat(2, minmax(0, 1fr));
     }
     .maps.single-map {
       grid-template-columns: minmax(0, 1fr);
     }
     .hdi-era-strip {
       display:grid;
-      grid-template-columns:repeat(3,minmax(0,1fr));
+      grid-template-columns:repeat(4,minmax(0,1fr));
       gap:0;
       margin:0 0 14px;
       border:1px solid rgba(var(--scenario-accent-rgb),.24);
@@ -1379,6 +1421,7 @@
     }
     .hdi-era:nth-child(2)::before { animation-delay:90ms; }
     .hdi-era:nth-child(3)::before { animation-delay:180ms; }
+    .hdi-era:nth-child(4)::before { animation-delay:270ms; }
     .hdi-era-year { color:var(--muted); font-size:10px; font-weight:800; letter-spacing:.12em; text-transform:uppercase; }
     .hdi-era-value { margin-top:4px; color:#fff; font-size:25px; font-weight:780; font-variant-numeric:tabular-nums; }
     .hdi-era-note { margin-top:3px; color:var(--muted); font-size:10px; line-height:1.4; }
@@ -1561,6 +1604,23 @@
       min-height: 980px;
       border: 0;
       background: #f5f6f8;
+    }
+    .external-mosaic-frame {
+      min-height: 1180px;
+      background: #050d18;
+    }
+    .mosaic-external-note {
+      margin: 0;
+      padding: 12px 16px 16px;
+      border-top: 1px solid var(--line);
+      background: rgba(3, 10, 20, 0.74);
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.5;
+    }
+    .mosaic-frame-head .mosaic-actions {
+      justify-content: flex-end;
+      margin-top: 0;
     }
     .subdivision-explorer-frame { min-height: 1100px; }
     .mosaic-driver-grid {
@@ -2304,13 +2364,11 @@
     }
     @media (max-width: 1280px) {
       .maps.hdi-period-maps { grid-template-columns:repeat(2,minmax(0,1fr)); }
-      .maps.hdi-period-maps .map-panel[data-panel="projection"] { grid-column:1 / -1; }
     }
     @media (max-width: 980px) {
       #hdi-dashboard-app { padding: 18px; }
       .hero, .maps { grid-template-columns: 1fr; }
       .maps.hdi-period-maps { grid-template-columns:1fr; }
-      .maps.hdi-period-maps .map-panel[data-panel="projection"] { grid-column:auto; }
       .chart-grid { grid-template-columns: 1fr; }
       .research-grid { grid-template-columns: 1fr; }
       .research-grid .panel-head { align-items: flex-start; flex-wrap: wrap; }
@@ -2644,9 +2702,12 @@
       .primary-controls { display:grid; grid-template-columns:minmax(0,1fr); overflow:visible; }
       .primary-controls .search-shell,
       .primary-controls #scenario-select,
-      .primary-controls .view-segment { width:100%; max-width:100%; min-width:0; }
+      .primary-controls .view-segment,
+      .primary-controls .year-playback { width:100%; max-width:100%; min-width:0; }
       .primary-controls .view-segment button { flex:1 1 0 !important; }
       .primary-controls .view-segment button span { display:inline; }
+      .primary-controls .year-playback { grid-template-columns:auto auto minmax(0,1fr); }
+      .primary-controls .year-playback #playback-speed { grid-column:1 / -1; }
       .case-metrics { grid-template-columns:1fr; }
       .transition-framework { grid-template-columns:1fr; }
       .poverty-kpis { grid-template-columns:1fr; }
@@ -2797,10 +2858,21 @@
           <option value="stagnation">Stagnation stress test</option>
         </select>
         <div class="view-segment" role="group" aria-label="Map year view">
-          <button type="button" class="active" data-view="both" aria-label="Show HDR 2000, 2025, and 2050 maps"><span>All years</span></button>
+          <button type="button" class="active" data-view="both" aria-label="Show animated, HDR 2000, 2025, and 2050 maps"><span>All years</span></button>
+          <button type="button" data-view="animated" aria-label="Show animated year-by-year HDI map only"><span>Animated</span></button>
           <button type="button" data-view="historical" aria-label="Show HDR 2000 historical HDI map only"><span>2000</span></button>
           <button type="button" data-view="baseline" aria-label="Show 2025 map only"><span>2025</span></button>
           <button type="button" data-view="projection" aria-label="Show 2050 map only"><span>2050</span></button>
+        </div>
+        <div class="year-playback" role="group" aria-label="Year-by-year HDI animation controls">
+          <button type="button" class="secondary" id="playback-toggle" aria-pressed="false" aria-label="Play year-by-year HDI animation"><span id="playback-toggle-text">Play</span></button>
+          <label class="year-slider-label" for="year-slider"><span>Year</span><strong id="year-display">2000</strong></label>
+          <input id="year-slider" type="range" min="2000" max="2050" step="1" value="2000" aria-label="Animated HDI year">
+          <select id="playback-speed" aria-label="Animation speed">
+            <option value="1">1x</option>
+            <option value="2" selected>2x</option>
+            <option value="4">4x</option>
+          </select>
         </div>
       </div>
       <div class="control-group control-actions">
@@ -3869,7 +3941,7 @@
         <div class="mosaic-copy">
           <div class="section-kicker">Demographic composition model</div>
           <h2>Population &amp; Identity Context in 2050</h2>
-          <p>This page adds demographic-composition scenarios to the HDI research console. It uses country-level population assumptions, self-reported or census-defined group shares, fertility convergence, migration intensity, and policy-access fields to explore how recorded population categories may change by 2050.</p>
+          <p>This page adds demographic-composition scenarios to the HDI research console. The embedded Natalis TFR &amp; Births Atlas below is now the primary demographic mosaic experience, replacing the legacy local ethnic mosaic while keeping the dashboard's HDI crosswalk and responsible-interpretation context available here.</p>
           <p>Use it as qualitative demographic context beside the HDI model: HDI growth depends not only on income, health, and schooling, but also on age structure, migration, labor-force depth, urbanization pressure, and human-capital absorption. The embedded visualization is scenario-style analysis, not an official demographic forecast.</p>
           <p>The HDI projection table and the mosaic table are intentionally cross-readable: the HDI table gives the development outcome, while the mosaic table explains demographic pressure, migration capacity, fertility convergence, and composition shifts that can support or stress those outcomes.</p>
           <div class="validation-scope" aria-label="Demographic evidence and ethics boundary">
@@ -3883,7 +3955,7 @@
             <div class="evidence-card context"><strong>HDI relationship</strong><span>Contextual only; identity composition has no direct coefficient in the HDI equation.</span></div>
           </div>
           <div class="mosaic-actions">
-            <a href="/demographic-context" target="_blank" rel="noopener">Open Full Demographic Context</a>
+            <a href="/natalis/" target="_blank" rel="noopener">Open Natalis Atlas</a>
             <a href="../data/output/demographic_context_2050.csv" target="_blank" rel="noopener">Open Public Research CSV</a>
           </div>
         </div>
@@ -4309,11 +4381,15 @@
       <div class="panel mosaic-frame-panel">
         <div class="mosaic-frame-head">
           <div>
-            <div class="panel-title">Interactive Demographic Mosaic</div>
-            <div class="panel-note">Treemap, bar chart, card grid, country drawer, and scenario controls generated from the ethnic and religious composition output tables.</div>
+            <div class="panel-title">Natalis TFR &amp; Births Atlas</div>
+            <div class="panel-note">Standalone Vercel app embedded in place of the legacy local ethnic mosaic.</div>
+          </div>
+          <div class="mosaic-actions">
+            <a href="/natalis/" target="_blank" rel="noopener">Open Full App</a>
           </div>
         </div>
-        <iframe class="mosaic-frame" id="ethnic-mosaic-frame" title="The World's Demographic Mosaic in 2050" loading="lazy" src="../data/output/ethnic_demographics_2050.html?v=20260816-evidence-v13"></iframe>
+        <iframe class="mosaic-frame external-mosaic-frame" id="ethnic-mosaic-frame" title="Natalis TFR and Births Atlas" loading="lazy" referrerpolicy="no-referrer-when-downgrade" allow="fullscreen" src="/natalis/"></iframe>
+        <p class="mosaic-external-note">The embedded atlas is served through the HDI deployment so the demographic view stays inside this dashboard.</p>
       </div>
     </section>
     </section>
@@ -4580,13 +4656,32 @@
           <button type="button" class="secondary" data-map-zoom="in" aria-label="Zoom maps in">+</button>
         </div>
       </div>
-      <div class="hdi-era-strip" aria-label="Selected geography HDI timeline for 1998, 2025, and 2050">
+      <div class="hdi-era-strip" aria-label="Selected geography HDI timeline for 2000, active year, 2025, and 2050">
         <div class="hdi-era" style="--era-color:#ff557a"><div class="hdi-era-year">1998 · HDR 2000</div><div class="hdi-era-value" data-metric="hdi-1998">--</div><div class="hdi-era-note">Published report-vintage value</div></div>
+        <div class="hdi-era" style="--era-color:var(--scenario-accent)"><div class="hdi-era-year"><span data-metric="animated-year">2000</span> · Animated year</div><div class="hdi-era-value" data-metric="animated-hdi">--</div><div class="hdi-era-note" id="animated-era-note">Interpolated active-year estimate</div></div>
         <div class="hdi-era" style="--era-color:#f6ce6a"><div class="hdi-era-year">2025 · HDR baseline</div><div class="hdi-era-value" data-metric="hdi-2025">--</div><div class="hdi-era-note">Current reference release</div></div>
         <div class="hdi-era" style="--era-color:var(--scenario-accent)"><div class="hdi-era-year">2050 · Active scenario</div><div class="hdi-era-value" data-metric="hdi-2050">--</div><div class="hdi-era-note" id="timeline-scenario-note">Baseline scenario projection</div></div>
       </div>
-      <div class="history-source-note"><strong>Comparability note:</strong> the 1998 layer reproduces values published in the 2000 report for 174 ranked countries. It is not a retrospectively revised time series, so methodology and source revisions contribute to the apparent 1998-2025 change. <a href="https://hdr.undp.org/content/human-development-report-2000" target="_blank" rel="noreferrer">Open the UNDP report record</a>.</div>
+      <div class="history-source-note"><strong>Comparability note:</strong> the 2000 animation starts from the HDR 2000 report's published 1998 layer for ranked countries, interpolates to the HDR 2025 baseline, then interpolates to the active 2050 scenario. It is a visual pathway between anchors, not an official annual HDI time series. <a href="https://hdr.undp.org/content/human-development-report-2000" target="_blank" rel="noreferrer">Open the UNDP report record</a>.</div>
       <div class="maps hdi-period-maps" id="maps-grid">
+        <div class="panel map-panel animated-map-panel" data-panel="animated">
+          <div class="panel-head">
+            <div class="panel-title">Animated HDI: 2000-2050</div>
+            <div class="panel-note" id="animated-map-note">Interpolated active-year HDI</div>
+          </div>
+          <div class="map-metrics">
+            <div class="map-metric"><div class="k">Selected country</div><div class="v" data-metric="country">World</div></div>
+            <div class="map-metric"><div class="k">Active year</div><div class="v" data-metric="animated-year">2000</div></div>
+            <div class="map-metric"><div class="k">HDI in active year</div><div class="v" data-metric="animated-hdi">--</div></div>
+            <div class="map-metric"><div class="k">Change since 2000</div><div class="v" data-metric="animated-gain">--</div></div>
+            <div class="map-metric"><div class="k">Active-year rank</div><div class="v" data-metric="animated-rank">--</div></div>
+          </div>
+          <div class="legend">
+            <div class="legend-bar"></div>
+            <div class="legend-labels"><span>0.400</span><span>center 0.820</span><span>1.000</span></div>
+          </div>
+          <div class="map-wrap"><svg id="map-animated" viewBox="0 0 960 500" aria-label="Animated HDI world map from 2000 to 2050"><g></g></svg></div>
+        </div>
         <div class="panel map-panel" data-panel="historical">
           <div class="panel-head">
             <div class="panel-title">HDR 2000: 1998 HDI</div>
@@ -5116,6 +5211,12 @@
     let sortState = {column: "Rank", direction: 1};
     let activeView = "both";
     let activeScenario = "baseline";
+    const ANIMATION_START_YEAR = 2000;
+    const BASELINE_YEAR = 2025;
+    const PROJECTION_YEAR = 2050;
+    let activeAnimatedYear = ANIMATION_START_YEAR;
+    let playbackTimer = null;
+    let playbackPlaying = false;
     let compareMetric = "hdi";
     let thresholdCountry = null;
     let thresholdCustomValue = null;
@@ -5439,6 +5540,63 @@
       return scenarioHdi(row) - Number(row.HDI_Baseline);
     }
 
+    function clampAnimationYear(year) {
+      const parsed = Math.round(Number(year));
+      if (!Number.isFinite(parsed)) return ANIMATION_START_YEAR;
+      return Math.max(ANIMATION_START_YEAR, Math.min(PROJECTION_YEAR, parsed));
+    }
+
+    function interpolateNumber(start, end, t) {
+      const a = Number(start);
+      const b = Number(end);
+      if (!Number.isFinite(a) && !Number.isFinite(b)) return NaN;
+      if (!Number.isFinite(a)) return b;
+      if (!Number.isFinite(b)) return a;
+      const clamped = Math.max(0, Math.min(1, Number(t) || 0));
+      return a + (b - a) * clamped;
+    }
+
+    function animatedStartHdi(row) {
+      const historical = historicalHdi(row);
+      if (Number.isFinite(historical)) return historical;
+      return Number(row?.HDI_Baseline);
+    }
+
+    function hdiForYear(row, year = activeAnimatedYear) {
+      if (!row) return NaN;
+      const y = clampAnimationYear(year);
+      const start = animatedStartHdi(row);
+      const baseline = Number(row.HDI_Baseline);
+      const projection = scenarioHdi(row);
+      if (y <= BASELINE_YEAR) {
+        return interpolateNumber(start, baseline, (y - ANIMATION_START_YEAR) / (BASELINE_YEAR - ANIMATION_START_YEAR));
+      }
+      return interpolateNumber(baseline, projection, (y - BASELINE_YEAR) / (PROJECTION_YEAR - BASELINE_YEAR));
+    }
+
+    function animatedWorldHdi(rows, year = activeAnimatedYear) {
+      const y = clampAnimationYear(year);
+      if (rows.length === allRows.length) {
+        if (y <= BASELINE_YEAR) {
+          return interpolateNumber(officialWorldHdi1998, officialWorldHdi2025, (y - ANIMATION_START_YEAR) / (BASELINE_YEAR - ANIMATION_START_YEAR));
+        }
+        return interpolateNumber(officialWorldHdi2025, calibratedWorldHdi2050(rows), (y - BASELINE_YEAR) / (PROJECTION_YEAR - BASELINE_YEAR));
+      }
+      const weightKey = y <= BASELINE_YEAR ? "Population_2024" : "Population_2050";
+      return weightedMeanBy(rows, row => hdiForYear(row, y), weightKey);
+    }
+
+    function animatedRank(row, year = activeAnimatedYear) {
+      const target = hdiForYear(row, year);
+      if (!Number.isFinite(target)) return null;
+      const ranked = allRows
+        .map(item => ({iso3: item.ISO3, value: hdiForYear(item, year)}))
+        .filter(item => Number.isFinite(item.value))
+        .sort((a, b) => b.value - a.value || a.iso3.localeCompare(b.iso3));
+      const index = ranked.findIndex(item => item.iso3 === row.ISO3);
+      return index >= 0 ? index + 1 : null;
+    }
+
     function colorForHDI(value) {
       const center = 0.82;
       const v = Number(value);
@@ -5522,7 +5680,9 @@
       return row;
     }
 
+    const animatedMapSeries = {selector: "#map-animated", key: "Animated_HDI", label: () => `${activeAnimatedYear} interpolated HDI`};
     const mapSeries = [
+      animatedMapSeries,
       {selector: "#map-1998", key: "HDI_1998_HDR2000", label: "HDR 2000 report: 1998 HDI"},
       {selector: "#map-2025", key: "HDI_Baseline", label: "HDR 2025 HDI"},
       {selector: "#map-2050", key: "Scenario_HDI_2050", label: "2050 HDI"},
@@ -6916,6 +7076,10 @@
       return allRows.find(d => d.ISO3 === key);
     }
 
+    function labelForSeries(series) {
+      return typeof series?.label === "function" ? series.label() : (series?.label || "HDI");
+    }
+
     function drawMap(series) {
       const svg = d3.select(series.selector);
       const layer = svg.select("g");
@@ -6941,7 +7105,7 @@
         })
         .attr("tabindex", f => { const d=getDatum(f); return d&&filteredIso.has(d.ISO3)?0:-1; })
         .attr("role", f => getDatum(f)?"button":"img")
-        .attr("aria-label", f => { const d=getDatum(f); if(!d)return "Country with no HDI data"; const value=valueForSeries(d,series); const valueLabel=Number.isFinite(value)?fmt(value):"not ranked in this report"; return `${d.Country}, ${series.label}, ${valueLabel}. 1998 report rank ${d.Rank_1998_HDR2000 || "not available"}; 2025 rank ${d.UNDP_Rank_2023 || "not available"}; projected 2050 rank ${d.Rank || "not available"}. Activate to inspect country.`; })
+        .attr("aria-label", f => { const d=getDatum(f); if(!d)return "Country with no HDI data"; const value=valueForSeries(d,series); const valueLabel=Number.isFinite(value)?fmt(value):"not ranked in this report"; return `${d.Country}, ${labelForSeries(series)}, ${valueLabel}. 1998 report rank ${d.Rank_1998_HDR2000 || "not available"}; 2025 rank ${d.UNDP_Rank_2023 || "not available"}; projected 2050 rank ${d.Rank || "not available"}. Activate to inspect country.`; })
         .classed("active", f => {
           const d = getDatum(f);
           return d && activeCountry && d.ISO3 === activeCountry.ISO3;
@@ -6972,6 +7136,7 @@
 
     function valueForSeries(row, series) {
       if (!row || !series) return NaN;
+      if (series.key === "Animated_HDI") return hdiForYear(row, activeAnimatedYear);
       if (series.key === "HDI_1998_HDR2000") return historicalHdi(row);
       if (series.key === "Scenario_HDI_2050") return scenarioHdi(row);
       if (scenarioDimensionKeys[series.key]) return scenarioDimensionValue(row, series.key);
@@ -7137,7 +7302,8 @@
 
     function applyMapView() {
       document.querySelectorAll("#maps .map-section").forEach(section => {
-        section.hidden = activeView === "historical" && section.dataset.historicalSupported !== "true";
+        const hdiOnlyView = activeView === "historical" || activeView === "animated";
+        section.hidden = hdiOnlyView && section.dataset.historicalSupported !== "true";
       });
       document.querySelectorAll(".maps").forEach(group => {
         group.classList.toggle("single-map", activeView !== "both");
@@ -7166,11 +7332,13 @@
     }
 
     function showTooltip(event, d, series) {
-      const seriesLabel = series?.label || "HDI";
+      const seriesLabel = labelForSeries(series);
       const value = series ? valueForSeries(d, series) : scenarioHdi(d);
       const seriesValue = series ? fmt(value) : fmt(scenarioHdi(d));
       const gain = scenarioGain(d);
       const hdiGain = gain >= 0 ? `+${fmt(gain)}` : fmt(gain);
+      const animatedValue = hdiForYear(d, activeAnimatedYear);
+      const animatedGain = animatedValue - animatedStartHdi(d);
       const scenario = displayedScenarioDimensions(d);
       const dimensions = [
         ["Health", scenario.health],
@@ -7178,7 +7346,7 @@
         ["Income", scenario.income]
       ];
       const historicalValue = Number.isFinite(historicalHdi(d)) ? fmt(historicalHdi(d)) : "No report value";
-      tooltip.innerHTML = `<div class="tooltip-head"><div><strong>${d.Country}</strong><br><small>${d.ISO3} &middot; ${seriesLabel} ${seriesValue}</small></div><div class="tooltip-ranks">1998 #${d.Rank_1998_HDR2000 || "--"}<br>2025 #${d.UNDP_Rank_2023 || "--"}<br>2050 #${d.Rank || "--"}</div></div><div>${scenarios[activeScenario].label}</div><div class="tooltip-shift">${historicalValue} &rarr; ${fmt(d.HDI_Baseline)} &rarr; ${fmt(scenarioHdi(d))}</div>${tooltipTimelineSvg(d)}${dimensions.map(([label,index]) => `<div class="tooltip-dimension"><span>${label}</span><div class="tooltip-track"><div class="tooltip-fill" style="width:${Math.max(0,Math.min(100,Number(index)*100))}%"></div></div><strong>${fmt(index,3)}</strong></div>`).join("")}<div class="panel-note" style="margin-top:8px">2025-2050 change ${hdiGain} &middot; Population 2050 ${fmtMaybe(d.Population_2050)}</div>`;
+      tooltip.innerHTML = `<div class="tooltip-head"><div><strong>${d.Country}</strong><br><small>${d.ISO3} &middot; ${seriesLabel} ${seriesValue}</small></div><div class="tooltip-ranks">1998 #${d.Rank_1998_HDR2000 || "--"}<br>2025 #${d.UNDP_Rank_2023 || "--"}<br>2050 #${d.Rank || "--"}</div></div><div>${scenarios[activeScenario].label}</div><div class="tooltip-shift">${historicalValue} &rarr; ${fmt(d.HDI_Baseline)} &rarr; ${fmt(scenarioHdi(d))}</div><div class="tooltip-shift">${activeAnimatedYear} animated HDI ${fmt(animatedValue)} (${animatedGain >= 0 ? "+" : ""}${fmt(animatedGain)} since 2000)</div>${tooltipTimelineSvg(d)}${dimensions.map(([label,index]) => `<div class="tooltip-dimension"><span>${label}</span><div class="tooltip-track"><div class="tooltip-fill" style="width:${Math.max(0,Math.min(100,Number(index)*100))}%"></div></div><strong>${fmt(index,3)}</strong></div>`).join("")}<div class="panel-note" style="margin-top:8px">2025-2050 change ${hdiGain} &middot; Population 2050 ${fmtMaybe(d.Population_2050)}</div>`;
       tooltip.style.left = `${Math.max(8, Math.min(window.innerWidth - 345, event.clientX + 14))}px`;
       tooltip.style.top = `${Math.max(8, Math.min(window.innerHeight - 340, event.clientY + 14))}px`;
       tooltip.style.opacity = "1";
@@ -9805,6 +9973,99 @@ LIVE_EVIDENCE: ${JSON.stringify(hdiGptEvidencePayload(prompt))}`
       return getComputedStyle(root).getPropertyValue(name).trim();
     }
 
+    function animatedContextRows() {
+      return activeCountry ? [activeCountry] : sourceRowsForWorldMetrics();
+    }
+
+    function syncAnimatedYearControl() {
+      const year = String(activeAnimatedYear);
+      const slider = document.getElementById("year-slider");
+      const display = document.getElementById("year-display");
+      if (slider) slider.value = year;
+      if (display) display.textContent = year;
+      setMetric("animated-year", year);
+    }
+
+    function updateAnimatedYearMetrics() {
+      syncAnimatedYearControl();
+      const rows = animatedContextRows();
+      const row = activeCountry;
+      const value = row ? hdiForYear(row, activeAnimatedYear) : animatedWorldHdi(rows, activeAnimatedYear);
+      const startValue = row ? hdiForYear(row, ANIMATION_START_YEAR) : animatedWorldHdi(rows, ANIMATION_START_YEAR);
+      const gain = value - startValue;
+      const rank = row ? animatedRank(row, activeAnimatedYear) : null;
+      setMetric("animated-hdi", fmt(value));
+      setMetric("animated-gain", Number.isFinite(gain) ? `${gain >= 0 ? "+" : ""}${fmt(gain)}` : "--");
+      setMetric("animated-rank", row ? (rank ? `#${rank}` : "--") : `${rows.length} countries`);
+      const selectedLabel = row ? `${row.Country} (${row.ISO3})` : rows.length === allRows.length ? "World, UNDP aggregate" : `Filtered world (${rows.length})`;
+      const note = activeAnimatedYear <= BASELINE_YEAR
+        ? "Interpolating from the HDR 2000 report anchor to the HDR 2025 baseline"
+        : `Interpolating from the HDR 2025 baseline to ${scenarios[activeScenario].label}`;
+      const mapNote = document.getElementById("animated-map-note");
+      if (mapNote) mapNote.textContent = `${selectedLabel}: ${activeAnimatedYear} HDI ${fmt(value)}. ${note}.`;
+      const eraNote = document.getElementById("animated-era-note");
+      if (eraNote) eraNote.textContent = note;
+    }
+
+    function syncPlaybackButton() {
+      const button = document.getElementById("playback-toggle");
+      const text = document.getElementById("playback-toggle-text");
+      if (!button || !text) return;
+      button.classList.toggle("playing", playbackPlaying);
+      button.setAttribute("aria-pressed", String(playbackPlaying));
+      button.setAttribute("aria-label", playbackPlaying ? "Pause year-by-year HDI animation" : "Play year-by-year HDI animation");
+      text.textContent = playbackPlaying ? "Pause" : "Play";
+    }
+
+    function playbackDelayMs() {
+      const speed = Number(document.getElementById("playback-speed")?.value) || 2;
+      return Math.max(120, 760 / speed);
+    }
+
+    function stopPlayback(sync = true) {
+      if (playbackTimer) {
+        window.clearInterval(playbackTimer);
+        playbackTimer = null;
+      }
+      playbackPlaying = false;
+      syncPlaybackButton();
+      if (sync) syncUrlState();
+    }
+
+    function setAnimatedYear(year, options = {}) {
+      const next = clampAnimationYear(year);
+      const changed = next !== activeAnimatedYear;
+      activeAnimatedYear = next;
+      updateAnimatedYearMetrics();
+      if (changed || options.forceRedraw) {
+        drawMap(animatedMapSeries);
+        applyMapViewport(false);
+      }
+      if (options.sync !== false) syncUrlState();
+    }
+
+    function advancePlaybackYear() {
+      if (activeAnimatedYear >= PROJECTION_YEAR) {
+        stopPlayback();
+        return;
+      }
+      setAnimatedYear(activeAnimatedYear + 1, {sync: false});
+      if (activeAnimatedYear >= PROJECTION_YEAR) stopPlayback();
+    }
+
+    function startPlayback() {
+      if (activeAnimatedYear >= PROJECTION_YEAR) setAnimatedYear(ANIMATION_START_YEAR, {sync: false, forceRedraw: true});
+      stopPlayback(false);
+      playbackPlaying = true;
+      syncPlaybackButton();
+      playbackTimer = window.setInterval(advancePlaybackYear, playbackDelayMs());
+    }
+
+    function togglePlayback() {
+      if (playbackPlaying) stopPlayback();
+      else startPlayback();
+    }
+
     function resetMapMetrics() {
       const rows = sourceRowsForWorldMetrics();
       const isGlobal = rows.length === allRows.length;
@@ -9842,6 +10103,7 @@ LIVE_EVIDENCE: ${JSON.stringify(hdiGptEvidencePayload(prompt))}`
       setMetric("income-2025", fmt(income2025));
       setMetric("income-2050", fmt(displayed.income));
       setMetric("hdi-from-indices", fmt(displayed.hdi, 3));
+      updateAnimatedYearMetrics();
       renderResearchBrief(activeCountry);
     }
 
@@ -9885,6 +10147,7 @@ LIVE_EVIDENCE: ${JSON.stringify(hdiGptEvidencePayload(prompt))}`
       setMetric("income-2025", fmt(d.IncomeIndex_2025));
       setMetric("income-2050", fmt(scenario.income));
       setMetric("hdi-from-indices", fmt(scenario.hdi, 3));
+      updateAnimatedYearMetrics();
       renderResearchBrief(d);
       renderMosaicSelectedContext();
       renderMosaicOverlayChart();
@@ -9919,6 +10182,7 @@ LIVE_EVIDENCE: ${JSON.stringify(hdiGptEvidencePayload(prompt))}`
         document.getElementById("country-jump").value = "";
       }
       if (!activeCountry) resetMapMetrics();
+      else updateAnimatedYearMetrics();
       redrawMaps();
       renderCharts();
       renderComparePanel();
@@ -10214,6 +10478,7 @@ LIVE_EVIDENCE: ${JSON.stringify(hdiGptEvidencePayload(prompt))}`
     function stateParams() {
       const params = new URLSearchParams();
       params.set("scenario", activeScenario);
+      params.set("year", String(activeAnimatedYear));
       Object.entries(tuning).forEach(([key, value]) => params.set(key, String(value)));
       if (activeCountry) params.set("country", activeCountry.ISO3);
       if (thresholdCountry) params.set("threshold", thresholdCountry.ISO3);
@@ -10250,6 +10515,9 @@ LIVE_EVIDENCE: ${JSON.stringify(hdiGptEvidencePayload(prompt))}`
         activeScenario = scenario;
         document.getElementById("scenario-select").value = scenario;
       }
+      const animatedYear = Number(params.get("year"));
+      if (Number.isFinite(animatedYear)) activeAnimatedYear = clampAnimationYear(animatedYear);
+      syncAnimatedYearControl();
       Object.keys(tuning).forEach(key => {
         const value = Number(params.get(key));
         if (Number.isFinite(value)) {
@@ -10503,6 +10771,7 @@ LIVE_EVIDENCE: ${JSON.stringify(hdiGptEvidencePayload(prompt))}`
       filteredRows = [...allRows];
       if (activeCountry) document.getElementById("country-jump").value = activeCountry.ISO3;
       if (!activeCountry) resetMapMetrics();
+      else updateAnimatedYearMetrics();
       redrawMaps();
       renderCharts();
       renderTable();
@@ -10527,6 +10796,14 @@ LIVE_EVIDENCE: ${JSON.stringify(hdiGptEvidencePayload(prompt))}`
       });
       document.getElementById("scenario-select").addEventListener("change", event => {
         setScenario(event.target.value);
+      });
+      document.getElementById("year-slider").addEventListener("input", event => {
+        stopPlayback(false);
+        setAnimatedYear(event.target.value);
+      });
+      document.getElementById("playback-toggle").addEventListener("click", togglePlayback);
+      document.getElementById("playback-speed").addEventListener("change", () => {
+        if (playbackPlaying) startPlayback();
       });
       document.getElementById("tier-filter").addEventListener("change", applyFilters);
       document.getElementById("trajectory-filter").addEventListener("change", applyFilters);
