@@ -3746,7 +3746,7 @@
             <div>
               <div class="section-kicker">Future economic poles</div>
               <h3 id="economy-poles-title">Future poles of the world, 2050</h3>
-              <p id="economy-poles-summary">Country colors group major projected economic poles and regional growth systems. The legend shows each bloc's share of modeled 2050 PPP output, while gray countries remain outside this schematic grouping but stay selectable.</p>
+              <p id="economy-poles-summary">The map highlights only five established economic or military poles: the United States, European Union, Russian Sphere, China, and India. All other countries remain gray and selectable.</p>
             </div>
             <span class="city-badge">PPP scale</span>
           </div>
@@ -3754,7 +3754,7 @@
             <div class="poles-map-wrap">
               <svg id="economy-poles-map" class="economy-poles-map" viewBox="0 0 960 620" role="img" aria-labelledby="economy-poles-svg-title economy-poles-svg-desc">
                 <title id="economy-poles-svg-title">Future economic poles world map in 2050</title>
-                <desc id="economy-poles-svg-desc">Polar-style world map grouping countries into projected 2050 economic poles with current EU member borders kept separate from European partner states.</desc>
+                <desc id="economy-poles-svg-desc">Polar-style world map highlighting the United States, European Union, Russian Sphere, China, and India as the five economic or military poles.</desc>
               </svg>
             </div>
             <div class="poles-sidebar">
@@ -3762,7 +3762,7 @@
               <div class="poles-kpi-grid" id="economy-poles-kpis" aria-label="2050 economic pole summary"></div>
             </div>
           </div>
-          <p class="economy-selected-note" id="economy-poles-note">European Union shading uses the current EU-27 member states only. Candidate, partner, and neighboring states are separate, and no current occupied territories are reassigned in the country geometry.</p>
+          <p class="economy-selected-note" id="economy-poles-note">European Union shading uses the EU-27. The Russian Sphere is limited to Russia and its EAEU/CSTO-aligned core: Armenia, Belarus, Kazakhstan, Kyrgyzstan, and Tajikistan. No occupied territories are reassigned.</p>
         </div>
 
         <div class="panel economy-controls" aria-label="Economic outlook controls">
@@ -6847,14 +6847,14 @@
 
     const economicPoleGroups = [
       {
-        id: "north-america",
-        label: "North American core",
-        mapLabel: "N. America",
+        id: "united-states",
+        label: "United States",
+        mapLabel: "US",
         color: "#18b9b2",
-        members: ["USA", "CAN", "MEX"],
-        center: [-101, 47],
-        dx: -20,
-        dy: -8
+        members: ["USA"],
+        center: [-99, 39],
+        dx: -8,
+        dy: -10
       },
       {
         id: "european-union",
@@ -6865,16 +6865,6 @@
         center: [10, 51],
         dx: -10,
         dy: 18
-      },
-      {
-        id: "europe-partners",
-        label: "European partners and candidates",
-        mapLabel: "Europe partners",
-        color: "#8bc7ff",
-        members: ["GBR", "NOR", "ISL", "CHE", "LIE", "AND", "MCO", "SMR", "VAT", "UKR", "MDA", "ALB", "MKD", "MNE", "SRB", "BIH", "TUR", "GEO", "ARM", "AZE"],
-        center: [32, 47],
-        dx: 58,
-        dy: 12
       },
       {
         id: "china",
@@ -6898,63 +6888,13 @@
       },
       {
         id: "russia",
-        label: "Russian Federation",
-        mapLabel: "Russia",
+        label: "Russian Sphere",
+        mapLabel: "Russian Sphere",
         color: "#d84a55",
-        members: ["RUS"],
-        center: [92, 61],
-        dx: 30,
-        dy: -5
-      },
-      {
-        id: "africa",
-        label: "African Union / AfCFTA",
-        mapLabel: "Africa / AfCFTA",
-        color: "#61e0a8",
-        members: ["DZA", "AGO", "BEN", "BWA", "BFA", "BDI", "CPV", "CMR", "CAF", "TCD", "COM", "COG", "COD", "CIV", "DJI", "EGY", "GNQ", "ERI", "SWZ", "ETH", "GAB", "GMB", "GHA", "GIN", "GNB", "KEN", "LSO", "LBR", "LBY", "MDG", "MWI", "MLI", "MRT", "MUS", "MAR", "MOZ", "NAM", "NER", "NGA", "RWA", "STP", "SEN", "SYC", "SLE", "SOM", "ZAF", "SSD", "SDN", "TZA", "TGO", "TUN", "UGA", "ZMB", "ZWE"],
-        center: [20, 4],
-        dx: -2,
-        dy: 30
-      },
-      {
-        id: "southeast-asia",
-        label: "Southeast Asia",
-        mapLabel: "SE Asia",
-        color: "#a6d96a",
-        members: ["BRN", "KHM", "IDN", "LAO", "MYS", "MMR", "PHL", "SGP", "THA", "TLS", "VNM"],
-        center: [108, 5],
-        dx: 58,
-        dy: 22
-      },
-      {
-        id: "gulf",
-        label: "Gulf capital-energy pole",
-        mapLabel: "Gulf",
-        color: "#c8a74b",
-        members: ["BHR", "KWT", "OMN", "QAT", "SAU", "ARE"],
-        center: [48, 25],
-        dx: 14,
-        dy: 28
-      },
-      {
-        id: "south-america",
-        label: "South American anchors",
-        mapLabel: "South America",
-        color: "#bb86fc",
-        members: ["ARG", "BOL", "BRA", "CHL", "COL", "ECU", "PRY", "PER", "URY", "VEN"],
-        center: [-60, -14],
-        dx: -12,
-        dy: 16
-      },
-      {
-        id: "advanced-pacific",
-        label: "Advanced Pacific economies",
-        mapLabel: "Pacific advanced",
-        color: "#f19ab4",
-        members: ["AUS", "JPN", "KOR", "NZL"],
-        center: [142, -17],
+        members: ["RUS", "ARM", "BLR", "KAZ", "KGZ", "TJK"],
+        center: [78, 57],
         dx: 42,
-        dy: -18
+        dy: -5
       }
     ];
     const economicPoleByIso = new Map();
@@ -7177,7 +7117,7 @@
       const summary = document.getElementById("economy-poles-summary");
       if (summary) {
         const covered = d3.sum(stats.groups, group => group.ppp);
-        summary.textContent = `The infographic highlights ${stats.groups.length} economic poles covering ${economicPolePercent(covered, stats.worldPpp)} of modeled 2050 PPP output. EU shading is EU-27 only; candidates, partners, and other neighbors remain separate countries.`;
+        summary.textContent = `The infographic highlights only ${stats.groups.length} established economic or military poles covering ${economicPolePercent(covered, stats.worldPpp)} of modeled 2050 PPP output. All other countries remain gray and selectable.`;
       }
 
       const legend = document.getElementById("economy-poles-legend");
@@ -7199,7 +7139,7 @@
           ["Largest pole", largest?.label || "--", largest ? `${formatEconomic(largest.ppp, "total")} PPP | ${economicPolePercent(largest.ppp, stats.worldPpp)} of modeled output` : "--"],
           ["EU-27 scale", eu ? economicPolePercent(eu.ppp, stats.worldPpp) : "--", eu ? `${formatEconomic(eu.ppp, "total")} PPP using current member borders` : "--"],
           ["China + India", economicPolePercent(chinaIndiaPpp, stats.worldPpp), `${formatEconomic(chinaIndiaPpp, "total")} combined PPP output`],
-          ["Highlighted coverage", economicPolePercent(coloredPpp, stats.worldPpp), `${stats.groups.length} poles; ${stats.restRows.length} countries left gray`]
+          ["Five-pole coverage", economicPolePercent(coloredPpp, stats.worldPpp), `${stats.groups.length} poles; ${stats.restRows.length} countries left gray`]
         ];
         kpis.innerHTML = tiles.map(([label, value, note]) => `<div class="poles-kpi-tile"><span>${escapeHtml(label)}</span><strong>${escapeHtml(value)}</strong><small>${escapeHtml(note)}</small></div>`).join("");
       }
