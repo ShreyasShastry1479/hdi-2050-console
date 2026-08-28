@@ -3746,7 +3746,7 @@
             <div>
               <div class="section-kicker">Future economic poles</div>
               <h3 id="economy-poles-title">Future poles of the world, 2050</h3>
-              <p id="economy-poles-summary">The map highlights only five established economic or military poles: the United States, European Union, Russian Sphere, China, and India. All other countries remain gray and selectable.</p>
+              <p id="economy-poles-summary">The map highlights five economic or military poles. The EU pole uses a transparent 2050 accession scenario: the EU-27 plus the nine countries currently recognized by the EU as candidates.</p>
             </div>
             <span class="city-badge">PPP scale</span>
           </div>
@@ -3754,7 +3754,7 @@
             <div class="poles-map-wrap">
               <svg id="economy-poles-map" class="economy-poles-map" viewBox="0 0 960 620" role="img" aria-labelledby="economy-poles-svg-title economy-poles-svg-desc">
                 <title id="economy-poles-svg-title">Future economic poles world map in 2050</title>
-                <desc id="economy-poles-svg-desc">Polar-style world map highlighting the United States, European Union, Russian Sphere, China, and India as the five economic or military poles.</desc>
+                <desc id="economy-poles-svg-desc">Polar-style world map highlighting the United States, an EU-2050 accession scenario, Russian Sphere, China, and India as five economic or military poles.</desc>
               </svg>
             </div>
             <div class="poles-sidebar">
@@ -3762,7 +3762,7 @@
               <div class="poles-kpi-grid" id="economy-poles-kpis" aria-label="2050 economic pole summary"></div>
             </div>
           </div>
-          <p class="economy-selected-note" id="economy-poles-note">European Union shading uses the EU-27. The Russian Sphere is limited to Russia and its EAEU/CSTO-aligned core: Armenia, Belarus, Kazakhstan, Kyrgyzstan, and Tajikistan. No occupied territories are reassigned.</p>
+          <p class="economy-selected-note" id="economy-poles-note">EU-2050 shading includes the EU-27 plus Albania, Bosnia and Herzegovina, Georgia, Moldova, Montenegro, North Macedonia, Serbia, Türkiye, and Ukraine. This is a scenario, not a membership forecast. Kosovo is a potential candidate but is not separately represented in the 193-country model geometry. The Russian Sphere remains limited to Russia and its EAEU/CSTO-aligned core. No occupied territories are reassigned.</p>
         </div>
 
         <div class="panel economy-controls" aria-label="Economic outlook controls">
@@ -6858,10 +6858,10 @@
       },
       {
         id: "european-union",
-        label: "European Union (EU-27)",
-        mapLabel: "EU-27",
+        label: "EU-2050 accession scenario",
+        mapLabel: "EU 2050",
         color: "#2f86ff",
-        members: ["AUT", "BEL", "BGR", "HRV", "CYP", "CZE", "DNK", "EST", "FIN", "FRA", "DEU", "GRC", "HUN", "IRL", "ITA", "LVA", "LTU", "LUX", "MLT", "NLD", "POL", "PRT", "ROU", "SVK", "SVN", "ESP", "SWE"],
+        members: ["AUT", "BEL", "BGR", "HRV", "CYP", "CZE", "DNK", "EST", "FIN", "FRA", "DEU", "GRC", "HUN", "IRL", "ITA", "LVA", "LTU", "LUX", "MLT", "NLD", "POL", "PRT", "ROU", "SVK", "SVN", "ESP", "SWE", "ALB", "BIH", "GEO", "MDA", "MNE", "MKD", "SRB", "TUR", "UKR"],
         center: [10, 51],
         dx: -10,
         dy: 18
@@ -7137,7 +7137,7 @@
         const coloredPpp = d3.sum(stats.groups, group => group.ppp);
         const tiles = [
           ["Largest pole", largest?.label || "--", largest ? `${formatEconomic(largest.ppp, "total")} PPP | ${economicPolePercent(largest.ppp, stats.worldPpp)} of modeled output` : "--"],
-          ["EU-27 scale", eu ? economicPolePercent(eu.ppp, stats.worldPpp) : "--", eu ? `${formatEconomic(eu.ppp, "total")} PPP using current member borders` : "--"],
+          ["EU-2050 scenario", eu ? economicPolePercent(eu.ppp, stats.worldPpp) : "--", eu ? `${formatEconomic(eu.ppp, "total")} PPP across EU-27 and nine current candidates` : "--"],
           ["China + India", economicPolePercent(chinaIndiaPpp, stats.worldPpp), `${formatEconomic(chinaIndiaPpp, "total")} combined PPP output`],
           ["Five-pole coverage", economicPolePercent(coloredPpp, stats.worldPpp), `${stats.groups.length} poles; ${stats.restRows.length} countries left gray`]
         ];
