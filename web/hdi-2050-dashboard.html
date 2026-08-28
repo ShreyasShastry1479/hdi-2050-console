@@ -3754,7 +3754,7 @@
             <div class="poles-map-wrap">
               <svg id="economy-poles-map" class="economy-poles-map" viewBox="0 0 960 620" role="img" aria-labelledby="economy-poles-svg-title economy-poles-svg-desc">
                 <title id="economy-poles-svg-title">Future economic poles world map in 2050</title>
-                <desc id="economy-poles-svg-desc">Polar-style world map highlighting the United States, an EU-2050 accession scenario, Russian Sphere, China, and India as five economic or military poles.</desc>
+                <desc id="economy-poles-svg-desc">Polar-style world map highlighting the United States, an EU-2050 accession scenario, Russian Sphere, Chinese Sphere, and India as five economic or military poles.</desc>
               </svg>
             </div>
             <div class="poles-sidebar">
@@ -3762,7 +3762,7 @@
               <div class="poles-kpi-grid" id="economy-poles-kpis" aria-label="2050 economic pole summary"></div>
             </div>
           </div>
-          <p class="economy-selected-note" id="economy-poles-note">EU-2050 shading includes the EU-27 plus Albania, Bosnia and Herzegovina, Georgia, Moldova, Montenegro, North Macedonia, Serbia, Türkiye, and Ukraine. This is a scenario, not a membership forecast. Kosovo is a potential candidate but is not separately represented in the 193-country model geometry. The Russian Sphere remains limited to Russia and its EAEU/CSTO-aligned core. No occupied territories are reassigned.</p>
+          <p class="economy-selected-note" id="economy-poles-note">EU-2050 shading includes the EU-27 plus Albania, Bosnia and Herzegovina, Georgia, Moldova, Montenegro, North Macedonia, Serbia, Türkiye, and Ukraine. This is a scenario, not a membership forecast. Kosovo is a potential candidate but is not separately represented in the 193-country model geometry. The Russian Sphere remains limited to Russia, Armenia, Belarus, Kazakhstan, Kyrgyzstan, and Tajikistan. The non-overlapping Chinese Sphere is limited to China, North Korea, Pakistan, Cambodia, and Laos. No occupied territories are reassigned.</p>
         </div>
 
         <div class="panel economy-controls" aria-label="Economic outlook controls">
@@ -6868,13 +6868,13 @@
       },
       {
         id: "china",
-        label: "China",
-        mapLabel: "China",
+        label: "Chinese Sphere",
+        mapLabel: "Chinese Sphere",
         color: "#ffd33d",
-        members: ["CHN"],
-        center: [104, 35],
-        dx: 12,
-        dy: -20
+        members: ["CHN", "PRK", "PAK", "KHM", "LAO"],
+        center: [105, 33],
+        dx: 55,
+        dy: 20
       },
       {
         id: "india",
@@ -6893,8 +6893,8 @@
         color: "#d84a55",
         members: ["RUS", "ARM", "BLR", "KAZ", "KGZ", "TJK"],
         center: [78, 57],
-        dx: 42,
-        dy: -5
+        dx: -52,
+        dy: -14
       }
     ];
     const economicPoleByIso = new Map();
@@ -7133,12 +7133,12 @@
       if (kpis) {
         const largest = [...stats.groups].sort((a, b) => b.ppp - a.ppp)[0];
         const eu = statsById.get("european-union");
-        const chinaIndiaPpp = (statsById.get("china")?.ppp || 0) + (statsById.get("india")?.ppp || 0);
+        const chineseSphereIndiaPpp = (statsById.get("china")?.ppp || 0) + (statsById.get("india")?.ppp || 0);
         const coloredPpp = d3.sum(stats.groups, group => group.ppp);
         const tiles = [
           ["Largest pole", largest?.label || "--", largest ? `${formatEconomic(largest.ppp, "total")} PPP | ${economicPolePercent(largest.ppp, stats.worldPpp)} of modeled output` : "--"],
           ["EU-2050 scenario", eu ? economicPolePercent(eu.ppp, stats.worldPpp) : "--", eu ? `${formatEconomic(eu.ppp, "total")} PPP across EU-27 and nine current candidates` : "--"],
-          ["China + India", economicPolePercent(chinaIndiaPpp, stats.worldPpp), `${formatEconomic(chinaIndiaPpp, "total")} combined PPP output`],
+          ["Chinese sphere + India", economicPolePercent(chineseSphereIndiaPpp, stats.worldPpp), `${formatEconomic(chineseSphereIndiaPpp, "total")} combined PPP output`],
           ["Five-pole coverage", economicPolePercent(coloredPpp, stats.worldPpp), `${stats.groups.length} poles; ${stats.restRows.length} countries left gray`]
         ];
         kpis.innerHTML = tiles.map(([label, value, note]) => `<div class="poles-kpi-tile"><span>${escapeHtml(label)}</span><strong>${escapeHtml(value)}</strong><small>${escapeHtml(note)}</small></div>`).join("");
