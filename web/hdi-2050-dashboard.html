@@ -3754,7 +3754,7 @@
             <div class="poles-map-wrap">
               <svg id="economy-poles-map" class="economy-poles-map" viewBox="0 0 960 620" role="img" aria-labelledby="economy-poles-svg-title economy-poles-svg-desc">
                 <title id="economy-poles-svg-title">Future economic poles world map in 2050</title>
-                <desc id="economy-poles-svg-desc">Polar-style world map highlighting the United States, an EU-2050 accession scenario, Russian Sphere, Chinese Sphere, and India as five economic or military poles.</desc>
+                <desc id="economy-poles-svg-desc">Polar-style world map highlighting an American Sphere, an EU-2050 accession scenario, Russian Sphere, Chinese Sphere, and Indian Sphere as five schematic economic or military poles.</desc>
               </svg>
             </div>
             <div class="poles-sidebar">
@@ -3762,7 +3762,7 @@
               <div class="poles-kpi-grid" id="economy-poles-kpis" aria-label="2050 economic pole summary"></div>
             </div>
           </div>
-          <p class="economy-selected-note" id="economy-poles-note">EU-2050 shading includes the EU-27 plus Albania, Bosnia and Herzegovina, Georgia, Moldova, Montenegro, North Macedonia, Serbia, Türkiye, and Ukraine. This is a scenario, not a membership forecast. Kosovo is a potential candidate but is not separately represented in the 193-country model geometry. The Russian Sphere remains limited to Russia, Armenia, Belarus, Kazakhstan, Kyrgyzstan, and Tajikistan. The non-overlapping Chinese Sphere is limited to China, North Korea, Pakistan, Cambodia, and Laos. No occupied territories are reassigned.</p>
+          <p class="economy-selected-note" id="economy-poles-note">EU-2050 shading includes the EU-27 plus Albania, Bosnia and Herzegovina, Georgia, Moldova, Montenegro, North Macedonia, Serbia, Türkiye, and Ukraine. This is a scenario, not a membership forecast. Kosovo is a potential candidate but is not separately represented in the 193-country model geometry. The American Sphere is a schematic non-EU alliance core: United States, Canada, United Kingdom, Australia, New Zealand, Japan, South Korea, and the Philippines. The Indian Sphere is a schematic South Asian and Indian Ocean grouping: India, Bangladesh, Bhutan, Nepal, Sri Lanka, Maldives, and Mauritius. The Russian Sphere remains limited to Russia, Armenia, Belarus, Kazakhstan, Kyrgyzstan, and Tajikistan. The non-overlapping Chinese Sphere is limited to China, North Korea, Pakistan, Cambodia, and Laos. Every modeled country is assigned to at most one pole; no occupied territories are reassigned.</p>
         </div>
 
         <div class="panel economy-controls" aria-label="Economic outlook controls">
@@ -6848,10 +6848,10 @@
     const economicPoleGroups = [
       {
         id: "united-states",
-        label: "United States",
-        mapLabel: "US",
+        label: "American Sphere",
+        mapLabel: "American Sphere",
         color: "#18b9b2",
-        members: ["USA"],
+        members: ["USA", "CAN", "GBR", "AUS", "NZL", "JPN", "KOR", "PHL"],
         center: [-99, 39],
         dx: -8,
         dy: -10
@@ -6878,10 +6878,10 @@
       },
       {
         id: "india",
-        label: "India",
-        mapLabel: "India",
+        label: "Indian Sphere",
+        mapLabel: "Indian Sphere",
         color: "#ff8848",
-        members: ["IND"],
+        members: ["IND", "BGD", "BTN", "NPL", "LKA", "MDV", "MUS"],
         center: [78, 22],
         dx: 30,
         dy: 12
@@ -7133,12 +7133,12 @@
       if (kpis) {
         const largest = [...stats.groups].sort((a, b) => b.ppp - a.ppp)[0];
         const eu = statsById.get("european-union");
-        const chineseSphereIndiaPpp = (statsById.get("china")?.ppp || 0) + (statsById.get("india")?.ppp || 0);
+        const chineseIndianSpheresPpp = (statsById.get("china")?.ppp || 0) + (statsById.get("india")?.ppp || 0);
         const coloredPpp = d3.sum(stats.groups, group => group.ppp);
         const tiles = [
           ["Largest pole", largest?.label || "--", largest ? `${formatEconomic(largest.ppp, "total")} PPP | ${economicPolePercent(largest.ppp, stats.worldPpp)} of modeled output` : "--"],
           ["EU-2050 scenario", eu ? economicPolePercent(eu.ppp, stats.worldPpp) : "--", eu ? `${formatEconomic(eu.ppp, "total")} PPP across EU-27 and nine current candidates` : "--"],
-          ["Chinese sphere + India", economicPolePercent(chineseSphereIndiaPpp, stats.worldPpp), `${formatEconomic(chineseSphereIndiaPpp, "total")} combined PPP output`],
+          ["Chinese + Indian spheres", economicPolePercent(chineseIndianSpheresPpp, stats.worldPpp), `${formatEconomic(chineseIndianSpheresPpp, "total")} combined PPP output`],
           ["Five-pole coverage", economicPolePercent(coloredPpp, stats.worldPpp), `${stats.groups.length} poles; ${stats.restRows.length} countries left gray`]
         ];
         kpis.innerHTML = tiles.map(([label, value, note]) => `<div class="poles-kpi-tile"><span>${escapeHtml(label)}</span><strong>${escapeHtml(value)}</strong><small>${escapeHtml(note)}</small></div>`).join("");
