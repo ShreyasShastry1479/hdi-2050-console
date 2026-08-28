@@ -14,6 +14,11 @@
       "permanent": false
     },
     {
+      "source": "/natalis",
+      "destination": "/natalis/",
+      "permanent": false
+    },
+    {
       "source": "/demographic-context",
       "destination": "/web/hdi-2050-dashboard.html#ethnic-mosaic",
       "permanent": false
@@ -36,7 +41,7 @@
   ],
   "rewrites": [
     {
-      "source": "/natalis",
+      "source": "/natalis/",
       "destination": "https://temporary-fleet-azure-8hx5bb8.vercel.app/"
     },
     {
