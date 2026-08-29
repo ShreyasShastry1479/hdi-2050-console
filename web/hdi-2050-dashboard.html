@@ -3005,6 +3005,66 @@
     .country-inspector { border-radius:18px; }
     .city-badge,.badge,.pill { border-radius:999px; }
     @media (hover:none) { .stat:hover,.map-panel:hover,button:hover { transform:none; } }
+
+    /* Collision-safe Filters & Maps control deck. */
+    .controls {
+      display:grid;
+      grid-template-columns:minmax(0,1fr) auto;
+      align-items:start;
+    }
+    .controls .primary-controls {
+      display:grid;
+      grid-template-columns:minmax(180px,.85fr) minmax(220px,1.1fr) auto;
+      align-items:center;
+      gap:8px;
+      min-width:0;
+      overflow:visible;
+    }
+    .controls .primary-controls .search-shell,
+    .controls .primary-controls #scenario-select {
+      width:100%;
+      max-width:none;
+      min-width:0;
+    }
+    .controls .primary-controls .view-segment { min-width:0; }
+    .controls .primary-controls .year-playback {
+      grid-column:1 / -1;
+      width:100%;
+      max-width:none;
+      min-width:0;
+      grid-template-columns:auto auto minmax(160px,1fr) auto;
+    }
+    .controls .control-actions {
+      align-self:start;
+      justify-content:flex-end;
+      min-width:0;
+    }
+    .controls .control-actions .filters-menu {
+      left:0;
+      right:auto;
+    }
+    @media (max-width:1180px) {
+      .controls { grid-template-columns:minmax(0,1fr); }
+      .controls .primary-controls { grid-template-columns:minmax(0,1fr) minmax(0,1fr); width:100%; }
+      .controls .primary-controls .view-segment,
+      .controls .primary-controls .year-playback { grid-column:1 / -1; }
+      .controls .control-actions { grid-column:1; width:100%; justify-content:flex-start; flex-wrap:wrap; }
+    }
+    @media (max-width:560px) {
+      .controls .primary-controls { grid-template-columns:minmax(0,1fr); }
+      .controls .primary-controls .search-shell,
+      .controls .primary-controls #scenario-select,
+      .controls .primary-controls .view-segment,
+      .controls .primary-controls .year-playback { grid-column:1; width:100%; }
+      .controls .primary-controls .view-segment { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); }
+      .controls .primary-controls .view-segment button { min-width:0; padding-inline:5px; }
+      .controls .primary-controls .year-playback { grid-template-columns:auto auto minmax(0,1fr); }
+      .controls .primary-controls .year-playback #playback-speed { grid-column:1 / -1; width:100%; }
+      .controls .control-actions > .menu-shell { flex:1 1 125px; }
+      .controls .control-actions > .menu-shell > button,
+      .controls .control-actions > #command-palette-button { width:100%; }
+      .controls .control-menu { max-height:min(62vh,430px); overflow:auto; }
+    }
     @media (max-width:820px) {
       .hero-status { margin-top:12px; }
       .hero-status span { font-size:8px; }
