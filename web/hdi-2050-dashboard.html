@@ -2732,35 +2732,68 @@
     .economy-kpi { min-width:0; padding:15px; background:#0b1828; }
     .economy-kpi span { display:block; color:#90a7c1; font-size:10px; text-transform:uppercase; font-weight:800; }
     .economy-kpi strong { display:block; margin-top:7px; color:#fff; font-size:20px; letter-spacing:0; }
-    .economy-poles-panel { margin:0 0 14px; padding:18px; overflow:hidden; border-left:3px solid #f6ce6a; background:linear-gradient(135deg,rgba(12,24,36,.95),rgba(8,14,24,.94)); }
+    .economy-poles-panel { position:relative; margin:0 0 14px; padding:18px; overflow:hidden; border-left:3px solid #f6ce6a; background:radial-gradient(circle at 18% 32%,rgba(40,121,181,.13),transparent 38%),linear-gradient(135deg,rgba(12,24,36,.97),rgba(8,14,24,.95)); }
+    .economy-poles-panel::before { content:""; position:absolute; inset:-30% 44% 45% -20%; pointer-events:none; background:radial-gradient(circle,rgba(42,207,255,.12),transparent 68%); filter:blur(28px); }
     .economy-poles-panel .economy-panel-head { margin-bottom:14px; }
     .economy-poles-panel .economy-panel-head p { max-width:920px; font-size:12px; line-height:1.55; }
     .poles-layout { display:grid; grid-template-columns:minmax(0,1.48fr) minmax(280px,.56fr); gap:14px; align-items:stretch; }
-    .poles-map-wrap { min-width:0; min-height:580px; padding:12px; border:1px solid rgba(164,198,244,.16); background:#050a10; overflow:hidden; }
+    .poles-map-wrap { position:relative; min-width:0; min-height:580px; padding:12px; border:1px solid rgba(117,211,255,.22); border-radius:16px; background:radial-gradient(circle at 50% 42%,#0a1c30 0,#04080f 69%); box-shadow:inset 0 0 45px rgba(0,0,0,.68),0 18px 60px rgba(0,0,0,.25); overflow:hidden; }
+    .poles-map-wrap::after { content:""; position:absolute; inset:10%; pointer-events:none; border-radius:50%; box-shadow:0 0 52px rgba(46,184,255,.13); }
     .economy-poles-map { display:block; width:100%; height:auto; min-height:540px; }
-    .economy-poles-map .poles-sphere { stroke:rgba(227,238,255,.28); stroke-width:.9; }
-    .economy-poles-map .poles-graticule { fill:none; stroke:rgba(164,198,244,.14); stroke-width:.45; }
-    .economy-poles-map .pole-country { stroke:rgba(3,8,15,.58); stroke-width:.34; vector-effect:non-scaling-stroke; transition:filter .15s ease,opacity .15s ease,stroke-width .15s ease; }
+    .economy-poles-map .poles-sphere { stroke:rgba(116,218,255,.42); stroke-width:1.1; filter:drop-shadow(0 0 14px rgba(31,177,255,.3)); }
+    .economy-poles-map .poles-graticule { fill:none; stroke:rgba(100,202,255,.18); stroke-width:.5; stroke-dasharray:2 5; animation:poles-grid-drift 16s linear infinite; }
+    .economy-poles-map .pole-country { stroke:rgba(3,8,15,.62); stroke-width:.34; vector-effect:non-scaling-stroke; transition:filter .28s ease,opacity .28s ease,stroke-width .28s ease,transform .28s ease; }
     .economy-poles-map .pole-country.pole-other { fill:#333d47; opacity:.68; }
     .economy-poles-map .pole-country.no-data { fill:#242b34; opacity:.38; }
-    .economy-poles-map .pole-country:hover,.economy-poles-map .pole-country:focus-visible { filter:brightness(1.2); outline:none; stroke:#fff; stroke-width:1.2; }
+    .economy-poles-map .pole-country:hover,.economy-poles-map .pole-country:focus-visible { filter:brightness(1.28) drop-shadow(0 0 5px currentColor); outline:none; stroke:#fff; stroke-width:1.2; }
     .economy-poles-map .pole-country.selected { filter:brightness(1.18); stroke:#fff7bf; stroke-width:1.8; }
+    .economy-poles-map .pole-country.pole-active { opacity:1!important; filter:brightness(1.22) drop-shadow(0 0 5px rgba(255,255,255,.45)); stroke:rgba(255,255,255,.8); stroke-width:.85; }
+    .economy-poles-map .pole-country.pole-muted,.economy-poles-map .pole-map-label.pole-muted,.economy-poles-map .trade-link.pole-muted,.economy-poles-map .pole-hub.pole-muted { opacity:.13!important; }
     .economy-poles-map .pole-boundary { fill:none; stroke:rgba(255,255,255,.18); stroke-width:.55; pointer-events:none; vector-effect:non-scaling-stroke; }
-    .economy-poles-map .pole-label-box { fill:rgba(6,13,23,.72); stroke:rgba(255,255,255,.2); stroke-width:.8; }
+    .economy-poles-map .pole-label-box { fill:rgba(6,13,23,.78); stroke:rgba(255,255,255,.24); stroke-width:.8; filter:url(#economy-poles-soft-glow); }
     .economy-poles-map .pole-label { fill:#f7fbff; font-size:12px; font-weight:800; text-anchor:middle; pointer-events:none; }
     .economy-poles-map .pole-label-sub { fill:#c1d3e6; font-size:9px; font-weight:700; text-anchor:middle; pointer-events:none; }
-    .poles-sidebar { display:grid; gap:10px; align-content:start; min-width:0; }
+    .trade-link { fill:none; stroke:url(#economy-poles-trade-gradient); stroke-width:1.25; stroke-linecap:round; stroke-dasharray:5 8; opacity:.46; pointer-events:none; animation:poles-flow 8s linear infinite; transition:opacity .28s ease; }
+    .trade-particle { fill:#e9fbff; filter:url(#economy-poles-bright-glow); pointer-events:none; }
+    .pole-hub-ring { fill:none; stroke:currentColor; stroke-width:1.2; opacity:.82; transform-box:fill-box; transform-origin:center; animation:poles-pulse 2.8s ease-out infinite; }
+    .pole-hub-core { fill:#fff; stroke:currentColor; stroke-width:2.4; filter:url(#economy-poles-bright-glow); }
+    .pole-hub-label { fill:#dff6ff; font-size:8px; font-weight:800; letter-spacing:.08em; text-transform:uppercase; paint-order:stroke; stroke:#06101c; stroke-width:3px; }
+    .poles-sidebar { position:relative; z-index:1; display:grid; gap:10px; align-content:start; min-width:0; }
+    .pole-focus-card { min-height:148px; padding:14px; border:1px solid rgba(116,218,255,.22); border-radius:14px; background:linear-gradient(145deg,rgba(17,34,52,.82),rgba(6,15,27,.76)); backdrop-filter:blur(16px); box-shadow:inset 0 1px rgba(255,255,255,.04),0 15px 35px rgba(0,0,0,.2); }
+    .pole-focus-kicker { color:#75d8ff; font-size:9px; font-weight:900; letter-spacing:.13em; text-transform:uppercase; }
+    .pole-focus-card h4 { margin:6px 0 0; color:#fff; font-size:18px; }
+    .pole-focus-value { display:flex; align-items:baseline; justify-content:space-between; gap:10px; margin-top:10px; }
+    .pole-focus-value strong { color:#fff5bd; font-size:25px; line-height:1; letter-spacing:-.03em; }
+    .pole-focus-value span { color:#b5c9df; font-size:10px; font-weight:800; }
+    .pole-focus-note { margin-top:7px; color:#9eb5cc; font-size:10px; line-height:1.4; }
+    .pole-sparkline { display:block; width:100%; height:38px; margin-top:8px; overflow:visible; }
     .poles-legend { display:grid; gap:7px; }
-    .poles-legend-row { display:grid; grid-template-columns:14px minmax(0,1fr) auto; gap:8px; align-items:center; min-height:34px; padding:7px 8px; border:1px solid rgba(164,198,244,.14); background:rgba(8,17,29,.72); }
+    .poles-legend-row { display:grid; grid-template-columns:14px minmax(0,1fr) auto; gap:8px; align-items:center; min-height:38px; padding:8px 9px; border:1px solid rgba(164,198,244,.14); border-radius:10px; background:rgba(8,17,29,.7); backdrop-filter:blur(10px); transition:transform .2s ease,border-color .2s ease,background .2s ease,opacity .2s ease; }
+    .poles-legend-row[data-pole-id] { cursor:pointer; }
+    .poles-legend-row[data-pole-id]:hover,.poles-legend-row.active { transform:translateX(-3px); border-color:var(--pole-color); background:rgba(17,33,51,.92); box-shadow:0 0 20px color-mix(in srgb,var(--pole-color) 18%,transparent); }
+    .poles-legend-row.muted { opacity:.4; }
     .poles-swatch { width:14px; height:14px; border:1px solid rgba(255,255,255,.45); background:var(--pole-color,#56616e); }
     .poles-legend-label { min-width:0; color:#eef6ff; font-size:11px; font-weight:800; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
     .poles-legend-meta { display:block; margin-top:2px; color:#91a8c1; font-size:9px; font-weight:700; }
     .poles-share { color:#f7e2a2; font-size:11px; font-weight:800; white-space:nowrap; }
     .poles-kpi-grid { display:grid; grid-template-columns:1fr; gap:8px; }
-    .poles-kpi-tile { padding:10px; border:1px solid rgba(164,198,244,.14); background:rgba(8,17,29,.72); }
+    .poles-kpi-tile { padding:10px; border:1px solid rgba(164,198,244,.14); border-radius:10px; background:rgba(8,17,29,.7); backdrop-filter:blur(10px); }
     .poles-kpi-tile span { display:block; color:#91a8c1; font-size:9px; font-weight:800; text-transform:uppercase; }
     .poles-kpi-tile strong { display:block; margin-top:5px; color:#f7fbff; font-size:16px; letter-spacing:0; }
     .poles-kpi-tile small { display:block; margin-top:4px; color:#b9cbe0; font-size:10px; line-height:1.35; }
+    .poles-control-deck { position:relative; z-index:2; display:grid; grid-template-columns:minmax(280px,1fr) auto; gap:14px; align-items:center; margin:0 0 14px; padding:11px 13px; border:1px solid rgba(116,218,255,.17); border-radius:12px; background:rgba(5,14,25,.72); backdrop-filter:blur(14px); }
+    .poles-timeline { display:grid; grid-template-columns:auto minmax(120px,1fr) auto; gap:10px; align-items:center; }
+    .poles-play { width:34px; height:34px; border:1px solid rgba(117,216,255,.35); border-radius:50%; color:#e8f8ff; background:rgba(21,54,76,.72); cursor:pointer; }
+    .poles-play:hover { border-color:#75d8ff; box-shadow:0 0 18px rgba(78,207,255,.22); }
+    .poles-year-readout { min-width:42px; color:#fff5bd; font-size:18px; font-weight:900; font-variant-numeric:tabular-nums; }
+    .poles-timeline input { width:100%; accent-color:#52d4ff; }
+    .poles-scenarios { display:flex; flex-wrap:wrap; justify-content:flex-end; gap:7px; }
+    .poles-toggle { display:flex; align-items:center; gap:6px; padding:7px 9px; border:1px solid rgba(164,198,244,.16); border-radius:999px; color:#afc5db; background:rgba(9,20,34,.76); font-size:9px; font-weight:800; cursor:pointer; }
+    .poles-toggle input { accent-color:#5bdcff; }
+    @keyframes poles-flow { to { stroke-dashoffset:-130; } }
+    @keyframes poles-grid-drift { to { stroke-dashoffset:-42; } }
+    @keyframes poles-pulse { 0% { transform:scale(.45); opacity:.9; } 80%,100% { transform:scale(2.2); opacity:0; } }
+    @media (prefers-reduced-motion:reduce) { .poles-graticule,.trade-link,.pole-hub-ring { animation:none!important; } }
     .economy-controls { position:sticky; top:70px; z-index:17; display:grid; grid-template-columns:1.2fr 1fr .75fr auto; gap:10px; align-items:end; padding:12px; margin-bottom:14px; background:rgba(8,18,31,.94); backdrop-filter:blur(14px); }
     .economy-control { min-width:0; }
     .economy-control label { display:block; margin:0 0 6px; color:#9bb1c9; font-size:10px; text-transform:uppercase; font-weight:800; }
@@ -2804,6 +2837,8 @@
     .economy-source-strip span { padding:6px 8px; border:1px solid rgba(164,198,244,.15); color:#9fb4cb; font-size:10px; }
     @media (max-width:1050px) {
       .economy-hero,.economy-visual-grid,.poles-layout { grid-template-columns:1fr; }
+      .poles-control-deck { grid-template-columns:1fr; }
+      .poles-scenarios { justify-content:flex-start; }
       .economy-controls { grid-template-columns:1fr 1fr; top:62px; }
       .economy-selected-grid { grid-template-columns:repeat(3,1fr); }
     }
@@ -2813,6 +2848,7 @@
       .economy-map,.economy-chart { min-height:280px; }
       .poles-map-wrap { min-height:360px; padding:8px; }
       .economy-poles-map { min-height:340px; }
+      .poles-timeline { grid-template-columns:auto minmax(80px,1fr) auto; }
       .economy-panel-head,.economy-table-head { align-items:flex-start; flex-direction:column; }
     }
     @media print {
@@ -3750,6 +3786,17 @@
             </div>
             <span class="city-badge">PPP scale</span>
           </div>
+          <div class="poles-control-deck" aria-label="Future pole timeline and scenarios">
+            <div class="poles-timeline">
+              <button class="poles-play" id="economy-poles-play" type="button" aria-label="Play 2025 to 2050 projection" aria-pressed="false">&#9654;</button>
+              <input id="economy-poles-year" type="range" min="2025" max="2050" step="1" value="2050" aria-label="Economic poles projection year">
+              <output class="poles-year-readout" id="economy-poles-year-readout" for="economy-poles-year">2050</output>
+            </div>
+            <div class="poles-scenarios" aria-label="What-if scenarios">
+              <label class="poles-toggle"><input id="economy-poles-eu-candidates" type="checkbox" checked> EU accession scenario</label>
+              <label class="poles-toggle"><input id="economy-poles-africa" type="checkbox"> African growth scenario</label>
+            </div>
+          </div>
           <div class="poles-layout">
             <div class="poles-map-wrap">
               <svg id="economy-poles-map" class="economy-poles-map" viewBox="0 0 960 620" role="img" aria-labelledby="economy-poles-svg-title economy-poles-svg-desc">
@@ -3758,11 +3805,12 @@
               </svg>
             </div>
             <div class="poles-sidebar">
+              <div class="pole-focus-card" id="economy-pole-focus" aria-live="polite"></div>
               <div class="poles-legend" id="economy-poles-legend" aria-label="2050 economic pole legend"></div>
               <div class="poles-kpi-grid" id="economy-poles-kpis" aria-label="2050 economic pole summary"></div>
             </div>
           </div>
-          <p class="economy-selected-note" id="economy-poles-note">EU-2050 shading includes the EU-27 plus Albania, Bosnia and Herzegovina, Georgia, Moldova, Montenegro, North Macedonia, Serbia, Türkiye, and Ukraine. This is a scenario, not a membership forecast. Kosovo is a potential candidate but is not separately represented in the 193-country model geometry. The American Sphere is a schematic non-EU alliance core: United States, Canada, United Kingdom, Australia, New Zealand, Japan, South Korea, and the Philippines. The Indian Sphere is a schematic South Asian and Indian Ocean grouping: India, Bangladesh, Bhutan, Nepal, Sri Lanka, Maldives, and Mauritius. The Russian Sphere remains limited to Russia, Armenia, Belarus, Kazakhstan, Kyrgyzstan, and Tajikistan. The non-overlapping Chinese Sphere is limited to China, North Korea, Pakistan, Cambodia, and Laos. Every modeled country is assigned to at most one pole; no occupied territories are reassigned.</p>
+          <p class="economy-selected-note" id="economy-poles-note">When enabled, EU-2050 shading includes the EU-27 plus Albania, Bosnia and Herzegovina, Georgia, Moldova, Montenegro, North Macedonia, Serbia, Türkiye, and Ukraine. This is a scenario, not a membership forecast. Kosovo is a potential candidate but is not separately represented in the 193-country model geometry. The optional African growth scenario highlights Nigeria, South Africa, Egypt, Ethiopia, and Kenya; it is off by default and is not presented as a formal bloc. The American Sphere is a schematic non-EU alliance core: United States, Canada, United Kingdom, Australia, New Zealand, Japan, South Korea, and the Philippines. The Indian Sphere is a schematic South Asian and Indian Ocean grouping: India, Bangladesh, Bhutan, Nepal, Sri Lanka, Maldives, and Mauritius. The Russian Sphere remains limited to Russia, Armenia, Belarus, Kazakhstan, Kyrgyzstan, and Tajikistan. The non-overlapping Chinese Sphere is limited to China, North Korea, Pakistan, Cambodia, and Laos. Every modeled country is assigned to at most one pole; no occupied territories are reassigned.</p>
         </div>
 
         <div class="panel economy-controls" aria-label="Economic outlook controls">
@@ -5250,6 +5298,9 @@
     let filteredEconomicRows = [];
     let selectedEconomicRow = null;
     let economicInitialized = false;
+    let economicPoleYear = 2050;
+    let economicPoleLockedId = null;
+    let economicPolePlayTimer = null;
     let economicSort = {column: "Rank_Economic_Strength_2050", direction: 1};
     let povertyRows = [];
     let mlArtifacts = null;
@@ -6897,8 +6948,48 @@
         dy: -14
       }
     ];
-    const economicPoleByIso = new Map();
-    economicPoleGroups.forEach(group => group.members.forEach(iso => economicPoleByIso.set(iso, group)));
+    const economicEuCandidateMembers = new Set(["ALB", "BIH", "GEO", "MDA", "MNE", "MKD", "SRB", "TUR", "UKR"]);
+    const economicAfricanGrowthPole = {
+      id: "africa-growth",
+      label: "African Growth Scenario",
+      mapLabel: "African Growth",
+      color: "#e45cff",
+      members: ["NGA", "ZAF", "EGY", "ETH", "KEN"],
+      center: [21, 4],
+      dx: 0,
+      dy: 26
+    };
+    const economicPoleHubs = [
+      {id:"united-states", name:"New York", coordinates:[-74.0,40.7]},
+      {id:"european-union", name:"Frankfurt", coordinates:[8.68,50.11]},
+      {id:"russia", name:"Moscow", coordinates:[37.62,55.75]},
+      {id:"china", name:"Shanghai", coordinates:[121.47,31.23]},
+      {id:"india", name:"Delhi", coordinates:[77.21,28.61]},
+      {id:"africa-growth", name:"Lagos", coordinates:[3.38,6.52]}
+    ];
+    const economicPoleTradeLinks = [
+      ["united-states","european-union"], ["united-states","china"], ["united-states","india"],
+      ["european-union","russia"], ["european-union","india"], ["china","russia"],
+      ["china","india"], ["africa-growth","european-union"], ["africa-growth","india"], ["africa-growth","china"]
+    ];
+
+    function economicActivePoleGroups() {
+      const includeCandidates = document.getElementById("economy-poles-eu-candidates")?.checked !== false;
+      const groups = economicPoleGroups.map(group => group.id === "european-union" && !includeCandidates
+        ? {...group, label:"European Union", mapLabel:"EU", members:group.members.filter(iso => !economicEuCandidateMembers.has(iso))}
+        : {...group, members:[...group.members]});
+      if (document.getElementById("economy-poles-africa")?.checked) groups.push({...economicAfricanGrowthPole, members:[...economicAfricanGrowthPole.members]});
+      return groups;
+    }
+
+    function economicPoleInterpolatedValue(row, stem, year = economicPoleYear) {
+      const start = Number(row?.[`${stem}_2025`]);
+      const end = Number(row?.[`${stem}_2050`]);
+      const t = economicClamp((Number(year) - 2025) / 25, 0, 1);
+      if (start > 0 && end > 0) return start * Math.pow(end / start, t);
+      if (Number.isFinite(start) && Number.isFinite(end)) return start + (end - start) * t;
+      return Number.isFinite(end) ? end : start;
+    }
 
     function economicMetricConfig() {
       return economicMetrics[document.getElementById("economy-metric")?.value || "nominal_total"];
@@ -6945,24 +7036,29 @@
     function economicPoleStats() {
       const byIso = new Map(economicRows.map(row => [row.ISO3, row]));
       const assigned = new Set();
-      const worldPpp = d3.sum(economicRows, row => Number(row.GDP_PPP_Total_2050) || 0);
-      const worldNominal = d3.sum(economicRows, row => Number(row.GDP_Nominal_Total_2050) || 0);
-      const groups = economicPoleGroups.map(group => {
+      const activeGroups = economicActivePoleGroups();
+      const worldPpp = d3.sum(economicRows, row => economicPoleInterpolatedValue(row, "GDP_PPP_Total") || 0);
+      const worldNominal = d3.sum(economicRows, row => economicPoleInterpolatedValue(row, "GDP_Nominal_Total") || 0);
+      const groups = activeGroups.map(group => {
         const rows = group.members.map(iso => byIso.get(iso)).filter(Boolean);
         rows.forEach(row => assigned.add(row.ISO3));
-        const ppp = d3.sum(rows, row => Number(row.GDP_PPP_Total_2050) || 0);
-        const nominal = d3.sum(rows, row => Number(row.GDP_Nominal_Total_2050) || 0);
+        const ppp2025 = d3.sum(rows, row => Number(row.GDP_PPP_Total_2025) || 0);
+        const ppp2050 = d3.sum(rows, row => Number(row.GDP_PPP_Total_2050) || 0);
+        const ppp = d3.sum(rows, row => economicPoleInterpolatedValue(row, "GDP_PPP_Total") || 0);
+        const nominal = d3.sum(rows, row => economicPoleInterpolatedValue(row, "GDP_Nominal_Total") || 0);
         return {
           ...group,
           rows,
           ppp,
+          ppp2025,
+          ppp2050,
           nominal,
           share: worldPpp ? ppp / worldPpp : 0,
           nominalShare: worldNominal ? nominal / worldNominal : 0
         };
       }).filter(group => group.rows.length);
       const restRows = economicRows.filter(row => !assigned.has(row.ISO3));
-      const restPpp = d3.sum(restRows, row => Number(row.GDP_PPP_Total_2050) || 0);
+      const restPpp = d3.sum(restRows, row => economicPoleInterpolatedValue(row, "GDP_PPP_Total") || 0);
       return {byIso, groups, restRows, restPpp, worldPpp, worldNominal};
     }
 
@@ -7003,6 +7099,9 @@
       if (svg.empty() || !economicRows.length || !countries.length) return;
       const stats = economicPoleStats();
       const statsById = new Map(stats.groups.map(group => [group.id, group]));
+      const poleByIso = new Map();
+      stats.groups.forEach(group => group.members.forEach(iso => poleByIso.set(iso, group)));
+      if (economicPoleLockedId && !statsById.has(economicPoleLockedId)) economicPoleLockedId = null;
       svg.selectAll("defs.poles-defs,g.poles-root").remove();
 
       const defs = svg.append("defs").attr("class", "poles-defs");
@@ -7014,6 +7113,16 @@
       oceanGradient.append("stop").attr("offset", "0%").attr("stop-color", "#152334");
       oceanGradient.append("stop").attr("offset", "62%").attr("stop-color", "#08111d");
       oceanGradient.append("stop").attr("offset", "100%").attr("stop-color", "#04070c");
+      const tradeGradient = defs.append("linearGradient").attr("id", "economy-poles-trade-gradient");
+      tradeGradient.append("stop").attr("offset", "0%").attr("stop-color", "#45ddff").attr("stop-opacity", .12);
+      tradeGradient.append("stop").attr("offset", "50%").attr("stop-color", "#fff3ad").attr("stop-opacity", .92);
+      tradeGradient.append("stop").attr("offset", "100%").attr("stop-color", "#c454ff").attr("stop-opacity", .16);
+      const softGlow = defs.append("filter").attr("id", "economy-poles-soft-glow").attr("x", "-50%").attr("y", "-50%").attr("width", "200%").attr("height", "200%");
+      softGlow.append("feGaussianBlur").attr("stdDeviation", 3).attr("result", "blur");
+      const softMerge = softGlow.append("feMerge"); softMerge.append("feMergeNode").attr("in", "blur"); softMerge.append("feMergeNode").attr("in", "SourceGraphic");
+      const brightGlow = defs.append("filter").attr("id", "economy-poles-bright-glow").attr("x", "-100%").attr("y", "-100%").attr("width", "300%").attr("height", "300%");
+      brightGlow.append("feGaussianBlur").attr("stdDeviation", 2.4).attr("result", "blur");
+      const brightMerge = brightGlow.append("feMerge"); brightMerge.append("feMergeNode").attr("in", "blur"); brightMerge.append("feMergeNode").attr("in", "SourceGraphic");
 
       const width = 960, height = 620;
       const poleProjection = d3.geoAzimuthalEquidistant()
@@ -7034,20 +7143,42 @@
         .attr("class", "poles-graticule")
         .attr("d", polePath);
 
-      layer.append("g")
+      const hubById = new Map(economicPoleHubs.filter(hub => statsById.has(hub.id)).map(hub => [hub.id, hub]));
+      const visibleTradeLinks = economicPoleTradeLinks
+        .filter(([source, target]) => hubById.has(source) && hubById.has(target))
+        .map(([source, target], index) => ({source, target, id:`pole-trade-${index}`, coordinates:d3.range(0, 1.001, .035).map(t => d3.geoInterpolate(hubById.get(source).coordinates, hubById.get(target).coordinates)(t))}));
+      const tradeLayer = layer.append("g").attr("class", "poles-trade-layer");
+      tradeLayer.selectAll("path.trade-link")
+        .data(visibleTradeLinks)
+        .join("path")
+        .attr("id", link => link.id)
+        .attr("class", "trade-link")
+        .attr("data-source", link => link.source)
+        .attr("data-target", link => link.target)
+        .attr("d", link => polePath({type:"LineString", coordinates:link.coordinates}));
+      if (!window.matchMedia?.("(prefers-reduced-motion: reduce)").matches) {
+        const particles = tradeLayer.selectAll("circle.trade-particle").data(visibleTradeLinks).join("circle").attr("class", "trade-particle").attr("r", 1.8);
+        particles.append("animateMotion")
+          .attr("dur", (_, index) => `${6.5 + (index % 4) * 1.1}s`)
+          .attr("begin", (_, index) => `${-index * .9}s`)
+          .attr("repeatCount", "indefinite")
+          .append("mpath").attr("href", link => `#${link.id}`);
+      }
+
+      const countryLayer = layer.append("g")
         .selectAll("path.pole-country")
         .data(countries)
         .join("path")
         .attr("class", featureRow => {
           const iso = economicFeatureIso(featureRow);
-          const group = economicPoleByIso.get(iso);
+          const group = poleByIso.get(iso);
           const row = stats.byIso.get(iso);
           return `pole-country ${group ? `pole-${group.id}` : "pole-other"}${row ? "" : " no-data"}${row?.ISO3 === selectedEconomicRow?.ISO3 ? " selected" : ""}`;
         })
         .attr("d", polePath)
         .attr("fill", featureRow => {
           const iso = economicFeatureIso(featureRow);
-          const group = economicPoleByIso.get(iso);
+          const group = poleByIso.get(iso);
           return group ? group.color : (stats.byIso.has(iso) ? "#333d47" : "#242b34");
         })
         .attr("opacity", featureRow => {
@@ -7060,16 +7191,19 @@
         .attr("aria-label", featureRow => {
           const iso = economicFeatureIso(featureRow);
           const row = stats.byIso.get(iso);
-          const group = economicPoleByIso.get(iso);
+          const group = poleByIso.get(iso);
           if (!row) return "Country outside the modeled economic dataset";
           const groupText = group ? `${group.label} grouping` : "outside the highlighted pole groupings";
-          return `${row.Country}, ${groupText}, projected 2050 PPP output ${formatEconomic(row.GDP_PPP_Total_2050, "total")}. Activate to inspect.`;
+          return `${row.Country}, ${groupText}, projected ${economicPoleYear} PPP output ${formatEconomic(economicPoleInterpolatedValue(row, "GDP_PPP_Total"), "total")}. Activate to inspect.`;
         })
         .on("mouseenter mousemove", (event, featureRow) => {
           const row = stats.byIso.get(economicFeatureIso(featureRow));
+          const group = poleByIso.get(economicFeatureIso(featureRow));
+          if (group) applyPoleFocus(group.id);
           if (row) showEconomicTooltip(event, row);
         })
-        .on("mouseleave blur", hideTooltip)
+        .on("mouseleave", () => { applyPoleFocus(economicPoleLockedId); hideTooltip(); })
+        .on("blur", () => { applyPoleFocus(economicPoleLockedId); hideTooltip(); })
         .on("focus", (event, featureRow) => {
           const row = stats.byIso.get(economicFeatureIso(featureRow));
           if (row) showEconomicTooltip({clientX: window.innerWidth / 2, clientY: 110}, row);
@@ -7080,6 +7214,8 @@
           setSelectedEconomicRow(stats.byIso.get(economicFeatureIso(featureRow)));
         })
         .on("click", (event, featureRow) => {
+          const group = poleByIso.get(economicFeatureIso(featureRow));
+          if (group) economicPoleLockedId = economicPoleLockedId === group.id ? null : group.id;
           setSelectedEconomicRow(stats.byIso.get(economicFeatureIso(featureRow)));
         });
 
@@ -7114,10 +7250,57 @@
         .attr("y", 12)
         .text(group => `${economicPolePercent(group.ppp, stats.worldPpp)} PPP`);
 
+      const hubs = layer.append("g").attr("class", "poles-hubs")
+        .selectAll("g.pole-hub")
+        .data([...hubById.values()].map(hub => ({...hub, group:statsById.get(hub.id), point:poleProjection(hub.coordinates)})).filter(hub => hub.point))
+        .join("g")
+        .attr("class", "pole-hub")
+        .attr("data-pole-id", hub => hub.id)
+        .style("color", hub => hub.group.color)
+        .attr("transform", hub => `translate(${hub.point[0]} ${hub.point[1]})`);
+      hubs.append("circle").attr("class", "pole-hub-ring").attr("r", 6);
+      hubs.append("circle").attr("class", "pole-hub-core").attr("r", 2.7);
+      hubs.append("text").attr("class", "pole-hub-label").attr("x", 7).attr("y", -7).text(hub => hub.name);
+
+      function updatePoleFocusCard(groupId) {
+        const focus = document.getElementById("economy-pole-focus");
+        if (!focus) return;
+        const group = statsById.get(groupId) || [...stats.groups].sort((a, b) => b.ppp - a.ppp)[0];
+        if (!group) return;
+        const cagr = group.ppp2025 > 0 && group.ppp2050 > 0 ? Math.pow(group.ppp2050 / group.ppp2025, 1 / 25) - 1 : 0;
+        focus.style.setProperty("--pole-color", group.color);
+        focus.innerHTML = `<div class="pole-focus-kicker">${economicPoleLockedId === group.id ? "Locked focus" : "Live pole intelligence"}</div><h4>${escapeHtml(group.label)}</h4><div class="pole-focus-value"><strong data-pole-counter>0</strong><span>${escapeHtml(economicPolePercent(group.ppp, stats.worldPpp))} of world PPP</span></div><div class="pole-focus-note">${group.rows.length} modeled countries &middot; projected PPP CAGR ${escapeHtml((cagr * 100).toFixed(2))}% from 2025 to 2050</div><svg class="pole-sparkline" viewBox="0 0 240 38" role="img" aria-label="${escapeAttr(group.label)} PPP growth from 2025 to 2050"><path d="M2 34 C62 33 82 28 120 23 S194 10 238 3" fill="none" stroke="${escapeAttr(group.color)}" stroke-width="2.4"/><path d="M2 34 C62 33 82 28 120 23 S194 10 238 3 L238 38 L2 38 Z" fill="${escapeAttr(group.color)}" opacity=".1"/><circle cx="${(2 + 236 * ((economicPoleYear - 2025) / 25)).toFixed(1)}" cy="${(34 - 31 * ((economicPoleYear - 2025) / 25)).toFixed(1)}" r="3" fill="#fff" stroke="${escapeAttr(group.color)}" stroke-width="2"/></svg>`;
+        const counter = focus.querySelector("[data-pole-counter]");
+        const start = performance.now();
+        const duration = 520;
+        const tick = now => {
+          const t = Math.min(1, (now - start) / duration);
+          const eased = 1 - Math.pow(1 - t, 3);
+          if (counter) counter.textContent = formatEconomic(group.ppp * eased, "total");
+          if (t < 1 && counter?.isConnected) requestAnimationFrame(tick);
+        };
+        requestAnimationFrame(tick);
+      }
+
+      function applyPoleFocus(groupId) {
+        const active = groupId && statsById.has(groupId) ? groupId : null;
+        countryLayer.classed("pole-active", featureRow => active && poleByIso.get(economicFeatureIso(featureRow))?.id === active)
+          .classed("pole-muted", featureRow => active && poleByIso.get(economicFeatureIso(featureRow))?.id !== active);
+        labels.classed("pole-muted", group => active && group.id !== active);
+        hubs.classed("pole-muted", hub => active && hub.id !== active);
+        tradeLayer.selectAll("path.trade-link").classed("pole-muted", link => active && link.source !== active && link.target !== active);
+        document.querySelectorAll("#economy-poles-legend [data-pole-id]").forEach(row => {
+          row.classList.toggle("active", Boolean(active && row.dataset.poleId === active));
+          row.classList.toggle("muted", Boolean(active && row.dataset.poleId !== active));
+        });
+        updatePoleFocusCard(active);
+      }
+
       const summary = document.getElementById("economy-poles-summary");
       if (summary) {
         const covered = d3.sum(stats.groups, group => group.ppp);
-        summary.textContent = `The infographic highlights only ${stats.groups.length} established economic or military poles covering ${economicPolePercent(covered, stats.worldPpp)} of modeled 2050 PPP output. All other countries remain gray and selectable.`;
+        const scenarioText = statsById.has("africa-growth") ? " The African growth pole is an enabled what-if scenario." : "";
+        summary.textContent = `At ${economicPoleYear}, the map highlights ${stats.groups.length} economic or military pole groupings covering ${economicPolePercent(covered, stats.worldPpp)} of modeled world PPP output.${scenarioText} Hover or activate a pole to isolate its network.`;
       }
 
       const legend = document.getElementById("economy-poles-legend");
@@ -7125,8 +7308,19 @@
         const restShare = economicPolePercent(stats.restPpp, stats.worldPpp);
         legend.innerHTML = `${stats.groups.map(group => {
           const countryLabel = group.rows.length === 1 ? "country" : "countries";
-          return `<div class="poles-legend-row"><span class="poles-swatch" style="--pole-color:${escapeAttr(group.color)}"></span><div><div class="poles-legend-label">${escapeHtml(group.label)}</div><span class="poles-legend-meta">${group.rows.length} ${countryLabel} | ${formatEconomic(group.ppp, "total")} PPP</span></div><span class="poles-share">${economicPolePercent(group.ppp, stats.worldPpp)}</span></div>`;
+          return `<div class="poles-legend-row" tabindex="0" role="button" aria-pressed="${economicPoleLockedId === group.id}" data-pole-id="${escapeAttr(group.id)}" style="--pole-color:${escapeAttr(group.color)}"><span class="poles-swatch" style="--pole-color:${escapeAttr(group.color)}"></span><div><div class="poles-legend-label">${escapeHtml(group.label)}</div><span class="poles-legend-meta">${group.rows.length} ${countryLabel} | ${formatEconomic(group.ppp, "total")} PPP</span></div><span class="poles-share">${economicPolePercent(group.ppp, stats.worldPpp)}</span></div>`;
         }).join("")}<div class="poles-legend-row"><span class="poles-swatch" style="--pole-color:#333d47"></span><div><div class="poles-legend-label">Other modeled countries</div><span class="poles-legend-meta">${stats.restRows.length} countries | ${formatEconomic(stats.restPpp, "total")} PPP</span></div><span class="poles-share">${restShare}</span></div>`;
+        legend.querySelectorAll("[data-pole-id]").forEach(row => {
+          const activate = () => {
+            economicPoleLockedId = economicPoleLockedId === row.dataset.poleId ? null : row.dataset.poleId;
+            applyPoleFocus(economicPoleLockedId);
+            row.setAttribute("aria-pressed", String(economicPoleLockedId === row.dataset.poleId));
+          };
+          row.addEventListener("mouseenter", () => applyPoleFocus(row.dataset.poleId));
+          row.addEventListener("mouseleave", () => applyPoleFocus(economicPoleLockedId));
+          row.addEventListener("click", activate);
+          row.addEventListener("keydown", event => { if (["Enter", " "].includes(event.key)) { event.preventDefault(); activate(); } });
+        });
       }
 
       const kpis = document.getElementById("economy-poles-kpis");
@@ -7139,10 +7333,12 @@
           ["Largest pole", largest?.label || "--", largest ? `${formatEconomic(largest.ppp, "total")} PPP | ${economicPolePercent(largest.ppp, stats.worldPpp)} of modeled output` : "--"],
           ["EU-2050 scenario", eu ? economicPolePercent(eu.ppp, stats.worldPpp) : "--", eu ? `${formatEconomic(eu.ppp, "total")} PPP across EU-27 and nine current candidates` : "--"],
           ["Chinese + Indian spheres", economicPolePercent(chineseIndianSpheresPpp, stats.worldPpp), `${formatEconomic(chineseIndianSpheresPpp, "total")} combined PPP output`],
-          ["Five-pole coverage", economicPolePercent(coloredPpp, stats.worldPpp), `${stats.groups.length} poles; ${stats.restRows.length} countries left gray`]
+          ["Active pole coverage", economicPolePercent(coloredPpp, stats.worldPpp), `${stats.groups.length} poles in ${economicPoleYear}; ${stats.restRows.length} countries left gray`]
         ];
         kpis.innerHTML = tiles.map(([label, value, note]) => `<div class="poles-kpi-tile"><span>${escapeHtml(label)}</span><strong>${escapeHtml(value)}</strong><small>${escapeHtml(note)}</small></div>`).join("");
       }
+      document.getElementById("economy-poles-year-readout").textContent = economicPoleYear;
+      applyPoleFocus(economicPoleLockedId);
     }
 
     function renderEconomicMap() {
@@ -7337,6 +7533,41 @@
       document.getElementById("economy-metric")?.addEventListener("change",renderEconomicWorkspace);
       document.getElementById("economy-year")?.addEventListener("change",renderEconomicWorkspace);
       document.getElementById("economy-export")?.addEventListener("click",exportEconomicCsv);
+      const poleYearSlider = document.getElementById("economy-poles-year");
+      const polePlayButton = document.getElementById("economy-poles-play");
+      poleYearSlider?.addEventListener("input", event => {
+        economicPoleYear = Number(event.target.value);
+        renderEconomyPolesInfographic();
+      });
+      ["economy-poles-eu-candidates", "economy-poles-africa"].forEach(id => document.getElementById(id)?.addEventListener("change", () => {
+        economicPoleLockedId = null;
+        renderEconomyPolesInfographic();
+      }));
+      polePlayButton?.addEventListener("click", () => {
+        if (economicPolePlayTimer) {
+          clearInterval(economicPolePlayTimer);
+          economicPolePlayTimer = null;
+          polePlayButton.textContent = "\u25B6";
+          polePlayButton.setAttribute("aria-pressed", "false");
+          return;
+        }
+        if (economicPoleYear >= 2050) economicPoleYear = 2025;
+        if (poleYearSlider) poleYearSlider.value = String(economicPoleYear);
+        polePlayButton.textContent = "\u275A\u275A";
+        polePlayButton.setAttribute("aria-pressed", "true");
+        renderEconomyPolesInfographic();
+        economicPolePlayTimer = setInterval(() => {
+          economicPoleYear += 1;
+          if (poleYearSlider) poleYearSlider.value = String(economicPoleYear);
+          renderEconomyPolesInfographic();
+          if (economicPoleYear >= 2050) {
+            clearInterval(economicPolePlayTimer);
+            economicPolePlayTimer = null;
+            polePlayButton.textContent = "\u25B6";
+            polePlayButton.setAttribute("aria-pressed", "false");
+          }
+        }, 420);
+      });
       document.getElementById("economy-kpi-count").textContent=economicRows.length;
       document.getElementById("economy-kpi-nominal").textContent=formatEconomic(d3.sum(economicRows,row=>row.GDP_Nominal_Total_2050),"total");
       document.getElementById("economy-kpi-ppp").textContent=formatEconomic(d3.sum(economicRows,row=>row.GDP_PPP_Total_2050),"total");
