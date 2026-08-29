@@ -2851,6 +2851,165 @@
       .poles-timeline { grid-template-columns:auto minmax(80px,1fr) auto; }
       .economy-panel-head,.economy-table-head { align-items:flex-start; flex-direction:column; }
     }
+
+    /* Futuristic visual system: static compositing and restrained motion keep the dashboard responsive. */
+    :root {
+      --bg:#040812;
+      --panel:rgba(8,19,34,.88);
+      --panel-2:rgba(14,31,50,.76);
+      --line:rgba(126,211,255,.17);
+      --text:#f4f9ff;
+      --muted:#93aac2;
+      --cyan:#59dcff;
+      --blue:#5d80ff;
+      --indigo:#a277ff;
+      --green:#62f2c0;
+      --glass:rgba(6,15,28,.78);
+      --shadow:0 24px 64px rgba(0,0,0,.32);
+    }
+    body {
+      background:
+        radial-gradient(ellipse at 14% -4%,rgba(18,171,229,.17),transparent 35%),
+        radial-gradient(ellipse at 88% 5%,rgba(117,76,255,.15),transparent 31%),
+        radial-gradient(ellipse at 56% 86%,rgba(18,120,133,.08),transparent 38%),
+        linear-gradient(150deg,#07111e 0,#040812 44%,#07101b 100%);
+    }
+    #hdi-dashboard-app::before {
+      animation:none;
+      opacity:.64;
+      background-image:
+        linear-gradient(rgba(89,220,255,.032) 1px,transparent 1px),
+        linear-gradient(90deg,rgba(89,220,255,.032) 1px,transparent 1px),
+        radial-gradient(circle,rgba(165,230,255,.14) 1px,transparent 1.3px);
+      background-size:56px 56px,56px 56px,112px 112px;
+      mask-image:linear-gradient(to bottom,#000 0,rgba(0,0,0,.72) 42%,transparent 96%);
+    }
+    #hdi-dashboard-app::after {
+      opacity:.2;
+      background:
+        radial-gradient(ellipse at center,transparent 50%,rgba(0,0,0,.48) 100%),
+        repeating-linear-gradient(0deg,rgba(255,255,255,.012) 0,rgba(255,255,255,.012) 1px,transparent 1px,transparent 5px);
+      mix-blend-mode:normal;
+    }
+    ::selection { color:#031019; background:#7ce7ff; }
+    * { scrollbar-width:thin; scrollbar-color:rgba(89,220,255,.34) rgba(4,10,19,.55); }
+    *::-webkit-scrollbar { width:9px; height:9px; }
+    *::-webkit-scrollbar-track { background:rgba(4,10,19,.55); }
+    *::-webkit-scrollbar-thumb { border:2px solid rgba(4,10,19,.55); border-radius:999px; background:linear-gradient(#4bc9eb,#6969df); }
+    .shell::before {
+      content:"";
+      display:block;
+      height:1px;
+      margin:0 4% 4px;
+      background:linear-gradient(90deg,transparent,rgba(88,224,255,.68),rgba(150,109,255,.5),transparent);
+      box-shadow:0 0 22px rgba(88,224,255,.25);
+    }
+    .hero { position:relative; padding:24px 4px 12px; }
+    .hero::after {
+      content:"";
+      position:absolute;
+      left:-5%;
+      top:-20%;
+      z-index:-1;
+      width:52%;
+      height:150%;
+      pointer-events:none;
+      background:radial-gradient(ellipse,rgba(46,181,226,.1),transparent 68%);
+      filter:blur(16px);
+    }
+    .hero h1 {
+      color:#fff;
+      background:linear-gradient(104deg,#fff 8%,#d9f7ff 42%,#9edbff 67%,#bda9ff 100%);
+      -webkit-background-clip:text;
+      background-clip:text;
+      -webkit-text-fill-color:transparent;
+      text-shadow:0 10px 40px rgba(69,193,255,.12);
+      letter-spacing:-.035em;
+    }
+    .eyebrow { color:#aeeeff; text-shadow:0 0 18px rgba(89,220,255,.26); }
+    .eyebrow::before { width:34px; box-shadow:0 0 8px rgba(89,220,255,.54); }
+    .subtitle { color:#9fb4ca; }
+    .hero-status { display:flex; flex-wrap:wrap; gap:7px; margin-top:16px; }
+    .hero-status span {
+      display:inline-flex;
+      align-items:center;
+      gap:7px;
+      min-height:27px;
+      padding:5px 9px;
+      border:1px solid rgba(130,211,255,.16);
+      border-radius:999px;
+      color:#9db7cd;
+      background:rgba(5,17,29,.62);
+      font-size:9px;
+      font-weight:800;
+      letter-spacing:.065em;
+      text-transform:uppercase;
+    }
+    .hero-status i { width:6px; height:6px; border-radius:50%; background:var(--green); box-shadow:0 0 10px rgba(98,242,192,.72); }
+    .meta {
+      border-color:rgba(112,216,255,.22);
+      border-radius:16px;
+      background:linear-gradient(145deg,rgba(28,66,88,.44),rgba(12,23,44,.82));
+      box-shadow:0 20px 55px rgba(0,0,0,.32),inset 0 1px rgba(255,255,255,.08),0 0 35px rgba(65,194,255,.07);
+    }
+    .meta::after { content:""; position:absolute; right:12px; bottom:12px; width:36px; height:36px; border-right:1px solid rgba(87,218,255,.32); border-bottom:1px solid rgba(87,218,255,.32); border-radius:0 0 9px 0; }
+    .meta-value { letter-spacing:-.025em; }
+    .nav-bar {
+      border-color:rgba(128,215,255,.2);
+      border-radius:15px;
+      background:linear-gradient(135deg,rgba(14,34,54,.88),rgba(4,13,25,.84));
+      box-shadow:0 18px 52px rgba(0,0,0,.31),inset 0 1px rgba(255,255,255,.07),0 0 34px rgba(62,196,255,.055);
+    }
+    .nav-brand { letter-spacing:.12em; }
+    .nav-links a { position:relative; border-radius:10px; color:#a9c2d9; }
+    .nav-links a::after { content:""; position:absolute; left:28%; right:28%; bottom:3px; height:1px; background:var(--scenario-accent); opacity:0; box-shadow:0 0 8px var(--scenario-accent); transition:opacity .18s ease,left .18s ease,right .18s ease; }
+    .nav-links a:hover::after,.nav-links a.active::after { left:15%; right:15%; opacity:.85; }
+    .controls,.economy-controls {
+      border-color:rgba(126,211,255,.19);
+      border-radius:14px;
+      background:linear-gradient(135deg,rgba(11,29,47,.9),rgba(5,14,26,.91));
+      box-shadow:0 16px 44px rgba(0,0,0,.29),inset 0 1px rgba(255,255,255,.055);
+    }
+    .stat,.panel,.overview-deep-dive,.map-toolbar {
+      border-color:rgba(126,211,255,.16);
+      border-radius:15px;
+      background:linear-gradient(145deg,rgba(15,34,54,.82),rgba(5,14,27,.88));
+      box-shadow:0 20px 54px rgba(0,0,0,.27),inset 0 1px rgba(255,255,255,.045);
+      backdrop-filter:none;
+    }
+    .stat { border-radius:14px; background:linear-gradient(145deg,rgba(20,51,77,.88),rgba(6,16,31,.91)); }
+    .stat::after { content:""; position:absolute; inset:auto 14px 10px auto; width:26px; height:8px; border-right:1px solid color-mix(in srgb,var(--stat-accent,var(--cyan)) 45%,transparent); border-bottom:1px solid color-mix(in srgb,var(--stat-accent,var(--cyan)) 45%,transparent); }
+    .stat:hover,.map-panel:hover { transform:translateY(-3px); border-color:rgba(var(--scenario-accent-rgb),.38); box-shadow:0 24px 65px rgba(0,0,0,.32),0 0 28px rgba(var(--scenario-accent-rgb),.065); }
+    .section-kicker { display:flex; align-items:center; gap:7px; color:#77dcf8; letter-spacing:.14em; }
+    .section-kicker::before { content:""; width:5px; height:5px; border-radius:50%; background:currentColor; box-shadow:0 0 9px currentColor; }
+    .section-title,.section-head h2,.economy-panel-head h3 { letter-spacing:-.018em; }
+    input,select,button {
+      border-color:rgba(135,202,239,.22);
+      border-radius:10px;
+      background:linear-gradient(145deg,rgba(16,34,54,.92),rgba(7,17,31,.94));
+    }
+    button:hover { transform:translateY(-1px); background:linear-gradient(145deg,rgba(22,52,76,.96),rgba(9,23,40,.96)); box-shadow:0 8px 22px rgba(0,0,0,.2),0 0 16px rgba(89,220,255,.075); }
+    input:focus,select:focus,button:focus-visible { border-color:rgba(89,220,255,.68); box-shadow:0 0 0 3px rgba(89,220,255,.1),0 0 20px rgba(89,220,255,.08); }
+    .map-wrap,.chart-panel,.economy-map,.economy-chart { border-radius:12px; background:radial-gradient(circle at 50% 42%,#10253a,#07111e 70%); }
+    .table-wrap,.economy-table-wrap { border-radius:0 0 14px 14px; }
+    table tbody tr { transition:background .14s ease,color .14s ease; }
+    table tbody tr:hover { background:rgba(89,220,255,.055); }
+    .tooltip,.country-inspector,.command-palette,.tour-card,.nav-more-menu,.control-menu,.search-suggestions {
+      border-color:rgba(92,218,255,.26);
+      border-radius:14px;
+      background:rgba(5,15,28,.95);
+      box-shadow:0 28px 80px rgba(0,0,0,.52),inset 0 1px rgba(255,255,255,.055),0 0 32px rgba(58,194,255,.07);
+      backdrop-filter:blur(18px);
+    }
+    .tooltip { border-left:2px solid var(--scenario-accent); }
+    .country-inspector { border-radius:18px; }
+    .city-badge,.badge,.pill { border-radius:999px; }
+    @media (hover:none) { .stat:hover,.map-panel:hover,button:hover { transform:none; } }
+    @media (max-width:820px) {
+      .hero-status { margin-top:12px; }
+      .hero-status span { font-size:8px; }
+      .nav-bar,.controls,.economy-controls { border-radius:12px; }
+    }
     @media print {
       body { background: #fff !important; color: #111827 !important; }
       .shell, .drawer-backdrop, .glossary-drawer, .compare-drawer, .skip-link { display: none !important; }
@@ -2876,6 +3035,11 @@
         <div class="eyebrow">Global forecast system</div>
         <h1>HDI 2050 Projection Console</h1>
         <p class="subtitle">Interactive comparison of the UNDP HDR 2000 report's 1998 HDI, the HDR 2025 baseline, and the project's 2050 scenario projection, with the underlying driver table used by the model.</p>
+        <div class="hero-status" aria-label="Platform status">
+          <span><i></i> Live model workspace</span>
+          <span>193-country coverage</span>
+          <span>Scenario engine online</span>
+        </div>
       </div>
       <div class="meta">
         <div class="meta-label">Dataset</div>
